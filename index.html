@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC TachoControl v5.9 Pro - Cloud</title>
+    <title>GC-TachoControl v6.4 Pro - Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- INCLUSIONE SDK FIREBASE -->
@@ -55,7 +55,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v5.9 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v6.4 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -83,8 +83,8 @@
                     </div>
                 </div>
 
-                <h2 class="text-2xl tracking-tight text-white">
-                    <span class="font-black text-emerald-400 text-3xl mr-1">GC</span><span class="font-bold">TachoControl</span>
+                <h2 class="text-2xl tracking-tight text-white font-bold">
+                    <span>GC-TachoControl</span>
                 </h2>
                 <p class="text-xs text-slate-400 mt-2 leading-relaxed">Inserisci il PIN amministrativo o accedi all'Area Conducenti.</p>
             </div>
@@ -126,6 +126,7 @@
                     <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Seleziona Conducente</label>
                     <input type="text" id="driverSearchInput" list="driversListOptions" placeholder="Scrivi o seleziona il tuo Nome..."
                         class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-white placeholder-slate-500 transition-all font-semibold">
+                    
                     <datalist id="driversListOptions"></datalist>
                 </div>
 
@@ -139,9 +140,9 @@
                     Seleziona un conducente valido e inserisci il PIN corretto.
                 </div>
 
-                <button onclick="handleDriverCloudAccess()" 
+                <button onclick="handleDriverAccess()" 
                     class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] text-sm">
-                    Accedi ai Tuoi Dati Cloud
+                    Accedi ai Tuoi Dati
                 </button>
 
                 <button onclick="logout()" 
@@ -164,6 +165,7 @@
 
             <!-- TAB 1: GESTIONE FLOTTA -->
             <div id="tabFleet" class="space-y-6">
+                
                 <div class="no-print grid grid-cols-2 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
                     <button onclick="exportBackupJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold py-2 px-2 rounded-xl transition text-center flex flex-col items-center">
                         <svg class="w-4 h-4 mb-1 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -177,7 +179,7 @@
 
                 <!-- Form Aggiungi / Modifica Conducente -->
                 <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h2 id="formTitle" class="text-emerald-400 font-bold text-base tracking-tight">Aggiungi Conducente nel Cloud</h2>
+                    <h2 id="formTitle" class="text-emerald-400 font-bold text-base tracking-tight">Aggiungi Conducente</h2>
                     <input type="hidden" id="editDriverId" value="">
 
                     <div class="space-y-3">
@@ -207,13 +209,17 @@
                         </div>
 
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Allegato (Foto Tessera o File)</label>
-                            <input type="file" id="addDocumentFile" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700">
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Allegato (Foto Tessera o File .DDD)</label>
+                            <div class="flex items-center space-x-2">
+                                <input type="file" id="addDocumentFile" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700">
+                                <button type="button" onclick="clearAttachedFile()" id="clearFileBtn" class="hidden bg-red-950/60 border border-red-800 text-red-300 text-[10px] font-bold px-3 py-2 rounded-xl hover:bg-red-900 transition">Rimuovi</button>
+                            </div>
+                            <span id="currentAttachmentStatus" class="text-[10px] text-slate-400 block mt-1"></span>
                         </div>
 
                         <div class="flex gap-2 pt-2">
-                            <button id="saveBtn" onclick="saveDriverCloud()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md">
-                                Salva nel Cloud
+                            <button id="saveBtn" onclick="saveDriver()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md">
+                                Salva Conducente
                             </button>
                             <button id="cancelEditBtn" onclick="resetDriverForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl text-xs transition">
                                 Annulla
@@ -253,6 +259,7 @@
 
             <!-- TAB 2: NORMATIVA & SANZIONI -->
             <div id="tabSanctions" class="hidden space-y-6">
+                
                 <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
                     <div class="flex items-start space-x-3 mb-3">
                         <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500 flex-shrink-0">
@@ -267,7 +274,7 @@
                         In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. Tuttavia, dal <strong>31 dicembre 2024</strong> (Reg. UE 1054/2020), <strong>i controlli su strada si estendono agli ultimi 56 giorni</strong>. La non conformità comporta gravissime sanzioni:
                     </p>
 
-                    <ul class="space-y-2 text-[11px] text-amber-200/80 mb-3 pl-1">
+                    <ul class="space-y-2 text-[11px] text-amber-200/80 mb-5 pl-1">
                         <li class="leading-relaxed">
                             • <strong class="text-amber-300">Art. 174, comma 14 del Codice della Strada (Azienda):</strong> L'impresa che omette o non conserva correttamente i dati dello scarico dei 28 giorni è punita con una sanzione da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 333,00 a € 1.331,00</span> per ogni dipendente interessato.
                         </li>
@@ -275,18 +282,74 @@
                             • <strong class="text-amber-300">Art. 179, comma 2 del Codice della Strada (Autista su strada):</strong> In caso di controllo su strada, l'autista che non esibisce le registrazioni dei <strong>56 giorni precedenti</strong> rischia da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 866,00 a € 3.464,00</span> con l'immediata sospensione della patente di guida da 15 giorni a 3 mesi.
                         </li>
                     </ul>
+
+                    <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span>Anteprima Informativa Ufficiale Camere di Commercio (CCIAA)</span>
+                    </button>
                 </div>
+
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <h3 class="font-bold text-sm text-emerald-400">⚙️ Gestione e Aggiornamento Link Portali</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Puoi personalizzare i link ufficiali che vengono mostrati sia qui che nella schermata dei conducenti:
+                    </p>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale Unioncamere Metrologia</label>
+                            <input type="url" id="linkUnioncamereInput" placeholder="https://www.metrologialegale.unioncamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale TACI InfoCamere</label>
+                            <input type="url" id="linkTaciInput" placeholder="https://taci.infocamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
+                        </div>
+
+                        <button onclick="saveCustomLinks()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md">
+                            Aggiorna Link Ufficiali
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </div>
 
         <!-- =================== 3. DRIVER SECTION =================== -->
         <div id="driverSection" class="hidden space-y-6 w-full no-print">
+            
+            <div id="pushNotificationBanner" class="bg-[#15243E] border border-blue-500/40 rounded-2xl p-4 flex items-center justify-between shadow-lg">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-blue-500/20 text-blue-400 rounded-xl">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-bold text-white">Attiva Avvisi di Scadenza</h5>
+                        <p class="text-[10px] text-slate-400">Ricevi notifiche a -7gg, -3gg e il giorno dello scarico.</p>
+                    </div>
+                </div>
+                <button onclick="requestPushPermission()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] py-2 px-3 rounded-xl transition">
+                    Attiva
+                </button>
+            </div>
+
             <div id="driverExpiryAlertBox" class="hidden rounded-2xl p-4 shadow-xl border"></div>
 
             <div id="driverCardVisual" class="bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64">
+                <div class="absolute top-6 right-6 opacity-15">
+                    <svg class="w-16 h-16 text-yellow-400" viewBox="0 0 100 100" fill="currentColor">
+                        <rect x="10" y="10" width="80" height="80" rx="10" />
+                        <path d="M10 50h80M50 10v80" stroke="#000" stroke-width="4" />
+                    </svg>
+                </div>
+                
                 <div class="space-y-2 z-10">
                     <div class="flex items-center space-x-2">
-                        <span class="text-[10px] tracking-widest text-slate-300 font-bold uppercase">VI.CLA. FUTURE S.R.L.</span>
+                        <span class="inline-block w-5 h-3.5 rounded-xs overflow-hidden flex-shrink-0 flex flex-row border border-slate-600">
+                            <span class="bg-green-600 h-full w-1/3"></span>
+                            <span class="bg-white h-full w-1/3"></span>
+                            <span class="bg-red-600 h-full w-1/3"></span>
+                        </span>
+                        <span class="text-[10px] tracking-widest text-slate-300 font-bold uppercase">REPUBBLICA ITALIANA</span>
                     </div>
                     <div class="text-yellow-400/90 font-black text-sm tracking-widest uppercase">
                         CARTA DEL CONDUCENTE
@@ -317,15 +380,99 @@
                 </div>
             </div>
 
+            <!-- Box Norme & Sanzioni -->
+            <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                <div class="flex items-start space-x-3 mb-3">
+                    <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500 flex-shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <div>
+                        <h4 class="font-extrabold text-amber-400 text-sm">Norme di Controllo e Sanzioni per lo Scarico Dati</h4>
+                    </div>
+                </div>
+
+                <p class="text-xs text-amber-200/90 leading-relaxed font-normal mb-3">
+                    In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. Tuttavia, dal <strong>31 dicembre 2024</strong> (Reg. UE 1054/2020), <strong>i controlli su strada si estendono agli ultimi 56 giorni</strong>. La non conformità comporta gravissime sanzioni:
+                </p>
+
+                <ul class="space-y-2 text-[11px] text-amber-200/80 mb-5 pl-1">
+                    <li class="leading-relaxed">
+                        • <strong class="text-amber-300">Art. 174, comma 14 del Codice della Strada (Azienda):</strong> L'impresa che omette o non conserva correttamente i dati dello scarico dei 28 giorni è punita con una sanzione da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 333,00 a € 1.331,00</span> per ogni dipendente interessato.
+                    </li>
+                    <li class="leading-relaxed">
+                        • <strong class="text-amber-300">Art. 179, comma 2 del Codice della Strada (Autista su strada):</strong> In caso di controllo su strada, l'autista che non esibisce le registrazioni dei <strong>56 giorni precedenti</strong> rischia da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 866,00 a € 3.464,00</span> con l'immediata sospensione della patente di guida da 15 giorni a 3 mesi.
+                    </li>
+                </ul>
+
+                <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    <span>Informativa Ufficiale Camere di Commercio (CCIAA)</span>
+                </button>
+            </div>
+
             <button onclick="logout()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl text-xs transition">
                 Torna al Login
             </button>
         </div>
 
-        <!-- Footer Ufficiale con Firma, Versione e Normative -->
+        <!-- =================== MODALE CCIAA =================== -->
+        <div id="cciaaModal" class="no-print fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-[#111C2E] border border-slate-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                
+                <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 bg-amber-500/20 text-amber-400 rounded-xl">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white tracking-tight">Portale delle Camere di Commercio d'Italia</h3>
+                            <p class="text-[10px] text-amber-400 font-bold">Unioncamere • Metrologia Legale &amp; Tessere Digitali</p>
+                        </div>
+                    </div>
+                    <button onclick="closeCciaaModal()" class="text-slate-400 hover:text-white p-1 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-300 leading-relaxed">
+                    <div>
+                        <h4 class="font-bold text-white text-xs mb-1">La Paternità del Servizio e delle Carte</h4>
+                        <p class="text-slate-400">
+                            La <strong>Camera di Commercio, Industria, Artigianato e Agricoltura (CCIAA)</strong> è l'ente pubblico competente per legge in Italia preposto al rilascio, rinnovo e controllo delle carte tachigrafiche.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div class="p-3 bg-[#0B1424] rounded-2xl border border-slate-800/80">
+                            <span class="text-[9px] uppercase font-bold text-amber-400 tracking-wider">METROLOGIA &amp; NORME</span>
+                            <h5 class="font-bold text-white text-xs mt-0.5">Unioncamere Ufficiale</h5>
+                            <a id="btnLinkUnioncamere" href="https://www.metrologialegale.unioncamere.it/" target="_blank" class="inline-flex items-center text-[10px] font-bold text-emerald-400 hover:underline mt-2">
+                                Portale Unioncamere Metrologia ↗
+                            </a>
+                        </div>
+
+                        <div class="p-3 bg-[#0B1424] rounded-2xl border border-slate-800/80">
+                            <span class="text-[9px] uppercase font-bold text-amber-400 tracking-wider">TELEMATICO &amp; INVIO PRATICHE</span>
+                            <h5 class="font-bold text-white text-xs mt-0.5">Portale TACI InfoCamere</h5>
+                            <a id="btnLinkTaci" href="https://taci.infocamere.it/" target="_blank" class="inline-flex items-center text-[10px] font-bold text-emerald-400 hover:underline mt-2">
+                                Accedi al Portale TACI online ↗
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-end">
+                    <button onclick="closeCciaaModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
+                        Chiudi Informativa
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v5.9 Pro Cloud
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v6.4 Pro Cloud
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -344,6 +491,12 @@
         let currentLoggedInDriver = null;
         let pendingBase64Doc = "";
         let pendingFileNameDoc = "";
+        let clearExistingFile = false;
+
+        let customLinks = {
+            unioncamere: "https://www.metrologialegale.unioncamere.it/",
+            taci: "https://taci.infocamere.it/"
+        };
 
         function getRelativeDate(daysOffset) {
             const date = new Date();
@@ -379,7 +532,11 @@
         function initApp() {
             document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
             
-            // Connessione in tempo reale a Firebase con caricamento immediato
+            const savedLinks = localStorage.getItem('tacho_custom_links');
+            if (savedLinks) { customLinks = JSON.parse(savedLinks); }
+            updateDOMCustomLinks();
+
+            // Connessione in tempo reale a Firebase Cloud
             db.ref('operai').on('value', snapshot => {
                 driversMap = snapshot.val() || {};
                 populateDatalist();
@@ -392,33 +549,97 @@
             });
         }
 
+        function requestPushPermission() {
+            if (!("Notification" in window)) {
+                showToast("Notifiche Push non supportate da questo browser.", "error");
+                return;
+            }
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    showToast("Notifiche di scadenza attivate sul tuo cellulare!", "success");
+                    document.getElementById('pushNotificationBanner').classList.add('hidden');
+                } else {
+                    showToast("Permesso notifiche negato.", "error");
+                }
+            });
+        }
+
+        function sendPushNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, { body: body, icon: 'https://cdn-icons-png.flaticon.com/512/1042/1042339.png' });
+            }
+        }
+
+        function sendWhatsAppReminder(id) {
+            const d = driversMap[id];
+            if (!d) return;
+            
+            const nextDl = new Date(d.lastDownloadDate);
+            nextDl.setDate(nextDl.getDate() + 28);
+            const daysRem = getDaysRemaining(nextDl.toISOString().split('T')[0]);
+
+            const msg = `Ciao ${d.name}, ti ricordiamo che mancano ${daysRem} giorni al limite di legge (28gg) per lo scarico della tua Carta Conducente Tachigrafo. Ti preghiamo di consegnare la carta in cantiere/ufficio. Grazie!`;
+            const url = `https://wa.me/${d.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        function updateDOMCustomLinks() {
+            document.getElementById('btnLinkUnioncamere').href = customLinks.unioncamere;
+            document.getElementById('btnLinkTaci').href = customLinks.taci;
+            document.getElementById('linkUnioncamereInput').value = customLinks.unioncamere;
+            document.getElementById('linkTaciInput').value = customLinks.taci;
+        }
+
+        function saveCustomLinks() {
+            const uLink = document.getElementById('linkUnioncamereInput').value.trim();
+            const tLink = document.getElementById('linkTaciInput').value.trim();
+
+            if (uLink) customLinks.unioncamere = uLink;
+            if (tLink) customLinks.taci = tLink;
+
+            localStorage.setItem('tacho_custom_links', JSON.stringify(customLinks));
+            updateDOMCustomLinks();
+            showToast("Link portali aggiornati con successo!", "success");
+        }
+
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) { pendingBase64Doc = ""; pendingFileNameDoc = ""; return; }
             pendingFileNameDoc = file.name;
+            clearExistingFile = false;
             const reader = new FileReader();
-            reader.onload = function(evt) { pendingBase64Doc = evt.target.result; };
+            reader.onload = function(evt) { 
+                pendingBase64Doc = evt.target.result; 
+                document.getElementById('currentAttachmentStatus').innerText = "Nuovo file pronto: " + pendingFileNameDoc;
+                document.getElementById('clearFileBtn').classList.remove('hidden');
+            };
             reader.readAsDataURL(file);
         }
 
-        function handleAdminLogin() {
-            const pinVal = document.getElementById('pinInput').value.trim();
-            const errorEl = document.getElementById('loginError');
-            errorEl.classList.add('hidden');
-
-            if (pinVal === ADMIN_PIN) {
-                showSection("admin");
-                showToast("Accesso Amministratore Effettuato", "success");
-                document.getElementById('pinInput').value = "";
-            } else {
-                errorEl.classList.remove('hidden');
-                showToast("PIN Amministrativo errato", "error");
-            }
+        function clearAttachedFile() {
+            pendingBase64Doc = "";
+            pendingFileNameDoc = "";
+            clearExistingFile = true;
+            document.getElementById('addDocumentFile').value = "";
+            document.getElementById('currentAttachmentStatus').innerText = "File allegato rimosso.";
+            document.getElementById('clearFileBtn').classList.add('hidden');
         }
 
-        function goToDriverSelection() {
-            populateDatalist();
-            showSection("driverSelection");
+        function openDriverDocument(id) {
+            const d = driversMap[id];
+            if (!d || !d.docBase64) {
+                showToast("Nessun allegato presente per questo conducente.", "error");
+                return;
+            }
+            const win = window.open();
+            if (win) {
+                win.document.write(`<iframe src="${d.docBase64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+            } else {
+                const a = document.createElement('a');
+                a.href = d.docBase64;
+                a.download = d.docFileName || "Allegato_Conducente";
+                a.click();
+            }
         }
 
         function populateDatalist() {
@@ -432,14 +653,37 @@
             }
         }
 
-        function handleDriverCloudAccess() {
+        function openCciaaModal() { document.getElementById('cciaaModal').classList.remove('hidden'); }
+        function closeCciaaModal() { document.getElementById('cciaaModal').classList.add('hidden'); }
+
+        function handleAdminLogin() {
+            const pinVal = document.getElementById('pinInput').value.trim();
+            const errorEl = document.getElementById('loginError');
+            errorEl.classList.add('hidden');
+
+            if (pinVal === ADMIN_PIN) {
+                showSection("admin");
+                showToast("Accesso Amministratore Effettuato", "success");
+            } else {
+                errorEl.classList.remove('hidden');
+                showToast("PIN Amministrativo errato", "error");
+            }
+            document.getElementById('pinInput').value = "";
+        }
+
+        function goToDriverSelection() {
+            populateDatalist();
+            showSection("driverSelection");
+        }
+
+        function handleDriverAccess() {
             const fullNameInput = document.getElementById('driverSearchInput').value.trim().toLowerCase();
             const pinVal = document.getElementById('driverPersonalPinInput').value.trim();
             const errorEl = document.getElementById('driverLoginError');
             errorEl.classList.add('hidden');
 
             if (!fullNameInput || pinVal.length !== 4) {
-                errorEl.innerText = "Seleziona il tuo nome e inserisci il PIN di 4 cifre.";
+                errorEl.innerText = "Seleziona o scrivi il tuo nome e inserisci il PIN di 4 cifre.";
                 errorEl.classList.remove('hidden');
                 return;
             }
@@ -463,7 +707,7 @@
                 document.getElementById('driverSearchInput').value = "";
                 document.getElementById('driverPersonalPinInput').value = "";
             } else {
-                errorEl.innerText = "Nome o PIN Cloud non corretti.";
+                errorEl.innerText = "Nome o PIN non corretti. Riprova.";
                 errorEl.classList.remove('hidden');
                 showToast("Credenziali non valide", "error");
             }
@@ -509,13 +753,13 @@
                 tabSanctions.classList.add('hidden');
             } else {
                 btnSanctions.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
-                tabFleet.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                btnFleet.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
                 tabSanctions.classList.remove('hidden');
                 tabFleet.classList.add('hidden');
             }
         }
 
-        function saveDriverCloud() {
+        function saveDriver() {
             const editId = document.getElementById('editDriverId').value;
             const name = document.getElementById('addName').value.trim();
             const surname = document.getElementById('addSurname').value.trim();
@@ -531,11 +775,23 @@
                 return;
             }
 
+            let finalFileName = "";
+            let finalBase64 = "";
+
+            if (clearExistingFile) {
+                finalFileName = "";
+                finalBase64 = "";
+            } else {
+                const existingDrv = driversMap[editId];
+                finalFileName = pendingFileNameDoc || (existingDrv ? existingDrv.docFileName : "");
+                finalBase64 = pendingBase64Doc || (existingDrv ? existingDrv.docBase64 : "");
+            }
+
             const driverData = {
                 name, surname, cardNumber: card, cantiere, pin, phone,
                 lastDownloadDate: lastDl, cardExpiryDate: expiry,
-                docFileName: pendingFileNameDoc || (editId && driversMap[editId] ? driversMap[editId].docFileName : ""),
-                docBase64: pendingBase64Doc || (editId && driversMap[editId] ? driversMap[editId].docBase64 : "")
+                docFileName: finalFileName,
+                docBase64: finalBase64
             };
 
             if (editId) {
@@ -548,11 +804,10 @@
                     }
                 });
             } else {
-                // Salvataggio sicuro nel Cloud
                 const newRef = db.ref('operai').push();
                 newRef.set(driverData, (error) => {
                     if (!error) {
-                        showToast("Conducente aggiunto nel Cloud con successo!", "success");
+                        showToast("Conducente salvato nel Cloud con successo!", "success");
                         resetDriverForm();
                     } else {
                         alert("Errore scrittura Firebase: " + error.message);
@@ -575,8 +830,19 @@
             document.getElementById('addLastDl').value = d.lastDownloadDate;
             document.getElementById('addExpiry').value = d.cardExpiryDate;
 
+            clearExistingFile = false;
+            pendingBase64Doc = "";
+            pendingFileNameDoc = "";
+            if (d.docFileName) {
+                document.getElementById('currentAttachmentStatus').innerText = "Allegato attuale: " + d.docFileName;
+                document.getElementById('clearFileBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('currentAttachmentStatus').innerText = "Nessun allegato presente.";
+                document.getElementById('clearFileBtn').classList.add('hidden');
+            }
+
             document.getElementById('formTitle').innerText = "Modifica Conducente";
-            document.getElementById('saveBtn').innerText = "Aggiorna nel Cloud";
+            document.getElementById('saveBtn').innerText = "Aggiorna Conducente";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -595,9 +861,12 @@
             document.getElementById('addDocumentFile').value = "";
             pendingBase64Doc = "";
             pendingFileNameDoc = "";
+            clearExistingFile = false;
+            document.getElementById('currentAttachmentStatus').innerText = "";
+            document.getElementById('clearFileBtn').classList.add('hidden');
 
-            document.getElementById('formTitle').innerText = "Aggiungi Conducente nel Cloud";
-            document.getElementById('saveBtn').innerText = "Salva nel Cloud";
+            document.getElementById('formTitle').innerText = "Aggiungi Conducente";
+            document.getElementById('saveBtn').innerText = "Salva Conducente";
             document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
@@ -627,6 +896,9 @@
                 const nextDlStr = nextDl.toISOString().split('T')[0];
                 const daysRem = getDaysRemaining(nextDlStr);
 
+                const hasAttachment = d.docBase64 && d.docBase64.length > 0;
+                const hasPhone = d.phone && d.phone.trim().length > 0;
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/50 transition border-b border-slate-800/60";
                 tr.innerHTML = `
@@ -645,6 +917,18 @@
                     </td>
                     <td class="py-3.5 px-3 text-center no-print">
                         <div class="flex items-center justify-center space-x-1.5">
+                            ${hasPhone ? `
+                                <button onclick="sendWhatsAppReminder('${id}')" title="Invia Avviso WhatsApp" class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white px-2 py-2 rounded-xl text-[10px] font-bold shadow-md transition-all active:scale-95 flex items-center justify-center border border-green-500/30">
+                                    💬 WA
+                                </button>
+                            ` : ''}
+
+                            ${hasAttachment ? `
+                                <button onclick="openDriverDocument('${id}')" title="Visualizza File/Tessera Allegato" class="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white p-2 rounded-xl text-[10px] font-bold shadow-md transition-all active:scale-95 flex items-center justify-center">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                </button>
+                            ` : ''}
+                            
                             <button onclick="quickDownloadToday('${id}')" title="Registra Scarico Oggi" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
                                 🔄 Scarica
                             </button>
@@ -684,10 +968,49 @@
             const alertBox = document.getElementById('driverExpiryAlertBox');
             alertBox.classList.add('hidden');
 
-            if (daysRem <= 2) {
+            if (daysRem <= 0) {
                 alertBox.className = "rounded-2xl p-4 shadow-xl bg-red-950/90 border border-red-500 text-red-200 animate-pulse";
-                alertBox.innerHTML = `<h5 class="font-extrabold text-sm text-red-300">ATTENZIONE: SCADENZA VICINA (${daysRem} giorni)</h5><p class="text-xs mt-0.5">Consegna la carta in cantiere.</p>`;
+                alertBox.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">🚨</span>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-red-300">SCADENZA RAGGIUNTA (OGGI)</h5>
+                            <p class="text-xs mt-0.5">Consegna IMMEDIATAMENTE la carta tachigrafica in cantiere/ufficio per evitare sanzioni!</p>
+                        </div>
+                    </div>`;
                 alertBox.classList.remove('hidden');
+                sendPushNotification("🚨 SCADENZA CARTA TACHIGRAFO", "La tua carta deve essere scaricata OGGI! Consegnala subito in cantiere.");
+            } else if (daysRem <= 3) {
+                alertBox.className = "rounded-2xl p-4 shadow-xl bg-amber-950/90 border border-amber-500 text-amber-200";
+                alertBox.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">⚠️</span>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-amber-300">ATTENZIONE: MANCANO SOLO ${daysRem} GIORNI</h5>
+                            <p class="text-xs mt-0.5">Ricordati di consegnare la carta entro il ${formatDateItalian(nextDlStr)}.</p>
+                        </div>
+                    </div>`;
+                alertBox.classList.remove('hidden');
+                sendPushNotification("⚠️ ATTENZIONE SCADENZA TACHIGRAFO", `Mancano solo ${daysRem} giorni allo scarico della tua carta.`);
+            } else if (daysRem <= 7) {
+                alertBox.className = "rounded-2xl p-4 shadow-xl bg-blue-950/80 border border-blue-500/60 text-blue-200";
+                alertBox.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">ℹ️</span>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-blue-300">PROMEMORIA SCADENZA: MANCANO ${daysRem} GIORNI</h5>
+                            <p class="text-xs mt-0.5">Prepara la tua carta conducente per il prossimo scarico programmato.</p>
+                        </div>
+                    </div>`;
+                alertBox.classList.remove('hidden');
+                sendPushNotification("ℹ️ Promemoria Scarico Carta", `Mancano ${daysRem} giorni allo scarico della tua carta tachigrafica.`);
+            }
+
+            const cardVisual = document.getElementById('driverCardVisual');
+            if (daysRem <= 2) {
+                cardVisual.className = "bg-gradient-to-tr from-red-950 via-slate-900 to-rose-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-red-500/50 flex flex-col justify-between h-64";
+            } else {
+                cardVisual.className = "bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64";
             }
         }
 
@@ -695,11 +1018,11 @@
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(driversMap, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `GC_TachoCloud_Backup_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchor.setAttribute("download", `GC-TachoControl_Cloud_Backup_${new Date().toISOString().split('T')[0]}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
             dlAnchor.remove();
-            showToast("Backup Cloud esportato!", "success");
+            showToast("Backup Cloud esportato con successo!", "success");
         }
 
         function printReportPDF() { window.print(); }
