@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v6.4 Pro - Cloud</title>
+    <title>GC-TachoControl v6.5 Pro - Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- INCLUSIONE SDK FIREBASE -->
+    <!-- SDK FIREBASE V8 COMPATIBILE CON LA TUA CONFIGURAZIONE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // CONFIGURAZIONE FIREBASE CLOUD
+        // LA TUA CONFIGURAZIONE FIREBASE UFFICIALE
         const firebaseConfig = {
-            apiKey: "AizaSyB2JGy3q3s4VDD_Ary-x1tsjcwS3VDh7E",
-            authDomain: "tachontrol-ad132.firebaseapp.com",
-            databaseURL: "https://tachontrol1ad132-default-rtdb.europe-west1.firebasedatabase.app"
+            apiKey: "AIzaSyB2jGY3q3s4vDD_ARy-xltsjcwS3VDch7E",
+            authDomain: "tachocontrol-ad132.firebaseapp.com",
+            databaseURL: "https://tachocontrol-ad132-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "tachocontrol-ad132",
+            storageBucket: "tachocontrol-ad132.firebasestorage.app",
+            messagingSenderId: "337602106666",
+            appId: "1:337602106666:web:d57e633e9cd487cf6fba53"
         };
         
         firebase.initializeApp(firebaseConfig);
@@ -55,7 +59,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v6.4 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v6.5 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -472,7 +476,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v6.4 Pro Cloud
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v6.5 Pro Cloud
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -536,7 +540,7 @@
             if (savedLinks) { customLinks = JSON.parse(savedLinks); }
             updateDOMCustomLinks();
 
-            // Connessione in tempo reale a Firebase Cloud
+            // Connessione in tempo reale al Cloud con la tua configurazione ufficiale
             db.ref('operai').on('value', snapshot => {
                 driversMap = snapshot.val() || {};
                 populateDatalist();
@@ -708,7 +712,7 @@
                 document.getElementById('driverPersonalPinInput').value = "";
             } else {
                 errorEl.innerText = "Nome o PIN non corretti. Riprova.";
-                errorEl.classList.remove('hidden');
+                errorEl.classList.add('hidden');
                 showToast("Credenziali non valide", "error");
             }
         }
