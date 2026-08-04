@@ -3,390 +3,685 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC TachoControl - Cloud</title>
-    
-    <!-- Configurazione PWA per icona su Home -->
-    <meta name="theme-color" content="#0B1626">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="TachoControl">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1042/1042339.png">
-
+    <title>GC TachoControl - Scadenzario Professionale</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { 'app-bg': '#0B1626', 'app-card': '#15243E', 'app-input-bg': '#0F1C32' } } }
-        }
-    </script>
-
-    <!-- INCLUSIONE SDK FIREBASE (VERSIONE COMPATIBILE SCRIPT) -->
+    
+    <!-- INCLUSIONE SDK FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // CHIAVI UFFICIALI DEL TUO PROGETTO "tachocontrol-ad132"
+        // CONFIGURAZIONE FIREBASE CLOUD
         const firebaseConfig = {
-            apiKey: "AIzaSyB2jGY3q3s4vDD_ARy-xltsjcwS3VDch7E",
-            authDomain: "tachocontrol-ad132.firebaseapp.com",
-            databaseURL: "https://tachocontrol-ad132-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "tachocontrol-ad132",
-            storageBucket: "tachocontrol-ad132.firebasestorage.app",
-            messagingSenderId: "337602106666",
-            appId: "1:337602106666:web:d57e633e9cd487cf6fba53"
+            apiKey: "AizaSyB2JGy3q3s4VDD_Ary-x1tsjcwS3VDh7E",
+            authDomain: "tachontrol-ad132.firebaseapp.com",
+            databaseURL: "https://tachontrol1ad132-default-rtdb.europe-west1.firebasedatabase.app"
         };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        // Inizializzazione Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'app-bg': '#0B1626',
+                        'app-card': '#15243E',
+                        'app-input-bg': '#0F1C32',
+                    }
+                }
+            }
         }
-        const database = firebase.database();
     </script>
-
     <style>
-        body { background-color: #0B1626; -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { width: 6px; }
+        body {
+            background-color: #0B1626;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-        @media print { .no-print { display: none !important; } }
-        .animate-pulse-slow { animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @media print {
+            body { background-color: #ffffff !important; color: #000000 !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+        }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased">
 
-    <!-- Header Admin Sincronizzato -->
-    <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+    <!-- Header / Navbar Amministratore -->
+    <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400">GC CodeLab</h1>
-                <p class="text-xs text-slate-400">Pannello Cloud Sincronizzato</p>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab</h1>
+                <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
-            <button onclick="logout()" class="px-4 py-2 text-xs font-bold text-white bg-red-950/60 border border-red-800 rounded-xl hover:bg-red-900 transition">Esci</button>
+            <div>
+                <button onclick="logout()" class="px-4 py-2 text-xs font-bold text-white bg-[#2A1F2B] border border-red-900/40 rounded-xl hover:bg-red-950/40 transition-all duration-200 active:scale-95">
+                    Esci
+                </button>
+            </div>
         </div>
     </header>
 
+    <!-- Main Content Container -->
     <main class="flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center">
         
-        <!-- LOGIN SECTION -->
-        <div id="loginSection" class="no-print max-w-sm w-full mx-auto bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80">
+        <!-- =================== 1. LOGIN PRINCIPALE (GRAFICA DESIDERATA) =================== -->
+        <div id="loginSection" class="no-print max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-4 p-3 bg-[#0F1A2E] rounded-2xl inline-block">
-                    <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none"><path d="M50 10L12 28v22c0 24 13.8 44.2 38 50 24.2-5.8 38-26 38-50V28L50 10z" fill="#1E293B" stroke="#334155" stroke-width="4"/><path d="M50 18L18 33v17c0 18 10.4 33.1 32 38 21.6-4.9 32-20 32-38V33L50 18z" fill="#0F172A"/><path d="M50 26L24 38v14c0 13.5 11.4 25.1 26 29 14.6-3.9 26-15.5 26-29V38L50 26z" fill="#DC2626"/><path d="M50 30L28 40v12c0 11.2 9.5 20.8 22 24 12.5-3.2 22-12.8 22-24V40L50 30z" fill="#FCA5A5"/></svg>
+                <div class="flex justify-center mb-4">
+                    <div class="p-3 bg-[#0F1A2E] rounded-2xl">
+                        <svg class="w-12 h-12" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50 10L12 28v22c0 24 13.8 44.2 38 50 24.2-5.8 38-26 38-50V28L50 10z" fill="#1E293B" stroke="#334155" stroke-width="4"/>
+                            <path d="M50 18L18 33v17c0 18 10.4 33.1 32 38 21.6-4.9 32-20 32-38V33L50 18z" fill="#0F172A"/>
+                            <path d="M50 26L24 38v14c0 13.5 11.4 25.1 26 29 14.6-3.9 26-15.5 26-29V38L50 26z" fill="#DC2626"/>
+                            <path d="M50 30L28 40v12c0 11.2 9.5 20.8 22 24 12.5-3.2 22-12.8 22-24V40L50 30z" fill="#FCA5A5"/>
+                        </svg>
+                    </div>
                 </div>
-                <h2 class="text-2xl text-white"><span class="font-black text-emerald-400 text-3xl mr-1">GC</span><span class="font-bold">TachoCloud</span></h2>
-                <p class="text-xs text-slate-400 mt-2">Dati in tempo reale per Admin e Operai</p>
+
+                <h2 class="text-2xl tracking-tight text-white">
+                    <span class="font-black text-emerald-400 text-3xl mr-1">GC</span><span class="font-bold">TachoControl</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">Inserisci il PIN amministrativo o accedi all'Area Conducenti.</p>
             </div>
+
             <div class="space-y-4">
-                <input type="password" id="pinInput" placeholder="Inserisci il tuo PIN personale" maxlength="4" inputmode="numeric" class="w-full px-4 py-3.5 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none text-center text-lg font-bold tracking-widest text-white placeholder-slate-500 transition-all">
-                <div id="loginError" class="text-red-400 text-xs font-semibold text-center hidden">PIN errato o inesistente nel Cloud.</div>
-                <button onclick="handleLogin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition text-sm active:scale-95">Accedi ai Dati Sincronizzati</button>
+                <div>
+                    <input type="password" id="pinInput" placeholder="Codice PIN / Accesso Admin" maxlength="4" inputmode="numeric" autocomplete="one-time-code"
+                        class="w-full px-4 py-3.5 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-left text-sm font-semibold tracking-wider text-white placeholder-slate-500 transition-all">
+                </div>
+                <div id="loginError" class="text-red-400 text-xs font-semibold text-center hidden flex items-center justify-center space-x-1">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                    <span>PIN Amministrativo errato.</span>
+                </div>
+                
+                <button onclick="handleAdminLogin()" 
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/10 transition-all duration-200 transform active:scale-[0.98] text-sm">
+                    Accedi ad Area Gestione Dati
+                </button>
+
+                <button onclick="goToDriverSelection()"
+                    class="w-full text-center py-3.5 px-4 rounded-xl text-slate-300 hover:bg-slate-800/40 transition-all duration-200 text-xs font-medium border border-slate-700/60 leading-relaxed">
+                    Area Conducenti (Seleziona Nome &amp; PIN)
+                </button>
             </div>
         </div>
 
-        <!-- ADMIN SECTION (Cloud Sincronizzato) -->
+        <!-- =================== 1.B SCHERMATA SELEZIONE CONDUCENTE =================== -->
+        <div id="driverSelectionSection" class="no-print hidden max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
+            <div class="text-center mb-6">
+                <div class="inline-flex p-3 bg-emerald-950/40 text-emerald-400 rounded-2xl mb-2">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-white">Area Conducenti</h2>
+                <p class="text-xs text-slate-400 mt-1">Cerca il tuo nome o sceglilo dalla lista, poi inserisci il tuo PIN personale.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="relative">
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Seleziona Conducente</label>
+                    <input type="text" id="driverSearchInput" list="driversListOptions" placeholder="Scrivi o seleziona il tuo Nome..."
+                        class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-white placeholder-slate-500 transition-all font-semibold">
+                    <datalist id="driversListOptions"></datalist>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Personale (4 cifre)</label>
+                    <input type="password" id="driverPersonalPinInput" placeholder="••••" maxlength="4" inputmode="numeric"
+                        class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold tracking-widest text-lg text-white placeholder-slate-500 transition-all">
+                </div>
+
+                <div id="driverLoginError" class="text-red-400 text-xs font-semibold text-center hidden">
+                    Seleziona un conducente valido e inserisci il PIN corretto.
+                </div>
+
+                <button onclick="handleDriverCloudAccess()" 
+                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] text-sm">
+                    Accedi ai Tuoi Dati Cloud
+                </button>
+
+                <button onclick="logout()" 
+                    class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl text-xs transition">
+                    Torna Indietro
+                </button>
+            </div>
+        </div>
+
+        <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="hidden space-y-6 w-full">
-            <!-- Form Aggiungi Conducente -->
-            <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                <h2 id="formTitle" class="text-emerald-400 font-bold text-base">Aggiungi Conducente (Cloud)</h2>
-                <input type="hidden" id="editDriverId" value="">
-                <div class="space-y-3">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="addName" placeholder="Nome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white">
-                        <input type="text" id="addSurname" placeholder="Cognome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white">
-                    </div>
-                    <input type="text" id="addCard" placeholder="Numero Carta Tachigrafica" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono text-sm text-white">
-                    <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="addCantiere" placeholder="CANTIERE DI APPARTENENZA" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white">
-                        <input type="text" maxlength="4" inputmode="numeric" id="addPin" placeholder="PIN Operaio (4 cifre)" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Ultimo Scarico</label>
-                            <input type="date" id="addLastDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl text-xs text-white">
+            <div class="no-print grid grid-cols-2 gap-3">
+                <button onclick="switchTab('fleet')" id="btnFleet" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center">
+                    Gestione Flotta Cloud
+                </button>
+                <button onclick="switchTab('sanctions')" id="btnSanctions" class="bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center">
+                    Normativa &amp; Sanzioni
+                </button>
+            </div>
+
+            <!-- TAB 1: GESTIONE FLOTTA -->
+            <div id="tabFleet" class="space-y-6">
+                <div class="no-print grid grid-cols-2 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
+                    <button onclick="exportBackupJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold py-2 px-2 rounded-xl transition text-center flex flex-col items-center">
+                        <svg class="w-4 h-4 mb-1 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Esporta Backup Cloud
+                    </button>
+                    <button onclick="printReportPDF()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 text-[10px] font-black py-2 px-2 rounded-xl transition text-center flex flex-col items-center">
+                        <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
+                        Report PDF
+                    </button>
+                </div>
+
+                <!-- Form Aggiungi / Modifica Conducente -->
+                <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <h2 id="formTitle" class="text-emerald-400 font-bold text-base tracking-tight">Aggiungi Conducente nel Cloud</h2>
+                    <input type="hidden" id="editDriverId" value="">
+
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="addName" placeholder="Nome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
+                            <input type="text" id="addSurname" placeholder="Cognome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scadenza Carta (5 Anni)</label>
-                            <input type="date" id="addExpiry" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl text-xs text-white">
+                            <input type="text" id="addCard" placeholder="Numero Carta Tachigrafica" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono text-sm text-white placeholder-slate-500">
+                        </div>
+                        <div>
+                            <input type="text" id="addCantiere" placeholder="CANTIERE DI APPARTENENZA" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm uppercase text-white placeholder-slate-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" maxlength="4" inputmode="numeric" id="addPin" placeholder="PIN Personale (4 cifre)" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
+                            <input type="tel" id="addPhone" placeholder="Cellulare (WhatsApp)" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Ultimo Scarico</label>
+                                <input type="date" id="addLastDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scad. Carta (5 Anni)</label>
+                                <input type="date" id="addExpiry" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Allegato (Foto Tessera o File)</label>
+                            <input type="file" id="addDocumentFile" class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700">
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button id="saveBtn" onclick="saveDriverCloud()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md">
+                                Salva nel Cloud
+                            </button>
+                            <button id="cancelEditBtn" onclick="resetDriverForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl text-xs transition">
+                                Annulla
+                            </button>
                         </div>
                     </div>
-                    <div class="flex gap-2 pt-2">
-                        <button id="saveBtn" onclick="saveDriverCloud()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md active:scale-95">Salva nel Cloud</button>
-                        <button id="cancelEditBtn" onclick="resetDriverForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl text-xs transition">Annulla</button>
+                </div>
+
+                <!-- Tabella Conducenti -->
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <div class="flex justify-between items-center no-print">
+                        <h3 class="font-bold text-sm text-slate-200">Conducenti Sincronizzati nel Cloud</h3>
+                        <span id="fleetCount" class="bg-slate-800 text-slate-300 px-2.5 py-0.5 text-xs font-bold rounded-full">0</span>
+                    </div>
+
+                    <div class="no-print">
+                        <input type="text" id="adminSearchTableInput" oninput="renderFleetTable()" placeholder="🔍 Cerca per Nome, Cognome o Cantiere..." 
+                            class="w-full px-4 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[580px]">
+                            <thead>
+                                <tr class="bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                                    <th class="py-2.5 px-3">Nome / Cantiere / PIN</th>
+                                    <th class="py-2.5 px-3">Num. Carta</th>
+                                    <th class="py-2.5 px-3">Prossimo Scarico (28gg)</th>
+                                    <th class="py-2.5 px-3">Scad. 5 Anni</th>
+                                    <th class="py-2.5 px-3 text-center no-print">Azioni Rapide</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fleetTableBody" class="divide-y divide-slate-800 text-xs"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Tabella Sincronizzata -->
-            <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4 overflow-hidden">
-                <div class="flex justify-between items-center no-print">
-                    <h3 class="font-bold text-sm text-slate-200">Flotta Sincronizzata (Cloud)</h3>
-                    <span id="fleetCount" class="bg-emerald-950 text-emerald-400 px-2.5 py-0.5 text-xs font-bold rounded-full">0</span>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs min-w-[500px]">
-                        <thead class="text-[10px] font-bold uppercase text-slate-400 border-b border-slate-800">
-                            <tr><th class="py-2 px-3">Operaio / Cantiere / PIN</th><th class="py-2 px-3">Num. Carta</th><th class="py-2 px-3">Prossimo Scarico</th><th class="py-2 px-3 no-print">Azioni</th></tr>
-                        </thead>
-                        <tbody id="fleetTableBody" class="divide-y divide-slate-800/60 text-slate-100">
-                            <tr><td colspan="4" class="text-center py-4 text-slate-500">Connessione al Cloud Firebase...</td></tr>
-                        </tbody>
-                    </table>
+            <!-- TAB 2: NORMATIVA & SANZIONI -->
+            <div id="tabSanctions" class="hidden space-y-6">
+                <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
+                    <div class="flex items-start space-x-3 mb-3">
+                        <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500 flex-shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-amber-400 text-sm">Norme di Controllo e Sanzioni per lo Scarico Dati</h4>
+                        </div>
+                    </div>
+                    <p class="text-xs text-amber-200/90 leading-relaxed font-normal mb-3">
+                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>.
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- DRIVER SECTION (Cloud Sincronizzato) -->
+        <!-- =================== 3. DRIVER SECTION =================== -->
         <div id="driverSection" class="hidden space-y-6 w-full no-print">
-            <!-- Banner Attivazione Notifiche (Https richiesto) -->
-            <div id="pushBanner" class="hidden bg-[#15243E] border border-blue-500/40 rounded-2xl p-4 flex items-center justify-between shadow-lg">
-                <div class="flex items-center space-x-3">
-                    <div class="p-2 bg-blue-500/20 text-blue-400 rounded-xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg></div>
-                    <div><h5 class="text-xs font-bold text-white">Attiva Avvisi di Scadenza</h5><p class="text-[10px] text-slate-400">Ricevi notifiche a -7gg, -3gg e 0gg.</p></div>
-                </div>
-                <button onclick="requestPushPermission()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] py-2 px-3 rounded-xl transition active:scale-95">Attiva</button>
-            </div>
+            <div id="driverExpiryAlertBox" class="hidden rounded-2xl p-4 shadow-xl border"></div>
 
-            <!-- Alert Scadenza Dinamico -->
-            <div id="driverExpiryAlertBox" class="hidden rounded-2xl p-4 shadow-xl border animate-pulse-slow"></div>
-
-            <!-- Carta Digitale Sincronizzata -->
-            <div id="driverCardVisual" class="bg-gradient-to-tr from-slate-900 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64 transition-all duration-500">
-                <div class="absolute top-6 right-6 opacity-10"><svg class="w-20 h-20 text-yellow-400" viewBox="0 0 100 100" fill="currentColor"><rect x="10" y="10" width="80" height="80" rx="10" /><path d="M10 50h80M50 10v80" stroke="#000" stroke-width="4" /></svg></div>
+            <div id="driverCardVisual" class="bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64">
                 <div class="space-y-2 z-10">
-                    <div class="flex items-center space-x-2"><span class="inline-block w-5 h-3.5 rounded-xs border border-slate-600 flex"><span class="bg-green-600 h-full w-1/3"></span><span class="bg-white h-full w-1/3"></span><span class="bg-red-600 h-full w-1/3"></span></span><span class="text-[10px] tracking-widest text-slate-300 font-bold">REPUBBLICA ITALIANA</span></div>
-                    <div class="text-yellow-400/90 font-black text-sm tracking-widest uppercase">CARTA DEL CONDUCENTE</div>
-                    <div class="pt-1"><span class="text-[9px] text-slate-400 uppercase font-bold block">Cognome & Nome (Cloud)</span><span class="text-lg font-bold text-white" id="driverCardHolderName">-</span></div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-[10px] tracking-widest text-slate-300 font-bold uppercase">VI.CLA. FUTURE S.R.L.</span>
+                    </div>
+                    <div class="text-yellow-400/90 font-black text-sm tracking-widest uppercase">
+                        CARTA DEL CONDUCENTE
+                    </div>
+
+                    <div class="pt-1">
+                        <span class="text-[9px] text-slate-400 uppercase tracking-wider block font-bold">Cognome &amp; Nome</span>
+                        <span class="text-lg font-bold tracking-wide text-white" id="driverCardHolderName">-</span>
+                    </div>
                 </div>
-                <div class="space-y-2 z-10 border-t border-slate-800/80 pt-3">
-                    <div><span class="text-[9px] text-slate-400 font-bold block">Numero Carta</span><span class="font-mono text-xs text-slate-200" id="driverCardNumberDisplay">-</span></div>
-                    <div class="flex justify-between items-end">
-                        <div><span class="text-[9px] text-slate-400 font-bold block">Prossimo Scarico (28 gg)</span><span class="font-mono text-xs text-emerald-400 font-extrabold" id="driverNextDownloadDate">-</span></div>
-                        <div class="text-right bg-black/30 px-3 py-1.5 rounded-xl border border-white/10"><span class="block text-[8px] uppercase opacity-75 font-bold">Giorni Rimasti</span><span class="text-2xl font-black text-white" id="driverDaysCountdown">-</span></div>
+
+                <div class="space-y-2 z-10">
+                    <div>
+                        <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Numero della Carta</span>
+                        <span class="font-mono text-xs tracking-widest text-slate-200 font-bold" id="driverCardNumberDisplay">-</span>
+                    </div>
+
+                    <div class="flex justify-between items-end pt-2 border-t border-slate-800/80">
+                        <div>
+                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Scadenza Scarico (28 gg)</span>
+                            <span class="font-mono text-xs tracking-wide text-emerald-400 font-extrabold" id="driverNextDownloadDate">-</span>
+                        </div>
+                        <div class="text-right bg-black/30 px-3 py-1.5 rounded-xl border border-white/10">
+                            <span class="block text-[8px] uppercase tracking-wider opacity-75 font-bold">Giorni Rimasti</span>
+                            <span class="text-xl font-black block text-white" id="driverDaysCountdown">-</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <button onclick="logout()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl text-xs transition">Torna al Login</button>
+
+            <button onclick="logout()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl text-xs transition">
+                Torna al Login
+            </button>
         </div>
 
+        <!-- Footer -->
+        <footer class="no-print text-center mt-8 space-y-2">
+            <p class="text-emerald-500 font-bold text-sm tracking-wide">
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo
+            </p>
+        </footer>
     </main>
 
     <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
 
     <script>
-        const ADMIN_PIN_GLOBAL = "8528";
-        let allDriversCloud = {}; 
+        const ADMIN_PIN = "8528";
+        let driversMap = {};
+        let currentLoggedInDriver = null;
+        let pendingBase64Doc = "";
+        let pendingFileNameDoc = "";
 
-        function getRelativeDate(days) { const d = new Date(); d.setDate(d.getDate() + days); return d.toISOString().split('T')[0]; }
-        function getDaysRem(target) { const t = new Date(target); t.setHours(0,0,0,0); const today = new Date(); today.setHours(0,0,0,0); return Math.ceil((t - today) / 86400000); }
-        function fmtDateIt(dateStr) { if(!dateStr) return "-"; const d = new Date(dateStr); return d.toLocaleDateString('it-IT'); }
-
-        function showToast(msg, type='success') {
-            const c = document.getElementById('toastContainer');
-            const t = document.createElement('div');
-            t.className = `p-3 rounded-xl shadow-lg border text-white text-xs font-bold transition-all duration-300 transform translate-y-2 opacity-0 ${type==='success'?'bg-emerald-600 border-emerald-500':'bg-red-600 border-red-500'}`;
-            t.innerText = msg; c.appendChild(t);
-            setTimeout(()=>t.classList.remove('translate-y-2','opacity-0'),50);
-            setTimeout(()=>{t.classList.add('translate-y-2','opacity-0');setTimeout(()=>t.remove(),300)},3000);
+        function getRelativeDate(daysOffset) {
+            const date = new Date();
+            date.setDate(date.getDate() + daysOffset);
+            return date.toISOString().split('T')[0];
         }
 
-        // --- SINCRONIZZAZIONE REALTIME FIREBASE ---
-        const driversRef = database.ref('drivers');
+        function getDaysRemaining(targetDateStr) {
+            const today = new Date(); today.setHours(0,0,0,0);
+            const target = new Date(targetDateStr); target.setHours(0,0,0,0);
+            return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+        }
 
-        driversRef.on('value', (snapshot) => {
-            allDriversCloud = snapshot.val() || {};
-            renderFleetTableCloud();
+        function formatDateItalian(dateStr) {
+            if (!dateStr) return "-";
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('it-IT');
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `p-3 rounded-xl shadow-lg border text-white text-xs font-bold flex items-center space-x-2 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${type === 'success' ? 'bg-emerald-600 border-emerald-500' : 'bg-red-600 border-red-500'}`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 50);
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function initApp() {
+            document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
             
-            if(window.currentLoggedInActivePin && window.currentLoggedInActivePin !== ADMIN_PIN_GLOBAL) {
-                const driver = Object.values(allDriversCloud).find(d => d.pin === window.currentLoggedInActivePin);
-                if(driver) renderDriverView(driver);
-                else logout(); 
-            }
-        });
+            db.ref('operai').on('value', snapshot => {
+                driversMap = snapshot.val() || {};
+                populateDatalist();
+                if (!document.getElementById('adminSection').classList.contains('hidden')) {
+                    renderFleetTable();
+                }
+            });
+        }
 
-        function handleLogin() {
-            const pin = document.getElementById('pinInput').value.trim();
-            const error = document.getElementById('loginError');
-            error.classList.add('hidden');
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) { pendingBase64Doc = ""; pendingFileNameDoc = ""; return; }
+            pendingFileNameDoc = file.name;
+            const reader = new FileReader();
+            reader.onload = function(evt) { pendingBase64Doc = evt.target.result; };
+            reader.readAsDataURL(file);
+        }
 
-            if(pin === ADMIN_PIN_GLOBAL) {
-                window.currentLoggedInActivePin = pin;
+        function handleAdminLogin() {
+            const pinVal = document.getElementById('pinInput').value.trim();
+            const errorEl = document.getElementById('loginError');
+            errorEl.classList.add('hidden');
+
+            if (pinVal === ADMIN_PIN) {
                 showSection("admin");
-                showToast("Accesso Admin Sincronizzato");
+                showToast("Accesso Amministratore Effettuato", "success");
+                document.getElementById('pinInput').value = "";
             } else {
-                const driver = Object.values(allDriversCloud).find(d => d.pin === pin);
-                if(driver) {
-                    window.currentLoggedInActivePin = pin;
-                    showSection("driver");
-                    renderDriverView(driver);
-                    showToast(`Benvenuto ${driver.name}`);
-                } else {
-                    error.classList.remove('hidden');
-                    showToast("PIN errato o inesistente", "error");
+                errorEl.classList.remove('hidden');
+                showToast("PIN Amministrativo errato", "error");
+            }
+        }
+
+        function goToDriverSelection() {
+            populateDatalist();
+            showSection("driverSelection");
+        }
+
+        function populateDatalist() {
+            const datalist = document.getElementById('driversListOptions');
+            datalist.innerHTML = "";
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                const opt = document.createElement('option');
+                opt.value = `${d.name} ${d.surname}`.trim();
+                datalist.appendChild(opt);
+            }
+        }
+
+        function handleDriverCloudAccess() {
+            const fullNameInput = document.getElementById('driverSearchInput').value.trim().toLowerCase();
+            const pinVal = document.getElementById('driverPersonalPinInput').value.trim();
+            const errorEl = document.getElementById('driverLoginError');
+            errorEl.classList.add('hidden');
+
+            if (!fullNameInput || pinVal.length !== 4) {
+                errorEl.innerText = "Seleziona il tuo nome e inserisci il PIN di 4 cifre.";
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            let foundKey = null;
+            let foundDriver = null;
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                const fullName = `${d.name} ${d.surname}`.trim().toLowerCase();
+                if ((fullName === fullNameInput || d.name.toLowerCase() === fullNameInput) && d.pin === pinVal) {
+                    foundKey = id;
+                    foundDriver = d;
+                    break;
                 }
             }
-            document.getElementById('pinInput').value = "";
+
+            if (foundDriver) {
+                currentLoggedInDriver = { id: foundKey, ...foundDriver };
+                showSection("driver");
+                showToast(`Benvenuto, ${foundDriver.name}`, "success");
+                document.getElementById('driverSearchInput').value = "";
+                document.getElementById('driverPersonalPinInput').value = "";
+            } else {
+                errorEl.innerText = "Nome o PIN Cloud non corretti.";
+                errorEl.classList.remove('hidden');
+                showToast("Credenziali non valide", "error");
+            }
         }
 
         function showSection(sec) {
             document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('driverSelectionSection').classList.add('hidden');
             document.getElementById('adminSection').classList.add('hidden');
             document.getElementById('driverSection').classList.add('hidden');
             document.getElementById('adminHeader').classList.add('hidden');
-            if(sec === "admin"){ document.getElementById('adminSection').classList.remove('hidden'); document.getElementById('adminHeader').classList.remove('hidden'); }
-            else if(sec === "driver"){ document.getElementById('driverSection').classList.remove('hidden'); }
-            else { document.getElementById('loginSection').classList.remove('hidden'); window.currentLoggedInActivePin = null;}
-        }
 
-        function logout() { showSection("login"); }
-
-        // --- AZIONI ADMIN CLOUD ---
-        function saveDriverCloud() {
-            const id = document.getElementById('editDriverId').value;
-            const data = {
-                name: document.getElementById('addName').value.trim(),
-                surname: document.getElementById('addSurname').value.trim(),
-                cardNumber: document.getElementById('addCard').value.trim(),
-                cantiere: document.getElementById('addCantiere').value.trim() || "Cantiere Generale",
-                pin: document.getElementById('addPin').value.trim(),
-                lastDownloadDate: document.getElementById('addLastDl').value || getRelativeDate(0),
-                cardExpiryDate: document.getElementById('addExpiry').value || getRelativeDate(365*5)
-            };
-
-            if(!data.name || !data.surname || !data.pin || data.pin.length!==4){ showToast("Nome, Cognome e PIN (4 cifre) obbligatori", "error"); return; }
-            
-            const pinExists = Object.values(allDriversCloud).some(d => d.pin === data.pin && d.id !== id);
-            if(pinExists && data.pin !== ADMIN_PIN_GLOBAL) { showToast("Questo PIN è già usato da un altro operaio", "error"); return; }
-
-            if(id) {
-                data.id = id;
-                driversRef.child(id).update(data)
-                    .then(() => { showToast("Dati aggiornati nel Cloud"); resetDriverForm(); })
-                    .catch(e => showToast("Errore Cloud: "+e.message, "error"));
+            if (sec === "admin") {
+                document.getElementById('adminSection').classList.remove('hidden');
+                document.getElementById('adminHeader').classList.remove('hidden');
+                renderFleetTable();
+            } else if (sec === "driverSelection") {
+                document.getElementById('driverSelectionSection').classList.remove('hidden');
+            } else if (sec === "driver") {
+                document.getElementById('driverSection').classList.remove('hidden');
+                renderDriverView(currentLoggedInDriver);
             } else {
-                const newDriverRef = driversRef.push();
-                data.id = newDriverRef.key;
-                newDriverRef.set(data)
-                    .then(() => { showToast("Conducente salvato nel Cloud"); resetDriverForm(); })
-                    .catch(e => showToast("Errore Cloud: "+e.message, "error"));
+                document.getElementById('loginSection').classList.remove('hidden');
             }
         }
 
-        function renderFleetTableCloud() {
-            const tbody = document.getElementById('fleetTableBody');
-            tbody.innerHTML = "";
-            const driversArray = Object.values(allDriversCloud);
-            document.getElementById('fleetCount').innerText = driversArray.length;
+        function logout() {
+            currentLoggedInDriver = null;
+            showSection("login");
+            showToast("Sessione terminata", "success");
+        }
 
-            if(driversArray.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500">Nessun conducente nel Cloud. Aggiungine uno sopra.</td></tr>`;
+        function switchTab(tab) {
+            const btnFleet = document.getElementById('btnFleet');
+            const btnSanctions = document.getElementById('btnSanctions');
+            const tabFleet = document.getElementById('tabFleet');
+            const tabSanctions = document.getElementById('tabSanctions');
+
+            if (tab === 'fleet') {
+                btnFleet.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                btnSanctions.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                tabFleet.classList.remove('hidden');
+                tabSanctions.classList.add('hidden');
+            } else {
+                btnSanctions.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                btnFleet.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                tabSanctions.classList.remove('hidden');
+                tabFleet.classList.add('hidden');
+            }
+        }
+
+        function saveDriverCloud() {
+            const editId = document.getElementById('editDriverId').value;
+            const name = document.getElementById('addName').value.trim();
+            const surname = document.getElementById('addSurname').value.trim();
+            const card = document.getElementById('addCard').value.trim();
+            const cantiere = document.getElementById('addCantiere').value.trim() || "Generale";
+            const pin = document.getElementById('addPin').value.trim();
+            const phone = document.getElementById('addPhone').value.trim();
+            const lastDl = document.getElementById('addLastDl').value || new Date().toISOString().split('T')[0];
+            const expiry = document.getElementById('addExpiry').value || getRelativeDate(365 * 5);
+
+            if (!name || !surname || !card || pin.length !== 4) {
+                showToast("Compila Nome, Cognome, Numero Carta e PIN a 4 cifre.", "error");
                 return;
             }
 
-            driversArray.forEach(d => {
-                const nextDl = new Date(d.lastDownloadDate); nextDl.setDate(nextDl.getDate()+28);
-                const nextDlStr = nextDl.toISOString().split('T')[0];
-                const daysRem = getDaysRem(nextDlStr);
+            const driverData = {
+                name, surname, cardNumber: card, cantiere, pin, phone,
+                lastDownloadDate: lastDl, cardExpiryDate: expiry,
+                docFileName: pendingFileNameDoc || (editId ? driversMap[editId].docFileName : ""),
+                docBase64: pendingBase64Doc || (editId ? driversMap[editId].docBase64 : "")
+            };
 
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-800/40 border-b border-slate-800/50";
-                tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-white">${d.name} ${d.surname}<br><span class="text-[10px] text-emerald-400 font-mono">${d.cantiere} • PIN: ${d.pin}</span></td>
-                    <td class="py-3 px-3 font-mono text-slate-300 text-[11px]">${d.cardNumber}</td>
-                    <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-lg text-[10px] font-bold ${daysRem<=3?'bg-red-950 text-red-300 border border-red-800':'bg-emerald-950 text-emerald-300 border border-emerald-800'}">${daysRem} gg (${fmtDateIt(nextDlStr)})</span></td>
-                    <td class="py-3 px-3 text-center no-print"><div class="flex justify-center gap-1.5">
-                        <button onclick="quickDlCloud('${d.id}')" title="Registra scarico oggi" class="bg-emerald-600 hover:bg-emerald-500 text-white p-1.5 rounded-lg active:scale-95"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
-                        <button onclick="editDriverCloud('${d.id}')" class="bg-blue-600 hover:bg-blue-500 text-white p-1.5 rounded-lg active:scale-95"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                        <button onclick="deleteDriverCloud('${d.id}')" class="bg-red-600 hover:bg-red-500 text-white p-1.5 rounded-lg active:scale-95"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                    </div></td>
-                `; tbody.appendChild(tr);
-            });
+            if (editId) {
+                db.ref('operai/' + editId).set(driverData, (error) => {
+                    if (!error) {
+                        showToast("Conducente aggiornato nel Cloud!", "success");
+                        resetDriverForm();
+                    } else {
+                        showToast("Errore salvataggio Cloud", "error");
+                    }
+                });
+            } else {
+                db.ref('operai').push(driverData, (error) => {
+                    if (!error) {
+                        showToast("Conducente aggiunto nel Cloud!", "success");
+                        resetDriverForm();
+                    } else {
+                        showToast("Errore salvataggio Cloud", "error");
+                    }
+                });
+            }
         }
 
-        function quickDlCloud(id) { if(confirm("Registrare scarico eseguito OGGI per questo conducente nel Cloud?")){ driversRef.child(id).update({ lastDownloadDate: getRelativeDate(0) }).then(()=>showToast("Scarico registrato nel Cloud")); } }
-        function deleteDriverCloud(id) { if(confirm("Eliminare DEFINITIVAMENTE questo conducente dal Cloud? Gli operai non potranno più accedere con questo PIN.")){ driversRef.child(id).remove().then(()=>showToast("Conducente eliminato dal Cloud")); } }
+        function editDriver(id) {
+            const d = driversMap[id];
+            if (!d) return;
 
-        function editDriverCloud(id) {
-            const d = allDriversCloud[id]; if(!d) return;
-            document.getElementById('editDriverId').value = d.id;
+            document.getElementById('editDriverId').value = id;
             document.getElementById('addName').value = d.name;
             document.getElementById('addSurname').value = d.surname;
             document.getElementById('addCard').value = d.cardNumber;
             document.getElementById('addCantiere').value = d.cantiere;
             document.getElementById('addPin').value = d.pin;
+            document.getElementById('addPhone').value = d.phone || "";
             document.getElementById('addLastDl').value = d.lastDownloadDate;
             document.getElementById('addExpiry').value = d.cardExpiryDate;
-            document.getElementById('formTitle').innerText = "Modifica Conducente (Cloud)";
+
+            document.getElementById('formTitle').innerText = "Modifica Conducente";
             document.getElementById('saveBtn').innerText = "Aggiorna nel Cloud";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function resetDriverForm() {
             document.getElementById('editDriverId').value = "";
-            document.getElementById('formTitle').innerText = "Aggiungi Conducente (Cloud)";
+            document.getElementById('addName').value = "";
+            document.getElementById('addSurname').value = "";
+            document.getElementById('addCard').value = "";
+            document.getElementById('addCantiere').value = "";
+            document.getElementById('addPin').value = "";
+            document.getElementById('addPhone').value = "";
+            document.getElementById('addLastDl').value = "";
+            document.getElementById('addExpiry').value = "";
+            document.getElementById('addDocumentFile').value = "";
+            pendingBase64Doc = "";
+            pendingFileNameDoc = "";
+
+            document.getElementById('formTitle').innerText = "Aggiungi Conducente nel Cloud";
             document.getElementById('saveBtn').innerText = "Salva nel Cloud";
             document.getElementById('cancelEditBtn').classList.add('hidden');
-            ['addName','addSurname','addCard','addCantiere','addPin','addLastDl','addExpiry'].forEach(id=>document.getElementById(id).value="");
         }
 
-        // --- VISTA OPERAIO SINCRONIZZATA E NOTIFICHE ---
+        function quickDownloadToday(id) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            db.ref('operai/' + id).update({ lastDownloadDate: todayStr }, (error) => {
+                if(!error) showToast("Scarico registrato nel Cloud!", "success");
+            });
+        }
+
+        function renderFleetTable() {
+            const tbody = document.getElementById('fleetTableBody');
+            tbody.innerHTML = "";
+            
+            const filterTerm = document.getElementById('adminSearchTableInput').value.trim().toLowerCase();
+            let count = 0;
+
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                const searchStr = `${d.name} ${d.surname} ${d.cantiere}`.toLowerCase();
+                if (filterTerm && !searchStr.includes(filterTerm)) continue;
+                count++;
+
+                const nextDl = new Date(d.lastDownloadDate);
+                nextDl.setDate(nextDl.getDate() + 28);
+                const nextDlStr = nextDl.toISOString().split('T')[0];
+                const daysRem = getDaysRemaining(nextDlStr);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition border-b border-slate-800/60";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-3 font-bold text-white">
+                        ${d.name} ${d.surname}<br/>
+                        <span class="text-[10px] text-emerald-400 font-mono">${d.cantiere} • PIN: <span class="bg-slate-800/90 border border-slate-700 px-1.5 py-0.5 rounded text-white font-bold">${d.pin}</span></span>
+                    </td>
+                    <td class="py-3.5 px-3 font-mono text-slate-400 text-[11px]">${d.cardNumber}</td>
+                    <td class="py-3.5 px-3">
+                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold inline-block shadow-sm ${daysRem <= 2 ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'}">
+                            ${daysRem} gg (${nextDlStr})
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-3 text-slate-400 text-xs">
+                        ${formatDateItalian(d.cardExpiryDate)}
+                    </td>
+                    <td class="py-3.5 px-3 text-center no-print">
+                        <div class="flex items-center justify-center space-x-1.5">
+                            <button onclick="quickDownloadToday('${id}')" title="Registra Scarico Oggi" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                🔄 Scarica
+                            </button>
+                            <button onclick="editDriver('${id}')" title="Modifica" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                ✏️ Modifica
+                            </button>
+                            <button onclick="deleteDriver('${id}')" title="Elimina" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                🗑️ Elimina
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+            document.getElementById('fleetCount').innerText = count;
+        }
+
+        function deleteDriver(id) {
+            if (confirm("Vuoi davvero eliminare questo conducente dal Cloud?")) {
+                db.ref('operai/' + id).remove((error) => {
+                    if(!error) showToast("Conducente eliminato.", "success");
+                });
+            }
+        }
+
         function renderDriverView(d) {
-            const nextDl = new Date(d.lastDownloadDate); nextDl.setDate(nextDl.getDate()+28);
+            const nextDl = new Date(d.lastDownloadDate);
+            nextDl.setDate(nextDl.getDate() + 28);
             const nextDlStr = nextDl.toISOString().split('T')[0];
-            const daysRem = getDaysRem(nextDlStr);
+            const daysRem = getDaysRemaining(nextDlStr);
 
             document.getElementById('driverCardHolderName').innerText = `${d.name} ${d.surname}`.toUpperCase();
             document.getElementById('driverCardNumberDisplay').innerText = d.cardNumber || "-";
-            document.getElementById('driverNextDownloadDate').innerText = fmtDateIt(nextDlStr);
+            document.getElementById('driverNextDownloadDate').innerText = formatDateItalian(nextDlStr);
             document.getElementById('driverDaysCountdown').innerText = daysRem;
 
             const alertBox = document.getElementById('driverExpiryAlertBox');
             alertBox.classList.add('hidden');
-            if(daysRem <= 0) {
-                alertBox.className = "rounded-2xl p-4 bg-red-950 border border-red-500 text-red-100 flex items-center gap-3 no-print";
-                alertBox.innerHTML = `<span class="text-2xl">🚨</span><div><h5 class="font-bold text-sm text-red-200">SCADENZA RAGGIUNTA (OGGI)</h5><p class="text-xs">Consegna ORA la carta in cantiere/ufficio per lo scarico!</p></div>`;
+
+            if (daysRem <= 2) {
+                alertBox.className = "rounded-2xl p-4 shadow-xl bg-red-950/90 border border-red-500 text-red-200 animate-pulse";
+                alertBox.innerHTML = `<h5 class="font-extrabold text-sm text-red-300">ATTENZIONE: SCADENZA VICINA (${daysRem} giorni)</h5><p class="text-xs mt-0.5">Consegna la carta in cantiere.</p>`;
                 alertBox.classList.remove('hidden');
-                triggerPush(daysRem, d.name);
-            } else if(daysRem <= 3) {
-                alertBox.className = "rounded-2xl p-4 bg-amber-950 border border-amber-500 text-amber-100 flex items-center gap-3 no-print";
-                alertBox.innerHTML = `<span class="text-2xl">⚠️</span><div><h5 class="font-bold text-sm text-amber-200">ATTENZIONE: SCADENZA IMMINENTE</h5><p class="text-xs">Mancano solo ${daysRem} giorni. Prepara la carta per la consegna.</p></div>`;
-                alertBox.classList.remove('hidden');
-                triggerPush(daysRem, d.name);
-            } else if(daysRem <= 7) {
-                alertBox.className = "rounded-2xl p-4 bg-blue-950 border border-blue-500/50 text-blue-100 flex items-center gap-3 no-print";
-                alertBox.innerHTML = `<span class="text-2xl">ℹ️</span><div><h5 class="font-bold text-sm text-blue-200">PROMEMORIA: MANCANO ${daysRem} GIORNI</h5><p class="text-xs">Lo scarico è previsto per il ${fmtDateIt(nextDlStr)}.</p></div>`;
-                alertBox.classList.remove('hidden');
-                triggerPush(daysRem, d.name);
             }
-
-            const cardVis = document.getElementById('driverCardVisual');
-            cardVis.className = daysRem<=2 ? "bg-gradient-to-tr from-red-950 to-rose-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-red-500 flex flex-col justify-between h-64 transitions-all" : "bg-gradient-to-tr from-slate-900 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64 transitions-all";
         }
 
-        // --- GESTIONE NOTIFICHE PUSH ---
-        const isHttps = window.location.protocol === 'https:';
-        if(isHttps) { document.getElementById('pushBanner').classList.remove('hidden'); }
-
-        function requestPushPermission() {
-            if(!("Notification" in window)){ showToast("Browser non supporta notifiche","error"); return; }
-            Notification.requestPermission().then(p => {
-                if(p === "granted"){ showToast("Notifiche attivate!"); document.getElementById('pushBanner').classList.add('hidden'); new Notification("TachoControl Cloud", {body: "Avvisi di scadenza attivati correttamente.", icon: 'https://cdn-icons-png.flaticon.com/512/1042/1042339.png'});}
-                else { showToast("Permesso notifiche negato","error"); }
-            });
+        function exportBackupJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(driversMap, null, 2));
+            const dlAnchor = document.createElement('a');
+            dlAnchor.setAttribute("href", dataStr);
+            dlAnchor.setAttribute("download", `GC_TachoCloud_Backup_${new Date().toISOString().split('T')[0]}.json`);
+            document.body.appendChild(dlAnchor);
+            dlAnchor.click();
+            dlAnchor.remove();
+            showToast("Backup Cloud esportato!", "success");
         }
 
-        function triggerPush(days, name) {
-            if(!isHttps || !("Notification" in window) || Notification.permission !== "granted") return;
-            const todayKey = new Date().toISOString().split('T')[0] + window.currentLoggedInActivePin;
-            if(window.lastPushTriggeredKey === todayKey) return;
+        function printReportPDF() { window.print(); }
 
-            let title="", body="";
-            if(days<=0){ title=`🚨 Scadenza OGGI ${name}`; body="Consegna subito la carta tachigrafica in ufficio!"; }
-            else if(days<=3){ title=`⚠️ Solo ${days} gg rimasti (${name})`; body="Ricordati di consegnare la carta a breve."; }
-            else if(days<=7){ title=`ℹ️ Promemoria scarico ${name}`; body=`Mancano ${days} giorni alla scadenza dei 28gg.`; }
-            
-            if(title) { new Notification(title, {body: body, icon: 'https://cdn-icons-png.flaticon.com/512/1042/1042339.png'}); window.lastPushTriggeredKey = todayKey; }
-        }
+        window.onload = initApp;
     </script>
 </body>
 </html>
