@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC TachoControl - Scadenzario Professionale</title>
+    <title>GC TachoControl v5.9 Pro - Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- INCLUSIONE SDK FIREBASE -->
@@ -55,7 +55,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v5.9 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -262,9 +262,19 @@
                             <h4 class="font-extrabold text-amber-400 text-sm">Norme di Controllo e Sanzioni per lo Scarico Dati</h4>
                         </div>
                     </div>
+
                     <p class="text-xs text-amber-200/90 leading-relaxed font-normal mb-3">
-                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>.
+                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. Tuttavia, dal <strong>31 dicembre 2024</strong> (Reg. UE 1054/2020), <strong>i controlli su strada si estendono agli ultimi 56 giorni</strong>. La non conformità comporta gravissime sanzioni:
                     </p>
+
+                    <ul class="space-y-2 text-[11px] text-amber-200/80 mb-3 pl-1">
+                        <li class="leading-relaxed">
+                            • <strong class="text-amber-300">Art. 174, comma 14 del Codice della Strada (Azienda):</strong> L'impresa che omette o non conserva correttamente i dati dello scarico dei 28 giorni è punita con una sanzione da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 333,00 a € 1.331,00</span> per ogni dipendente interessato.
+                        </li>
+                        <li class="leading-relaxed">
+                            • <strong class="text-amber-300">Art. 179, comma 2 del Codice della Strada (Autista su strada):</strong> In caso di controllo su strada, l'autista che non esibisce le registrazioni dei <strong>56 giorni precedenti</strong> rischia da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 866,00 a € 3.464,00</span> con l'immediata sospensione della patente di guida da 15 giorni a 3 mesi.
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -312,10 +322,10 @@
             </button>
         </div>
 
-        <!-- Footer Ufficiale con Firma e Normative -->
+        <!-- Footer Ufficiale con Firma, Versione e Normative -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v5.9 Pro Cloud
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -369,12 +379,16 @@
         function initApp() {
             document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
             
+            // Connessione in tempo reale a Firebase con caricamento immediato
             db.ref('operai').on('value', snapshot => {
                 driversMap = snapshot.val() || {};
                 populateDatalist();
                 if (!document.getElementById('adminSection').classList.contains('hidden')) {
                     renderFleetTable();
                 }
+            }, error => {
+                console.error("Errore lettura Firebase:", error);
+                showToast("Errore di connessione al database Cloud", "error");
             });
         }
 
@@ -495,7 +509,7 @@
                 tabSanctions.classList.add('hidden');
             } else {
                 btnSanctions.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
-                btnFleet.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                tabFleet.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
                 tabSanctions.classList.remove('hidden');
                 tabFleet.classList.add('hidden');
             }
@@ -520,8 +534,8 @@
             const driverData = {
                 name, surname, cardNumber: card, cantiere, pin, phone,
                 lastDownloadDate: lastDl, cardExpiryDate: expiry,
-                docFileName: pendingFileNameDoc || (editId ? driversMap[editId].docFileName : ""),
-                docBase64: pendingBase64Doc || (editId ? driversMap[editId].docBase64 : "")
+                docFileName: pendingFileNameDoc || (editId && driversMap[editId] ? driversMap[editId].docFileName : ""),
+                docBase64: pendingBase64Doc || (editId && driversMap[editId] ? driversMap[editId].docBase64 : "")
             };
 
             if (editId) {
@@ -530,16 +544,18 @@
                         showToast("Conducente aggiornato nel Cloud!", "success");
                         resetDriverForm();
                     } else {
-                        showToast("Errore salvataggio Cloud", "error");
+                        alert("Errore scrittura Firebase: " + error.message);
                     }
                 });
             } else {
-                db.ref('operai').push(driverData, (error) => {
+                // Salvataggio sicuro nel Cloud
+                const newRef = db.ref('operai').push();
+                newRef.set(driverData, (error) => {
                     if (!error) {
-                        showToast("Conducente aggiunto nel Cloud!", "success");
+                        showToast("Conducente aggiunto nel Cloud con successo!", "success");
                         resetDriverForm();
                     } else {
-                        showToast("Errore salvataggio Cloud", "error");
+                        alert("Errore scrittura Firebase: " + error.message);
                     }
                 });
             }
@@ -601,11 +617,12 @@
 
             for (let id in driversMap) {
                 const d = driversMap[id];
-                const searchStr = `${d.name} ${d.surname} ${d.cantiere}`.toLowerCase();
+                if (!d) continue;
+                const searchStr = `${d.name || ''} ${d.surname || ''} ${d.cantiere || ''}`.toLowerCase();
                 if (filterTerm && !searchStr.includes(filterTerm)) continue;
                 count++;
 
-                const nextDl = new Date(d.lastDownloadDate);
+                const nextDl = new Date(d.lastDownloadDate || Date.now());
                 nextDl.setDate(nextDl.getDate() + 28);
                 const nextDlStr = nextDl.toISOString().split('T')[0];
                 const daysRem = getDaysRemaining(nextDlStr);
@@ -614,10 +631,10 @@
                 tr.className = "hover:bg-slate-800/50 transition border-b border-slate-800/60";
                 tr.innerHTML = `
                     <td class="py-3.5 px-3 font-bold text-white">
-                        ${d.name} ${d.surname}<br/>
-                        <span class="text-[10px] text-emerald-400 font-mono">${d.cantiere} • PIN: <span class="bg-slate-800/90 border border-slate-700 px-1.5 py-0.5 rounded text-white font-bold">${d.pin}</span></span>
+                        ${d.name || ''} ${d.surname || ''}<br/>
+                        <span class="text-[10px] text-emerald-400 font-mono">${d.cantiere || 'Generale'} • PIN: <span class="bg-slate-800/90 border border-slate-700 px-1.5 py-0.5 rounded text-white font-bold">${d.pin || ''}</span></span>
                     </td>
-                    <td class="py-3.5 px-3 font-mono text-slate-400 text-[11px]">${d.cardNumber}</td>
+                    <td class="py-3.5 px-3 font-mono text-slate-400 text-[11px]">${d.cardNumber || ''}</td>
                     <td class="py-3.5 px-3">
                         <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold inline-block shadow-sm ${daysRem <= 2 ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'}">
                             ${daysRem} gg (${nextDlStr})
