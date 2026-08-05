@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v6.5 Pro - Cloud</title>
+    <title>GC-TachoControl v7.1 Pro - Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- SDK FIREBASE V8 COMPATIBILE CON LA TUA CONFIGURAZIONE -->
+    <!-- INCLUSIONE SDK FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // LA TUA CONFIGURAZIONE FIREBASE UFFICIALE
+        // CONFIGURAZIONE FIREBASE CLOUD
         const firebaseConfig = {
             apiKey: "AIzaSyB2jGY3q3s4vDD_ARy-xltsjcwS3VDch7E",
             authDomain: "tachocontrol-ad132.firebaseapp.com",
@@ -59,7 +59,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v6.5 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v7.1 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -203,7 +203,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Ultimo Scarico</label>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data di Scarico Card</label>
                                 <input type="date" id="addLastDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
                             </div>
                             <div>
@@ -373,8 +373,9 @@
 
                     <div class="flex justify-between items-end pt-2 border-t border-slate-800/80">
                         <div>
-                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Scadenza Scarico (28 gg)</span>
-                            <span class="font-mono text-xs tracking-wide text-emerald-400 font-extrabold" id="driverNextDownloadDate">-</span>
+                            <!-- CORRETTO: Mostra la data dell'ultimo scarico effettivo card -->
+                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Data Ultimo Scarico Card</span>
+                            <span class="font-mono text-xs tracking-wide text-emerald-400 font-extrabold" id="driverLastDownloadDateDisplay">-</span>
                         </div>
                         <div class="text-right bg-black/30 px-3 py-1.5 rounded-xl border border-white/10">
                             <span class="block text-[8px] uppercase tracking-wider opacity-75 font-bold">Giorni Rimasti</span>
@@ -476,7 +477,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v6.5 Pro Cloud
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v7.1 Pro Cloud
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -509,14 +510,16 @@
         }
 
         function getDaysRemaining(targetDateStr) {
+            if (!targetDateStr) return 0;
             const today = new Date(); today.setHours(0,0,0,0);
             const target = new Date(targetDateStr); target.setHours(0,0,0,0);
-            return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+            return Math.round((target - today) / (1000 * 60 * 60 * 24));
         }
 
         function formatDateItalian(dateStr) {
             if (!dateStr) return "-";
             const date = new Date(dateStr);
+            if (isNaN(date)) return dateStr;
             return date.toLocaleDateString('it-IT');
         }
 
@@ -540,7 +543,6 @@
             if (savedLinks) { customLinks = JSON.parse(savedLinks); }
             updateDOMCustomLinks();
 
-            // Connessione in tempo reale al Cloud con la tua configurazione ufficiale
             db.ref('operai').on('value', snapshot => {
                 driversMap = snapshot.val() || {};
                 populateDatalist();
@@ -578,9 +580,10 @@
             const d = driversMap[id];
             if (!d) return;
             
-            const nextDl = new Date(d.lastDownloadDate);
-            nextDl.setDate(nextDl.getDate() + 28);
-            const daysRem = getDaysRemaining(nextDl.toISOString().split('T')[0]);
+            const driverLastDl = d.lastDownloadDate || new Date().toISOString().split('T')[0];
+            const nextDlDate = new Date(driverLastDl);
+            nextDlDate.setDate(nextDlDate.getDate() + 28);
+            const daysRem = getDaysRemaining(nextDlDate.toISOString().split('T')[0]);
 
             const msg = `Ciao ${d.name}, ti ricordiamo che mancano ${daysRem} giorni al limite di legge (28gg) per lo scarico della tua Carta Conducente Tachigrafo. Ti preghiamo di consegnare la carta in cantiere/ufficio. Grazie!`;
             const url = `https://wa.me/${d.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(msg)}`;
@@ -712,7 +715,7 @@
                 document.getElementById('driverPersonalPinInput').value = "";
             } else {
                 errorEl.innerText = "Nome o PIN non corretti. Riprova.";
-                errorEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
                 showToast("Credenziali non valide", "error");
             }
         }
@@ -895,7 +898,8 @@
                 if (filterTerm && !searchStr.includes(filterTerm)) continue;
                 count++;
 
-                const nextDl = new Date(d.lastDownloadDate || Date.now());
+                const driverLastDl = d.lastDownloadDate || new Date().toISOString().split('T')[0];
+                const nextDl = new Date(driverLastDl);
                 nextDl.setDate(nextDl.getDate() + 28);
                 const nextDlStr = nextDl.toISOString().split('T')[0];
                 const daysRem = getDaysRemaining(nextDlStr);
@@ -959,14 +963,17 @@
         }
 
         function renderDriverView(d) {
-            const nextDl = new Date(d.lastDownloadDate);
+            const driverLastDl = d.lastDownloadDate || new Date().toISOString().split('T')[0];
+            const nextDl = new Date(driverLastDl);
             nextDl.setDate(nextDl.getDate() + 28);
             const nextDlStr = nextDl.toISOString().split('T')[0];
             const daysRem = getDaysRemaining(nextDlStr);
 
             document.getElementById('driverCardHolderName').innerText = `${d.name} ${d.surname}`.toUpperCase();
             document.getElementById('driverCardNumberDisplay').innerText = d.cardNumber || "-";
-            document.getElementById('driverNextDownloadDate').innerText = formatDateItalian(nextDlStr);
+            
+            // CORRETTO: Mostra esattamente la data dell'ultimo scarico card inserita dall'admin
+            document.getElementById('driverLastDownloadDateDisplay').innerText = formatDateItalian(driverLastDl);
             document.getElementById('driverDaysCountdown').innerText = daysRem;
 
             const alertBox = document.getElementById('driverExpiryAlertBox');
