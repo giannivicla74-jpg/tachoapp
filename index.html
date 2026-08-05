@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v8.4 Pro - PWA Cloud</title>
+    <title>GC-TachoControl v8.5 Pro - Cloud & Push</title>
     
     <!-- CONFIGURAZIONE PWA PER SCHERMO INTERO -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -28,9 +28,10 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- INCLUSIONE SDK FIREBASE -->
+    <!-- INCLUSIONE SDK FIREBASE (App, Database e Messaging) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
     <script>
         // CONFIGURAZIONE FIREBASE CLOUD
@@ -46,6 +47,16 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
+        
+        // Inizializzazione Messaging (se supportato dal browser)
+        let messaging = null;
+        try {
+            if (firebase.messaging.isSupported()) {
+                messaging = firebase.messaging();
+            }
+        } catch (e) {
+            console.log("Messaging non supportato su questo browser.");
+        }
 
         tailwind.config = {
             darkMode: 'class',
@@ -81,7 +92,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v8.4 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v8.5 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -441,7 +452,7 @@
                     </div>
                     <div>
                         <h5 class="text-xs font-bold text-white">Attiva Avvisi di Scadenza</h5>
-                        <p class="text-[10px] text-slate-400">Ricevi notifiche a -7gg, -3gg e il giorno dello scarico.</p>
+                        <p class="text-[10px] text-slate-400">Ricevi notifiche in background anche a app chiusa.</p>
                     </div>
                 </div>
                 <button onclick="requestPushPermission()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] py-2 px-3 rounded-xl transition">
@@ -580,7 +591,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v8.4 Pro PWA Cloud
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v8.5 Pro Cloud & Push
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -686,6 +697,16 @@
                 }
                 updateAdminBadges();
             });
+
+            // Registrazione Service Worker per Push in Background
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('firebase-messaging-sw.js')
+                .then((registration) => {
+                    console.log('Service Worker registrato con successo:', registration);
+                }).catch((err) => {
+                    console.log('Registrazione Service Worker fallita:', err);
+                });
+            }
         }
 
         function updateAdminBadges() {
@@ -735,7 +756,7 @@
         function updateDOMCompanyName() {
             document.getElementById('loginCompanyNameDisplay').innerText = currentCompanyName;
             document.getElementById('driverSelCompanyNameDisplay').innerText = currentCompanyName;
-            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v8.4 Pro`;
+            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v8.5 Pro`;
             document.getElementById('companyNameInput').value = currentCompanyName !== "GC CodeLab - Gestione Flotta" ? currentCompanyName : "";
             document.getElementById('driverCardCompanyHeader').innerText = currentCompanyName.toUpperCase();
         }
@@ -796,8 +817,20 @@
             }
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
-                    showToast("Notifiche di scadenza attivate sul tuo cellulare!", "success");
+                    showToast("Permesso notifiche concesso con successo!", "success");
                     document.getElementById('pushNotificationBanner').classList.add('hidden');
+                    
+                    if (messaging && currentLoggedInDriver) {
+                        messaging.getToken({vapidKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-8vMeAt0wCHWz0z8v1e48jK9g1eA0t7WcO8yQ9v8w0Q5a8Q8v8w0Q5a8"})
+                        .then((currentToken) => {
+                            if (currentToken) {
+                                db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
+                                console.log("Token FCM salvato per l'operaio:", currentToken);
+                            }
+                        }).catch((err) => {
+                            console.log("Errore recupero token FCM: ", err);
+                        });
+                    }
                 } else {
                     showToast("Permesso notifiche negato.", "error");
                 }
