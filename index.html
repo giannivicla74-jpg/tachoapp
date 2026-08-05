@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v7.3 Pro - Cloud</title>
+    <title>GC-TachoControl v8.3 Pro - Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- INCLUSIONE SDK FIREBASE -->
@@ -59,7 +59,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v7.3 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v8.3 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -160,16 +160,22 @@
 
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="hidden space-y-6 w-full">
-            <div class="no-print grid grid-cols-2 gap-3">
-                <button onclick="switchTab('fleet')" id="btnFleet" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center">
-                    Gestione Flotta Cloud
+            <div class="no-print grid grid-cols-3 gap-2">
+                <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center">
+                    Conducenti
+                    <span id="badgeFleet" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
-                <button onclick="switchTab('sanctions')" id="btnSanctions" class="bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center">
-                    Normativa &amp; Azienda
+                <button onclick="switchTab('vehicles')" id="btnVehicles" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center">
+                    Flotta Mezzi (90gg)
+                    <span id="badgeVehicles" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
+                </button>
+                <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center">
+                    Azienda &amp; Norme
+                    <span id="badgeCompany" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">!</span>
                 </button>
             </div>
 
-            <!-- TAB 1: GESTIONE FLOTTA -->
+            <!-- TAB 1: GESTIONE FLOTTA CONDUCENTI -->
             <div id="tabFleet" class="space-y-6">
                 
                 <div class="no-print grid grid-cols-2 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
@@ -205,7 +211,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data Scadenza Scarico (28gg)</label>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scadenza Scarico (28gg)</label>
                                 <input type="date" id="addLastDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
                             </div>
                             <div>
@@ -263,22 +269,97 @@
                 </div>
             </div>
 
-            <!-- TAB 2: NORMATIVA & AZIENDA -->
-            <div id="tabSanctions" class="hidden space-y-6">
+            <!-- TAB 2: FLOTTA MEZZI (90GG) -->
+            <div id="tabVehicles" class="hidden space-y-6">
                 
-                <!-- Box Personalizzazione Azienda -->
-                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h3 class="font-bold text-sm text-emerald-400">🏢 Denominazione Azienda (Cliente)</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Inserisci la ragione sociale dell'azienda. Il nome comparirà automaticamente in tutte le schermate di accesso.
-                    </p>
+                <!-- Form Aggiungi / Modifica Mezzo -->
+                <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <h2 id="vehicleFormTitle" class="text-emerald-400 font-bold text-base tracking-tight">Aggiungi Veicolo / Mezzo</h2>
+                    <input type="hidden" id="editVehicleId" value="">
 
                     <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="addVehPlate" placeholder="Targa / ID Mezzo" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm font-mono uppercase text-white placeholder-slate-500">
+                            <input type="text" id="addVehModel" placeholder="Modello / Tipo (es. Autocarro)" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
+                        </div>
                         <div>
+                            <input type="text" id="addVehCantiere" placeholder="CANTIERE DI APPARTENENZA" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm uppercase text-white placeholder-slate-500">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scadenza Scarico Veicolo (90gg)</label>
+                            <input type="date" id="addVehDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button id="saveVehicleBtn" onclick="saveVehicle()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md">
+                                Salva Mezzo
+                            </button>
+                            <button id="cancelVehicleEditBtn" onclick="resetVehicleForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl text-xs transition">
+                                Annulla
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabella Mezzi -->
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <div class="flex justify-between items-center no-print">
+                        <h3 class="font-bold text-sm text-slate-200">Flotta Veicoli Sincronizzati (Limite 90gg)</h3>
+                        <span id="vehicleCount" class="bg-slate-800 text-slate-300 px-2.5 py-0.5 text-xs font-bold rounded-full">0</span>
+                    </div>
+
+                    <div class="no-print">
+                        <input type="text" id="adminSearchVehicleInput" oninput="renderVehicleTable()" placeholder="🔍 Cerca per Targa, Modello o Cantiere..." 
+                            class="w-full px-4 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[580px]">
+                            <thead>
+                                <tr class="bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                                    <th class="py-2.5 px-3">Targa / Modello</th>
+                                    <th class="py-2.5 px-3">Cantiere</th>
+                                    <th class="py-2.5 px-3">Scadenza Scarico (90gg)</th>
+                                    <th class="py-2.5 px-3 text-center no-print">Azioni Rapide</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vehicleTableBody" class="divide-y divide-slate-800 text-xs"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: AZIENDA & NORME -->
+            <div id="tabSanctions" class="hidden space-y-6">
+                
+                <!-- Box Personalizzazione Azienda & Carta Azienda -->
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <h3 class="font-bold text-sm text-emerald-400">🏢 Denominazione Azienda &amp; Carta Azienda (5 Anni)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Gestisci la ragione sociale e monitora la scadenza quinquennale della Carta Azienda utilizzata per scaricare i veicoli.
+                    </p>
+
+                    <div class="space-y-3 pt-2">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Denominazione Azienda</label>
                             <input type="text" id="companyNameInput" placeholder="Es. Trasporti Rossi S.r.l." class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 font-bold uppercase">
                         </div>
-                        <button onclick="saveCompanyName()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md">
-                            Salva Denominazione Azienda
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Numero Carta Azienda</label>
+                                <input type="text" id="companyCardNumberInput" placeholder="Num. Carta Azienda..." class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs font-mono text-white placeholder-slate-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scadenza Carta Azienda (5 Anni)</label>
+                                <input type="date" id="companyCardExpiryInput" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white">
+                            </div>
+                        </div>
+
+                        <div id="companyCardStatusBox" class="hidden rounded-xl p-3 text-xs font-bold border"></div>
+
+                        <button onclick="saveCompanyDetails()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md">
+                            Salva Dati Azienda &amp; Carta Azienda
                         </button>
                     </div>
                 </div>
@@ -294,21 +375,12 @@
                     </div>
 
                     <p class="text-xs text-amber-200/90 leading-relaxed font-normal mb-3">
-                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. Tuttavia, dal <strong>31 dicembre 2024</strong> (Reg. UE 1054/2020), <strong>i controlli su strada si estendono agli ultimi 56 giorni</strong>. La non conformità comporta gravissime sanzioni:
+                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. La non conformità comporta gravissime sanzioni.
                     </p>
-
-                    <ul class="space-y-2 text-[11px] text-amber-200/80 mb-5 pl-1">
-                        <li class="leading-relaxed">
-                            • <strong class="text-amber-300">Art. 174, comma 14 del Codice della Strada (Azienda):</strong> L'impresa che omette o non conserva correttamente i dati dello scarico dei 28 giorni è punita con una sanzione da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 333,00 a € 1.331,00</span> per ogni dipendente interessato.
-                        </li>
-                        <li class="leading-relaxed">
-                            • <strong class="text-amber-300">Art. 179, comma 2 del Codice della Strada (Autista su strada):</strong> In caso di controllo su strada, l'autista che non esibisce le registrazioni dei <strong>56 giorni precedenti</strong> rischia da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 866,00 a € 3.464,00</span> con l'immediata sospensione della patente di guida da 15 giorni a 3 mesi.
-                        </li>
-                    </ul>
 
                     <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <span>Anteprima Informativa Ufficiale Camere di Commercio (CCIAA)</span>
+                        <span>Informativa Ufficiale Camere di Commercio (CCIAA)</span>
                     </button>
                 </div>
 
@@ -392,7 +464,7 @@
 
                     <div class="flex justify-between items-end pt-2 border-t border-slate-800/80">
                         <div>
-                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Data Scadenza Scarico (28gg)</span>
+                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Scadenza Scarico (28gg)</span>
                             <span class="font-mono text-xs tracking-wide text-emerald-400 font-extrabold" id="driverNextDownloadDate">-</span>
                         </div>
                         <div class="text-right bg-black/30 px-3 py-1.5 rounded-xl border border-white/10">
@@ -415,17 +487,8 @@
                 </div>
 
                 <p class="text-xs text-amber-200/90 leading-relaxed font-normal mb-3">
-                    In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. Tuttavia, dal <strong>31 dicembre 2024</strong> (Reg. UE 1054/2020), <strong>i controlli su strada si estendono agli ultimi 56 giorni</strong>. La non conformità comporta gravissime sanzioni:
+                    In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. La non conformità comporta gravissime sanzioni.
                 </p>
-
-                <ul class="space-y-2 text-[11px] text-amber-200/80 mb-5 pl-1">
-                    <li class="leading-relaxed">
-                        • <strong class="text-amber-300">Art. 174, comma 14 del Codice della Strada (Azienda):</strong> L'impresa che omette o non conserva correttamente i dati dello scarico dei 28 giorni è punita con una sanzione da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 333,00 a € 1.331,00</span> per ogni dipendente interessato.
-                    </li>
-                    <li class="leading-relaxed">
-                        • <strong class="text-amber-300">Art. 179, comma 2 del Codice della Strada (Autista su strada):</strong> In caso di controllo su strada, l'autista che non esibisce le registrazioni dei <strong>56 giorni precedenti</strong> rischia da <span class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">€ 866,00 a € 3.464,00</span> con l'immediata sospensione della patente di guida da 15 giorni a 3 mesi.
-                    </li>
-                </ul>
 
                 <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -495,7 +558,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v7.3 Pro Cloud
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v8.3 Pro Cloud
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -511,7 +574,9 @@
     <script>
         const ADMIN_PIN = "8528";
         let driversMap = {};
+        let vehiclesMap = {};
         let currentCompanyName = "GC CodeLab - Gestione Flotta";
+        let companyCardData = { number: "", expiry: "" };
         let currentLoggedInDriver = null;
         let pendingBase64Doc = "";
         let pendingFileNameDoc = "";
@@ -562,7 +627,6 @@
             if (savedLinks) { customLinks = JSON.parse(savedLinks); }
             updateDOMCustomLinks();
 
-            // Sincronizzazione Denominazione Azienda da Firebase
             db.ref('config/denominazioneAzienda').on('value', snapshot => {
                 const name = snapshot.val();
                 if (name) {
@@ -573,35 +637,133 @@
                 updateDOMCompanyName();
             });
 
+            db.ref('config/cartaAzienda').on('value', snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    companyCardData = data;
+                } else {
+                    companyCardData = { number: "", expiry: "" };
+                }
+                updateDOMCompanyCard();
+                updateAdminBadges();
+            });
+
             db.ref('operai').on('value', snapshot => {
                 driversMap = snapshot.val() || {};
                 populateDatalist();
-                if (!document.getElementById('adminSection').classList.contains('hidden')) {
+                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
                     renderFleetTable();
                 }
-            }, error => {
-                console.error("Errore lettura Firebase:", error);
-                showToast("Errore di connessione al database Cloud", "error");
+                updateAdminBadges();
             });
+
+            db.ref('veicoli').on('value', snapshot => {
+                vehiclesMap = snapshot.val() || {};
+                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabVehicles').classList.contains('hidden')) {
+                    renderVehicleTable();
+                }
+                updateAdminBadges();
+            });
+        }
+
+        function updateAdminBadges() {
+            // Contatore Scadenze Conducenti (<= 2 giorni)
+            let urgentDrivers = 0;
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                if (d && getDaysRemaining(d.lastDownloadDate || new Date().toISOString().split('T')[0]) <= 2) {
+                    urgentDrivers++;
+                }
+            }
+            const badgeFleet = document.getElementById('badgeFleet');
+            if (urgentDrivers > 0) {
+                badgeFleet.innerText = urgentDrivers;
+                badgeFleet.classList.remove('hidden');
+            } else {
+                badgeFleet.classList.add('hidden');
+            }
+
+            // Contatore Scadenze Veicoli (<= 5 giorni)
+            let urgentVehicles = 0;
+            for (let id in vehiclesMap) {
+                const v = vehiclesMap[id];
+                if (v && getDaysRemaining(v.lastDownloadDate || new Date().toISOString().split('T')[0]) <= 5) {
+                    urgentVehicles++;
+                }
+            }
+            const badgeVehicles = document.getElementById('badgeVehicles');
+            if (urgentVehicles > 0) {
+                badgeVehicles.innerText = urgentVehicles;
+                badgeVehicles.classList.remove('hidden');
+            } else {
+                badgeVehicles.classList.add('hidden');
+            }
+
+            // Badge Carta Azienda (<= 30 giorni)
+            const badgeCompany = document.getElementById('badgeCompany');
+            if (companyCardData.expiry) {
+                const compDays = getDaysRemaining(companyCardData.expiry);
+                if (compDays <= 30) {
+                    badgeCompany.classList.remove('hidden');
+                } else {
+                    badgeCompany.classList.add('hidden');
+                }
+            } else {
+                badgeCompany.classList.add('hidden');
+            }
         }
 
         function updateDOMCompanyName() {
             document.getElementById('loginCompanyNameDisplay').innerText = currentCompanyName;
             document.getElementById('driverSelCompanyNameDisplay').innerText = currentCompanyName;
-            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v7.3 Pro`;
+            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v8.3 Pro`;
             document.getElementById('companyNameInput').value = currentCompanyName !== "GC CodeLab - Gestione Flotta" ? currentCompanyName : "";
             document.getElementById('driverCardCompanyHeader').innerText = currentCompanyName.toUpperCase();
         }
 
-        function saveCompanyName() {
+        function updateDOMCompanyCard() {
+            document.getElementById('companyCardNumberInput').value = companyCardData.number || "";
+            document.getElementById('companyCardExpiryInput').value = companyCardData.expiry || "";
+
+            const statusBox = document.getElementById('companyCardStatusBox');
+            if (!companyCardData.expiry) {
+                statusBox.classList.add('hidden');
+                return;
+            }
+
+            const daysRem = getDaysRemaining(companyCardData.expiry);
+            statusBox.classList.remove('hidden');
+
+            if (daysRem <= 0) {
+                statusBox.className = "rounded-xl p-3 text-xs font-bold bg-red-950/80 border border-red-500 text-red-200";
+                statusBox.innerHTML = `🚨 CARTA AZIENDA SCADUTA! (Scadenza: ${formatDateItalian(companyCardData.expiry)}). Impossibile scaricare i veicoli. Rinnovala subito!`;
+            } else if (daysRem <= 15) {
+                statusBox.className = "rounded-xl p-3 text-xs font-bold bg-amber-950/80 border border-amber-500 text-amber-200";
+                statusBox.innerHTML = `⚠️ ATTENZIONE: Mancano ${daysRem} giorni alla scadenza della Carta Azienda (${formatDateItalian(companyCardData.expiry)}). Termine ultimo CCIAA superato o imminente!`;
+            } else if (daysRem <= 30) {
+                statusBox.className = "rounded-xl p-3 text-xs font-bold bg-blue-950/80 border border-blue-500/80 text-blue-200";
+                statusBox.innerHTML = `ℹ️ PROMEMORIA: Mancano ${daysRem} giorni. Aperta la finestra utile (-30gg) per richiedere il rinnovo della Carta Azienda.`;
+            } else {
+                statusBox.className = "rounded-xl p-3 text-xs font-bold bg-emerald-950/80 border border-emerald-800 text-emerald-300";
+                statusBox.innerHTML = `✅ Carta Azienda attiva. Scadenza tra ${daysRem} giorni (${formatDateItalian(companyCardData.expiry)}).`;
+            }
+        }
+
+        function saveCompanyDetails() {
             const newName = document.getElementById('companyNameInput').value.trim();
+            const cardNum = document.getElementById('companyCardNumberInput').value.trim();
+            const cardExp = document.getElementById('companyCardExpiryInput').value;
+
             if (!newName) {
                 showToast("Inserisci un nome valido per l'azienda.", "error");
                 return;
             }
-            db.ref('config/denominazioneAzienda').set(newName, (error) => {
+
+            db.ref('config/denominazioneAzienda').set(newName);
+            db.ref('config/cartaAzienda').set({ number: cardNum, expiry: cardExp }, (error) => {
                 if (!error) {
-                    showToast("Denominazione azienda aggiornata con successo!", "success");
+                    showToast("Dati azienda e carta aggiornati con successo!", "success");
+                    updateAdminBadges();
                 } else {
                     showToast("Errore durante il salvataggio", "error");
                 }
@@ -766,7 +928,7 @@
                 document.getElementById('driverPersonalPinInput').value = "";
             } else {
                 errorEl.innerText = "Nome o PIN non corretti. Riprova.";
-                errorEl.classList.remove('hidden');
+                errorEl.classList.add('hidden');
                 showToast("Credenziali non valide", "error");
             }
         }
@@ -781,7 +943,8 @@
             if (sec === "admin") {
                 document.getElementById('adminSection').classList.remove('hidden');
                 document.getElementById('adminHeader').classList.remove('hidden');
-                renderFleetTable();
+                switchTab('fleet');
+                updateAdminBadges();
             } else if (sec === "driverSelection") {
                 document.getElementById('driverSelectionSection').classList.remove('hidden');
             } else if (sec === "driver") {
@@ -800,20 +963,31 @@
 
         function switchTab(tab) {
             const btnFleet = document.getElementById('btnFleet');
+            const btnVehicles = document.getElementById('btnVehicles');
             const btnSanctions = document.getElementById('btnSanctions');
             const tabFleet = document.getElementById('tabFleet');
+            const tabVehicles = document.getElementById('tabVehicles');
             const tabSanctions = document.getElementById('tabSanctions');
 
+            btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            
+            tabFleet.classList.add('hidden');
+            tabVehicles.classList.add('hidden');
+            tabSanctions.classList.add('hidden');
+
             if (tab === 'fleet') {
-                btnFleet.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
-                btnSanctions.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
                 tabFleet.classList.remove('hidden');
-                tabSanctions.classList.add('hidden');
+                renderFleetTable();
+            } else if (tab === 'vehicles') {
+                btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                tabVehicles.classList.remove('hidden');
+                renderVehicleTable();
             } else {
-                btnSanctions.className = "bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
-                btnFleet.className = "bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center";
+                btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
                 tabSanctions.classList.remove('hidden');
-                tabFleet.classList.add('hidden');
             }
         }
 
@@ -857,6 +1031,7 @@
                     if (!error) {
                         showToast("Conducente aggiornato nel Cloud!", "success");
                         resetDriverForm();
+                        updateAdminBadges();
                     } else {
                         alert("Errore scrittura Firebase: " + error.message);
                     }
@@ -867,6 +1042,7 @@
                     if (!error) {
                         showToast("Conducente salvato nel Cloud con successo!", "success");
                         resetDriverForm();
+                        updateAdminBadges();
                     } else {
                         alert("Errore scrittura Firebase: " + error.message);
                     }
@@ -933,7 +1109,10 @@
             today.setDate(today.getDate() + 28);
             const targetStr = today.toISOString().split('T')[0];
             db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
-                if(!error) showToast("Nuova scadenza a 28 giorni registrata nel Cloud!", "success");
+                if(!error) {
+                    showToast("Nuova scadenza a 28 giorni registrata nel Cloud!", "success");
+                    updateAdminBadges();
+                }
             });
         }
 
@@ -1007,7 +1186,150 @@
         function deleteDriver(id) {
             if (confirm("Vuoi davvero eliminare questo conducente dal Cloud?")) {
                 db.ref('operai/' + id).remove((error) => {
-                    if(!error) showToast("Conducente eliminato.", "success");
+                    if(!error) {
+                        showToast("Conducente eliminato.", "success");
+                        updateAdminBadges();
+                    }
+                });
+            }
+        }
+
+        // --- GESTIONE VEICOLI / MEZZI (90GG) ---
+        function saveVehicle() {
+            const editId = document.getElementById('editVehicleId').value;
+            const plate = document.getElementById('addVehPlate').value.trim().toUpperCase();
+            const model = document.getElementById('addVehModel').value.trim();
+            const cantiere = document.getElementById('addVehCantiere').value.trim() || "Generale";
+            const lastDl = document.getElementById('addVehDl').value || new Date().toISOString().split('T')[0];
+
+            if (!plate) {
+                showToast("Inserisci la Targa o l'ID del mezzo.", "error");
+                return;
+            }
+
+            const vehicleData = { plate, model, cantiere, lastDownloadDate: lastDl };
+
+            if (editId) {
+                db.ref('veicoli/' + editId).set(vehicleData, (error) => {
+                    if (!error) {
+                        showToast("Veicolo aggiornato nel Cloud!", "success");
+                        resetVehicleForm();
+                        updateAdminBadges();
+                    } else {
+                        alert("Errore scrittura Firebase: " + error.message);
+                    }
+                });
+            } else {
+                const newRef = db.ref('veicoli').push();
+                newRef.set(vehicleData, (error) => {
+                    if (!error) {
+                        showToast("Veicolo salvato nel Cloud con successo!", "success");
+                        resetVehicleForm();
+                        updateAdminBadges();
+                    } else {
+                        alert("Errore scrittura Firebase: " + error.message);
+                    }
+                });
+            }
+        }
+
+        function editVehicle(id) {
+            const v = vehiclesMap[id];
+            if (!v) return;
+
+            document.getElementById('editVehicleId').value = id;
+            document.getElementById('addVehPlate').value = v.plate;
+            document.getElementById('addVehModel').value = v.model || "";
+            document.getElementById('addVehCantiere').value = v.cantiere || "";
+            document.getElementById('addVehDl').value = v.lastDownloadDate || "";
+
+            document.getElementById('vehicleFormTitle').innerText = "Modifica Veicolo / Mezzo";
+            document.getElementById('saveVehicleBtn').innerText = "Aggiorna Mezzo";
+            document.getElementById('cancelVehicleEditBtn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetVehicleForm() {
+            document.getElementById('editVehicleId').value = "";
+            document.getElementById('addVehPlate').value = "";
+            document.getElementById('addVehModel').value = "";
+            document.getElementById('addVehCantiere').value = "";
+            document.getElementById('addVehDl').value = "";
+
+            document.getElementById('vehicleFormTitle').innerText = "Aggiungi Veicolo / Mezzo";
+            document.getElementById('saveVehicleBtn').innerText = "Salva Mezzo";
+            document.getElementById('cancelVehicleEditBtn').classList.add('hidden');
+        }
+
+        function quickDownloadVehicle(id) {
+            const today = new Date();
+            today.setDate(today.getDate() + 90);
+            const targetStr = today.toISOString().split('T')[0];
+            db.ref('veicoli/' + id).update({ lastDownloadDate: targetStr }, (error) => {
+                if(!error) {
+                    showToast("Nuova scadenza a 90 giorni registrata per il mezzo!", "success");
+                    updateAdminBadges();
+                }
+            });
+        }
+
+        function renderVehicleTable() {
+            const tbody = document.getElementById('vehicleTableBody');
+            tbody.innerHTML = "";
+            
+            const filterTerm = document.getElementById('adminSearchVehicleInput').value.trim().toLowerCase();
+            let count = 0;
+
+            for (let id in vehiclesMap) {
+                const v = vehiclesMap[id];
+                if (!v) continue;
+                const searchStr = `${v.plate || ''} ${v.model || ''} ${v.cantiere || ''}`.toLowerCase();
+                if (filterTerm && !searchStr.includes(filterTerm)) continue;
+                count++;
+
+                const targetDateStr = v.lastDownloadDate || new Date().toISOString().split('T')[0];
+                const daysRem = getDaysRemaining(targetDateStr);
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/50 transition border-b border-slate-800/60";
+                tr.innerHTML = `
+                    <td class="py-3.5 px-3 font-bold text-white font-mono">
+                        ${v.plate || ''}<br/>
+                        <span class="text-[10px] text-slate-400 font-sans font-normal">${v.model || 'Mezzo flotta'}</span>
+                    </td>
+                    <td class="py-3.5 px-3 text-emerald-400 font-mono text-[11px]">${v.cantiere || 'Generale'}</td>
+                    <td class="py-3.5 px-3">
+                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold inline-block shadow-sm ${daysRem <= 5 ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'}">
+                            ${daysRem} gg (${formatDateItalian(targetDateStr)})
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-3 text-center no-print">
+                        <div class="flex items-center justify-center space-x-1.5">
+                            <button onclick="quickDownloadVehicle('${id}')" title="Rinnova di 90 Giorni" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                🔄 Rinnova (+90gg)
+                            </button>
+                            <button onclick="editVehicle('${id}')" title="Modifica" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                ✏️ Modifica
+                            </button>
+                            <button onclick="deleteVehicle('${id}')" title="Elimina" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                🗑️ Elimina
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            }
+            document.getElementById('vehicleCount').innerText = count;
+        }
+
+        function deleteVehicle(id) {
+            if (confirm("Vuoi davvero eliminare questo veicolo dal Cloud?")) {
+                db.ref('veicoli/' + id).remove((error) => {
+                    if(!error) {
+                        showToast("Veicolo eliminato.", "success");
+                        updateAdminBadges();
+                    }
                 });
             }
         }
@@ -1071,14 +1393,15 @@
         }
 
         function exportBackupJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(driversMap, null, 2));
+            const backupData = { drivers: driversMap, vehicles: vehiclesMap, companyCard: companyCardData };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
             dlAnchor.setAttribute("download", `GC-TachoControl_Cloud_Backup_${new Date().toISOString().split('T')[0]}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
             dlAnchor.remove();
-            showToast("Backup Cloud esportato con successo!", "success");
+            showToast("Backup Cloud completo esportato con successo!", "success");
         }
 
         function printReportPDF() { window.print(); }
