@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v7.2 Pro - Cloud</title>
+    <title>GC-TachoControl v7.3 Pro - Cloud</title>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- INCLUSIONE SDK FIREBASE -->
@@ -59,7 +59,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight">GC CodeLab &bull; v7.2 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v7.3 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -90,6 +90,7 @@
                 <h2 class="text-2xl tracking-tight text-white font-bold">
                     <span>GC-TachoControl</span>
                 </h2>
+                <p id="loginCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold mt-1 uppercase tracking-wider"></p>
                 <p class="text-xs text-slate-400 mt-2 leading-relaxed">Inserisci il PIN amministrativo o accedi all'Area Conducenti.</p>
             </div>
 
@@ -122,6 +123,7 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
                 <h2 class="text-xl font-bold text-white">Area Conducenti</h2>
+                <p id="driverSelCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold mt-0.5 uppercase tracking-wider"></p>
                 <p class="text-xs text-slate-400 mt-1">Cerca il tuo nome o sceglilo dalla lista, poi inserisci il tuo PIN personale.</p>
             </div>
 
@@ -163,7 +165,7 @@
                     Gestione Flotta Cloud
                 </button>
                 <button onclick="switchTab('sanctions')" id="btnSanctions" class="bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3.5 px-4 rounded-xl shadow-md text-xs transition text-center">
-                    Normativa &amp; Sanzioni
+                    Normativa &amp; Azienda
                 </button>
             </div>
 
@@ -261,9 +263,26 @@
                 </div>
             </div>
 
-            <!-- TAB 2: NORMATIVA & SANZIONI -->
+            <!-- TAB 2: NORMATIVA & AZIENDA -->
             <div id="tabSanctions" class="hidden space-y-6">
                 
+                <!-- Box Personalizzazione Azienda -->
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <h3 class="font-bold text-sm text-emerald-400">🏢 Denominazione Azienda (Cliente)</h3>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Inserisci la ragione sociale dell'azienda. Il nome comparirà automaticamente in tutte le schermate di accesso.
+                    </p>
+
+                    <div class="space-y-3">
+                        <div>
+                            <input type="text" id="companyNameInput" placeholder="Es. Trasporti Rossi S.r.l." class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 font-bold uppercase">
+                        </div>
+                        <button onclick="saveCompanyName()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md">
+                            Salva Denominazione Azienda
+                        </button>
+                    </div>
+                </div>
+
                 <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
                     <div class="flex items-start space-x-3 mb-3">
                         <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500 flex-shrink-0">
@@ -353,7 +372,7 @@
                             <span class="bg-white h-full w-1/3"></span>
                             <span class="bg-red-600 h-full w-1/3"></span>
                         </span>
-                        <span class="text-[10px] tracking-widest text-slate-300 font-bold uppercase">REPUBBLICA ITALIANA</span>
+                        <span class="text-[10px] tracking-widest text-slate-300 font-bold uppercase" id="driverCardCompanyHeader">REPUBBLICA ITALIANA</span>
                     </div>
                     <div class="text-yellow-400/90 font-black text-sm tracking-widest uppercase">
                         CARTA DEL CONDUCENTE
@@ -475,8 +494,8 @@
 
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
-            <p class="text-emerald-500 font-bold text-sm tracking-wide">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v7.2 Pro Cloud
+            <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v7.3 Pro Cloud
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -492,6 +511,7 @@
     <script>
         const ADMIN_PIN = "8528";
         let driversMap = {};
+        let currentCompanyName = "GC CodeLab - Gestione Flotta";
         let currentLoggedInDriver = null;
         let pendingBase64Doc = "";
         let pendingFileNameDoc = "";
@@ -542,6 +562,17 @@
             if (savedLinks) { customLinks = JSON.parse(savedLinks); }
             updateDOMCustomLinks();
 
+            // Sincronizzazione Denominazione Azienda da Firebase
+            db.ref('config/denominazioneAzienda').on('value', snapshot => {
+                const name = snapshot.val();
+                if (name) {
+                    currentCompanyName = name;
+                } else {
+                    currentCompanyName = "GC CodeLab - Gestione Flotta";
+                }
+                updateDOMCompanyName();
+            });
+
             db.ref('operai').on('value', snapshot => {
                 driversMap = snapshot.val() || {};
                 populateDatalist();
@@ -551,6 +582,29 @@
             }, error => {
                 console.error("Errore lettura Firebase:", error);
                 showToast("Errore di connessione al database Cloud", "error");
+            });
+        }
+
+        function updateDOMCompanyName() {
+            document.getElementById('loginCompanyNameDisplay').innerText = currentCompanyName;
+            document.getElementById('driverSelCompanyNameDisplay').innerText = currentCompanyName;
+            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v7.3 Pro`;
+            document.getElementById('companyNameInput').value = currentCompanyName !== "GC CodeLab - Gestione Flotta" ? currentCompanyName : "";
+            document.getElementById('driverCardCompanyHeader').innerText = currentCompanyName.toUpperCase();
+        }
+
+        function saveCompanyName() {
+            const newName = document.getElementById('companyNameInput').value.trim();
+            if (!newName) {
+                showToast("Inserisci un nome valido per l'azienda.", "error");
+                return;
+            }
+            db.ref('config/denominazioneAzienda').set(newName, (error) => {
+                if (!error) {
+                    showToast("Denominazione azienda aggiornata con successo!", "success");
+                } else {
+                    showToast("Errore durante il salvataggio", "error");
+                }
             });
         }
 
@@ -712,7 +766,7 @@
                 document.getElementById('driverPersonalPinInput').value = "";
             } else {
                 errorEl.innerText = "Nome o PIN non corretti. Riprova.";
-                errorEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
                 showToast("Credenziali non valide", "error");
             }
         }
@@ -897,7 +951,6 @@
                 if (filterTerm && !searchStr.includes(filterTerm)) continue;
                 count++;
 
-                // Prende direttamente la data inserita manualmente come scadenza finale
                 const targetDateStr = d.lastDownloadDate || new Date().toISOString().split('T')[0];
                 const daysRem = getDaysRemaining(targetDateStr);
 
@@ -960,7 +1013,6 @@
         }
 
         function renderDriverView(d) {
-            // Prende direttamente la data inserita come scadenza finale
             const targetDateStr = d.lastDownloadDate || new Date().toISOString().split('T')[0];
             const daysRem = getDaysRemaining(targetDateStr);
 
