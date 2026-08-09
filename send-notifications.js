@@ -1,6 +1,5 @@
 const admin = require('firebase-admin');
 
-// 1. Inizializza Firebase
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -22,11 +21,15 @@ async function start() {
 
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
         let inviate = 0;
 
         for (let id in operai) {
             const operaio = operai[id];
+            console.log(`\n--- Analizzo: ${operaio.name} ${operaio.surname || ''} ---`);
+            
+            if (!operaio.lastDownloadDate) console.log(" ERRORE: Nessuna data di scarico (lastDownloadDate).");
+            if (!operaio.fcmToken) console.log(" ERRORE: Nessun Token registrato (l'operaio deve loggarsi dal telefono e accettare le notifiche).");
+
             if (operaio.lastDownloadDate && operaio.fcmToken) {
                 const downloadDate = new Date(operaio.lastDownloadDate);
                 downloadDate.setHours(0, 0, 0, 0);
@@ -36,10 +39,10 @@ async function start() {
                 const timeDiff = nextDeadline.getTime() - today.getTime();
                 const daysRem = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-                // INVIA SE MANCANO 7, 3, 2, o 0 GIORNI (ho aggiunto il 2 così lo testi subito senza cambiare data!)
+                console.log(` -> Giorni rimanenti calcolati: ${daysRem}`);
+
                 if (daysRem === 7 || daysRem === 3 || daysRem === 2 || daysRem === 0) {
-                    console.log(`Trovato ${operaio.name} con scadenza tra ${daysRem} giorni. Invio notifica...`);
-                    
+                    console.log(` -> INVIO NOTIFICA IN CORSO...`);
                     const payload = {
                         token: operaio.fcmToken,
                         notification: {
@@ -50,21 +53,21 @@ async function start() {
 
                     try {
                         const response = await admin.messaging().send(payload);
-                        console.log('Notifica inviata con successo a:', operaio.name, response);
+                        console.log(' -> VITTORIA! Notifica inviata con successo!', response);
                         inviate++;
                     } catch (error) {
-                        console.error('Errore invio notifica a:', operaio.name, error);
+                        console.error(' -> FALLIMENTO! Errore invio notifica:', error);
                     }
+                } else {
+                    console.log(` -> Nessuna notifica oggi (giorni rimanenti: ${daysRem}, non è 7, 3, 2 o 0).`);
                 }
             }
         }
         
-        console.log(`Controllo terminato. Notifiche inviate: ${inviate}`);
+        console.log(`\nControllo terminato. Notifiche totali inviate: ${inviate}`);
     } catch (error) {
-        console.error("Errore di connessione al database:", error);
+        console.error("Errore di connessione:", error);
     }
-    
-    // Spegne il server correttamente
     process.exit(0);
 }
 
