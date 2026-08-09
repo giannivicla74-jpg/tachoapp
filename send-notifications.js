@@ -1,8 +1,7 @@
 const admin = require('firebase-admin');
 
-// Legge la chiave segreta che hai appena salvato
+// 1. Inizializza Firebase
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://tachocontrol-ad132-default-rtdb.europe-west1.firebasedatabase.app"
@@ -10,61 +9,63 @@ admin.initializeApp({
 
 const db = admin.database();
 
-async function checkDeadlinesAndNotify() {
+async function start() {
     console.log("Inizio controllo scadenze...");
-    const snapshot = await db.ref('operai').once('value');
-    const operai = snapshot.val();
+    try {
+        const snapshot = await db.ref('operai').once('value');
+        const operai = snapshot.val();
 
-    if (!operai) {
-        console.log("Nessun operaio trovato nel database.");
-        return;
-    }
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    for (const id in operai) {
-        const d = operai[id];
-        if (!d.lastDownloadDate || !d.fcmToken) continue;
-
-        const targetDate = new Date(d.lastDownloadDate);
-        targetDate.setHours(0, 0, 0, 0);
-
-        // Calcola giorni mancanti
-        const diffTime = targetDate - today;
-        const daysRem = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        let title = "";
-        let body = "";
-
-        // Qui decidi quando inviare le notifiche (es. a 0, 3 e 7 giorni)
-        if (daysRem === 0) {
-            title = "⚠️ SCADENZA CARTA TACHIGRAFO";
-            body = `Ciao ${d.name}, la tua carta deve essere scaricata OGGI! Consegnala subito.`;
-        } else if (daysRem === 3) {
-            title = "⏳ ATTENZIONE SCADENZA";
-            body = `Ciao ${d.name}, mancano solo 3 giorni allo scarico della tua carta.`;
-        } else if (daysRem === 7) {
-            title = "📅 Promemoria Scarico Carta";
-            body = `Ciao ${d.name}, mancano 7 giorni allo scarico della tua carta.`;
+        if (!operai) {
+            console.log("Nessun operaio trovato nel database.");
+            process.exit(0);
         }
 
-        if (title !== "" && body !== "") {
-            console.log(`Tentativo di invio a ${d.name} (${daysRem} giorni rimasti)...`);
-            const message = {
-                notification: { title, body },
-                token: d.fcmToken
-            };
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        let inviate = 0;
 
-            try {
-                await admin.messaging().send(message);
-                console.log(`✅ Notifica inviata con successo a ${d.name}!`);
-            } catch (error) {
-                console.log(`❌ Errore invio a ${d.name}:`, error.message);
+        for (let id in operai) {
+            const operaio = operai[id];
+            if (operaio.lastDownloadDate && operaio.fcmToken) {
+                const downloadDate = new Date(operaio.lastDownloadDate);
+                downloadDate.setHours(0, 0, 0, 0);
+                const nextDeadline = new Date(downloadDate);
+                nextDeadline.setDate(nextDeadline.getDate() + 28);
+                
+                const timeDiff = nextDeadline.getTime() - today.getTime();
+                const daysRem = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                // INVIA SE MANCANO 7, 3, 2, o 0 GIORNI (ho aggiunto il 2 così lo testi subito senza cambiare data!)
+                if (daysRem === 7 || daysRem === 3 || daysRem === 2 || daysRem === 0) {
+                    console.log(`Trovato ${operaio.name} con scadenza tra ${daysRem} giorni. Invio notifica...`);
+                    
+                    const payload = {
+                        token: operaio.fcmToken,
+                        notification: {
+                            title: 'Scadenza Download Tacho',
+                            body: `Attenzione ${operaio.name}: Mancano ${daysRem} giorni alla scadenza del download dati tachigrafo.`
+                        }
+                    };
+
+                    try {
+                        const response = await admin.messaging().send(payload);
+                        console.log('Notifica inviata con successo a:', operaio.name, response);
+                        inviate++;
+                    } catch (error) {
+                        console.error('Errore invio notifica a:', operaio.name, error);
+                    }
+                }
             }
         }
+        
+        console.log(`Controllo terminato. Notifiche inviate: ${inviate}`);
+    } catch (error) {
+        console.error("Errore di connessione al database:", error);
     }
-    console.log("Controllo terminato.");
+    
+    // Spegne il server correttamente
+    process.exit(0);
 }
 
-checkDeadlinesAndNotify().then(() => process.exit(0));
+start();
