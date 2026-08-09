@@ -826,14 +826,18 @@ if ("Notification" in window && Notification.permission === "granted") {
                     document.getElementById('pushNotificationBanner').classList.add('hidden');
                     
                     if (messaging && currentLoggedInDriver) {
-                        messaging.getToken({vapidKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-8vMeAt0wCHWz0z8v1e48jK9g1eA0t7WcO8yQ9v8w0Q5a8Q8v8w0Q5a8"})
-                        .then((currentToken) => {
-                            if (currentToken) {
-                                db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
-                                console.log("Token FCM salvato per l'operaio:", currentToken);
-                            }
-                        }).catch((err) => {
-                            console.log("Errore recupero token FCM: ", err);
+                        navigator.serviceWorker.ready.then((registration) => {
+                            messaging.getToken({
+                                vapidKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-8vMeAt0wCHWz0z8v1e48jK9g1eA0t7WcO8yQ9v8w0Q5a8Q8v8w0Q5a8",
+                                serviceWorkerRegistration: registration
+                            }).then((currentToken) => {
+                                if (currentToken) {
+                                    db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
+                                    console.log("Token FCM salvato per l'operaio:", currentToken);
+                                }
+                            }).catch((err) => {
+                                console.log("Errore recupero token FCM: ", err);
+                            });
                         });
                     }
                 } else {
@@ -981,17 +985,21 @@ if ("Notification" in window && Notification.permission === "granted") {
                 currentLoggedInDriver = { id: foundKey, ...foundDriver };
                 showSection("driver");
                 // AGGIORNAMENTO AUTOMATICO DEL TOKEN IN BACKGROUND
-if ("Notification" in window && Notification.permission === "granted" && messaging) {
-    messaging.getToken({vapidKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-8vMeAt0wCHWz0z8v1e48jK9g1eA0t7WcO8yQ9v8w0Q5a8Q8v8w0Q5a8"})
-    .then((currentToken) => {
-        if (currentToken) {
-            db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
-            console.log("Token aggiornato per il telefono:", currentToken);
-        }
-    }).catch((err) => {
-        console.log("Errore recupero token: ", err);
-    });
-}
+                if ("Notification" in window && Notification.permission === "granted" && messaging) {
+                    navigator.serviceWorker.ready.then((registration) => {
+                        messaging.getToken({
+                            vapidKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-8vMeAt0wCHWz0z8v1e48jK9g1eA0t7WcO8yQ9v8w0Q5a8Q8v8w0Q5a8",
+                            serviceWorkerRegistration: registration
+                        }).then((currentToken) => {
+                            if (currentToken) {
+                                db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
+                                console.log("Token aggiornato per il telefono:", currentToken);
+                            }
+                        }).catch((err) => {
+                            console.log("Errore recupero token: ", err);
+                        });
+                    });
+                }
                 showToast(`Benvenuto, ${foundDriver.name}`, "success");
                 document.getElementById('driverSearchInput').value = "";
                 document.getElementById('driverPersonalPinInput').value = "";
