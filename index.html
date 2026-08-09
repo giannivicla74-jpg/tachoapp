@@ -652,7 +652,12 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
-
+// Controlla se le notifiche sono già attive per nascondere il banner
+if ("Notification" in window && Notification.permission === "granted") {
+    const banner = document.getElementById('pushNotificationBanner');
+    if (banner) banner.classList.add('hidden');
+}
+        
         function initApp() {
             document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
             
