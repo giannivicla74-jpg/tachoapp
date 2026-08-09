@@ -1,0 +1,9 @@
+{
+  "name": "tachoapp-notifications",
+  "version": "1.0.0",
+  "description": "Script per invio notifiche push Firebase",
+  "main": "send-notifications.js",
+  "dependencies": {
+    "firebase-admin": "^12.0.0"
+  }
+}
