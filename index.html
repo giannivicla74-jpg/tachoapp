@@ -828,7 +828,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                     if (messaging && currentLoggedInDriver) {
                         navigator.serviceWorker.ready.then((registration) => {
                             messaging.getToken({
-                                vapidKey: "BBoVDHXIH8hm5oLX87z63o_UKYAaP3vwlcKyJIYjiI9LEBRq97I8UtQr0bIuJLpWEAu4ac188Q8lMfH5_d0hhOw",
+                                vapidKey: "BBoVDHXIH8hm5oLX87z63o_UKYAaP3vwLcKyJIYjiI9LEBRq97I8UtQr0biuJLpWEAu4ac188Q8lMfH5_d0hhOw",
                                 serviceWorkerRegistration: registration
                             }).then((currentToken) => {
                                 if (currentToken) {
@@ -988,7 +988,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                 if ("Notification" in window && Notification.permission === "granted" && messaging) {
                     navigator.serviceWorker.ready.then((registration) => {
                         messaging.getToken({
-                            vapidKey: "BEl62iUYgUivxIkv69yViEuiBIa-Ib9-8vMeAt0wCHWz0z8v1e48jK9g1eA0t7WcO8yQ9v8w0Q5a8Q8v8w0Q5a8",
+                            vapidKey: "BBoVDHXIH8hm5oLX87z63o_UKYAaP3vwLcKyJIYjiI9LEBRq97I8UtQr0biuJLpWEAu4ac188Q8lMfH5_d0hhOw",
                             serviceWorkerRegistration: registration
                         }).then((currentToken) => {
                             if (currentToken) {
