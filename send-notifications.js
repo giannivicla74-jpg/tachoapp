@@ -27,17 +27,16 @@ async function start() {
             const operaio = operai[id];
             console.log(`\n--- Analizzo: ${operaio.name} ${operaio.surname || ''} ---`);
             
-            if (!operaio.lastDownloadDate) console.log(" ERRORE: Nessuna data di scarico (lastDownloadDate).");
+            if (!operaio.lastDownloadDate) console.log(" ERRORE: Nessuna data di scadenza (lastDownloadDate).");
             if (!operaio.fcmToken) console.log(" ERRORE: Nessun Token registrato (l'operaio deve loggarsi dal telefono e accettare le notifiche).");
 
             if (operaio.lastDownloadDate && operaio.fcmToken) {
-                const downloadDate = new Date(operaio.lastDownloadDate);
-                downloadDate.setHours(0, 0, 0, 0);
-                const nextDeadline = new Date(downloadDate);
-                nextDeadline.setDate(nextDeadline.getDate() + 28);
+                // Ora usiamo direttamente la data inserita nell'app, senza aggiungere 28 giorni!
+                const nextDeadline = new Date(operaio.lastDownloadDate);
+                nextDeadline.setHours(0, 0, 0, 0);
                 
                 const timeDiff = nextDeadline.getTime() - today.getTime();
-                const daysRem = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                const daysRem = Math.round(timeDiff / (1000 * 3600 * 24));
 
                 console.log(` -> Giorni rimanenti calcolati: ${daysRem}`);
 
