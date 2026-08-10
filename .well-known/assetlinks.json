@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.giannivicla74_jpg.twa",
+        "sha256_cert_fingerprints": ["1C:1D:A6:AA:D2:E2:F1:91:2F:09:D9:A7:74:06:8F:06:20:01:0B:30:24:24:5C:D4:E9:F9:C2:BB:DE:6A:26:6F"]
+      }
+    }]
