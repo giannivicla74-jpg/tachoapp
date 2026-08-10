@@ -31,14 +31,55 @@ async function start() {
             if (!operaio.fcmToken) console.log(" ERRORE: Nessun Token registrato (l'operaio deve loggarsi dal telefono e accettare le notifiche).");
 
             if (operaio.lastDownloadDate && operaio.fcmToken) {
-                // Ora usiamo direttamente la data inserita nell'app, senza aggiungere 28 giorni!
+                // --- CONTROLLO FERIE ---
+                let inVacation = false;
+                let daysToVacation = null;
+                if (operaio.vacationStartDate && operaio.vacationEndDate) {
+                    const vStart = new Date(operaio.vacationStartDate);
+                    vStart.setHours(0, 0, 0, 0);
+                    const vEnd = new Date(operaio.vacationEndDate);
+                    vEnd.setHours(0, 0, 0, 0);
+                    
+                    if (today >= vStart && today <= vEnd) {
+                        inVacation = true;
+                    }
+                    
+                    const timeDiffVacation = vStart.getTime() - today.getTime();
+                    daysToVacation = Math.round(timeDiffVacation / (1000 * 3600 * 24));
+                }
+
+                if (inVacation) {
+                    console.log(` -> 🏖️ AUTISTA IN FERIE: Notifiche standard sospese.`);
+                    continue; // Salta il resto del ciclo per questo autista (nessuna notifica 28gg)
+                }
+
+                if (daysToVacation === 1 || daysToVacation === 2) {
+                    console.log(` -> 🚨 PRE-PARTENZA: Mancano ${daysToVacation} giorni alle ferie, invio avviso speciale!`);
+                    const payloadFerie = {
+                        token: operaio.fcmToken,
+                        notification: {
+                            title: '🏖️ Ferie in Avvicinamento!',
+                            body: `Attenzione ${operaio.name}: Mancano ${daysToVacation} giorni all'inizio delle tue ferie. Ricorda di scaricare la carta prima di partire!`
+                        }
+                    };
+                    try {
+                        await admin.messaging().send(payloadFerie);
+                        console.log(' -> Avviso pre-ferie inviato con successo!');
+                        inviate++;
+                    } catch (error) {
+                        console.error(' -> Errore invio avviso pre-ferie:', error);
+                    }
+                }
+                // --- FINE CONTROLLO FERIE ---
+
+                // Ora calcoliamo la normale scadenza dei 28 giorni
                 const nextDeadline = new Date(operaio.lastDownloadDate);
                 nextDeadline.setHours(0, 0, 0, 0);
                 
                 const timeDiff = nextDeadline.getTime() - today.getTime();
                 const daysRem = Math.round(timeDiff / (1000 * 3600 * 24));
 
-                console.log(` -> Giorni rimanenti calcolati: ${daysRem}`);
+                console.log(` -> Giorni rimanenti calcolati (Scarico): ${daysRem}`);
 
                 if (daysRem === 7 || daysRem === 3 || daysRem === 2 || daysRem === 0) {
                     console.log(` -> INVIO NOTIFICA IN CORSO...`);
