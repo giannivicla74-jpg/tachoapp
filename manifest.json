@@ -1,27 +1,9 @@
 {
   "name": "TachoControl",
   "short_name": "TachoControl",
-  "description": "App gestionale professionale per lo scarico dati del Tachigrafo Digitale e delle Carte Conducente. Semplifica la gestione delle scadenze e delle ferie.",
+  "description": "App gestionale professionale per lo scarico dati del Tachigrafo Digitale e delle Carte Conducente.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
-  "theme_color": "#0f172a",
-  "icons": [
-    {
-      "src": "logo-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "logo-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "logo-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "theme_color": "#0f172a"
 }
