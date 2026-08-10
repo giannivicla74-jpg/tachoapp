@@ -1,0 +1,28 @@
+{
+    "name": "GC-TachoControl Pro",
+    "short_name": "TachoControl",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0B1626",
+    "theme_color": "#0B1626",
+    "icons": [
+        {
+            "src": "logo.png.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any"
+        },
+        {
+            "src": "logo.png.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "any"
+        },
+        {
+            "src": "logo.png.jpg",
+            "sizes": "1024x1024",
+            "type": "image/jpeg",
+            "purpose": "any"
+        }
+    ]
+}
