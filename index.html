@@ -85,14 +85,14 @@
             .print-only { display: block !important; }
         }
         
-        /* Animazione Scudo 3D all'avvio */
-        @keyframes shieldFlip3D {
-            0% { transform: perspective(600px) rotateY(-180deg) scale(0.5); opacity: 0; }
-            60% { transform: perspective(600px) rotateY(20deg) scale(1.1); opacity: 0.9; }
-            100% { transform: perspective(600px) rotateY(0deg) scale(1); opacity: 1; }
+        /* Animazione Scudo Premium Continua */
+        @keyframes floatPremium {
+            0% { transform: translateY(0px) scale(1); filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.1)); }
+            50% { transform: translateY(-8px) scale(1.03); filter: drop-shadow(0 15px 20px rgba(16, 185, 129, 0.4)); }
+            100% { transform: translateY(0px) scale(1); filter: drop-shadow(0 4px 6px rgba(16, 185, 129, 0.1)); }
         }
-        .animate-shield-3d {
-            animation: shieldFlip3D 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        .animate-shield-premium {
+            animation: floatPremium 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
     </style>
 </head>
@@ -119,13 +119,29 @@
         <!-- =================== 1. LOGIN PRINCIPALE =================== -->
         <div id="loginSection" class="no-print max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-4">
-                    <div class="p-3 bg-[#0F1A2E] rounded-2xl">
-                        <svg class="w-12 h-12 animate-shield-3d" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M50 10L12 28v22c0 24 13.8 44.2 38 50 24.2-5.8 38-26 38-50V28L50 10z" fill="#1E293B" stroke="#334155" stroke-width="4"/>
-                            <path d="M50 18L18 33v17c0 18 10.4 33.1 32 38 21.6-4.9 32-20 32-38V33L50 18z" fill="#0F172A"/>
-                            <path d="M50 26L24 38v14c0 13.5 11.4 25.1 26 29 14.6-3.9 26-15.5 26-29V38L50 26z" fill="#DC2626"/>
-                            <path d="M50 30L28 40v12c0 11.2 9.5 20.8 22 24 12.5-3.2 22-12.8 22-24V40L50 30z" fill="#FCA5A5"/>
+                <div class="flex justify-center mb-6 mt-2 relative">
+                    <!-- Alone luminoso pulsante -->
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500/20 blur-2xl rounded-full w-24 h-24 animate-pulse"></div>
+                    
+                    <!-- Scudo con animazione fluttuante continua -->
+                    <div class="p-4 bg-gradient-to-b from-[#15243E] to-[#0A1220] rounded-3xl border border-slate-700/50 shadow-2xl relative z-10 animate-shield-premium">
+                        <svg class="w-14 h-14" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#10B981" />
+                                    <stop offset="100%" stop-color="#047857" />
+                                </linearGradient>
+                                <linearGradient id="innerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#064E3B" />
+                                    <stop offset="100%" stop-color="#022C22" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Bordo Esterno Metallico -->
+                            <path d="M50 10L12 28v22c0 24 13.8 44.2 38 50 24.2-5.8 38-26 38-50V28L50 10z" fill="url(#shieldGrad)" stroke="#34D399" stroke-width="1.5"/>
+                            <!-- Scudo Interno Scuro -->
+                            <path d="M50 18L18 33v17c0 18 10.4 33.1 32 38 21.6-4.9 32-20 32-38V33L50 18z" fill="url(#innerGrad)"/>
+                            <!-- V stilizzata centrale (Vi.Cla) -->
+                            <path d="M30 38 L50 62 L70 38" stroke="#34D399" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </div>
                 </div>
