@@ -411,6 +411,26 @@
                     </div>
                 </div>
 
+                <!-- DROPZONE CARICAMENTO AUTOMATICO FILE .DDD MEZZI (90GG) -->
+                <div id="dddVehicleDropzone" 
+                     ondragover="event.preventDefault(); this.classList.add('border-emerald-400', 'bg-emerald-950/20')" 
+                     ondragleave="this.classList.remove('border-emerald-400', 'bg-emerald-950/20')" 
+                     ondrop="event.preventDefault(); this.classList.remove('border-emerald-400', 'bg-emerald-950/20'); processVehicleDDDFiles(event.dataTransfer.files);"
+                     class="no-print bg-slate-900/60 backdrop-blur-md rounded-3xl p-5 border-2 border-dashed border-indigo-500/40 hover:border-emerald-400/80 transition-all duration-300 shadow-xl group cursor-pointer text-center space-y-2">
+                    <input type="file" id="dddVehicleFileInput" multiple accept=".ddd,.esm,.tgd,.zip,.v1b" class="hidden" onchange="handleVehicleDDDFileSelect(event)">
+                    <div onclick="document.getElementById('dddVehicleFileInput').click()" class="flex flex-col items-center justify-center space-y-2 py-1">
+                        <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-all shadow-inner">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200 group-hover:text-white transition">
+                                Trascina qui i file <span class="text-emerald-400 font-mono font-semibold">.DDD / .ESM</span> della Memoria Mezzo (90gg)
+                            </p>
+                            <p class="text-[10px] text-slate-400">oppure <span class="text-indigo-400 underline font-semibold">clicca per selezionarli dal computer</span> per aggiornare lo scarico mezzo in automatico</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tabella Mezzi -->
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
                     <div class="flex justify-between items-center no-print">
@@ -1996,6 +2016,68 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function closeAllVehicleRowMenus() {
             document.querySelectorAll('[id^="vehicleRowMenu_"]').forEach(el => el.classList.add('hidden'));
+        }
+
+        // --- GESTIONE DRAG & DROP FILE .DDD MEZZI (90GG) ---
+        function handleVehicleDDDFileSelect(event) {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                processVehicleDDDFiles(files);
+            }
+        }
+
+        function processVehicleDDDFiles(files) {
+            if (!files || files.length === 0) return;
+            let fileList = Array.from(files);
+
+            fileList.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const buffer = e.target.result;
+                    const bytes = new Uint8Array(buffer);
+                    
+                    let rawText = "";
+                    for (let i = 0; i < bytes.length; i++) {
+                        if (bytes[i] >= 32 && bytes[i] <= 126) {
+                            rawText += String.fromCharCode(bytes[i]);
+                        } else {
+                            rawText += " ";
+                        }
+                    }
+
+                    let matchedVehicleId = null;
+                    let matchedVehiclePlate = "";
+
+                    const cleanRawText = rawText.replace(/[\s-]/g, '').toUpperCase();
+
+                    Object.keys(vehiclesMap).forEach(id => {
+                        const v = vehiclesMap[id];
+                        if (v.plate) {
+                            const cleanPlate = v.plate.replace(/[\s-]/g, '').toUpperCase();
+                            if (cleanPlate.length >= 3 && (cleanRawText.includes(cleanPlate) || file.name.toUpperCase().replace(/[\s-]/g, '').includes(cleanPlate))) {
+                                matchedVehicleId = id;
+                                matchedVehiclePlate = v.plate;
+                            }
+                        }
+                    });
+
+                    const today = new Date();
+                    today.setDate(today.getDate() + 90);
+                    const targetStr = today.toISOString().split('T')[0];
+
+                    if (matchedVehicleId) {
+                        db.ref('veicoli/' + matchedVehicleId).update({ lastDownloadDate: targetStr }, (err) => {
+                            if (!err) {
+                                showToast(`✅ ${file.name}: Scarico mezzo +90gg registrato per ${matchedVehiclePlate}!`, "success");
+                                updateAdminBadges();
+                            }
+                        });
+                    } else {
+                        showToast(`ℹ️ File ${file.name} elaborato. Nessuna targa corrispondente trovata in flotta.`, "info");
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
         }
 
         function renderDriverView(d) {
