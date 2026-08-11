@@ -1448,7 +1448,9 @@ if ("Notification" in window && Notification.permission === "granted") {
                 db.ref('operai/' + editId).update(driverData, (error) => {
                     if (!error) {
                         showToast("Conducente aggiornato nel Cloud!", "success");
+                        driversMap[editId] = { ...driversMap[editId], ...driverData, id: editId };
                         resetDriverForm();
+                        renderFleetTable();
                         updateAdminBadges();
                     } else {
                         alert("Errore scrittura Firebase: " + error.message);
