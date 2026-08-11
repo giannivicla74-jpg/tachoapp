@@ -305,6 +305,11 @@
                             </div>
                         </div>
 
+                        <div class="flex items-center space-x-2 pt-1 pb-1">
+                            <input type="checkbox" id="addAllowPhotoUpload" class="w-4 h-4 accent-emerald-500 rounded cursor-pointer">
+                            <label for="addAllowPhotoUpload" class="text-xs text-slate-300 font-bold cursor-pointer">Autorizza l'operaio a modificare/inquadrare la foto dall'App</label>
+                        </div>
+
                         <div>
                             <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Allegato (Foto Tessera o File .DDD)</label>
                             <div class="flex items-center space-x-2">
@@ -1078,6 +1083,10 @@ if ("Notification" in window && Notification.permission === "granted") {
         let cropSource = "admin";
 
         function triggerDriverSelfPhotoUpload() {
+            if (currentLoggedInDriver && !currentLoggedInDriver.allowPhotoUpload) {
+                showToast("Caricamento foto bloccato dall'amministratore. Contatta l'azienda per sbloccarlo.", "error");
+                return;
+            }
             document.getElementById('driverSelfPhotoInput').click();
         }
 
@@ -1391,12 +1400,15 @@ if ("Notification" in window && Notification.permission === "granted") {
                 finalPhotoBase64 = pendingBase64Photo || (existingDrv ? existingDrv.photoBase64 : "");
             }
 
+            const allowPhoto = document.getElementById('addAllowPhotoUpload').checked;
+
             const driverData = {
                 name, surname, cardNumber: card, cantiere, pin, phone,
                 lastDownloadDate: lastDl, cardExpiryDate: expiry,
                 docFileName: finalFileName,
                 docBase64: finalBase64,
                 photoBase64: finalPhotoBase64,
+                allowPhotoUpload: allowPhoto,
                 vacationStartDate: vacationStart || null,
                 vacationEndDate: vacationEnd || null
             };
@@ -1440,6 +1452,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('addExpiry').value = d.cardExpiryDate;
             document.getElementById('addVacationStart').value = d.vacationStartDate || "";
             document.getElementById('addVacationEnd').value = d.vacationEndDate || "";
+            document.getElementById('addAllowPhotoUpload').checked = !!d.allowPhotoUpload;
 
             clearExistingFile = false;
             pendingBase64Doc = "";
@@ -1486,6 +1499,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('addExpiry').value = "";
             document.getElementById('addVacationStart').value = "";
             document.getElementById('addVacationEnd').value = "";
+            document.getElementById('addAllowPhotoUpload').checked = false;
             document.getElementById('addDocumentFile').value = "";
             pendingBase64Doc = "";
             pendingFileNameDoc = "";
@@ -1506,6 +1520,17 @@ if ("Notification" in window && Notification.permission === "granted") {
             db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
                     showToast("Nuova scadenza a 28 giorni registrata nel Cloud!", "success");
+                    updateAdminBadges();
+                }
+            });
+        }
+
+        function toggleDriverPhotoPermission(id) {
+            const currentStatus = driversMap[id] ? !!driversMap[id].allowPhotoUpload : false;
+            const newStatus = !currentStatus;
+            db.ref('operai/' + id).update({ allowPhotoUpload: newStatus }, (error) => {
+                if (!error) {
+                    showToast(newStatus ? "Caricamento foto sbloccato per l'operaio!" : "Caricamento foto bloccato per l'operaio.", "success");
                     updateAdminBadges();
                 }
             });
@@ -1591,6 +1616,9 @@ if ("Notification" in window && Notification.permission === "granted") {
                                 </button>
                             ` : ''}
                             
+                            <button onclick="toggleDriverPhotoPermission('${id}')" title="${d.allowPhotoUpload ? 'Foto Sbloccata - Clicca per Bloccare' : 'Foto Bloccata - Clicca per Sbloccare'}" class="px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition ${d.allowPhotoUpload ? 'bg-amber-950 text-amber-300 border border-amber-700 hover:bg-amber-900' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
+                                ${d.allowPhotoUpload ? '📷 Sbloccata' : '🔒 Bloccata'}
+                            </button>
                             <button onclick="quickDownloadToday('${id}')" title="Rinnova di 28 Giorni" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
                                 🔄 Rinnova (+28gg)
                             </button>
