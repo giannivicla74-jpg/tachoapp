@@ -829,16 +829,33 @@
             }
         }
 
+        function formatDateYYYYMMDD(d) {
+            if (!d || isNaN(d.getTime())) return "";
+            const year = d.getFullYear();
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function parseLocalDate(dateStr) {
+            if (!dateStr) return new Date();
+            const parts = dateStr.split('-');
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            }
+            return new Date(dateStr);
+        }
+
         function getRelativeDate(daysOffset) {
             const date = new Date();
             date.setDate(date.getDate() + daysOffset);
-            return date.toISOString().split('T')[0];
+            return formatDateYYYYMMDD(date);
         }
 
         function getDaysRemaining(targetDateStr) {
             if (!targetDateStr) return 0;
             const today = new Date(); today.setHours(0,0,0,0);
-            const target = new Date(targetDateStr); target.setHours(0,0,0,0);
+            const target = parseLocalDate(targetDateStr); target.setHours(0,0,0,0);
             return Math.round((target - today) / (1000 * 60 * 60 * 24));
         }
 
@@ -1438,13 +1455,13 @@ if ("Notification" in window && Notification.permission === "granted") {
             const rawLastDl = document.getElementById('addLastDl').value;
             let lastDl = rawLastDl;
             if (rawLastDl) {
-                const dlDateObj = new Date(rawLastDl);
+                const dlDateObj = parseLocalDate(rawLastDl);
                 dlDateObj.setDate(dlDateObj.getDate() + 28);
-                lastDl = dlDateObj.toISOString().split('T')[0];
+                lastDl = formatDateYYYYMMDD(dlDateObj);
             } else {
                 const todayDl = new Date();
                 todayDl.setDate(todayDl.getDate() + 28);
-                lastDl = todayDl.toISOString().split('T')[0];
+                lastDl = formatDateYYYYMMDD(todayDl);
             }
             const expiry = document.getElementById('addExpiry').value || getRelativeDate(365 * 5);
             
@@ -1545,9 +1562,9 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('addPin').value = d.pin;
             document.getElementById('addPhone').value = d.phone || "";
             if (d.lastDownloadDate) {
-                const actualDlDate = new Date(d.lastDownloadDate);
+                const actualDlDate = parseLocalDate(d.lastDownloadDate);
                 actualDlDate.setDate(actualDlDate.getDate() - 28);
-                document.getElementById('addLastDl').value = actualDlDate.toISOString().split('T')[0];
+                document.getElementById('addLastDl').value = formatDateYYYYMMDD(actualDlDate);
             } else {
                 document.getElementById('addLastDl').value = "";
             }
@@ -1618,7 +1635,7 @@ if ("Notification" in window && Notification.permission === "granted") {
         function quickSetOneDayDeadline(id) {
             const targetDate = new Date();
             targetDate.setDate(targetDate.getDate() + 1);
-            const targetStr = targetDate.toISOString().split('T')[0];
+            const targetStr = formatDateYYYYMMDD(targetDate);
             db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
                     showToast("Scadenza impostata a 1 Giorno rimasto (Domani)!", "success");
@@ -1632,7 +1649,7 @@ if ("Notification" in window && Notification.permission === "granted") {
         function quickDownloadToday(id) {
             const today = new Date();
             today.setDate(today.getDate() + 28);
-            const targetStr = today.toISOString().split('T')[0];
+            const targetStr = formatDateYYYYMMDD(today);
             db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
                     showToast("Nuova scadenza a 28 giorni registrata nel Cloud!", "success");
@@ -1892,12 +1909,12 @@ if ("Notification" in window && Notification.permission === "granted") {
                     const fileDate = extractDDDFileDate(file);
                     const baseDate = fileDate ? new Date(fileDate) : new Date();
                     baseDate.setDate(baseDate.getDate() + 28);
-                    const targetStr = baseDate.toISOString().split('T')[0];
+                    const targetStr = formatDateYYYYMMDD(baseDate);
 
                     if (matchedDriverId) {
                         db.ref('operai/' + matchedDriverId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
-                                const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(fileDate.toISOString().split('T')[0])})` : '';
+                                const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(formatDateYYYYMMDD(fileDate))})` : '';
                                 showToast(`✅ ${file.name}: Nuova scadenza registrata per ${matchedDriverName}${dateInfoStr}!`, "success");
                                 updateAdminBadges();
                             }
@@ -2143,12 +2160,12 @@ if ("Notification" in window && Notification.permission === "granted") {
                     const fileDate = extractDDDFileDate(file);
                     const baseDate = fileDate ? new Date(fileDate) : new Date();
                     baseDate.setDate(baseDate.getDate() + 90);
-                    const targetStr = baseDate.toISOString().split('T')[0];
+                    const targetStr = formatDateYYYYMMDD(baseDate);
 
                     if (matchedVehicleId) {
                         db.ref('veicoli/' + matchedVehicleId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
-                                const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(fileDate.toISOString().split('T')[0])})` : '';
+                                const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(formatDateYYYYMMDD(fileDate))})` : '';
                                 showToast(`✅ ${file.name}: Nuova scadenza mezzo registrata per ${matchedVehiclePlate}${dateInfoStr}!`, "success");
                                 updateAdminBadges();
                             }
