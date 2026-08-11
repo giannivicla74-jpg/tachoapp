@@ -1393,7 +1393,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             const surname = document.getElementById('addSurname').value.trim();
             const card = document.getElementById('addCard').value.trim();
             const cantiere = document.getElementById('addCantiere').value.trim() || "Generale";
-            const pin = document.getElementById('addPin').value.trim();
+            const rawPin = document.getElementById('addPin').value.trim();
             const phone = document.getElementById('addPhone').value.trim();
             const lastDl = document.getElementById('addLastDl').value || new Date().toISOString().split('T')[0];
             const expiry = document.getElementById('addExpiry').value || getRelativeDate(365 * 5);
@@ -1401,8 +1401,10 @@ if ("Notification" in window && Notification.permission === "granted") {
             const vacationStart = document.getElementById('addVacationStart').value;
             const vacationEnd = document.getElementById('addVacationEnd').value;
 
-            if (!name || !surname || !card || pin.length !== 4) {
-                showToast("Compila Nome, Cognome, Numero Carta e PIN a 4 cifre.", "error");
+            const pin = rawPin ? rawPin.padStart(4, '0').slice(0, 4) : "0000";
+
+            if (!name || !surname || !card) {
+                showToast("Compila Nome, Cognome e Numero Carta.", "error");
                 return;
             }
 
@@ -1546,6 +1548,20 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
+        function quickSetOneDayDeadline(id) {
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() - 27);
+            const targetStr = targetDate.toISOString().split('T')[0];
+            db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
+                if(!error) {
+                    showToast("Scadenza impostata a 1 Giorno per il test!", "success");
+                    if (driversMap[id]) driversMap[id].lastDownloadDate = targetStr;
+                    renderFleetTable();
+                    updateAdminBadges();
+                }
+            });
+        }
+
         function quickDownloadToday(id) {
             const today = new Date();
             today.setDate(today.getDate() + 28);
@@ -1651,6 +1667,9 @@ if ("Notification" in window && Notification.permission === "granted") {
                             
                             <button onclick="toggleDriverPhotoPermission('${id}')" title="${d.allowPhotoUpload ? 'Foto Sbloccata - Clicca per Bloccare' : 'Foto Bloccata - Clicca per Sbloccare'}" class="px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition ${d.allowPhotoUpload ? 'bg-amber-950 text-amber-300 border border-amber-700 hover:bg-amber-900' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
                                 ${d.allowPhotoUpload ? '📷 Sbloccata' : '🔒 Bloccata'}
+                            </button>
+                            <button onclick="quickSetOneDayDeadline('${id}')" title="Imposta Scadenza a 1 Giorno per Test Notifica" class="bg-amber-600 hover:bg-amber-500 text-white px-2 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
+                                📅 1 Giorno
                             </button>
                             <button onclick="quickDownloadToday('${id}')" title="Rinnova di 28 Giorni" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
                                 🔄 Rinnova (+28gg)
