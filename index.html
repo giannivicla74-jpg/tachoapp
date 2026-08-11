@@ -1550,11 +1550,11 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function quickSetOneDayDeadline(id) {
             const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() - 27);
+            targetDate.setDate(targetDate.getDate() + 1);
             const targetStr = targetDate.toISOString().split('T')[0];
             db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
-                    showToast("Scadenza impostata a 1 Giorno per il test!", "success");
+                    showToast("Scadenza impostata a 1 Giorno rimasto (Domani)!", "success");
                     if (driversMap[id]) driversMap[id].lastDownloadDate = targetStr;
                     renderFleetTable();
                     updateAdminBadges();
