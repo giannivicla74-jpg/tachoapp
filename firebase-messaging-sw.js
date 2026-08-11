@@ -15,10 +15,18 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
     console.log('[firebase-messaging-sw.js] Ricevuto messaggio in background ', payload);
-    const notificationTitle = payload.notification.title;
+    const notificationTitle = payload.notification.title || '🔔 Avviso TachoControl';
     const notificationOptions = {
         body: payload.notification.body,
-        icon: 'https://cdn-icons-png.flaticon.com/512/1042/1042339.png'
+        icon: 'https://giannivicla74-jpg.github.io/tachoapp/logo.jpg',
+        badge: 'https://giannivicla74-jpg.github.io/tachoapp/logo.jpg',
+        vibrate: [200, 100, 200]
     };
+
+    // Imposta il pallino rosso dell'icona dell'App sul cellulare
+    if ('setAppBadge' in navigator) {
+        navigator.setAppBadge(1).catch(() => {});
+    }
+
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
