@@ -1439,8 +1439,13 @@ if ("Notification" in window && Notification.permission === "granted") {
                 vacationEndDate: vacationEnd || null
             };
 
+            const existingDrv = driversMap[editId];
+            if (existingDrv && existingDrv.fcmToken) {
+                driverData.fcmToken = existingDrv.fcmToken;
+            }
+
             if (editId) {
-                db.ref('operai/' + editId).set(driverData, (error) => {
+                db.ref('operai/' + editId).update(driverData, (error) => {
                     if (!error) {
                         showToast("Conducente aggiornato nel Cloud!", "success");
                         resetDriverForm();
