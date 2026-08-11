@@ -30,3 +30,26 @@ messaging.onBackgroundMessage((payload) => {
 
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
+
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    if ('clearAppBadge' in navigator) {
+        navigator.clearAppBadge().catch(() => {});
+    }
+    if ('setAppBadge' in navigator) {
+        navigator.setAppBadge(0).catch(() => {});
+    }
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+            for (let i = 0; i < clientList.length; i++) {
+                let client = clientList[i];
+                if (client.url.includes('tachoapp') && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            if (clients.openWindow) {
+                return clients.openWindow('https://giannivicla74-jpg.github.io/tachoapp/');
+            }
+        })
+    );
+});
