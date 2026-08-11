@@ -1851,6 +1851,13 @@ if ("Notification" in window && Notification.permission === "granted") {
         }
 
         function renderDriverView(d) {
+            if (!d) return;
+
+            // Pulisce il pallino di notifica sull'icona della home del cellulare all'apertura dell'app
+            if ('clearAppBadge' in navigator) {
+                navigator.clearAppBadge().catch(() => {});
+            }
+            
             const targetDateStr = d.lastDownloadDate || new Date().toISOString().split('T')[0];
             const daysRem = getDaysRemaining(targetDateStr);
 
