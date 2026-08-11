@@ -722,15 +722,18 @@
                     </div>
                     
                     <!-- Bottoni di regolazione zoom e rotazione -->
-                    <div class="flex items-center justify-center gap-2 mt-3 w-full">
-                        <button type="button" onclick="zoomCrop(0.1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                    <div class="flex flex-wrap items-center justify-center gap-2 mt-3 w-full">
+                        <button type="button" onclick="zoomCrop(0.25)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
                             🔍 + Ingrandisci
                         </button>
-                        <button type="button" onclick="zoomCrop(-0.1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                        <button type="button" onclick="zoomCrop(-0.25)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
                             🔍 - Riduci
                         </button>
-                        <button type="button" onclick="rotateCrop(90)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                        <button type="button" onclick="rotateCrop(90)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
                             🔄 Ruota
+                        </button>
+                        <button type="button" onclick="resetCrop()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                            ↩️ Reset
                         </button>
                     </div>
 
@@ -1110,8 +1113,9 @@ if ("Notification" in window && Notification.permission === "granted") {
                 setTimeout(() => {
                     cropperInstance = new Cropper(cropImg, {
                         aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 0.85,
+                        viewMode: 0,
+                        dragMode: 'move',
+                        autoCropArea: 0.8,
                         responsive: true,
                         restore: false,
                         guides: true,
@@ -1121,7 +1125,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                         cropBoxResizable: true,
                         toggleDragModeOnDblclick: false
                     });
-                }, 200);
+                }, 150);
             };
             reader.readAsDataURL(file);
         }
@@ -1132,6 +1136,10 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function rotateCrop(deg) {
             if (cropperInstance) cropperInstance.rotate(deg);
+        }
+
+        function resetCrop() {
+            if (cropperInstance) cropperInstance.reset();
         }
 
         function closeCropModal() {
