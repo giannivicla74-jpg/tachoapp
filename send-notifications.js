@@ -81,13 +81,15 @@ async function start() {
 
                 console.log(` -> Giorni rimanenti calcolati (Scarico): ${daysRem}`);
 
-                if (daysRem === 7 || daysRem === 3 || daysRem === 2 || daysRem === 0) {
+                if (daysRem === 7 || daysRem === 3 || daysRem === 2 || daysRem === 1 || daysRem === 0 || daysRem < 0) {
                     console.log(` -> INVIO NOTIFICA IN CORSO...`);
                     const payload = {
                         token: operaio.fcmToken,
                         notification: {
-                            title: 'Scadenza Download Tacho',
-                            body: `Attenzione ${operaio.name}: Mancano ${daysRem} giorni alla scadenza del download dati tachigrafo.`
+                            title: '🔔 Scadenza Download Tacho!',
+                            body: daysRem <= 0 
+                                ? `Attenzione ${operaio.name}: La scadenza per il download dati della carta è SCADUTA!`
+                                : `Attenzione ${operaio.name}: Mancano solo ${daysRem} giorn${daysRem === 1 ? 'o' : 'i'} alla scadenza del download carta.`
                         }
                     };
 
