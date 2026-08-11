@@ -267,7 +267,7 @@
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scadenza Scarico (28gg)</label>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data Ultimo Scarico (Carta)</label>
                                 <input type="date" id="addLastDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
                             </div>
                             <div>
@@ -396,7 +396,7 @@
                             <input type="text" id="addVehCantiere" placeholder="CANTIERE DI APPARTENENZA" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm uppercase text-white placeholder-slate-500">
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Scadenza Scarico Veicolo (90gg)</label>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Data Ultimo Scarico (Mezzo)</label>
                             <input type="date" id="addVehDl" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
                         </div>
 
@@ -1435,7 +1435,17 @@ if ("Notification" in window && Notification.permission === "granted") {
             const cantiere = document.getElementById('addCantiere').value.trim() || "Generale";
             const rawPin = document.getElementById('addPin').value.trim();
             const phone = document.getElementById('addPhone').value.trim();
-            const lastDl = document.getElementById('addLastDl').value || new Date().toISOString().split('T')[0];
+            const rawLastDl = document.getElementById('addLastDl').value;
+            let lastDl = rawLastDl;
+            if (rawLastDl) {
+                const dlDateObj = new Date(rawLastDl);
+                dlDateObj.setDate(dlDateObj.getDate() + 28);
+                lastDl = dlDateObj.toISOString().split('T')[0];
+            } else {
+                const todayDl = new Date();
+                todayDl.setDate(todayDl.getDate() + 28);
+                lastDl = todayDl.toISOString().split('T')[0];
+            }
             const expiry = document.getElementById('addExpiry').value || getRelativeDate(365 * 5);
             
             const vacationStart = document.getElementById('addVacationStart').value;
@@ -1534,7 +1544,13 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('addCantiere').value = d.cantiere;
             document.getElementById('addPin').value = d.pin;
             document.getElementById('addPhone').value = d.phone || "";
-            document.getElementById('addLastDl').value = d.lastDownloadDate;
+            if (d.lastDownloadDate) {
+                const actualDlDate = new Date(d.lastDownloadDate);
+                actualDlDate.setDate(actualDlDate.getDate() - 28);
+                document.getElementById('addLastDl').value = actualDlDate.toISOString().split('T')[0];
+            } else {
+                document.getElementById('addLastDl').value = "";
+            }
             document.getElementById('addExpiry').value = d.cardExpiryDate;
             document.getElementById('addVacationStart').value = d.vacationStartDate || "";
             document.getElementById('addVacationEnd').value = d.vacationEndDate || "";
@@ -1900,7 +1916,17 @@ if ("Notification" in window && Notification.permission === "granted") {
             const plate = document.getElementById('addVehPlate').value.trim().toUpperCase();
             const model = document.getElementById('addVehModel').value.trim();
             const cantiere = document.getElementById('addVehCantiere').value.trim() || "Generale";
-            const lastDl = document.getElementById('addVehDl').value || new Date().toISOString().split('T')[0];
+            const rawVehDl = document.getElementById('addVehDl').value;
+            let lastDl = rawVehDl;
+            if (rawVehDl) {
+                const dlDateObj = new Date(rawVehDl);
+                dlDateObj.setDate(dlDateObj.getDate() + 90);
+                lastDl = dlDateObj.toISOString().split('T')[0];
+            } else {
+                const todayDl = new Date();
+                todayDl.setDate(todayDl.getDate() + 90);
+                lastDl = todayDl.toISOString().split('T')[0];
+            }
 
             if (!plate) {
                 showToast("Inserisci la Targa o l'ID del mezzo.", "error");
@@ -1941,7 +1967,13 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('addVehPlate').value = v.plate;
             document.getElementById('addVehModel').value = v.model || "";
             document.getElementById('addVehCantiere').value = v.cantiere || "";
-            document.getElementById('addVehDl').value = v.lastDownloadDate || "";
+            if (v.lastDownloadDate) {
+                const actualDlDate = new Date(v.lastDownloadDate);
+                actualDlDate.setDate(actualDlDate.getDate() - 90);
+                document.getElementById('addVehDl').value = actualDlDate.toISOString().split('T')[0];
+            } else {
+                document.getElementById('addVehDl').value = "";
+            }
 
             document.getElementById('vehicleFormTitle').innerText = "Modifica Veicolo / Mezzo";
             document.getElementById('saveVehicleBtn').innerText = "Aggiorna Mezzo";
