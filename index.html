@@ -299,7 +299,7 @@
                                     <img id="photoPreviewImg" class="w-full h-full object-cover hidden" src="">
                                 </div>
                                 <div class="flex-1">
-                                    <input type="file" id="addDriverPhotoInput" accept="image/*" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700 transition">
+                                    <input type="file" id="addDriverPhotoInput" accept="image/*" onchange="handlePhotoSelect(event, 'admin')" class="w-full text-xs text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-emerald-400 hover:file:bg-slate-700 transition">
                                     <button type="button" onclick="clearDriverPhoto()" id="clearPhotoBtn" class="hidden text-[10px] text-red-400 hover:underline font-bold mt-1">Rimuovi Foto</button>
                                 </div>
                             </div>
@@ -697,7 +697,7 @@
 
         <!-- =================== MODALE RITAGLIO / INQUADRATURA FOTO =================== -->
         <div id="cropPhotoModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-            <div class="bg-[#111C2E] border border-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-[#111C2E] border border-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
                 <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
                     <div class="flex items-center space-x-2">
                         <span class="text-xl">🖼️</span>
@@ -707,10 +707,24 @@
                 </div>
                 
                 <div class="p-4 flex-1 overflow-hidden flex flex-col items-center justify-center bg-slate-950/90">
-                    <div class="w-full h-72 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 flex items-center justify-center">
-                        <img id="cropModalImage" src="" class="max-w-full max-h-full block">
+                    <div class="w-full h-72 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 flex items-center justify-center relative">
+                        <img id="cropModalImage" src="" style="max-width: 100%; max-height: 100%; display: block;">
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-3 text-center">Trascina e ridimensiona la griglia per inquadrare il viso dell'operaio.</p>
+                    
+                    <!-- Bottoni di regolazione zoom e rotazione -->
+                    <div class="flex items-center justify-center gap-2 mt-3 w-full">
+                        <button type="button" onclick="zoomCrop(0.1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                            🔍 + Ingrandisci
+                        </button>
+                        <button type="button" onclick="zoomCrop(-0.1)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                            🔍 - Riduci
+                        </button>
+                        <button type="button" onclick="rotateCrop(90)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                            🔄 Ruota
+                        </button>
+                    </div>
+
+                    <p class="text-[11px] text-slate-400 mt-2 text-center">Trascina e regola il riquadro per inquadrare perfettamente il viso.</p>
                 </div>
 
                 <div class="p-4 border-t border-slate-800 bg-[#15233A] flex gap-2">
@@ -1056,39 +1070,54 @@ if ("Notification" in window && Notification.permission === "granted") {
         }
 
         let cropperInstance = null;
-        let cropSource = "admin"; // "admin" or "self"
+        let cropSource = "admin";
 
         function triggerDriverSelfPhotoUpload() {
             document.getElementById('driverSelfPhotoInput').click();
         }
 
         function handlePhotoSelect(e, source = "admin") {
-            cropSource = source;
-            const file = e.target.files[0];
+            cropSource = (source === 'self') ? 'self' : 'admin';
+            const file = e.target ? e.target.files[0] : null;
             if (!file) return;
 
             const reader = new FileReader();
             reader.onload = function(evt) {
                 const cropImg = document.getElementById('cropModalImage');
-                cropImg.src = evt.target.result;
-                document.getElementById('cropPhotoModal').classList.remove('hidden');
-
+                
                 if (cropperInstance) {
                     cropperInstance.destroy();
                     cropperInstance = null;
                 }
 
+                cropImg.src = evt.target.result;
+                document.getElementById('cropPhotoModal').classList.remove('hidden');
+
                 setTimeout(() => {
                     cropperInstance = new Cropper(cropImg, {
                         aspectRatio: 1,
                         viewMode: 1,
-                        autoCropArea: 0.9,
+                        autoCropArea: 0.85,
                         responsive: true,
-                        background: false
+                        restore: false,
+                        guides: true,
+                        center: true,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false
                     });
-                }, 150);
+                }, 200);
             };
             reader.readAsDataURL(file);
+        }
+
+        function zoomCrop(delta) {
+            if (cropperInstance) cropperInstance.zoom(delta);
+        }
+
+        function rotateCrop(deg) {
+            if (cropperInstance) cropperInstance.rotate(deg);
         }
 
         function closeCropModal() {
@@ -1105,7 +1134,9 @@ if ("Notification" in window && Notification.permission === "granted") {
             if (!cropperInstance) return;
             const canvas = cropperInstance.getCroppedCanvas({
                 width: 300,
-                height: 300
+                height: 300,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high'
             });
             if (canvas) {
                 const croppedData = canvas.toDataURL('image/jpeg', 0.85);
@@ -1118,7 +1149,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                                 showToast("Foto tessera aggiornata ed inquadrata con successo!", "success");
                                 renderDriverView(currentLoggedInDriver);
                             } else {
-                                showToast("Errore salvataggio foto su Cloud.", "error");
+                                showToast("Errore salvataggio foto su Cloud: " + error.message, "error");
                             }
                         });
                     }
@@ -1129,7 +1160,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                     document.getElementById('photoPreviewImg').classList.remove('hidden');
                     document.getElementById('photoPreviewPlaceholder').classList.add('hidden');
                     document.getElementById('clearPhotoBtn').classList.remove('hidden');
-                    showToast("Foto tessera inquadrata con successo!", "success");
+                    showToast("Foto tessera inquadrata! Ricorda di salvare il conducente.", "success");
                 }
             }
             closeCropModal();
@@ -1751,7 +1782,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             const photoImg = document.getElementById('driverPhotoImg');
             const defaultAvatar = document.getElementById('driverPhotoDefaultAvatar');
             if (photoImg && defaultAvatar) {
-                if (d.photoBase64) {
+                if (d && d.photoBase64 && d.photoBase64.length > 50) {
                     photoImg.src = d.photoBase64;
                     photoImg.classList.remove('hidden');
                     defaultAvatar.classList.add('hidden');
