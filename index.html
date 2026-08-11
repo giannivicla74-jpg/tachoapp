@@ -1817,17 +1817,37 @@ if ("Notification" in window && Notification.permission === "granted") {
 
                     let matchedDriverId = null;
                     let matchedDriverName = "";
+                    let isExactCardMatch = false;
 
-                    Object.keys(driversMap).forEach(id => {
+                    // 1. TENTATIVO DI MATCH PER NUMERO CARTA (Priorità Assoluta)
+                    for (let id in driversMap) {
                         const d = driversMap[id];
-                        if (d.cardNumber && d.cardNumber.length > 5 && rawText.includes(d.cardNumber)) {
-                            matchedDriverId = id;
-                            matchedDriverName = `${d.name} ${d.surname}`;
-                        } else if (d.surname && d.surname.length > 2 && rawText.toUpperCase().includes(d.surname.toUpperCase())) {
-                            matchedDriverId = id;
-                            matchedDriverName = `${d.name} ${d.surname}`;
+                        if (d && d.cardNumber && d.cardNumber.trim().length > 5) {
+                            const cleanCard = d.cardNumber.trim().toUpperCase();
+                            const cleanRaw = rawText.toUpperCase();
+                            if (cleanRaw.includes(cleanCard) || file.name.toUpperCase().includes(cleanCard)) {
+                                matchedDriverId = id;
+                                matchedDriverName = `${d.name} ${d.surname}`;
+                                isExactCardMatch = true;
+                                break;
+                            }
                         }
-                    });
+                    }
+
+                    // 2. TENTATIVO DI MATCH PER COGNOME (Solo se il numero carta non ha trovato match)
+                    if (!isExactCardMatch) {
+                        for (let id in driversMap) {
+                            const d = driversMap[id];
+                            if (d && d.surname && d.surname.trim().length > 2) {
+                                const cleanSurname = d.surname.trim().toUpperCase();
+                                if (rawText.toUpperCase().includes(cleanSurname) || file.name.toUpperCase().includes(cleanSurname)) {
+                                    matchedDriverId = id;
+                                    matchedDriverName = `${d.name} ${d.surname}`;
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                     const today = new Date();
                     today.setDate(today.getDate() + 28);
@@ -2050,16 +2070,17 @@ if ("Notification" in window && Notification.permission === "granted") {
 
                     const cleanRawText = rawText.replace(/[\s-]/g, '').toUpperCase();
 
-                    Object.keys(vehiclesMap).forEach(id => {
+                    for (let id in vehiclesMap) {
                         const v = vehiclesMap[id];
-                        if (v.plate) {
+                        if (v && v.plate) {
                             const cleanPlate = v.plate.replace(/[\s-]/g, '').toUpperCase();
                             if (cleanPlate.length >= 3 && (cleanRawText.includes(cleanPlate) || file.name.toUpperCase().replace(/[\s-]/g, '').includes(cleanPlate))) {
                                 matchedVehicleId = id;
                                 matchedVehiclePlate = v.plate;
+                                break;
                             }
                         }
-                    });
+                    }
 
                     const today = new Date();
                     today.setDate(today.getDate() + 90);
