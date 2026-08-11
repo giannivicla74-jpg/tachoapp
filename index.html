@@ -717,27 +717,27 @@
                 </div>
                 
                 <div class="p-4 flex-1 overflow-hidden flex flex-col items-center justify-center bg-slate-950/90">
-                    <div class="w-full h-72 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 flex items-center justify-center relative">
-                        <img id="cropModalImage" src="" style="max-width: 100%; max-height: 100%; display: block;">
+                    <div class="w-full h-80 rounded-2xl border border-slate-700 bg-slate-900 overflow-hidden relative flex items-center justify-center">
+                        <img id="cropModalImage" src="" class="block max-w-full">
                     </div>
                     
                     <!-- Bottoni di regolazione zoom e rotazione -->
                     <div class="flex flex-wrap items-center justify-center gap-2 mt-3 w-full">
-                        <button type="button" onclick="zoomCrop(0.25)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                        <button type="button" onclick="zoomCrop(event, 0.25)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">
                             🔍 + Ingrandisci
                         </button>
-                        <button type="button" onclick="zoomCrop(-0.25)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                        <button type="button" onclick="zoomCrop(event, -0.25)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">
                             🔍 - Riduci
                         </button>
-                        <button type="button" onclick="rotateCrop(90)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                        <button type="button" onclick="rotateCrop(event, 90)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">
                             🔄 Ruota
                         </button>
-                        <button type="button" onclick="resetCrop()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition">
+                        <button type="button" onclick="resetCrop(event)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 border border-slate-700 text-slate-200 rounded-xl text-xs font-bold transition cursor-pointer">
                             ↩️ Reset
                         </button>
                     </div>
 
-                    <p class="text-[11px] text-slate-400 mt-2 text-center">Trascina e regola il riquadro per inquadrare perfettamente il viso.</p>
+                    <p class="text-[11px] text-slate-400 mt-2 text-center">Trascina la foto o usa le dita / mouse per inquadrare perfettamente il viso.</p>
                 </div>
 
                 <div class="p-4 border-t border-slate-800 bg-[#15233A] flex gap-2">
@@ -1115,7 +1115,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                         aspectRatio: 1,
                         viewMode: 0,
                         dragMode: 'move',
-                        autoCropArea: 0.8,
+                        autoCropArea: 0.85,
                         responsive: true,
                         restore: false,
                         guides: true,
@@ -1123,22 +1123,32 @@ if ("Notification" in window && Notification.permission === "granted") {
                         highlight: false,
                         cropBoxMovable: true,
                         cropBoxResizable: true,
-                        toggleDragModeOnDblclick: false
+                        toggleDragModeOnDblclick: false,
+                        zoomable: true,
+                        rotatable: true,
+                        scalable: true,
+                        movable: true,
+                        zoomOnWheel: true,
+                        zoomOnTouch: true,
+                        wheelZoomRatio: 0.1
                     });
                 }, 150);
             };
             reader.readAsDataURL(file);
         }
 
-        function zoomCrop(delta) {
+        function zoomCrop(ev, delta) {
+            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
             if (cropperInstance) cropperInstance.zoom(delta);
         }
 
-        function rotateCrop(deg) {
+        function rotateCrop(ev, deg) {
+            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
             if (cropperInstance) cropperInstance.rotate(deg);
         }
 
-        function resetCrop() {
+        function resetCrop(ev) {
+            if (ev) { ev.preventDefault(); ev.stopPropagation(); }
             if (cropperInstance) cropperInstance.reset();
         }
 
