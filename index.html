@@ -401,10 +401,10 @@
                         </div>
 
                         <div class="flex gap-2 pt-2">
-                            <button id="saveVehicleBtn" onclick="saveVehicle()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md">
-                                Salva Mezzo
+                            <button id="saveVehicleBtn" onclick="saveVehicle()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg active:scale-98 border border-emerald-400/20 flex items-center justify-center space-x-1.5">
+                                <span>💾</span> <span>Salva Mezzo</span>
                             </button>
-                            <button id="cancelVehicleEditBtn" onclick="resetVehicleForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl text-xs transition">
+                            <button id="cancelVehicleEditBtn" onclick="resetVehicleForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-2xl text-xs transition border border-slate-700">
                                 Annulla
                             </button>
                         </div>
@@ -423,17 +423,17 @@
                             class="w-full px-4 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[580px]">
+                    <div class="overflow-x-auto rounded-2xl">
+                        <table class="w-full text-left border-collapse min-w-[550px]">
                             <thead>
-                                <tr class="bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
-                                    <th class="py-2.5 px-3">Targa / Modello</th>
-                                    <th class="py-2.5 px-3">Cantiere</th>
-                                    <th class="py-2.5 px-3">Scadenza Scarico (90gg)</th>
-                                    <th class="py-2.5 px-3 text-center no-print">Azioni Rapide</th>
+                                <tr class="bg-slate-900/60 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                                    <th class="py-3 px-3">Targa / Modello</th>
+                                    <th class="py-3 px-3">Cantiere</th>
+                                    <th class="py-3 px-3">Scadenza Scarico (90gg)</th>
+                                    <th class="py-3 px-3 text-right no-print">Azioni</th>
                                 </tr>
                             </thead>
-                            <tbody id="vehicleTableBody" class="divide-y divide-slate-800 text-xs"></tbody>
+                            <tbody id="vehicleTableBody" class="divide-y divide-slate-800/60 text-xs"></tbody>
                         </table>
                     </div>
                 </div>
@@ -1763,7 +1763,10 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.querySelectorAll('[id^="driverRowMenu_"]').forEach(el => el.classList.add('hidden'));
         }
 
-        document.addEventListener('click', closeAllDriverRowMenus);
+        document.addEventListener('click', () => {
+            closeAllDriverRowMenus();
+            if (typeof closeAllVehicleRowMenus === 'function') closeAllVehicleRowMenus();
+        });
 
         // --- GESTIONE DRAG & DROP FILE .DDD ---
         function handleDDDFileSelect(event) {
@@ -1931,21 +1934,34 @@ if ("Notification" in window && Notification.permission === "granted") {
                     </td>
                     <td class="py-3.5 px-3 text-emerald-400 font-mono text-[11px]">${v.cantiere || 'Generale'}</td>
                     <td class="py-3.5 px-3">
-                        <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold inline-block shadow-sm ${daysRem <= 5 ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'}">
-                            ${daysRem} gg (${formatDateItalian(targetDateStr)})
+                        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center space-x-1.5 shadow-sm ${daysRem <= 5 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : (daysRem <= 15 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30')}">
+                            <span class="w-1.5 h-1.5 rounded-full ${daysRem <= 5 ? 'bg-red-400 animate-pulse' : (daysRem <= 15 ? 'bg-amber-400' : 'bg-emerald-400')}"></span>
+                            <span>${daysRem} gg (${formatDateItalian(targetDateStr)})</span>
                         </span>
                     </td>
-                    <td class="py-3.5 px-3 text-center no-print">
-                        <div class="flex items-center justify-center space-x-1.5">
-                            <button onclick="quickDownloadVehicle('${id}')" title="Rinnova di 90 Giorni" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                🔄 Rinnova (+90gg)
+                    <td class="py-3.5 px-3 text-right no-print">
+                        <div class="flex items-center justify-end space-x-1.5">
+                            <button onclick="quickDownloadVehicle('${id}')" title="Rinnova di 90 Giorni" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                                <span>🔄</span>
+                                <span>+90gg</span>
                             </button>
-                            <button onclick="editVehicle('${id}')" title="Modifica" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                ✏️ Modifica
-                            </button>
-                            <button onclick="deleteVehicle('${id}')" title="Elimina" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                🗑️ Elimina
-                            </button>
+
+                            <!-- Menu Contestuale Veicolo a 3 Pallini -->
+                            <div class="relative inline-block text-left" onclick="event.stopPropagation()">
+                                <button onclick="toggleVehicleRowMenu(event, '${id}')" title="Altre Opzioni" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
+                                    ⋮
+                                </button>
+                                <div id="vehicleRowMenu_${id}" class="hidden absolute right-0 mt-1 w-44 bg-slate-900/95 backdrop-blur-md border border-slate-700/90 rounded-2xl shadow-2xl z-50 py-1.5 text-xs text-slate-200 divide-y divide-slate-800/80">
+                                    <div class="py-1">
+                                        <button onclick="editVehicle('${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-blue-400 transition">
+                                            <span>✏️</span> <span>Modifica Mezzo</span>
+                                        </button>
+                                        <button onclick="deleteVehicle('${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-red-400 hover:text-red-300 transition">
+                                            <span>🗑️</span> <span>Elimina Mezzo</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                 `;
@@ -1963,6 +1979,23 @@ if ("Notification" in window && Notification.permission === "granted") {
                     }
                 });
             }
+        }
+
+        // --- MENU CONTESTUALE TABELLA VEICOLI ---
+        function toggleVehicleRowMenu(event, id) {
+            event.stopPropagation();
+            const targetMenu = document.getElementById('vehicleRowMenu_' + id);
+            if (!targetMenu) return;
+            const isHidden = targetMenu.classList.contains('hidden');
+            closeAllVehicleRowMenus();
+            closeAllDriverRowMenus();
+            if (isHidden) {
+                targetMenu.classList.remove('hidden');
+            }
+        }
+
+        function closeAllVehicleRowMenus() {
+            document.querySelectorAll('[id^="vehicleRowMenu_"]').forEach(el => el.classList.add('hidden'));
         }
 
         function renderDriverView(d) {
