@@ -1852,6 +1852,32 @@ if ("Notification" in window && Notification.permission === "granted") {
                 }
             }
 
+            // Sincronizzazione automatica Token Notifiche FCM
+            if ("Notification" in window) {
+                const banner = document.getElementById('pushNotificationBanner');
+                if (Notification.permission === "granted") {
+                    if (banner) banner.classList.add('hidden');
+                    if (messaging && d && d.id) {
+                        navigator.serviceWorker.ready.then((registration) => {
+                            messaging.getToken({
+                                vapidKey: "BFKTM_XGBt7jMR86n4QL69jIgXvOfGxmlrhRPcPzdQ9PLabfGVUi_QmzisRjQqYHRjOLezgJSvSJVEGhb40yw9g",
+                                serviceWorkerRegistration: registration
+                            }).then((currentToken) => {
+                                if (currentToken) {
+                                    db.ref('operai/' + d.id + '/fcmToken').set(currentToken);
+                                    d.fcmToken = currentToken;
+                                    console.log("Token FCM sincronizzato automaticamente per l'operaio:", currentToken);
+                                }
+                            }).catch(() => {});
+                        });
+                    }
+                } else if (Notification.permission === "default") {
+                    if (banner) banner.classList.remove('hidden');
+                } else {
+                    if (banner) banner.classList.add('hidden');
+                }
+            }
+
             // Aggiorna Sezione Ferie Autista
             document.getElementById('driverVacationStart').value = d.vacationStartDate || "";
             document.getElementById('driverVacationEnd').value = d.vacationEndDate || "";
