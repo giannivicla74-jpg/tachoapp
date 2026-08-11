@@ -1433,10 +1433,10 @@ if ("Notification" in window && Notification.permission === "granted") {
             const driverData = {
                 name, surname, cardNumber: card, cantiere, pin, phone,
                 lastDownloadDate: lastDl, cardExpiryDate: expiry,
-                docFileName: finalFileName,
-                docBase64: finalBase64,
-                photoBase64: finalPhotoBase64,
-                allowPhotoUpload: allowPhoto,
+                docFileName: finalFileName || "",
+                docBase64: finalBase64 || "",
+                photoBase64: finalPhotoBase64 || "",
+                allowPhotoUpload: !!allowPhoto,
                 vacationStartDate: vacationStart || null,
                 vacationEndDate: vacationEnd || null
             };
@@ -1446,29 +1446,40 @@ if ("Notification" in window && Notification.permission === "granted") {
                 driverData.fcmToken = existingDrv.fcmToken;
             }
 
-            if (editId) {
-                db.ref('operai/' + editId).update(driverData, (error) => {
-                    if (!error) {
-                        showToast("Conducente aggiornato nel Cloud!", "success");
-                        driversMap[editId] = { ...driversMap[editId], ...driverData, id: editId };
-                        resetDriverForm();
-                        renderFleetTable();
-                        updateAdminBadges();
-                    } else {
-                        alert("Errore scrittura Firebase: " + error.message);
-                    }
-                });
-            } else {
-                const newRef = db.ref('operai').push();
-                newRef.set(driverData, (error) => {
-                    if (!error) {
-                        showToast("Conducente salvato nel Cloud con successo!", "success");
-                        resetDriverForm();
-                        updateAdminBadges();
-                    } else {
-                        alert("Errore scrittura Firebase: " + error.message);
-                    }
-                });
+            // Pulisci eventuali proprieta undefined per evitare blocchi Firebase
+            for (let k in driverData) {
+                if (driverData[k] === undefined) driverData[k] = null;
+            }
+
+            try {
+                if (editId) {
+                    db.ref('operai/' + editId).update(driverData, (error) => {
+                        if (!error) {
+                            showToast("Conducente aggiornato nel Cloud!", "success");
+                            driversMap[editId] = { ...driversMap[editId], ...driverData, id: editId };
+                            resetDriverForm();
+                            renderFleetTable();
+                            updateAdminBadges();
+                        } else {
+                            showToast("Errore scrittura Firebase: " + error.message, "error");
+                        }
+                    });
+                } else {
+                    const newRef = db.ref('operai').push();
+                    newRef.set(driverData, (error) => {
+                        if (!error) {
+                            showToast("Conducente salvato nel Cloud con successo!", "success");
+                            resetDriverForm();
+                            renderFleetTable();
+                            updateAdminBadges();
+                        } else {
+                            showToast("Errore scrittura Firebase: " + error.message, "error");
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error("Errore saveDriver:", err);
+                showToast("Errore durante il salvataggio: " + err.message, "error");
             }
         }
 
