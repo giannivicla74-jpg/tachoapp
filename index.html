@@ -1796,6 +1796,30 @@ if ("Notification" in window && Notification.permission === "granted") {
             }
         }
 
+        function extractDDDFileDate(file) {
+            if (!file || !file.name) return null;
+            const nameMatch = file.name.match(/(?:C|V|M|c|v|m)_?(\d{4})(\d{2})(\d{2})_/);
+            if (nameMatch) {
+                const year = parseInt(nameMatch[1]);
+                const month = parseInt(nameMatch[2]) - 1;
+                const day = parseInt(nameMatch[3]);
+                const date = new Date(year, month, day);
+                if (!isNaN(date.getTime())) return date;
+            }
+
+            const generalMatch = file.name.match(/20\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])/);
+            if (generalMatch) {
+                const str = generalMatch[0];
+                const year = parseInt(str.substring(0, 4));
+                const month = parseInt(str.substring(4, 6)) - 1;
+                const day = parseInt(str.substring(6, 8));
+                const date = new Date(year, month, day);
+                if (!isNaN(date.getTime())) return date;
+            }
+
+            return null;
+        }
+
         function processDDDFiles(files) {
             if (!files || files.length === 0) return;
             let fileList = Array.from(files);
@@ -1849,14 +1873,16 @@ if ("Notification" in window && Notification.permission === "granted") {
                         }
                     }
 
-                    const today = new Date();
-                    today.setDate(today.getDate() + 28);
-                    const targetStr = today.toISOString().split('T')[0];
+                    const fileDate = extractDDDFileDate(file);
+                    const baseDate = fileDate ? new Date(fileDate) : new Date();
+                    baseDate.setDate(baseDate.getDate() + 28);
+                    const targetStr = baseDate.toISOString().split('T')[0];
 
                     if (matchedDriverId) {
                         db.ref('operai/' + matchedDriverId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
-                                showToast(`✅ ${file.name}: Scarico +28gg registrato per ${matchedDriverName}!`, "success");
+                                const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(fileDate.toISOString().split('T')[0])})` : '';
+                                showToast(`✅ ${file.name}: Nuova scadenza registrata per ${matchedDriverName}${dateInfoStr}!`, "success");
                                 updateAdminBadges();
                             }
                         });
@@ -2082,14 +2108,16 @@ if ("Notification" in window && Notification.permission === "granted") {
                         }
                     }
 
-                    const today = new Date();
-                    today.setDate(today.getDate() + 90);
-                    const targetStr = today.toISOString().split('T')[0];
+                    const fileDate = extractDDDFileDate(file);
+                    const baseDate = fileDate ? new Date(fileDate) : new Date();
+                    baseDate.setDate(baseDate.getDate() + 90);
+                    const targetStr = baseDate.toISOString().split('T')[0];
 
                     if (matchedVehicleId) {
                         db.ref('veicoli/' + matchedVehicleId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
-                                showToast(`✅ ${file.name}: Scarico mezzo +90gg registrato per ${matchedVehiclePlate}!`, "success");
+                                const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(fileDate.toISOString().split('T')[0])})` : '';
+                                showToast(`✅ ${file.name}: Nuova scadenza mezzo registrata per ${matchedVehiclePlate}${dateInfoStr}!`, "success");
                                 updateAdminBadges();
                             }
                         });
