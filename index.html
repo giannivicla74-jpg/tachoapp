@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v8.5 Pro - Cloud & Push</title>
+    <title>GC-TachoControl v9.0 Pro - Cloud & Push</title>
     
     <!-- Icone PWA (Assolute per massima compatibilità) -->
     <link rel="apple-touch-icon" href="https://giannivicla74-jpg.github.io/tachoapp/logo.jpg">
@@ -96,7 +96,7 @@
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div>
-                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v8.5 Pro</h1>
+                <h1 class="text-lg font-bold text-emerald-400 tracking-tight" id="adminHeaderCompanyName">GC CodeLab &bull; v9.0 Pro</h1>
                 <p class="text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
             </div>
             <div>
@@ -320,12 +320,32 @@
                         </div>
 
                         <div class="flex gap-2 pt-2">
-                            <button id="saveBtn" onclick="saveDriver()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-md">
-                                Salva Conducente
+                            <button id="saveBtn" onclick="saveDriver()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg active:scale-98 border border-emerald-400/20 flex items-center justify-center space-x-1.5">
+                                <span>💾</span> <span>Salva Conducente</span>
                             </button>
-                            <button id="cancelEditBtn" onclick="resetDriverForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-xl text-xs transition">
+                            <button id="cancelEditBtn" onclick="resetDriverForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-2xl text-xs transition border border-slate-700">
                                 Annulla
                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DROPZONE CARICAMENTO AUTOMATICO FILE .DDD -->
+                <div id="dddDropzone" 
+                     ondragover="event.preventDefault(); this.classList.add('border-emerald-400', 'bg-emerald-950/20')" 
+                     ondragleave="this.classList.remove('border-emerald-400', 'bg-emerald-950/20')" 
+                     ondrop="event.preventDefault(); this.classList.remove('border-emerald-400', 'bg-emerald-950/20'); processDDDFiles(event.dataTransfer.files);"
+                     class="no-print bg-slate-900/60 backdrop-blur-md rounded-3xl p-5 border-2 border-dashed border-indigo-500/40 hover:border-emerald-400/80 transition-all duration-300 shadow-xl group cursor-pointer text-center space-y-2">
+                    <input type="file" id="dddFileInput" multiple accept=".ddd,.esm,.tgd,.zip" class="hidden" onchange="handleDDDFileSelect(event)">
+                    <div onclick="document.getElementById('dddFileInput').click()" class="flex flex-col items-center justify-center space-y-2 py-1">
+                        <div class="w-11 h-11 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:bg-emerald-500/10 group-hover:text-emerald-400 group-hover:border-emerald-500/30 transition-all shadow-inner">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200 group-hover:text-white transition">
+                                Trascina qui i file <span class="text-emerald-400 font-mono font-semibold">.DDD / .ESM</span> della Carta Conducente
+                            </p>
+                            <p class="text-[10px] text-slate-400">oppure <span class="text-indigo-400 underline font-semibold">clicca per selezionarli dal computer</span> per aggiornare le scadenze in automatico</p>
                         </div>
                     </div>
                 </div>
@@ -342,18 +362,18 @@
                             class="w-full px-4 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl text-xs text-white placeholder-slate-500 outline-none">
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[580px]">
+                    <div class="overflow-visible">
+                        <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
-                                    <th class="py-2.5 px-3">Nome / Cantiere / PIN</th>
-                                    <th class="py-2.5 px-3">Num. Carta</th>
-                                    <th class="py-2.5 px-3">Scadenza Scarico (28gg)</th>
-                                    <th class="py-2.5 px-3">Scad. 5 Anni</th>
-                                    <th class="py-2.5 px-3 text-center no-print">Azioni Rapide</th>
+                                <tr class="bg-slate-900/60 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
+                                    <th class="py-3 px-3">Nome / Cantiere / PIN</th>
+                                    <th class="py-3 px-3">Num. Carta</th>
+                                    <th class="py-3 px-3">Scadenza Scarico (28gg)</th>
+                                    <th class="py-3 px-3">Scad. 5 Anni</th>
+                                    <th class="py-3 px-3 text-right no-print">Azioni</th>
                                 </tr>
                             </thead>
-                            <tbody id="fleetTableBody" class="divide-y divide-slate-800 text-xs"></tbody>
+                            <tbody id="fleetTableBody" class="divide-y divide-slate-800/60 text-xs"></tbody>
                         </table>
                     </div>
                 </div>
@@ -745,7 +765,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v8.5 Pro Cloud & Push
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v9.0 Pro Cloud & Push
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -937,9 +957,9 @@ if ("Notification" in window && Notification.permission === "granted") {
         function updateDOMCompanyName() {
             document.getElementById('loginCompanyNameDisplay').innerText = currentCompanyName;
             document.getElementById('driverSelCompanyNameDisplay').innerText = currentCompanyName;
-            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v8.5 Pro`;
+            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v9.0 Pro`;
             document.getElementById('companyNameInput').value = currentCompanyName !== "GC CodeLab - Gestione Flotta" ? currentCompanyName : "";
-            document.getElementById('driverCardCompanyHeader').innerText = currentCompanyName.toUpperCase();
+            document.getElementById('driverCardCompanyHeader').innerText = "REPUBBLICA ITALIANA";
         }
 
         function updateDOMCompanyCard() {
@@ -1650,47 +1670,64 @@ if ("Notification" in window && Notification.permission === "granted") {
                     <td class="py-3.5 px-3 font-mono text-slate-400 text-[11px]">${d.cardNumber || ''}</td>
                     <td class="py-3.5 px-3">
                         ${isVacation ? `
-                            <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold inline-block shadow-sm bg-yellow-900 text-yellow-300 border border-yellow-700">
-                                ${vacationText}
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center space-x-1 shadow-sm bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                                <span>🏖️</span> <span>${vacationText}</span>
                             </span>
                         ` : `
-                            <span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold inline-block shadow-sm ${daysRem <= 2 ? 'bg-red-950 text-red-300 border border-red-800' : 'bg-emerald-950 text-emerald-300 border border-emerald-800'}">
-                                ${daysRem} gg (${formatDateItalian(targetDateStr)})
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center space-x-1.5 shadow-sm ${daysRem <= 2 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : (daysRem <= 7 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30')}">
+                                <span class="w-1.5 h-1.5 rounded-full ${daysRem <= 2 ? 'bg-red-400 animate-pulse' : (daysRem <= 7 ? 'bg-amber-400' : 'bg-emerald-400')}"></span>
+                                <span>${daysRem} gg (${formatDateItalian(targetDateStr)})</span>
                             </span>
                         `}
                     </td>
                     <td class="py-3.5 px-3 text-slate-400 text-xs">
                         ${formatDateItalian(d.cardExpiryDate)}
                     </td>
-                    <td class="py-3.5 px-3 text-center no-print">
-                        <div class="flex items-center justify-center space-x-1.5">
+                    <td class="py-3.5 px-3 text-right no-print">
+                        <div class="flex items-center justify-end space-x-1.5">
+                            <button onclick="quickDownloadToday('${id}')" title="Rinnova di 28 Giorni" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                                <span>🔄</span>
+                                <span>+28gg</span>
+                            </button>
+
                             ${hasPhone ? `
-                                <button onclick="sendWhatsAppReminder('${id}')" title="Invia Avviso WhatsApp" class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white px-2 py-2 rounded-xl text-[10px] font-bold shadow-md transition-all active:scale-95 flex items-center justify-center border border-green-500/30">
+                                <button onclick="sendWhatsAppReminder('${id}')" title="Invia Avviso WhatsApp" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 px-2 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95">
                                     💬 WA
                                 </button>
                             ` : ''}
 
-                            ${hasAttachment ? `
-                                <button onclick="openDriverDocument('${id}')" title="Visualizza File/Tessera Allegato" class="bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 hover:to-cyan-600 text-white p-2 rounded-xl text-[10px] font-bold shadow-md transition-all active:scale-95 flex items-center justify-center">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            <!-- Menu Contestuale a 3 Pallini -->
+                            <div class="relative inline-block text-left" onclick="event.stopPropagation()">
+                                <button onclick="toggleDriverRowMenu(event, '${id}')" title="Altre Opzioni" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
+                                    ⋮
                                 </button>
-                            ` : ''}
-                            
-                            <button onclick="toggleDriverPhotoPermission('${id}')" title="${d.allowPhotoUpload ? 'Foto Sbloccata - Clicca per Bloccare' : 'Foto Bloccata - Clicca per Sbloccare'}" class="px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition ${d.allowPhotoUpload ? 'bg-amber-950 text-amber-300 border border-amber-700 hover:bg-amber-900' : 'bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-700'}">
-                                ${d.allowPhotoUpload ? '📷 Sbloccata' : '🔒 Bloccata'}
-                            </button>
-                            <button onclick="quickSetOneDayDeadline('${id}')" title="Imposta Scadenza a 1 Giorno per Test Notifica" class="bg-amber-600 hover:bg-amber-500 text-white px-2 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                📅 1 Giorno
-                            </button>
-                            <button onclick="quickDownloadToday('${id}')" title="Rinnova di 28 Giorni" class="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                🔄 Rinnova (+28gg)
-                            </button>
-                            <button onclick="editDriver('${id}')" title="Modifica" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                ✏️ Modifica
-                            </button>
-                            <button onclick="deleteDriver('${id}')" title="Elimina" class="bg-red-600 hover:bg-red-500 text-white px-2.5 py-2 rounded-xl text-[10px] font-bold shadow-md transition">
-                                🗑️ Elimina
-                            </button>
+                                <div id="driverRowMenu_${id}" class="hidden absolute right-0 mt-1 w-48 bg-slate-900/95 backdrop-blur-md border border-slate-700/90 rounded-2xl shadow-2xl z-50 py-1.5 text-xs text-slate-200 divide-y divide-slate-800/80">
+                                    <div class="py-1">
+                                        <button onclick="openDriverViewModal('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-slate-200 transition">
+                                            <span>📄</span> <span>Visualizza Scheda</span>
+                                        </button>
+                                        ${hasAttachment ? `
+                                            <button onclick="openDriverDocument('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-cyan-400 transition">
+                                                <span>📎</span> <span>Apri Allegato</span>
+                                            </button>
+                                        ` : ''}
+                                        <button onclick="toggleDriverPhotoPermission('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 ${d.allowPhotoUpload ? 'text-amber-400' : 'text-slate-300'} transition">
+                                            <span>${d.allowPhotoUpload ? '🔒' : '📷'}</span> <span>${d.allowPhotoUpload ? 'Blocca Foto' : 'Sblocca Foto'}</span>
+                                        </button>
+                                        <button onclick="quickSetOneDayDeadline('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-amber-300 transition">
+                                            <span>📅</span> <span>Test 1 Giorno</span>
+                                        </button>
+                                    </div>
+                                    <div class="py-1">
+                                        <button onclick="editDriver('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-blue-400 transition">
+                                            <span>✏️</span> <span>Modifica</span>
+                                        </button>
+                                        <button onclick="deleteDriver('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-red-400 hover:text-red-300 transition">
+                                            <span>🗑️</span> <span>Elimina Conducente</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </td>
                 `;
@@ -1708,6 +1745,84 @@ if ("Notification" in window && Notification.permission === "granted") {
                     }
                 });
             }
+        }
+
+        // --- MENU CONTESTUALE TABELLA CONDUCENTI ---
+        function toggleDriverRowMenu(event, id) {
+            event.stopPropagation();
+            const targetMenu = document.getElementById('driverRowMenu_' + id);
+            if (!targetMenu) return;
+            const isHidden = targetMenu.classList.contains('hidden');
+            closeAllDriverRowMenus();
+            if (isHidden) {
+                targetMenu.classList.remove('hidden');
+            }
+        }
+
+        function closeAllDriverRowMenus() {
+            document.querySelectorAll('[id^="driverRowMenu_"]').forEach(el => el.classList.add('hidden'));
+        }
+
+        document.addEventListener('click', closeAllDriverRowMenus);
+
+        // --- GESTIONE DRAG & DROP FILE .DDD ---
+        function handleDDDFileSelect(event) {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                processDDDFiles(files);
+            }
+        }
+
+        function processDDDFiles(files) {
+            if (!files || files.length === 0) return;
+            let fileList = Array.from(files);
+
+            fileList.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const buffer = e.target.result;
+                    const bytes = new Uint8Array(buffer);
+                    
+                    let rawText = "";
+                    for (let i = 0; i < bytes.length; i++) {
+                        if (bytes[i] >= 32 && bytes[i] <= 126) {
+                            rawText += String.fromCharCode(bytes[i]);
+                        } else {
+                            rawText += " ";
+                        }
+                    }
+
+                    let matchedDriverId = null;
+                    let matchedDriverName = "";
+
+                    Object.keys(driversMap).forEach(id => {
+                        const d = driversMap[id];
+                        if (d.cardNumber && d.cardNumber.length > 5 && rawText.includes(d.cardNumber)) {
+                            matchedDriverId = id;
+                            matchedDriverName = `${d.name} ${d.surname}`;
+                        } else if (d.surname && d.surname.length > 2 && rawText.toUpperCase().includes(d.surname.toUpperCase())) {
+                            matchedDriverId = id;
+                            matchedDriverName = `${d.name} ${d.surname}`;
+                        }
+                    });
+
+                    const today = new Date();
+                    today.setDate(today.getDate() + 28);
+                    const targetStr = today.toISOString().split('T')[0];
+
+                    if (matchedDriverId) {
+                        db.ref('operai/' + matchedDriverId).update({ lastDownloadDate: targetStr }, (err) => {
+                            if (!err) {
+                                showToast(`✅ ${file.name}: Scarico +28gg registrato per ${matchedDriverName}!`, "success");
+                                updateAdminBadges();
+                            }
+                        });
+                    } else {
+                        showToast(`ℹ️ File ${file.name} elaborato. Nessun numero carta corrispondente trovato.`, "info");
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
         }
 
         // --- GESTIONE VEICOLI / MEZZI (90GG) ---
