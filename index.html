@@ -542,6 +542,44 @@
                 </div>
             </div>
 
+            <!-- Box Gestione Ferie Autista -->
+            <div class="bg-[#15243E] border border-yellow-500/30 rounded-3xl p-5 shadow-xl space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-yellow-500/10 text-yellow-400 rounded-2xl border border-yellow-500/20">
+                            <span class="text-xl">🏖️</span>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-white text-sm">Pianifica le tue Ferie</h4>
+                            <p class="text-[11px] text-slate-400">Sospende temporaneamente le notifiche di scadenza scarico.</p>
+                        </div>
+                    </div>
+                    <div id="driverVacationStatusBadge" class="hidden">
+                        <!-- Popolato dinamicamente da JS -->
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Inizio Ferie</label>
+                        <input type="date" id="driverVacationStart" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 focus:border-yellow-500 rounded-xl outline-none text-xs text-white transition">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Fine Ferie (Rientro)</label>
+                        <input type="date" id="driverVacationEnd" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 focus:border-yellow-500 rounded-xl outline-none text-xs text-white transition">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                    <button onclick="saveDriverVacation()" class="flex-1 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 font-black py-3 px-4 rounded-xl shadow-md text-xs transition active:scale-[0.98]">
+                        💾 Salva Ferie
+                    </button>
+                    <button id="clearDriverVacationBtn" onclick="clearDriverVacation()" class="hidden bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-200 font-bold py-3 px-4 rounded-xl text-xs transition shadow-md">
+                        🗑️ Rimuovi
+                    </button>
+                </div>
+            </div>
+
             <!-- Box Norme & Sanzioni -->
             <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
                 <div class="flex items-start space-x-3 mb-3">
@@ -738,6 +776,12 @@ if ("Notification" in window && Notification.permission === "granted") {
                 populateDatalist();
                 if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
                     renderFleetTable();
+                }
+                if (currentLoggedInDriver && driversMap[currentLoggedInDriver.id]) {
+                    currentLoggedInDriver = { id: currentLoggedInDriver.id, ...driversMap[currentLoggedInDriver.id] };
+                    if (!document.getElementById('driverSection').classList.contains('hidden')) {
+                        renderDriverView(currentLoggedInDriver);
+                    }
                 }
                 updateAdminBadges();
             });
@@ -1512,6 +1556,26 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('driverNextDownloadDate').innerText = formatDateItalian(targetDateStr);
             document.getElementById('driverDaysCountdown').innerText = isVacation ? "FERIE" : daysRem;
 
+            // Aggiorna Sezione Ferie Autista
+            document.getElementById('driverVacationStart').value = d.vacationStartDate || "";
+            document.getElementById('driverVacationEnd').value = d.vacationEndDate || "";
+
+            const statusBadge = document.getElementById('driverVacationStatusBadge');
+            const clearBtn = document.getElementById('clearDriverVacationBtn');
+
+            if (d.vacationStartDate && d.vacationEndDate) {
+                clearBtn.classList.remove('hidden');
+                statusBadge.classList.remove('hidden');
+                if (isVacation) {
+                    statusBadge.innerHTML = `<span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-yellow-950 text-yellow-300 border border-yellow-700 shadow-sm">🏖️ IN FERIE</span>`;
+                } else {
+                    statusBadge.innerHTML = `<span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-blue-950 text-blue-300 border border-blue-700 shadow-sm">📅 PROGRAMMATE</span>`;
+                }
+            } else {
+                clearBtn.classList.add('hidden');
+                statusBadge.classList.add('hidden');
+            }
+
             const alertBox = document.getElementById('driverExpiryAlertBox');
             alertBox.classList.add('hidden');
 
@@ -1569,6 +1633,66 @@ if ("Notification" in window && Notification.permission === "granted") {
                 cardVisual.className = "bg-gradient-to-tr from-red-950 via-slate-900 to-rose-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-red-500/50 flex flex-col justify-between h-64";
             } else {
                 cardVisual.className = "bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64";
+            }
+        }
+
+        function saveDriverVacation() {
+            if (!currentLoggedInDriver || !currentLoggedInDriver.id) {
+                showToast("Errore: Autista non identificato.", "error");
+                return;
+            }
+
+            const startVal = document.getElementById('driverVacationStart').value;
+            const endVal = document.getElementById('driverVacationEnd').value;
+
+            if ((startVal && !endVal) || (!startVal && endVal)) {
+                showToast("Seleziona sia la data di inizio che quella di fine ferie.", "error");
+                return;
+            }
+
+            if (startVal && endVal && new Date(endVal) < new Date(startVal)) {
+                showToast("La data di rientro non può essere antecedente all'inizio ferie.", "error");
+                return;
+            }
+
+            const updates = {
+                vacationStartDate: startVal || null,
+                vacationEndDate: endVal || null
+            };
+
+            db.ref('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
+                if (error) {
+                    showToast("Errore durante il salvataggio delle ferie.", "error");
+                } else {
+                    currentLoggedInDriver.vacationStartDate = updates.vacationStartDate;
+                    currentLoggedInDriver.vacationEndDate = updates.vacationEndDate;
+                    showToast("Periodo di ferie aggiornato con successo!", "success");
+                    renderDriverView(currentLoggedInDriver);
+                }
+            });
+        }
+
+        function clearDriverVacation() {
+            if (!currentLoggedInDriver || !currentLoggedInDriver.id) return;
+
+            if (confirm("Vuoi davvero rimuovere il periodo di ferie programmato?")) {
+                const updates = {
+                    vacationStartDate: null,
+                    vacationEndDate: null
+                };
+
+                db.ref('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
+                    if (error) {
+                        showToast("Errore durante la rimozione delle ferie.", "error");
+                    } else {
+                        currentLoggedInDriver.vacationStartDate = null;
+                        currentLoggedInDriver.vacationEndDate = null;
+                        document.getElementById('driverVacationStart').value = "";
+                        document.getElementById('driverVacationEnd').value = "";
+                        showToast("Periodo di ferie rimosso.", "success");
+                        renderDriverView(currentLoggedInDriver);
+                    }
+                });
             }
         }
 
