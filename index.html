@@ -18,6 +18,10 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- INCLUSIONE CROPPER.JS PER INQUADRATURA FOTO TESSERA -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
     <!-- INCLUSIONE SDK FIREBASE (App, Database e Messaging) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -536,10 +540,15 @@
                             <span class="text-[9px] text-slate-400 uppercase tracking-wider block font-bold">Cognome &amp; Nome</span>
                             <span class="text-lg font-bold tracking-wide text-white" id="driverCardHolderName">-</span>
                         </div>
-                        <div id="driverPhotoDisplay" class="w-14 h-14 rounded-2xl bg-slate-800/90 border-2 border-emerald-400/70 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0">
+                        <div id="driverPhotoDisplay" onclick="triggerDriverSelfPhotoUpload()" title="Clicca per caricare/inquadrare la tua foto tessera" class="w-14 h-14 rounded-2xl bg-slate-800/90 border-2 border-emerald-400/70 shadow-lg overflow-hidden flex items-center justify-center flex-shrink-0 cursor-pointer hover:border-yellow-400 transition relative group">
                             <span class="text-2xl" id="driverPhotoDefaultAvatar">👤</span>
                             <img id="driverPhotoImg" class="w-full h-full object-cover hidden" src="" alt="Foto Conducente">
+                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition text-[8px] font-extrabold text-yellow-300 text-center p-0.5 leading-none">
+                                <span>📷</span>
+                                <span class="mt-0.5">Inquadra</span>
+                            </div>
                         </div>
+                        <input type="file" id="driverSelfPhotoInput" accept="image/*" class="hidden" onchange="handlePhotoSelect(event, 'self')">
                     </div>
                 </div>
 
@@ -681,6 +690,35 @@
                 <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-end">
                     <button onclick="closeCciaaModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
                         Chiudi Informativa
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- =================== MODALE RITAGLIO / INQUADRATURA FOTO =================== -->
+        <div id="cropPhotoModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-[#111C2E] border border-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xl">🖼️</span>
+                        <h3 class="font-extrabold text-white text-sm">Scegli Inquadratura Foto Tessera</h3>
+                    </div>
+                    <button onclick="closeCropModal()" class="text-slate-400 hover:text-white font-bold text-xl px-2">&times;</button>
+                </div>
+                
+                <div class="p-4 flex-1 overflow-hidden flex flex-col items-center justify-center bg-slate-950/90">
+                    <div class="w-full h-72 overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 flex items-center justify-center">
+                        <img id="cropModalImage" src="" class="max-w-full max-h-full block">
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-3 text-center">Trascina e ridimensiona la griglia per inquadrare il viso dell'operaio.</p>
+                </div>
+
+                <div class="p-4 border-t border-slate-800 bg-[#15233A] flex gap-2">
+                    <button onclick="closeCropModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3.5 rounded-xl transition">
+                        Annulla
+                    </button>
+                    <button onclick="confirmCropPhoto()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3.5 rounded-xl transition shadow-md">
+                        ✂️ Conferma Inquadratura
                     </button>
                 </div>
             </div>
@@ -1017,19 +1055,84 @@ if ("Notification" in window && Notification.permission === "granted") {
             reader.readAsDataURL(file);
         }
 
-        function handlePhotoSelect(e) {
+        let cropperInstance = null;
+        let cropSource = "admin"; // "admin" or "self"
+
+        function triggerDriverSelfPhotoUpload() {
+            document.getElementById('driverSelfPhotoInput').click();
+        }
+
+        function handlePhotoSelect(e, source = "admin") {
+            cropSource = source;
             const file = e.target.files[0];
-            if (!file) { pendingBase64Photo = ""; return; }
-            clearExistingPhoto = false;
+            if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(evt) {
-                pendingBase64Photo = evt.target.result;
-                document.getElementById('photoPreviewImg').src = pendingBase64Photo;
-                document.getElementById('photoPreviewImg').classList.remove('hidden');
-                document.getElementById('photoPreviewPlaceholder').classList.add('hidden');
-                document.getElementById('clearPhotoBtn').classList.remove('hidden');
+                const cropImg = document.getElementById('cropModalImage');
+                cropImg.src = evt.target.result;
+                document.getElementById('cropPhotoModal').classList.remove('hidden');
+
+                if (cropperInstance) {
+                    cropperInstance.destroy();
+                    cropperInstance = null;
+                }
+
+                setTimeout(() => {
+                    cropperInstance = new Cropper(cropImg, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 0.9,
+                        responsive: true,
+                        background: false
+                    });
+                }, 150);
             };
             reader.readAsDataURL(file);
+        }
+
+        function closeCropModal() {
+            document.getElementById('cropPhotoModal').classList.add('hidden');
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            document.getElementById('addDriverPhotoInput').value = "";
+            document.getElementById('driverSelfPhotoInput').value = "";
+        }
+
+        function confirmCropPhoto() {
+            if (!cropperInstance) return;
+            const canvas = cropperInstance.getCroppedCanvas({
+                width: 300,
+                height: 300
+            });
+            if (canvas) {
+                const croppedData = canvas.toDataURL('image/jpeg', 0.85);
+
+                if (cropSource === 'self') {
+                    if (currentLoggedInDriver && currentLoggedInDriver.id) {
+                        db.ref('operai/' + currentLoggedInDriver.id).update({ photoBase64: croppedData }, (error) => {
+                            if (!error) {
+                                currentLoggedInDriver.photoBase64 = croppedData;
+                                showToast("Foto tessera aggiornata ed inquadrata con successo!", "success");
+                                renderDriverView(currentLoggedInDriver);
+                            } else {
+                                showToast("Errore salvataggio foto su Cloud.", "error");
+                            }
+                        });
+                    }
+                } else {
+                    pendingBase64Photo = croppedData;
+                    clearExistingPhoto = false;
+                    document.getElementById('photoPreviewImg').src = pendingBase64Photo;
+                    document.getElementById('photoPreviewImg').classList.remove('hidden');
+                    document.getElementById('photoPreviewPlaceholder').classList.add('hidden');
+                    document.getElementById('clearPhotoBtn').classList.remove('hidden');
+                    showToast("Foto tessera inquadrata con successo!", "success");
+                }
+            }
+            closeCropModal();
         }
 
         function clearDriverPhoto() {
