@@ -1159,9 +1159,14 @@ if ("Notification" in window && Notification.permission === "granted") {
 
                 // 2. Reset pulito dell'elemento immagine nel wrapper
                 const wrapper = document.getElementById('cropImageWrapper');
-                wrapper.innerHTML = '<img id="cropModalImage" src="' + evt.target.result + '" style="display:block; max-width:100%; max-height:100%; margin:0 auto;">';
-
-                const cropImg = document.getElementById('cropModalImage');
+                wrapper.innerHTML = '';
+                
+                const cropImg = document.createElement('img');
+                cropImg.id = 'cropModalImage';
+                cropImg.style.display = 'block';
+                cropImg.style.maxWidth = '100%';
+                cropImg.style.maxHeight = '100%';
+                cropImg.style.margin = '0 auto';
 
                 // 3. Inizializzazione Cropper ad immagine caricata e dimensioni calcolate
                 const initCropper = () => {
@@ -1191,11 +1196,15 @@ if ("Notification" in window && Notification.permission === "granted") {
                     });
                 };
 
-                if (cropImg.complete) {
-                    setTimeout(initCropper, 60);
-                } else {
-                    cropImg.onload = () => setTimeout(initCropper, 60);
-                }
+                cropImg.onload = () => {
+                    // Attendiamo che il layout del modale sia completo prima di inizializzare Cropper
+                    requestAnimationFrame(() => {
+                        setTimeout(initCropper, 150);
+                    });
+                };
+                
+                wrapper.appendChild(cropImg);
+                cropImg.src = evt.target.result;
             };
             reader.readAsDataURL(file);
         }
