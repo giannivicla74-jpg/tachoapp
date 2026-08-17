@@ -1676,6 +1676,17 @@ if ("Notification" in window && Notification.permission === "granted") {
             });
         }
 
+        function requestDriverObligation(id) {
+            db.ref('operai/' + id).update({ obligationAccepted: false }, (error) => {
+                if(!error) {
+                    showToast("Lettura normativa richiesta con successo!", "success");
+                    if (driversMap[id]) driversMap[id].obligationAccepted = false;
+                } else {
+                    showToast("Errore: " + error.message, "error");
+                }
+            });
+        }
+
         function quickDownloadToday(id) {
             const today = new Date();
             today.setDate(today.getDate() + 28);
@@ -1798,7 +1809,10 @@ if ("Notification" in window && Notification.permission === "granted") {
                                             <span>${d.allowPhotoUpload ? '🔒' : '📷'}</span> <span>${d.allowPhotoUpload ? 'Blocca Foto' : 'Sblocca Foto'}</span>
                                         </button>
                                         <button onclick="quickSetOneDayDeadline('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-amber-300 transition">
-                                            <span>📅</span> <span>Test 1 Giorno</span>
+                                            <span>⏱️</span> <span>Test 1 Giorno</span>
+                                        </button>
+                                        <button onclick="requestDriverObligation('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-red-400 transition">
+                                            <span>⚠️</span> <span>Richiedi Presa Visione</span>
                                         </button>
                                     </div>
                                     <div class="py-1">
@@ -2209,7 +2223,12 @@ if ("Notification" in window && Notification.permission === "granted") {
         }
 
         function acceptDriverObligations() {
-            localStorage.setItem('tacho_obligation_accepted', 'true');
+            if (currentLoggedInDriver && currentLoggedInDriver.id) {
+                db.ref('operai/' + currentLoggedInDriver.id).update({ obligationAccepted: true });
+                currentLoggedInDriver.obligationAccepted = true;
+            } else {
+                localStorage.setItem('tacho_obligation_accepted', 'true');
+            }
             const obligationModal = document.getElementById('driverObligationModal');
             if (obligationModal) obligationModal.classList.add('hidden');
         }
@@ -2217,8 +2236,12 @@ if ("Notification" in window && Notification.permission === "granted") {
         function renderDriverView(d) {
             if (!d) return;
 
-            // Mostra il modale obblighi se è la prima volta per questo dispositivo
-            if (!localStorage.getItem('tacho_obligation_accepted')) {
+            // Mostra il modale obblighi se non accettato su database (o fallback locale per retrocompatibilità)
+            const acceptedInDB = d.obligationAccepted === true;
+            const acceptedLocally = localStorage.getItem('tacho_obligation_accepted') === 'true';
+            
+            // Se l'admin ha richiesto esplicitamente la lettura (false) o se non l'ha mai fatto
+            if (d.obligationAccepted === false || (!acceptedInDB && !acceptedLocally)) {
                 const obligationModal = document.getElementById('driverObligationModal');
                 if (obligationModal) obligationModal.classList.remove('hidden');
             }
