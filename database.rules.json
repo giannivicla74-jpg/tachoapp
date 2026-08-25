@@ -7,6 +7,9 @@
     },
     "veicoli": {
       ".indexOn": ["plate"]
+    },
+    "aziende": {
+      ".indexOn": ["code", "adminPin"]
     }
   }
 }

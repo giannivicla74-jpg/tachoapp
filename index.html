@@ -99,11 +99,20 @@
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased w-full max-w-full overflow-x-hidden">
 
     <!-- Header / Navbar Amministratore -->
-    <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/90 backdrop-blur-md shadow-sm border-b border-slate-800 transition-colors duration-300">
-        <div class="max-w-lg w-full mx-auto px-4 py-3.5 sm:px-6 flex justify-between items-center">
-            <div>
-                <h1 class="text-base sm:text-lg font-bold text-emerald-400 tracking-tight truncate max-w-[220px] sm:max-w-none" id="adminHeaderCompanyName">GC CodeLab &bull; v9.0 Pro</h1>
-                <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Area Gestione Dati Cloud</p>
+    <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/95 backdrop-blur-md shadow-lg border-b border-slate-800 transition-colors duration-300">
+        <div class="max-w-lg w-full mx-auto px-4 py-3 sm:px-6 flex justify-between items-center">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <h1 class="text-sm sm:text-base font-bold text-white tracking-tight" id="adminHeaderAppName">TachoApp &bull; Pro</h1>
+                    <span id="superAdminBadge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">SuperAdmin</span>
+                </div>
+                <!-- Selettore Flotta Attiva -->
+                <div id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden inline-flex items-center space-x-1.5 bg-slate-900/90 hover:bg-slate-800 border border-indigo-800/80 px-2.5 py-1 rounded-xl cursor-pointer transition shadow-sm group">
+                    <span class="text-[10px]">🏢</span>
+                    <span class="text-[10px] font-mono font-bold text-indigo-300 bg-indigo-950 px-1.5 py-0.2 rounded border border-indigo-700/60" id="adminHeaderCompanyCode">AZ-MAIN</span>
+                    <span class="text-[11px] font-bold text-emerald-300 max-w-[130px] truncate" id="adminHeaderCompanyNameShort">GC CodeLab</span>
+                    <span class="text-[9px] text-indigo-400 font-extrabold group-hover:text-indigo-200 underline">⇄ Cambia</span>
+                </div>
             </div>
             <div>
                 <button onclick="logout()" class="px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-white bg-[#2A1F2B] border border-red-900/40 rounded-xl hover:bg-red-950/40 transition-all duration-200 active:scale-95">
@@ -119,7 +128,8 @@
         <!-- =================== 1. LOGIN PRINCIPALE =================== -->
         <div id="loginSection" class="no-print max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-6 mt-2 relative">
+                <!-- Logo con gesto segreto per SuperAdmin -->
+                <div class="flex justify-center mb-6 mt-2 relative cursor-pointer" onclick="handleSecretSupervisorTap()">
                     <!-- Alone luminoso pulsante -->
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500/20 blur-2xl rounded-full w-24 h-24 animate-pulse"></div>
                     
@@ -141,9 +151,7 @@
                             <!-- Scudo Interno Scuro -->
                             <path d="M50 18L18 33v17c0 18 10.4 33.1 32 38 21.6-4.9 32-20 32-38V33L50 18z" fill="url(#innerGrad)"/>
                             <!-- Monogramma T & C (TachoCard / TachoControl) -->
-                            <!-- T (Oro, imponente) -->
                             <path d="M 35 32 L 65 32 M 50 32 L 50 66" stroke="#FBBF24" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                            <!-- C (Argento, avvolge elegantemente il gambo della T) -->
                             <path d="M 60 42 C 28 35, 28 75, 60 64" stroke="#F8FAFC" stroke-width="4.5" stroke-linecap="round" fill="none"/>
                         </svg>
                     </div>
@@ -152,18 +160,31 @@
                 <h2 class="text-2xl tracking-tight text-white font-bold">
                     <span>GC-TachoControl</span>
                 </h2>
-                <p id="loginCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold mt-1 uppercase tracking-wider"></p>
+                <div class="mt-1 flex items-center justify-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <p id="loginCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold uppercase tracking-wider">Gestione Flotta</p>
+                </div>
                 <p class="text-xs text-slate-400 mt-2 leading-relaxed">Inserisci il PIN amministrativo o accedi all'Area Conducenti.</p>
             </div>
 
             <div class="space-y-4">
+                <!-- Tasto Attivazione Azienda (Visibile solo una tantum al primo avvio su dispositivo vergine) -->
+                <div id="companyActivationBox" class="hidden pb-2 border-b border-slate-800/80">
+                    <button onclick="openRegisterCompanyModal()"
+                        class="w-full bg-gradient-to-r from-emerald-950 to-slate-900 hover:from-emerald-900 hover:to-slate-800 border border-emerald-500/40 text-emerald-300 font-bold py-3.5 px-4 rounded-2xl text-xs transition-all shadow-md flex items-center justify-center space-x-2">
+                        <span>🏢</span>
+                        <span>Attiva la tua Azienda</span>
+                    </button>
+                </div>
+
                 <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Amministratore (4 cifre)</label>
                     <input type="password" id="pinInput" placeholder="Codice PIN / Accesso Admin" maxlength="4" inputmode="numeric" autocomplete="one-time-code" oninput="checkAdminPinLength()"
                         class="w-full px-4 py-3.5 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-left text-sm font-semibold tracking-wider text-white placeholder-slate-500 transition-all">
                 </div>
                 <div id="loginError" class="text-red-400 text-xs font-semibold text-center hidden flex items-center justify-center space-x-1">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                    <span>PIN Amministrativo errato.</span>
+                    <span id="loginErrorText">PIN Amministrativo errato.</span>
                 </div>
                 
                 <button id="adminLoginBtn" onclick="handleAdminLogin()" disabled
@@ -185,11 +206,24 @@
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
                 <h2 class="text-xl font-bold text-white">Area Conducenti</h2>
-                <p id="driverSelCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold mt-0.5 uppercase tracking-wider"></p>
+                <div class="flex items-center justify-center space-x-1.5 mt-0.5">
+                    <p id="driverSelCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold uppercase tracking-wider"></p>
+                </div>
                 <p class="text-xs text-slate-400 mt-1">Cerca il tuo nome o sceglilo dalla lista, poi inserisci il tuo PIN personale.</p>
             </div>
 
             <div class="space-y-4">
+                <!-- Selettore rapido Azienda per autista -->
+                <div class="bg-[#0F1C32] p-2.5 rounded-2xl border border-slate-700/60 flex items-center justify-between">
+                    <div>
+                        <span class="text-[9px] uppercase font-bold text-slate-400 block">Flotta / Azienda</span>
+                        <span class="text-xs font-bold text-white truncate block max-w-[190px]" id="driverActiveCompanyBadge">Azienda Principale</span>
+                    </div>
+                    <button onclick="openSwitchDriverCompanyModal()" class="text-[10px] text-emerald-400 hover:underline font-bold px-2 py-1 bg-emerald-950/50 rounded-lg border border-emerald-800/50">
+                        Cambia
+                    </button>
+                </div>
+
                 <div class="relative">
                     <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Seleziona Conducente</label>
                     <input type="text" id="driverSearchInput" list="driversListOptions" placeholder="Scrivi o seleziona il tuo Nome..."
@@ -520,6 +554,23 @@
                     </button>
                 </div>
 
+                <!-- Box Simulatore e Guida Normativa CE 561/2006 (Admin) -->
+                <div class="bg-gradient-to-r from-emerald-950/70 via-[#15243E] to-indigo-950/70 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-2xl">
+                            ⏱️
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white">Simulatore Tempi di Guida &amp; Normativa CE 561/2006</h3>
+                            <p class="text-xs text-emerald-300/80">Pianifica i viaggi e verifica le pause obbligatorie (45m) e i riposi per evitare sanzioni.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <span>🚀</span>
+                        <span>Apri Simulatore di Guida &amp; Manuale CE 561/2006</span>
+                    </button>
+                </div>
+
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
                     <h3 class="font-bold text-sm text-emerald-400">⚙️ Gestione e Aggiornamento Link Portali</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
@@ -624,19 +675,38 @@
                 </div>
             </div>
 
+            <!-- Pulsante Simulatore Tempi di Guida & Normativa CE 561/2006 per Autista -->
+            <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-950/90 via-slate-900 to-indigo-950/90 hover:from-emerald-900 hover:to-indigo-900 border border-emerald-500/50 hover:border-emerald-400 p-4 rounded-3xl shadow-xl flex items-center justify-between text-left transition-all active:scale-[0.98] group">
+                <div class="flex items-center space-x-3.5 min-w-0">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition flex-shrink-0 shadow-inner">
+                        ⏱️
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center space-x-2">
+                            <h4 class="font-extrabold text-white text-sm group-hover:text-emerald-300 transition truncate" id="driverSimBtnTitle">Simulatore Tempi di Guida &amp; Riposo</h4>
+                            <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">CE 561/2006</span>
+                        </div>
+                        <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="driverSimBtnSubtitle">Tabella di marcia passo-passo &amp; calcolo pause (45m).</p>
+                    </div>
+                </div>
+                <div class="p-2 text-emerald-400 font-bold group-hover:translate-x-1 transition text-sm flex-shrink-0">
+                    ➔
+                </div>
+            </button>
+
             <!-- Box Gestione Ferie Autista -->
             <div class="bg-[#15243E] border border-yellow-500/30 rounded-3xl p-5 shadow-xl space-y-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-2.5 bg-yellow-500/10 text-yellow-400 rounded-2xl border border-yellow-500/20">
-                            <span class="text-xl">🏖️</span>
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <div class="p-2.5 bg-yellow-500/10 text-yellow-400 rounded-2xl border border-yellow-500/20 flex-shrink-0 text-xl">
+                            🏖️
                         </div>
-                        <div>
-                            <h4 class="font-extrabold text-white text-sm">Pianifica le tue Ferie</h4>
-                            <p class="text-[11px] text-slate-400">Sospende temporaneamente le notifiche di scadenza scarico.</p>
+                        <div class="min-w-0">
+                            <h4 class="font-extrabold text-white text-sm truncate">Pianifica le tue Ferie</h4>
+                            <p class="text-[11px] text-slate-400 leading-tight">Sospende temporaneamente le notifiche di scadenza scarico.</p>
                         </div>
                     </div>
-                    <div id="driverVacationStatusBadge" class="hidden">
+                    <div id="driverVacationStatusBadge" class="hidden flex-shrink-0">
                         <!-- Popolato dinamicamente da JS -->
                     </div>
                 </div>
@@ -823,10 +893,540 @@
         </div>
     </div>
 
+    <!-- =================== MODALE REGISTRAZIONE NUOVA AZIENDA =================== -->
+    <div id="registerCompanyModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#111C2E] border border-slate-700/80 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-2xl border border-indigo-500/30">
+                        <span class="text-xl">🏢</span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-white tracking-tight">Nuova Registrazione Flotta</h3>
+                        <p class="text-[10px] text-indigo-300 font-semibold">Crea uno Spazio Cloud Privato &bull; Conforme GDPR</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeRegisterCompanyModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-200">
+                <!-- Vista Form di Registrazione -->
+                <div id="registerCompanyFormView" class="space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Ragione Sociale / Nome Azienda *</label>
+                            <input type="text" id="regCompanyName" placeholder="es. Autotrasporti Rossi S.r.l." 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 font-bold focus:border-indigo-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome &amp; Cognome Amministratore *</label>
+                            <input type="text" id="regCompanyAdminName" placeholder="es. Mario Rossi" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-indigo-400">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Partita IVA *</label>
+                            <input type="text" id="regCompanyVat" placeholder="es. 12345678901" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 font-mono uppercase focus:border-indigo-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Codice Fiscale</label>
+                            <input type="text" id="regCompanyFiscalCode" placeholder="es. RSSMRA..." 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 font-mono uppercase focus:border-indigo-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Codice Flotta (Generato) *</label>
+                            <input type="text" id="regCompanyCode" placeholder="es. AZ-101" 
+                                class="w-full px-3.5 py-2.5 bg-[#0A1322] border border-indigo-500/50 text-indigo-300 font-mono font-bold uppercase rounded-xl outline-none text-xs">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Email Referente</label>
+                            <input type="email" id="regCompanyEmail" placeholder="info@azienda.it" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-indigo-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Telefono / WhatsApp</label>
+                            <input type="tel" id="regCompanyPhone" placeholder="+39 333 ..." 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-indigo-400">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Amministratore (4 Cifre) *</label>
+                            <input type="password" maxlength="4" inputmode="numeric" id="regCompanyPin" placeholder="••••" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-indigo-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Conferma PIN (4 Cifre) *</label>
+                            <input type="password" maxlength="4" inputmode="numeric" id="regCompanyPinConfirm" placeholder="••••" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-indigo-400">
+                        </div>
+                    </div>
+
+                    <div id="regCompanyError" class="text-red-400 text-xs font-semibold hidden bg-red-950/40 p-2.5 rounded-xl border border-red-800 text-center">
+                    </div>
+
+                    <div class="bg-indigo-950/30 border border-indigo-800/40 rounded-2xl p-3 text-[11px] text-indigo-200/90 leading-relaxed">
+                        🛡️ <strong>Spazio Riservato:</strong> Questa azienda avrà il proprio archivio cloud isolato. Gli autisti potranno accedere unicamente usando il codice azienda e il proprio PIN personale.
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="button" onclick="handleRegisterCompanySubmit()" 
+                            class="w-full bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg active:scale-98">
+                            🚀 Attiva Spazio Flotta Ora
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vista Successo Registrazione -->
+                <div id="registerCompanySuccessView" class="hidden space-y-4 text-center py-4">
+                    <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl shadow-lg border border-emerald-500/30 animate-bounce">
+                        ✓
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Spazio Flotta Attivato!</h4>
+                        <p class="text-slate-400 text-xs mt-1">L'azienda è stata registrata con successo nel Cloud Firebase.</p>
+                    </div>
+
+                    <div class="bg-[#0A1322] border border-emerald-500/40 rounded-2xl p-4 text-left space-y-2">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-slate-400 font-bold text-[11px]">Codice Azienda:</span>
+                            <span class="text-emerald-400 font-mono font-black text-sm" id="successRegCompanyCode">-</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-slate-400 font-bold text-[11px]">Ragione Sociale:</span>
+                            <span class="text-white font-bold text-xs" id="successRegCompanyName">-</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-400 font-bold text-[11px]">PIN Amministratore:</span>
+                            <span class="text-amber-300 font-mono font-bold text-xs" id="successRegCompanyPin">••••</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-950/30 border border-amber-800/40 rounded-xl p-3 text-[11px] text-amber-200 text-left">
+                        📌 <strong>Importante:</strong> Comunica il <strong>Codice Azienda</strong> ai tuoi autisti. Ne avranno bisogno per effettuare l'accesso ai propri dati scarico dall'App.
+                    </div>
+
+                    <button type="button" onclick="loginDirectlyAsRegisteredCompany()" 
+                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg">
+                        Accedi Subito al Pannello Gestione ➔
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE SUPER ADMIN: GESTIONE FLOTTE =================== -->
+    <div id="superAdminModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#111C2E] border border-indigo-500/40 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-2xl border border-indigo-500/30">
+                        <span class="text-xl">👑</span>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-sm text-white tracking-tight">Pannello Super Admin (Giovanni)</h3>
+                        <p class="text-[10px] text-indigo-300 font-semibold">Tutte le Flotte Registrate nel Cloud</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeSuperAdminModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <div class="p-5 overflow-y-auto space-y-3 text-xs">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-slate-400 text-xs font-bold">Aziende Iscritte (<span id="superAdminCompanyCount">0</span>)</span>
+                    <button onclick="openRegisterCompanyModal(); closeSuperAdminModal();" class="text-xs text-emerald-400 hover:underline font-bold flex items-center space-x-1">
+                        <span>➕ Registra Nuova</span>
+                    </button>
+                </div>
+
+                <div id="superAdminCompaniesList" class="space-y-2">
+                    <!-- Popolato dinamicamente -->
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-end">
+                <button onclick="closeSuperAdminModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE MODIFICA ANAGRAFICA AZIENDA (SUPER ADMIN) =================== -->
+    <div id="editCompanyModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[95] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#111C2E] border border-indigo-500/50 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-xl">✏️</span>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Modifica Anagrafica Azienda</h3>
+                        <p id="editCompanySubTitle" class="text-[10px] text-indigo-300 font-mono">Codice: AZ-101</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeEditCompanyModal()" class="text-slate-400 hover:text-white text-lg font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <input type="hidden" id="editCompanyCodeHidden" value="">
+
+            <div class="space-y-3 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Ragione Sociale / Denominazione *</label>
+                        <input type="text" id="editCompanyName" placeholder="es. Autotrasporti Rossi Srl" 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-bold text-white text-xs focus:border-indigo-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome &amp; Cognome Amministratore</label>
+                        <input type="text" id="editCompanyAdminName" placeholder="es. Mario Rossi" 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-indigo-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Partita IVA *</label>
+                        <input type="text" id="editCompanyVat" placeholder="Partita IVA" 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono text-white text-xs uppercase focus:border-indigo-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Codice Fiscale</label>
+                        <input type="text" id="editCompanyFiscalCode" placeholder="Codice Fiscale" 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono text-white text-xs uppercase focus:border-indigo-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Admin (4 Cifre) *</label>
+                        <input type="password" maxlength="4" inputmode="numeric" id="editCompanyPin" placeholder="PIN" 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-center text-amber-300 text-xs focus:border-amber-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Email Referente</label>
+                        <input type="email" id="editCompanyEmail" placeholder="info@azienda.it" 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-indigo-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Telefono / Cellulare</label>
+                        <input type="tel" id="editCompanyPhone" placeholder="+39 333 ..." 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-indigo-400">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-2 border-t border-slate-800">
+                <button type="button" onclick="closeEditCompanyModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
+                    Annulla
+                </button>
+                <button type="button" onclick="saveEditedCompany()" class="flex-1 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
+                    <span>💾</span> <span>Salva Modifiche</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE CAMBIO AZIENDA CONDUCENTE =================== -->
+    <div id="switchDriverCompanyModal" class="no-print fixed inset-0 bg-black/80 backdrop-blur-md z-[90] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#111C2E] border border-slate-800 w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4">
+            <div class="text-center">
+                <span class="text-3xl block mb-1">🏢</span>
+                <h3 class="font-bold text-white text-base">Seleziona la tua Azienda</h3>
+                <p class="text-slate-400 text-xs mt-1">Inserisci il Codice Azienda fornito dal tuo datore di lavoro.</p>
+            </div>
+
+            <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Codice Azienda</label>
+                <input type="text" id="driverCustomCompanyInput" placeholder="es. AZ-101 o AZ-MAIN" 
+                    class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono uppercase font-bold text-white text-center text-sm focus:border-emerald-400">
+            </div>
+
+            <div class="flex gap-2">
+                <button type="button" onclick="closeSwitchDriverCompanyModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
+                    Annulla
+                </button>
+                <button type="button" onclick="confirmSwitchDriverCompany()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
+                    Conferma
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE SIMULATORE TEMPI DI GUIDA & REGOLAMENTO CE 561/2006 =================== -->
+    <div id="drivingSimulatorModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[98] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-emerald-500/40 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            
+            <!-- Header Modale -->
+            <div class="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-xl shadow-inner">
+                        ⏱️
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h3 class="font-extrabold text-sm sm:text-base text-white tracking-tight">Simulatore Tempi di Guida &amp; Riposo</h3>
+                            <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">Reg. CE 561/2006</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400">Pianifica le pause, i turni e previeni le sanzioni del tachigrafo</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeDrivingSimulatorModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-xl font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Tab Switcher (Simulatore vs Regolamento) -->
+            <div class="px-5 pt-3 pb-2 bg-[#0E1726] border-b border-slate-800 flex gap-2">
+                <button id="btnSimTabCalc" onclick="switchSimulatorTab('calc')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5">
+                    <span>🎮</span> <span>Simulatore Interattivo</span>
+                </button>
+                <button id="btnSimTabGuide" onclick="switchSimulatorTab('guide')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5">
+                    <span>📖</span> <span>Regolamento CE 561/2006</span>
+                </button>
+            </div>
+
+            <div class="p-5 overflow-y-auto space-y-5 text-xs text-slate-200">
+                
+                <!-- VISTA 1: SIMULATORE INTERATTIVO -->
+                <div id="simCalcView" class="space-y-4">
+                    
+                    <!-- Parametri di Input -->
+                    <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-3">
+                        <h4 class="font-extrabold text-emerald-400 text-xs uppercase tracking-wider">1. Imposta i Parametri del Turno</h4>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-[10px] uppercase font-bold text-slate-400">Ora Inizio Servizio / Guida *</label>
+                                    <button type="button" onclick="setSimTimeNow()" class="text-[9px] text-emerald-400 hover:underline font-bold">⏱️ Imposta Adesso</button>
+                                </div>
+                                <input type="time" id="simStartTime" value="06:00" oninput="calculateDrivingSimulation()" 
+                                    class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-white text-sm focus:border-emerald-400">
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Guida Giornaliera Prevista *</label>
+                                <select id="simDailyDrive" onchange="calculateDrivingSimulation()" 
+                                    class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-bold text-white text-xs focus:border-emerald-400">
+                                    <option value="9">9 Ore (Standard - 2 periodi da 4h 30m)</option>
+                                    <option value="10">10 Ore (Estesa - Deroga max 2 volte/settimana)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Modalità Pausa Obbligatoria (1° Periodo) *</label>
+                                <select id="simPauseType" onchange="calculateDrivingSimulation()" 
+                                    class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
+                                    <option value="45">Pausa Unica di 45 Minuti (Standard)</option>
+                                    <option value="15_30">Frazionata: 15 Minuti + 30 Minuti successivi</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Riposo Giornaliero Obbligatorio *</label>
+                                <select id="simRestType" onchange="calculateDrivingSimulation()" 
+                                    class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-bold text-white text-xs focus:border-emerald-400">
+                                    <option value="11">11 Ore Regolare (Standard)</option>
+                                    <option value="9">9 Ore Ridotto (Max 3 volte tra due riposi settimanali)</option>
+                                    <option value="multipresenza">Multipresenza (Doppio Conducente: 9h in 30h)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Altre Mansioni / Lavoro non alla guida (Carico, Scarico, Attesa)</label>
+                            <select id="simOtherWork" onchange="calculateDrivingSimulation()" 
+                                class="w-full px-3 py-2 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
+                                <option value="0">0 Minuti (Solo guida e pause)</option>
+                                <option value="30">30 Minuti di altre mansioni</option>
+                                <option value="60">1 Ora di carico/scarico</option>
+                                <option value="120">2 Ore di carico/scarico</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Risultati della Simulazione -->
+                    <div class="space-y-3">
+                        <h4 class="font-extrabold text-amber-400 text-xs uppercase tracking-wider">2. Cronologia e Scadenze del Turno</h4>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                            
+                            <!-- Card 1: Prima Pausa -->
+                            <div class="bg-[#15243E] border-l-4 border-amber-400 rounded-2xl p-3.5 shadow-md">
+                                <span class="text-[9px] uppercase font-bold text-slate-400 block">🛑 1ª Pausa Obbligatoria</span>
+                                <span class="text-base font-extrabold text-amber-300 font-mono block mt-1" id="simResultFirstBreakTime">--:--</span>
+                                <p class="text-[10px] text-slate-400 mt-1" id="simResultFirstBreakDesc">Dopo max 4h 30m di guida</p>
+                            </div>
+
+                            <!-- Card 2: Fine Turno Guida -->
+                            <div class="bg-[#15243E] border-l-4 border-indigo-400 rounded-2xl p-3.5 shadow-md">
+                                <span class="text-[9px] uppercase font-bold text-slate-400 block">🏁 Fine Guida &amp; Turno</span>
+                                <span class="text-base font-extrabold text-indigo-300 font-mono block mt-1" id="simResultEndTime">--:--</span>
+                                <p class="text-[10px] text-slate-400 mt-1" id="simResultEndDesc">Totale max consentito</p>
+                            </div>
+
+                            <!-- Card 3: Ripartenza -->
+                            <div class="bg-[#15243E] border-l-4 border-emerald-400 rounded-2xl p-3.5 shadow-md">
+                                <span class="text-[9px] uppercase font-bold text-slate-400 block">🛏️ Fine Riposo (Ripartenza)</span>
+                                <span class="text-base font-extrabold text-emerald-300 font-mono block mt-1" id="simResultNextStartTime">--:--</span>
+                                <p class="text-[10px] text-slate-400 mt-1" id="simResultNextStartDesc">Dopo riposo regolare</p>
+                            </div>
+                        </div>
+
+                        <!-- Card Diagnostica / Alert -->
+                        <div id="simDiagnosticsBox" class="rounded-2xl p-4 border text-xs leading-relaxed space-y-1.5 shadow-lg bg-emerald-950/40 border-emerald-500/40 text-emerald-200">
+                            <!-- Popolato dinamicamente da JS -->
+                        </div>
+
+                        <!-- ================= TABELLA DI MARCIA PASSO-PASSO ================= -->
+                        <div class="bg-[#0E182B] border border-slate-700/70 rounded-3xl p-4 sm:p-5 space-y-4 shadow-xl">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-lg">🗺️</span>
+                                    <h4 class="font-extrabold text-white text-xs sm:text-sm uppercase tracking-wider">Tabella di Marcia Passo-Passo</h4>
+                                </div>
+                                <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-lg border border-emerald-500/30">5 TAPPE GUIDATE</span>
+                            </div>
+
+                            <!-- Live Radar Banner (Dove si trova adesso l'autista) -->
+                            <div id="simLiveRadarBanner" class="p-3.5 rounded-2xl border flex items-center justify-between gap-3 shadow-md bg-emerald-950/80 border-emerald-500/50">
+                                <!-- Popolato dinamicamente da JS -->
+                            </div>
+
+                            <!-- Timeline Verticale delle 5 Tappe -->
+                            <div id="simTimelineContainer" class="space-y-3 relative before:absolute before:left-[1.35rem] before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-700/80">
+                                <!-- Popolato dinamicamente da JS: Tappa 1, 2, 3, 4, 5 -->
+                            </div>
+
+                            <!-- Pulsante Condividi Turno su WhatsApp -->
+                            <button type="button" onclick="shareDrivingScheduleWhatsApp()" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-black py-3 px-4 rounded-2xl text-xs transition shadow-lg flex items-center justify-center space-x-2 active:scale-[0.98]">
+                                <span class="text-base">📲</span>
+                                <span>Invia Tabella di Marcia su WhatsApp al Responsabile</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VISTA 2: GUIDA NORMATIVA CE 561/2006 -->
+                <div id="simGuideView" class="hidden space-y-4">
+                    
+                    <div class="p-3.5 bg-indigo-950/40 border border-indigo-500/30 rounded-2xl text-[11px] text-indigo-200 leading-relaxed">
+                        📌 <strong>Sintesi Ufficiale Regolamento CE 561/2006:</strong> Disciplina i tempi di guida, interruzioni e periodi di riposo per i conducenti che effettuano trasporto di merci e persone su strada nell'Unione Europea.
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        
+                        <!-- 1. Guida Continua -->
+                        <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">⏱️</span>
+                                <h4 class="font-bold text-white text-xs">Guida Ininterrotta (Continua)</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Massimo <strong>4 ore e 30 minuti</strong> di guida ininterrotta.<br/>
+                                🛑 <strong>Interruzione obbligatoria:</strong> Almeno <strong>45 minuti</strong> consecutivi (oppure frazionata: <strong>15 minuti</strong> seguiti da almeno <strong>30 minuti</strong>, mai al contrario!).
+                            </p>
+                        </div>
+
+                        <!-- 2. Guida Giornaliera -->
+                        <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">☀️</span>
+                                <h4 class="font-bold text-white text-xs">Guida Giornaliera</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Standard: Massimo <strong>9 ore</strong> al giorno.<br/>
+                                ⚡ <strong>Estensione:</strong> Può essere estesa a <strong>10 ore</strong> per un massimo di <strong>2 volte</strong> a settimana (dal lunedì 00:00 alla domenica 24:00).
+                            </p>
+                        </div>
+
+                        <!-- 3. Guida Settimanale & Bisettimanale -->
+                        <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">📅</span>
+                                <h4 class="font-bold text-white text-xs">Guida Settimanale &amp; Bisettimanale</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                • Settimanale: Massimo <strong>56 ore</strong>.<br/>
+                                • Bisettimanale: Massimo <strong>90 ore</strong> complessive nell'arco di due settimane consecutive.
+                            </p>
+                        </div>
+
+                        <!-- 4. Riposo Giornaliero -->
+                        <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">🛏️</span>
+                                <h4 class="font-bold text-white text-xs">Riposo Giornaliero</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                • <strong>Regolare:</strong> 11 ore consecutive (o frazionato: 3h + 9h = 12h tot).<br/>
+                                • <strong>Ridotto:</strong> 9 ore consecutive (consentito massimo <strong>3 volte</strong> tra due riposi settimanali, senza obbligo di recupero).
+                            </p>
+                        </div>
+
+                        <!-- 5. Riposo Settimanale -->
+                        <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">🏖️</span>
+                                <h4 class="font-bold text-white text-xs">Riposo Settimanale (Pacchetto Mobilità)</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                • <strong>Regolare:</strong> Almeno <strong>45 ore</strong> (🔴 <em>DIVIETO ASSOLUTO in cabina! Obbligo alloggio adeguato a carico azienda</em>).<br/>
+                                • <strong>Ridotto:</strong> Minimo 24 ore (il deficit va compensato in blocco entro la 3ª settimana successiva).
+                            </p>
+                        </div>
+
+                        <!-- 6. Multipresenza (Doppio Conducente) -->
+                        <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">👥</span>
+                                <h4 class="font-bold text-white text-xs">Multipresenza (Doppio Autista)</h4>
+                            </div>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Entrambi gli autisti a bordo. Entro ogni periodo di <strong>30 ore</strong> dal termine del riposo precedente, ciascun conducente deve effettuare un riposo giornaliero di almeno <strong>9 ore</strong> consecutive.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Modale -->
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
+                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v9.0</span>
+                <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
 
     <script>
-        const ADMIN_PIN = "8528";
+        const ADMIN_PIN = "8528"; // PIN Master Super Admin (Giovanni)
+        let companiesRegistry = {};
+        let activeCompanyId = localStorage.getItem('tacho_active_company') || '';
+        let isSuperAdmin = false;
+        let activeListeners = [];
+        let lastRegisteredCompany = null;
+
         let driversMap = {};
         let vehiclesMap = {};
         let currentCompanyName = "GC CodeLab - Gestione Flotta";
@@ -842,6 +1442,108 @@
             unioncamere: "https://www.metrologialegale.unioncamere.it/",
             taci: "https://taci.infocamere.it/"
         };
+
+        // Listener globale per il registro di tutte le aziende
+        db.ref('aziende_registry').on('value', (snapshot) => {
+            companiesRegistry = snapshot.val() || {};
+            if (activeCompanyId && companiesRegistry[activeCompanyId]) {
+                currentCompanyName = companiesRegistry[activeCompanyId].name;
+                updateDOMCompanyName();
+            }
+            updateCompanyActivationUI();
+            if (isSuperAdmin) renderSuperAdminCompaniesList();
+        });
+
+        // --- GESTIONE PERCORSI E RIFERIMENTI FIREBASE MULTI-AZIENDA ---
+        function getCompanyPath(subPath) {
+            if (!activeCompanyId || activeCompanyId === 'AZ-MAIN') {
+                return subPath; // Retrocompatibilità totale: legge/scrive sui nodi storici
+            }
+            return `aziende/${activeCompanyId}/${subPath}`;
+        }
+
+        function dbCompanyRef(subPath) {
+            return db.ref(getCompanyPath(subPath));
+        }
+
+        function switchActiveCompany(companyCode) {
+            if (!companyCode) companyCode = 'AZ-MAIN';
+            activeCompanyId = companyCode;
+            localStorage.setItem('tacho_active_company', activeCompanyId);
+            updateCompanyActivationUI();
+            
+            const badgeDriver = document.getElementById('driverActiveCompanyBadge');
+            if (badgeDriver) {
+                const compInfo = companiesRegistry[activeCompanyId];
+                badgeDriver.innerText = compInfo ? `${compInfo.name} (${activeCompanyId})` : activeCompanyId;
+            }
+
+            setupCompanyListeners();
+        }
+
+        function setupCompanyListeners() {
+            // Rimuove i listener precedenti
+            if (activeListeners && activeListeners.length > 0) {
+                activeListeners.forEach(l => {
+                    if (l.ref && l.callback) l.ref.off('value', l.callback);
+                });
+                activeListeners = [];
+            }
+
+            const configNameRef = dbCompanyRef('config/denominazioneAzienda');
+            const configNameCb = configNameRef.on('value', snapshot => {
+                const name = snapshot.val();
+                if (name) {
+                    currentCompanyName = name;
+                } else {
+                    const regInfo = companiesRegistry[activeCompanyId];
+                    currentCompanyName = (regInfo && regInfo.name) ? regInfo.name : (activeCompanyId === 'AZ-MAIN' ? "GC CodeLab - Gestione Flotta" : `Azienda ${activeCompanyId}`);
+                }
+                updateDOMCompanyName();
+            });
+            activeListeners.push({ ref: configNameRef, callback: configNameCb });
+
+            const configCardRef = dbCompanyRef('config/cartaAzienda');
+            const configCardCb = configCardRef.on('value', snapshot => {
+                const data = snapshot.val();
+                companyCardData = data || { number: "", expiry: "" };
+                updateDOMCompanyCard();
+                updateAdminBadges();
+            });
+            activeListeners.push({ ref: configCardRef, callback: configCardCb });
+
+            const operaiRef = dbCompanyRef('operai');
+            const operaiCb = operaiRef.on('value', snapshot => {
+                driversMap = snapshot.val() || {};
+                populateDatalist();
+                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
+                    renderFleetTable();
+                }
+                if (currentLoggedInDriver && driversMap[currentLoggedInDriver.id]) {
+                    currentLoggedInDriver = { id: currentLoggedInDriver.id, ...driversMap[currentLoggedInDriver.id] };
+                    if (!document.getElementById('driverSection').classList.contains('hidden')) {
+                        renderDriverView(currentLoggedInDriver);
+                    }
+                }
+                updateAdminBadges();
+                if (isSuperAdmin) renderSuperAdminCompaniesList();
+            });
+            activeListeners.push({ ref: operaiRef, callback: operaiCb });
+
+            const veicoliRef = dbCompanyRef('veicoli');
+            const veicoliCb = veicoliRef.on('value', snapshot => {
+                vehiclesMap = snapshot.val() || {};
+                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabVehicles').classList.contains('hidden')) {
+                    renderVehicleTable();
+                }
+                updateAdminBadges();
+            });
+            activeListeners.push({ ref: veicoliRef, callback: veicoliCb });
+        }
+
+        // Avvio immediato ascoltatori per l'azienda attiva
+        setupCompanyListeners();
+        updateCompanyActivationUI();
 
         // Funzione per animare il tasto Admin quando il PIN raggiunge le 4 cifre
         function checkAdminPinLength() {
@@ -905,11 +1607,12 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
-// Controlla se le notifiche sono già attive per nascondere il banner
-if ("Notification" in window && Notification.permission === "granted") {
-    const banner = document.getElementById('pushNotificationBanner');
-    if (banner) banner.classList.add('hidden');
-}
+
+        // Controlla se le notifiche sono già attive per nascondere il banner
+        if ("Notification" in window && Notification.permission === "granted") {
+            const banner = document.getElementById('pushNotificationBanner');
+            if (banner) banner.classList.add('hidden');
+        }
         
         function initApp() {
             document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
@@ -919,49 +1622,28 @@ if ("Notification" in window && Notification.permission === "granted") {
             if (savedLinks) { customLinks = JSON.parse(savedLinks); }
             updateDOMCustomLinks();
 
-            db.ref('config/denominazioneAzienda').on('value', snapshot => {
-                const name = snapshot.val();
-                if (name) {
-                    currentCompanyName = name;
-                } else {
-                    currentCompanyName = "GC CodeLab - Gestione Flotta";
+            // Ascolto Registro Aziende su Firebase
+            db.ref('aziende_registry').on('value', snapshot => {
+                companiesRegistry = snapshot.val() || {};
+                
+                // Se non c'è ancora l'Azienda Principale nel registry, registriamola
+                if (!companiesRegistry['AZ-MAIN']) {
+                    const mainCompany = {
+                        code: "AZ-MAIN",
+                        name: "GC CodeLab - Gestione Flotta",
+                        vat: "Principale",
+                        adminPin: ADMIN_PIN,
+                        createdAt: "2026-08-25T00:00:00.000Z"
+                    };
+                    db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
                 }
-                updateDOMCompanyName();
+
+                updateDriverActiveCompanyDisplay();
+                if (isSuperAdmin) renderSuperAdminCompaniesList();
             });
 
-            db.ref('config/cartaAzienda').on('value', snapshot => {
-                const data = snapshot.val();
-                if (data) {
-                    companyCardData = data;
-                } else {
-                    companyCardData = { number: "", expiry: "" };
-                }
-                updateDOMCompanyCard();
-                updateAdminBadges();
-            });
-
-            db.ref('operai').on('value', snapshot => {
-                driversMap = snapshot.val() || {};
-                populateDatalist();
-                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
-                    renderFleetTable();
-                }
-                if (currentLoggedInDriver && driversMap[currentLoggedInDriver.id]) {
-                    currentLoggedInDriver = { id: currentLoggedInDriver.id, ...driversMap[currentLoggedInDriver.id] };
-                    if (!document.getElementById('driverSection').classList.contains('hidden')) {
-                        renderDriverView(currentLoggedInDriver);
-                    }
-                }
-                updateAdminBadges();
-            });
-
-            db.ref('veicoli').on('value', snapshot => {
-                vehiclesMap = snapshot.val() || {};
-                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabVehicles').classList.contains('hidden')) {
-                    renderVehicleTable();
-                }
-                updateAdminBadges();
-            });
+            // Inizializza listener per l'azienda attiva
+            switchActiveCompany(activeCompanyId);
 
             // Registrazione Service Worker per Push in Background
             if ('serviceWorker' in navigator) {
@@ -974,6 +1656,14 @@ if ("Notification" in window && Notification.permission === "granted") {
             }
         }
 
+        function updateDriverActiveCompanyDisplay() {
+            const badgeDriver = document.getElementById('driverActiveCompanyBadge');
+            if (badgeDriver) {
+                const comp = companiesRegistry[activeCompanyId];
+                badgeDriver.innerText = comp ? `${comp.name} (${comp.code})` : (activeCompanyId === 'AZ-MAIN' ? 'Azienda Principale' : activeCompanyId);
+            }
+        }
+
         function updateAdminBadges() {
             let urgentDrivers = 0;
             for (let id in driversMap) {
@@ -983,11 +1673,13 @@ if ("Notification" in window && Notification.permission === "granted") {
                 }
             }
             const badgeFleet = document.getElementById('badgeFleet');
-            if (urgentDrivers > 0) {
-                badgeFleet.innerText = urgentDrivers;
-                badgeFleet.classList.remove('hidden');
-            } else {
-                badgeFleet.classList.add('hidden');
+            if (badgeFleet) {
+                if (urgentDrivers > 0) {
+                    badgeFleet.innerText = urgentDrivers;
+                    badgeFleet.classList.remove('hidden');
+                } else {
+                    badgeFleet.classList.add('hidden');
+                }
             }
 
             let urgentVehicles = 0;
@@ -998,32 +1690,53 @@ if ("Notification" in window && Notification.permission === "granted") {
                 }
             }
             const badgeVehicles = document.getElementById('badgeVehicles');
-            if (urgentVehicles > 0) {
-                badgeVehicles.innerText = urgentVehicles;
-                badgeVehicles.classList.remove('hidden');
-            } else {
-                badgeVehicles.classList.add('hidden');
+            if (badgeVehicles) {
+                if (urgentVehicles > 0) {
+                    badgeVehicles.innerText = urgentVehicles;
+                    badgeVehicles.classList.remove('hidden');
+                } else {
+                    badgeVehicles.classList.add('hidden');
+                }
             }
 
             const badgeCompany = document.getElementById('badgeCompany');
-            if (companyCardData.expiry) {
-                const compDays = getDaysRemaining(companyCardData.expiry);
-                if (compDays <= 30) {
-                    badgeCompany.classList.remove('hidden');
+            if (badgeCompany) {
+                if (companyCardData.expiry) {
+                    const compDays = getDaysRemaining(companyCardData.expiry);
+                    if (compDays <= 30) {
+                        badgeCompany.classList.remove('hidden');
+                    } else {
+                        badgeCompany.classList.add('hidden');
+                    }
                 } else {
                     badgeCompany.classList.add('hidden');
                 }
-            } else {
-                badgeCompany.classList.add('hidden');
             }
         }
 
         function updateDOMCompanyName() {
-            document.getElementById('loginCompanyNameDisplay').innerText = currentCompanyName;
-            document.getElementById('driverSelCompanyNameDisplay').innerText = currentCompanyName;
-            document.getElementById('adminHeaderCompanyName').innerText = `${currentCompanyName} • v9.0 Pro`;
-            document.getElementById('companyNameInput').value = currentCompanyName !== "GC CodeLab - Gestione Flotta" ? currentCompanyName : "";
-            document.getElementById('driverCardCompanyHeader').innerText = "REPUBBLICA ITALIANA";
+            const loginComp = document.getElementById('loginCompanyNameDisplay');
+            if (loginComp) loginComp.innerText = currentCompanyName;
+            
+            const driverComp = document.getElementById('driverSelCompanyNameDisplay');
+            if (driverComp) driverComp.innerText = currentCompanyName;
+            
+            const adminComp = document.getElementById('adminHeaderCompanyName');
+            if (adminComp) adminComp.innerText = `${currentCompanyName} • v9.0 Pro`;
+
+            const headerCode = document.getElementById('adminHeaderCompanyCode');
+            if (headerCode) headerCode.innerText = activeCompanyId;
+
+            const headerNameShort = document.getElementById('adminHeaderCompanyNameShort');
+            if (headerNameShort) headerNameShort.innerText = currentCompanyName;
+            
+            const compInput = document.getElementById('companyNameInput');
+            if (compInput) compInput.value = (currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}`) ? currentCompanyName : "";
+            
+            const cardHeader = document.getElementById('driverCardCompanyHeader');
+            if (cardHeader) cardHeader.innerText = "REPUBBLICA ITALIANA";
+            
+            updateDriverActiveCompanyDisplay();
         }
 
         function updateDOMCompanyCard() {
@@ -1031,6 +1744,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('companyCardExpiryInput').value = companyCardData.expiry || "";
 
             const statusBox = document.getElementById('companyCardStatusBox');
+            if (!statusBox) return;
             if (!companyCardData.expiry) {
                 statusBox.classList.add('hidden');
                 return;
@@ -1064,9 +1778,12 @@ if ("Notification" in window && Notification.permission === "granted") {
                 return;
             }
 
-            db.ref('config/denominazioneAzienda').set(newName);
-            db.ref('config/cartaAzienda').set({ number: cardNum, expiry: cardExp }, (error) => {
+            dbCompanyRef('config/denominazioneAzienda').set(newName);
+            dbCompanyRef('config/cartaAzienda').set({ number: cardNum, expiry: cardExp }, (error) => {
                 if (!error) {
+                    if (companiesRegistry[activeCompanyId]) {
+                        db.ref(`aziende_registry/${activeCompanyId}/name`).set(newName);
+                    }
                     showToast("Dati azienda e carta aggiornati con successo!", "success");
                     updateAdminBadges();
                 } else {
@@ -1083,7 +1800,8 @@ if ("Notification" in window && Notification.permission === "granted") {
             Notification.requestPermission().then(permission => {
                 if (permission === "granted") {
                     showToast("Permesso notifiche concesso con successo!", "success");
-                    document.getElementById('pushNotificationBanner').classList.add('hidden');
+                    const banner = document.getElementById('pushNotificationBanner');
+                    if (banner) banner.classList.add('hidden');
                     
                     if (messaging && currentLoggedInDriver) {
                         navigator.serviceWorker.ready.then((registration) => {
@@ -1092,7 +1810,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                                 serviceWorkerRegistration: registration
                             }).then((currentToken) => {
                                 if (currentToken) {
-                                    db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
+                                    dbCompanyRef('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
                                     console.log("Token FCM salvato per l'operaio:", currentToken);
                                 }
                             }).catch((err) => {
@@ -1125,10 +1843,14 @@ if ("Notification" in window && Notification.permission === "granted") {
         }
 
         function updateDOMCustomLinks() {
-            document.getElementById('btnLinkUnioncamere').href = customLinks.unioncamere;
-            document.getElementById('btnLinkTaci').href = customLinks.taci;
-            document.getElementById('linkUnioncamereInput').value = customLinks.unioncamere;
-            document.getElementById('linkTaciInput').value = customLinks.taci;
+            const btnUnion = document.getElementById('btnLinkUnioncamere');
+            if (btnUnion) btnUnion.href = customLinks.unioncamere;
+            const btnTaci = document.getElementById('btnLinkTaci');
+            if (btnTaci) btnTaci.href = customLinks.taci;
+            const inUnion = document.getElementById('linkUnioncamereInput');
+            if (inUnion) inUnion.value = customLinks.unioncamere;
+            const inTaci = document.getElementById('linkTaciInput');
+            if (inTaci) inTaci.value = customLinks.taci;
         }
 
         function saveCustomLinks() {
@@ -1151,8 +1873,10 @@ if ("Notification" in window && Notification.permission === "granted") {
             const reader = new FileReader();
             reader.onload = function(evt) { 
                 pendingBase64Doc = evt.target.result; 
-                document.getElementById('currentAttachmentStatus').innerText = "Nuovo file pronto: " + pendingFileNameDoc;
-                document.getElementById('clearFileBtn').classList.remove('hidden');
+                const status = document.getElementById('currentAttachmentStatus');
+                if (status) status.innerText = "Nuovo file pronto: " + pendingFileNameDoc;
+                const clearBtn = document.getElementById('clearFileBtn');
+                if (clearBtn) clearBtn.classList.remove('hidden');
             };
             reader.readAsDataURL(file);
         }
@@ -1165,7 +1889,8 @@ if ("Notification" in window && Notification.permission === "granted") {
                 showToast("Caricamento foto bloccato dall'amministratore. Contatta l'azienda per sbloccarlo.", "error");
                 return;
             }
-            document.getElementById('driverSelfPhotoInput').click();
+            const input = document.getElementById('driverSelfPhotoInput');
+            if (input) input.click();
         }
 
         function handlePhotoSelect(e, source = "admin") {
@@ -1180,11 +1905,9 @@ if ("Notification" in window && Notification.permission === "granted") {
                     cropperInstance = null;
                 }
 
-                // 1. Rendiamo visibile il modale prima dell'inizializzazione
                 const modal = document.getElementById('cropPhotoModal');
                 modal.classList.remove('hidden');
 
-                // 2. Reset pulito dell'elemento immagine nel wrapper
                 const wrapper = document.getElementById('cropImageWrapper');
                 wrapper.innerHTML = '';
                 
@@ -1195,7 +1918,6 @@ if ("Notification" in window && Notification.permission === "granted") {
                 cropImg.style.maxHeight = '100%';
                 cropImg.style.margin = '0 auto';
 
-                // 3. Inizializzazione Cropper ad immagine caricata e dimensioni calcolate
                 const initCropper = () => {
                     if (cropperInstance) {
                         cropperInstance.destroy();
@@ -1224,7 +1946,6 @@ if ("Notification" in window && Notification.permission === "granted") {
                 };
 
                 cropImg.onload = () => {
-                    // Attendiamo che il layout del modale sia completo prima di inizializzare Cropper
                     requestAnimationFrame(() => {
                         setTimeout(initCropper, 150);
                     });
@@ -1259,8 +1980,10 @@ if ("Notification" in window && Notification.permission === "granted") {
             }
             const wrapper = document.getElementById('cropImageWrapper');
             if (wrapper) wrapper.innerHTML = '<img id="cropModalImage" src="" style="display:block; max-width:100%; margin:0 auto;">';
-            document.getElementById('addDriverPhotoInput').value = "";
-            document.getElementById('driverSelfPhotoInput').value = "";
+            const input = document.getElementById('addDriverPhotoInput');
+            if (input) input.value = "";
+            const selfInput = document.getElementById('driverSelfPhotoInput');
+            if (selfInput) selfInput.value = "";
         }
 
         function confirmCropPhoto() {
@@ -1276,7 +1999,7 @@ if ("Notification" in window && Notification.permission === "granted") {
 
                 if (cropSource === 'self') {
                     if (currentLoggedInDriver && currentLoggedInDriver.id) {
-                        db.ref('operai/' + currentLoggedInDriver.id).update({ photoBase64: croppedData }, (error) => {
+                        dbCompanyRef('operai/' + currentLoggedInDriver.id).update({ photoBase64: croppedData }, (error) => {
                             if (!error) {
                                 currentLoggedInDriver.photoBase64 = croppedData;
                                 showToast("Foto tessera aggiornata ed inquadrata con successo!", "success");
@@ -1289,10 +2012,15 @@ if ("Notification" in window && Notification.permission === "granted") {
                 } else {
                     pendingBase64Photo = croppedData;
                     clearExistingPhoto = false;
-                    document.getElementById('photoPreviewImg').src = pendingBase64Photo;
-                    document.getElementById('photoPreviewImg').classList.remove('hidden');
-                    document.getElementById('photoPreviewPlaceholder').classList.add('hidden');
-                    document.getElementById('clearPhotoBtn').classList.remove('hidden');
+                    const img = document.getElementById('photoPreviewImg');
+                    if (img) {
+                        img.src = pendingBase64Photo;
+                        img.classList.remove('hidden');
+                    }
+                    const place = document.getElementById('photoPreviewPlaceholder');
+                    if (place) place.classList.add('hidden');
+                    const clr = document.getElementById('clearPhotoBtn');
+                    if (clr) clr.classList.remove('hidden');
                     showToast("Foto tessera inquadrata! Ricorda di salvare il conducente.", "success");
                 }
             }
@@ -1302,20 +2030,29 @@ if ("Notification" in window && Notification.permission === "granted") {
         function clearDriverPhoto() {
             pendingBase64Photo = "";
             clearExistingPhoto = true;
-            document.getElementById('addDriverPhotoInput').value = "";
-            document.getElementById('photoPreviewImg').src = "";
-            document.getElementById('photoPreviewImg').classList.add('hidden');
-            document.getElementById('photoPreviewPlaceholder').classList.remove('hidden');
-            document.getElementById('clearPhotoBtn').classList.add('hidden');
+            const input = document.getElementById('addDriverPhotoInput');
+            if (input) input.value = "";
+            const img = document.getElementById('photoPreviewImg');
+            if (img) {
+                img.src = "";
+                img.classList.add('hidden');
+            }
+            const place = document.getElementById('photoPreviewPlaceholder');
+            if (place) place.classList.remove('hidden');
+            const clr = document.getElementById('clearPhotoBtn');
+            if (clr) clr.classList.add('hidden');
         }
 
         function clearAttachedFile() {
             pendingBase64Doc = "";
             pendingFileNameDoc = "";
             clearExistingFile = true;
-            document.getElementById('addDocumentFile').value = "";
-            document.getElementById('currentAttachmentStatus').innerText = "File allegato rimosso.";
-            document.getElementById('clearFileBtn').classList.add('hidden');
+            const input = document.getElementById('addDocumentFile');
+            if (input) input.value = "";
+            const status = document.getElementById('currentAttachmentStatus');
+            if (status) status.innerText = "File allegato rimosso.";
+            const clr = document.getElementById('clearFileBtn');
+            if (clr) clr.classList.add('hidden');
         }
 
         function openDriverDocument(id) {
@@ -1337,6 +2074,7 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function populateDatalist() {
             const datalist = document.getElementById('driversListOptions');
+            if (!datalist) return;
             datalist.innerHTML = "";
             for (let id in driversMap) {
                 const d = driversMap[id];
@@ -1349,23 +2087,121 @@ if ("Notification" in window && Notification.permission === "granted") {
         function openCciaaModal() { document.getElementById('cciaaModal').classList.remove('hidden'); }
         function closeCciaaModal() { document.getElementById('cciaaModal').classList.add('hidden'); }
 
+        // --- GESTIONE LOGIN AMMINISTRATORE (SUPER ADMIN & MULTI-AZIENDA) ---
+        // --- GESTO SEGRETO SUPERVISORE (5 tocchi veloci sullo stemma) ---
+        let supervisorTapCount = 0;
+        let supervisorTapTimer = null;
+
+        function handleSecretSupervisorTap() {
+            supervisorTapCount++;
+            clearTimeout(supervisorTapTimer);
+            supervisorTapTimer = setTimeout(() => {
+                supervisorTapCount = 0;
+            }, 2000);
+
+            if (supervisorTapCount >= 5) {
+                supervisorTapCount = 0;
+                const pin = prompt("👑 Accesso Riservato Supervisore Globale (GC CodeLab)\nInserisci il PIN Master:");
+                if (pin === ADMIN_PIN) {
+                    isSuperAdmin = true;
+                    const superBadge = document.getElementById('superAdminBadge');
+                    if (superBadge) superBadge.classList.remove('hidden');
+                    const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+                    if (switchBtn) switchBtn.classList.remove('hidden');
+                    openSuperAdminModal();
+                } else if (pin) {
+                    showToast("PIN Master non valido", "error");
+                }
+            }
+        }
+
+        function updateCompanyActivationUI() {
+            const hasCompany = localStorage.getItem('tacho_active_company');
+            const activationBox = document.getElementById('companyActivationBox');
+            if (activationBox) {
+                if (hasCompany && hasCompany !== '') {
+                    activationBox.classList.add('hidden');
+                } else {
+                    activationBox.classList.remove('hidden');
+                }
+            }
+        }
+
         function handleAdminLogin() {
             const pinVal = document.getElementById('pinInput').value.trim();
             const errorEl = document.getElementById('loginError');
+            const errorText = document.getElementById('loginErrorText');
             errorEl.classList.add('hidden');
 
-            if (pinVal === ADMIN_PIN) {
-                showSection("admin");
-                showToast("Accesso Amministratore Effettuato", "success");
-            } else {
+            if (!pinVal) {
+                errorText.innerText = "Inserisci il PIN Amministrativo.";
                 errorEl.classList.remove('hidden');
-                showToast("PIN Amministrativo errato", "error");
+                return;
             }
-            document.getElementById('pinInput').value = "";
+
+            // 1. Accesso "Dietro le Quinte" Super Admin Master (Giovanni - PIN 8528)
+            if (pinVal === ADMIN_PIN) {
+                isSuperAdmin = true;
+                const superBadge = document.getElementById('superAdminBadge');
+                if (superBadge) superBadge.classList.remove('hidden');
+                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+                if (switchBtn) switchBtn.classList.remove('hidden');
+
+                if (!activeCompanyId) switchActiveCompany('AZ-MAIN');
+
+                showSection("admin");
+                showToast(`👑 Accesso Supervisore (Giovanni) Effettuato`, "success");
+                document.getElementById('pinInput').value = "";
+                return;
+            }
+
+            // 2. Accesso Amministratore Azienda Corrente
+            const comp = companiesRegistry[activeCompanyId];
+            if (comp && String(comp.adminPin).trim() === pinVal) {
+                isSuperAdmin = false;
+                const superBadge = document.getElementById('superAdminBadge');
+                if (superBadge) superBadge.classList.add('hidden');
+                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+                if (switchBtn) switchBtn.classList.add('hidden');
+
+                showSection("admin");
+                showToast(`Accesso Amministratore: ${comp.name}`, "success");
+                document.getElementById('pinInput').value = "";
+                return;
+            }
+
+            // 3. Riconoscimento intelligente del PIN aziendale tra tutte le flotte registrate
+            let foundComp = null;
+            for (let code in companiesRegistry) {
+                if (String(companiesRegistry[code].adminPin).trim() === pinVal) {
+                    foundComp = companiesRegistry[code];
+                    break;
+                }
+            }
+
+            if (foundComp) {
+                isSuperAdmin = false;
+                const superBadge = document.getElementById('superAdminBadge');
+                if (superBadge) superBadge.classList.add('hidden');
+                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+                if (switchBtn) switchBtn.classList.add('hidden');
+
+                switchActiveCompany(foundComp.code);
+                updateCompanyActivationUI();
+                showSection("admin");
+                showToast(`Accesso Amministratore: ${foundComp.name}`, "success");
+                document.getElementById('pinInput').value = "";
+                return;
+            }
+
+            errorText.innerText = "PIN Amministrativo non corretto.";
+            errorEl.classList.remove('hidden');
+            showToast("PIN Amministrativo non valido", "error");
         }
 
         function goToDriverSelection() {
             populateDatalist();
+            updateDriverActiveCompanyDisplay();
             showSection("driverSelection");
         }
 
@@ -1386,7 +2222,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             for (let id in driversMap) {
                 const d = driversMap[id];
                 const fullName = `${d.name} ${d.surname}`.trim().toLowerCase();
-                if ((fullName === fullNameInput || d.name.toLowerCase() === fullNameInput) && d.pin === pinVal) {
+                if ((fullName === fullNameInput || d.name.toLowerCase() === fullNameInput) && String(d.pin).trim() === pinVal) {
                     foundKey = id;
                     foundDriver = d;
                     break;
@@ -1396,7 +2232,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             if (foundDriver) {
                 currentLoggedInDriver = { id: foundKey, ...foundDriver };
                 showSection("driver");
-                // AGGIORNAMENTO AUTOMATICO DEL TOKEN IN BACKGROUND
+                // Aggiornamento automatico Token Push in Background
                 if ("Notification" in window && Notification.permission === "granted" && messaging) {
                     navigator.serviceWorker.ready.then((registration) => {
                         messaging.getToken({
@@ -1404,7 +2240,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                             serviceWorkerRegistration: registration
                         }).then((currentToken) => {
                             if (currentToken) {
-                                db.ref('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
+                                dbCompanyRef('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
                                 console.log("Token aggiornato per il telefono:", currentToken);
                             }
                         }).catch((err) => {
@@ -1417,7 +2253,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                 document.getElementById('driverPersonalPinInput').value = "";
             } else {
                 errorEl.innerText = "Nome o PIN non corretti. Riprova.";
-                errorEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
                 showToast("Credenziali non valide", "error");
             }
         }
@@ -1446,6 +2282,12 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function logout() {
             currentLoggedInDriver = null;
+            isSuperAdmin = false;
+            const superBadge = document.getElementById('superAdminBadge');
+            if (superBadge) superBadge.classList.add('hidden');
+            const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+            if (switchBtn) switchBtn.classList.add('hidden');
+
             showSection("login");
             showToast("Sessione terminata", "success");
         }
@@ -1480,6 +2322,318 @@ if ("Notification" in window && Notification.permission === "granted") {
             }
         }
 
+        // --- GESTIONE MODALE REGISTRAZIONE AZIENDA ---
+        function generateNextCompanyCode() {
+            let maxNum = 100;
+            for (let code in companiesRegistry) {
+                const match = code.match(/AZ-(\d+)/);
+                if (match) {
+                    const num = parseInt(match[1]);
+                    if (num > maxNum) maxNum = num;
+                }
+            }
+            return `AZ-${maxNum + 1}`;
+        }
+
+        function openRegisterCompanyModal() {
+            document.getElementById('regCompanyName').value = "";
+            document.getElementById('regCompanyAdminName').value = "";
+            document.getElementById('regCompanyVat').value = "";
+            document.getElementById('regCompanyFiscalCode').value = "";
+            document.getElementById('regCompanyCode').value = generateNextCompanyCode();
+            document.getElementById('regCompanyEmail').value = "";
+            document.getElementById('regCompanyPhone').value = "";
+            document.getElementById('regCompanyPin').value = "";
+            document.getElementById('regCompanyPinConfirm').value = "";
+            document.getElementById('regCompanyError').classList.add('hidden');
+
+            document.getElementById('registerCompanyFormView').classList.remove('hidden');
+            document.getElementById('registerCompanySuccessView').classList.add('hidden');
+
+            document.getElementById('registerCompanyModal').classList.remove('hidden');
+        }
+
+        function closeRegisterCompanyModal() {
+            document.getElementById('registerCompanyModal').classList.add('hidden');
+        }
+
+        function handleRegisterCompanySubmit() {
+            const name = document.getElementById('regCompanyName').value.trim();
+            const adminName = document.getElementById('regCompanyAdminName').value.trim();
+            const vat = document.getElementById('regCompanyVat').value.trim().toUpperCase();
+            const fiscalCode = document.getElementById('regCompanyFiscalCode').value.trim().toUpperCase();
+            let code = document.getElementById('regCompanyCode').value.trim().toUpperCase();
+            const email = document.getElementById('regCompanyEmail').value.trim();
+            const phone = document.getElementById('regCompanyPhone').value.trim();
+            const pin = document.getElementById('regCompanyPin').value.trim();
+            const pinConfirm = document.getElementById('regCompanyPinConfirm').value.trim();
+            const errEl = document.getElementById('regCompanyError');
+
+            errEl.classList.add('hidden');
+
+            if (!name || !vat) {
+                errEl.innerText = "Inserisci Ragione Sociale e Partita IVA.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!code) {
+                code = generateNextCompanyCode();
+            }
+
+            if (!/^[A-Z0-9_-]{3,12}$/.test(code)) {
+                errEl.innerText = "Il Codice Azienda deve contenere da 3 a 12 caratteri (lettere e numeri).";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (companiesRegistry[code] && code !== 'AZ-MAIN') {
+                errEl.innerText = "Questo Codice Azienda è già utilizzato. Scegline un altro.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
+                errEl.innerText = "Il PIN Amministratore deve essere composto da 4 cifre numeriche.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (pin !== pinConfirm) {
+                errEl.innerText = "I due PIN inseriti non coincidono.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            const newCompany = {
+                code: code,
+                name: name,
+                adminName: adminName || "",
+                vat: vat,
+                fiscalCode: fiscalCode || "",
+                email: email || "",
+                phone: phone || "",
+                adminPin: pin,
+                createdAt: new Date().toISOString()
+            };
+
+            db.ref('aziende_registry/' + code).set(newCompany, (err) => {
+                if (!err) {
+                    db.ref('aziende/' + code + '/config/denominazioneAzienda').set(name);
+                    db.ref('aziende/' + code + '/config/cartaAzienda').set({ number: "", expiry: "" });
+
+                    document.getElementById('successRegCompanyCode').innerText = code;
+                    document.getElementById('successRegCompanyName').innerText = name;
+                    document.getElementById('successRegCompanyPin').innerText = pin;
+
+                    document.getElementById('registerCompanyFormView').classList.add('hidden');
+                    document.getElementById('registerCompanySuccessView').classList.remove('hidden');
+
+                    lastRegisteredCompany = newCompany;
+                    showToast("Flotta registrata con successo!", "success");
+                } else {
+                    errEl.innerText = "Errore durante il salvataggio: " + err.message;
+                    errEl.classList.remove('hidden');
+                }
+            });
+        }
+
+        function loginDirectlyAsRegisteredCompany() {
+            if (lastRegisteredCompany) {
+                switchActiveCompany(lastRegisteredCompany.code);
+                closeRegisterCompanyModal();
+                showSection("admin");
+                showToast(`Pannello attivo per: ${lastRegisteredCompany.name}`, "success");
+            } else {
+                closeRegisterCompanyModal();
+            }
+        }
+
+        // --- GESTIONE PANNELLO SUPER ADMIN (GIOVANNI) ---
+        function openSuperAdminModal() {
+            renderSuperAdminCompaniesList();
+            document.getElementById('superAdminModal').classList.remove('hidden');
+        }
+
+        function closeSuperAdminModal() {
+            document.getElementById('superAdminModal').classList.add('hidden');
+        }
+
+        function renderSuperAdminCompaniesList() {
+            const listEl = document.getElementById('superAdminCompaniesList');
+            const countEl = document.getElementById('superAdminCompanyCount');
+            if (!listEl) return;
+            listEl.innerHTML = "";
+
+            let count = 0;
+            for (let code in companiesRegistry) {
+                count++;
+                const comp = companiesRegistry[code];
+                const isCurrent = (code === activeCompanyId);
+
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border transition flex flex-col md:flex-row md:items-center justify-between gap-3 ${isCurrent ? 'bg-indigo-950/70 border-indigo-500 shadow-md ring-1 ring-indigo-500/50' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'}`;
+                item.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-mono font-bold text-xs text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-800/60">${comp.code}</span>
+                            <h4 class="font-bold text-white text-xs">${comp.name || 'Azienda'}</h4>
+                            ${isCurrent ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/30">FLOTTA ATTIVA</span>' : ''}
+                        </div>
+                        <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-slate-400">
+                            ${comp.adminName ? `<span>Admin: <strong class="text-slate-200 font-semibold">${comp.adminName}</strong></span>` : ''}
+                            <span>P.IVA: <strong class="text-slate-300 font-mono">${comp.vat || '-'}</strong></span>
+                            ${comp.fiscalCode ? `<span>C.F.: <strong class="text-slate-300 font-mono">${comp.fiscalCode}</strong></span>` : ''}
+                            <span>PIN Admin: <strong class="text-amber-300 font-mono font-bold">${comp.adminPin || '••••'}</strong></span>
+                            ${comp.phone ? `<span>Tel: <strong class="text-slate-300">${comp.phone}</strong></span>` : ''}
+                            ${comp.email ? `<span>Email: <strong class="text-slate-300">${comp.email}</strong></span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-1.5 self-end md:self-auto">
+                        <button onclick="openEditCompanyModal('${comp.code}')" title="Modifica Anagrafica e PIN" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold px-2.5 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1">
+                            <span>✏️</span>
+                            <span>Modifica</span>
+                        </button>
+                        <button onclick="selectCompanyFromSuperAdmin('${comp.code}')" class="${isCurrent ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-indigo-600 hover:bg-indigo-500'} text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition shadow-sm">
+                            ${isCurrent ? 'Apri Flotta' : 'Gestisci'}
+                        </button>
+                        ${comp.code !== 'AZ-MAIN' ? `
+                            <button onclick="deleteCompanyFromSuperAdmin('${comp.code}', '${comp.name}')" title="Elimina Azienda" class="bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800 p-1.5 rounded-xl text-xs transition">
+                                🗑️
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                listEl.appendChild(item);
+            }
+            if (countEl) countEl.innerText = count;
+        }
+
+        function openEditCompanyModal(code) {
+            const comp = companiesRegistry[code];
+            if (!comp) return;
+
+            document.getElementById('editCompanyCodeHidden').value = code;
+            document.getElementById('editCompanySubTitle').innerText = `Codice Azienda: ${code}`;
+            document.getElementById('editCompanyName').value = comp.name || '';
+            document.getElementById('editCompanyAdminName').value = comp.adminName || '';
+            document.getElementById('editCompanyVat').value = comp.vat || '';
+            document.getElementById('editCompanyFiscalCode').value = comp.fiscalCode || '';
+            document.getElementById('editCompanyPin').value = comp.adminPin || '';
+            document.getElementById('editCompanyEmail').value = comp.email || '';
+            document.getElementById('editCompanyPhone').value = comp.phone || '';
+
+            document.getElementById('editCompanyModal').classList.remove('hidden');
+        }
+
+        function closeEditCompanyModal() {
+            document.getElementById('editCompanyModal').classList.add('hidden');
+        }
+
+        function saveEditedCompany() {
+            const code = document.getElementById('editCompanyCodeHidden').value;
+            if (!code) return;
+
+            const newName = document.getElementById('editCompanyName').value.trim();
+            const newAdminName = document.getElementById('editCompanyAdminName').value.trim();
+            const newVat = document.getElementById('editCompanyVat').value.trim().toUpperCase();
+            const newFiscalCode = document.getElementById('editCompanyFiscalCode').value.trim().toUpperCase();
+            const newPin = document.getElementById('editCompanyPin').value.trim();
+            const newEmail = document.getElementById('editCompanyEmail').value.trim();
+            const newPhone = document.getElementById('editCompanyPhone').value.trim();
+
+            if (!newName) {
+                showToast("Inserisci la Ragione Sociale.", "error");
+                return;
+            }
+            if (!newVat) {
+                showToast("Inserisci la Partita IVA.", "error");
+                return;
+            }
+            if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+                showToast("Il PIN deve essere di 4 cifre numeriche.", "error");
+                return;
+            }
+
+            const updates = {
+                name: newName,
+                adminName: newAdminName,
+                vat: newVat,
+                fiscalCode: newFiscalCode,
+                adminPin: newPin,
+                email: newEmail,
+                phone: newPhone
+            };
+
+            db.ref('aziende_registry/' + code).update(updates, (err) => {
+                if (!err) {
+                    db.ref('aziende/' + code + '/config/denominazioneAzienda').set(newName);
+                    if (code === activeCompanyId) {
+                        currentCompanyName = newName;
+                        updateDOMCompanyName();
+                    }
+                    showToast(`Anagrafica ${code} aggiornata con successo!`, "success");
+                    closeEditCompanyModal();
+                    renderSuperAdminCompaniesList();
+                } else {
+                    showToast("Errore durante il salvataggio: " + err.message, "error");
+                }
+            });
+        }
+
+        function selectCompanyFromSuperAdmin(code) {
+            switchActiveCompany(code);
+            closeSuperAdminModal();
+            renderFleetTable();
+            renderVehicleTable();
+            showToast(`Azienda attiva: ${companiesRegistry[code]?.name || code}`, "success");
+        }
+
+        function deleteCompanyFromSuperAdmin(code, name) {
+            if (code === 'AZ-MAIN') {
+                alert("L'Azienda Principale non può essere eliminata.");
+                return;
+            }
+            if (confirm(`Vuoi davvero eliminare l'azienda "${name}" (${code}) e tutti i suoi dati dal Cloud?`)) {
+                db.ref('aziende_registry/' + code).remove();
+                db.ref('aziende/' + code).remove((err) => {
+                    if (!err) {
+                        showToast(`Azienda ${code} eliminata.`, "success");
+                        if (activeCompanyId === code) {
+                            switchActiveCompany('AZ-MAIN');
+                        }
+                        renderSuperAdminCompaniesList();
+                    }
+                });
+            }
+        }
+
+        // --- GESTIONE CAMBIO AZIENDA CONDUCENTE ---
+        function openSwitchDriverCompanyModal() {
+            document.getElementById('driverCustomCompanyInput').value = activeCompanyId;
+            document.getElementById('switchDriverCompanyModal').classList.remove('hidden');
+        }
+
+        function closeSwitchDriverCompanyModal() {
+            document.getElementById('switchDriverCompanyModal').classList.add('hidden');
+        }
+
+        function confirmSwitchDriverCompany() {
+            const inputVal = document.getElementById('driverCustomCompanyInput').value.trim().toUpperCase();
+            if (!inputVal) {
+                showToast("Inserisci un codice valido.", "error");
+                return;
+            }
+            if (companiesRegistry[inputVal] || inputVal === 'AZ-MAIN') {
+                switchActiveCompany(inputVal);
+                closeSwitchDriverCompanyModal();
+                showToast(`Azienda impostata: ${companiesRegistry[inputVal]?.name || inputVal}`, "success");
+            } else {
+                showToast("Codice azienda non trovato nel database.", "error");
+            }
+        }
+
+        // --- GESTIONE CONDUCENTI ---
         function saveDriver() {
             const editId = document.getElementById('editDriverId').value;
             const name = document.getElementById('addName').value.trim();
@@ -1489,6 +2643,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             const rawPin = document.getElementById('addPin').value.trim();
             const phone = document.getElementById('addPhone').value.trim();
             const rawLastDl = document.getElementById('addLastDl').value;
+            
             let lastDl = rawLastDl;
             if (rawLastDl) {
                 const dlDateObj = parseLocalDate(rawLastDl);
@@ -1499,90 +2654,80 @@ if ("Notification" in window && Notification.permission === "granted") {
                 todayDl.setDate(todayDl.getDate() + 28);
                 lastDl = formatDateYYYYMMDD(todayDl);
             }
-            const expiry = document.getElementById('addExpiry').value || getRelativeDate(365 * 5);
-            
-            const vacationStart = document.getElementById('addVacationStart').value;
-            const vacationEnd = document.getElementById('addVacationEnd').value;
 
-            const pin = rawPin ? rawPin.padStart(4, '0').slice(0, 4) : "0000";
+            const rawExpiry = document.getElementById('addExpiry').value;
+            let cardExpiry = rawExpiry;
+            if (!cardExpiry) {
+                const defaultExp = new Date();
+                defaultExp.setFullYear(defaultExp.getFullYear() + 5);
+                cardExpiry = formatDateYYYYMMDD(defaultExp);
+            }
 
-            if (!name || !surname || !card) {
-                showToast("Compila Nome, Cognome e Numero Carta.", "error");
+            const vacStart = document.getElementById('addVacationStart').value;
+            const vacEnd = document.getElementById('addVacationEnd').value;
+            const allowPhotoUpload = document.getElementById('addAllowPhotoUpload').checked;
+
+            if (!name || !surname) {
+                showToast("Nome e Cognome sono obbligatori.", "error");
                 return;
             }
 
-            let finalFileName = "";
-            let finalBase64 = "";
-            let finalPhotoBase64 = "";
-
-            if (clearExistingFile) {
-                finalFileName = "";
-                finalBase64 = "";
-            } else {
-                const existingDrv = driversMap[editId];
-                finalFileName = pendingFileNameDoc || (existingDrv ? existingDrv.docFileName : "");
-                finalBase64 = pendingBase64Doc || (existingDrv ? existingDrv.docBase64 : "");
+            let pin = rawPin;
+            if (!pin || pin.length !== 4) {
+                pin = Math.floor(1000 + Math.random() * 9000).toString();
+                showToast(`Assegnato PIN generato: ${pin}`, "info");
             }
-
-            if (clearExistingPhoto) {
-                finalPhotoBase64 = "";
-            } else {
-                const existingDrv = driversMap[editId];
-                finalPhotoBase64 = pendingBase64Photo || (existingDrv ? existingDrv.photoBase64 : "");
-            }
-
-            const allowPhoto = document.getElementById('addAllowPhotoUpload').checked;
 
             const driverData = {
-                name, surname, cardNumber: card, cantiere, pin, phone,
-                lastDownloadDate: lastDl, cardExpiryDate: expiry,
-                docFileName: finalFileName || "",
-                docBase64: finalBase64 || "",
-                photoBase64: finalPhotoBase64 || "",
-                allowPhotoUpload: !!allowPhoto,
-                vacationStartDate: vacationStart || null,
-                vacationEndDate: vacationEnd || null
+                name,
+                surname,
+                cardNumber: card || "-",
+                cantiere,
+                pin,
+                phone: phone || "-",
+                lastDownloadDate: lastDl,
+                cardExpiryDate: cardExpiry,
+                vacationStartDate: vacStart || null,
+                vacationEndDate: vacEnd || null,
+                allowPhotoUpload: allowPhotoUpload,
+                obligationAccepted: editId && driversMap[editId] ? (driversMap[editId].obligationAccepted || false) : false
             };
 
-            const existingDrv = driversMap[editId];
-            if (existingDrv && existingDrv.fcmToken) {
-                driverData.fcmToken = existingDrv.fcmToken;
+            if (pendingBase64Photo) {
+                driverData.photoBase64 = pendingBase64Photo;
+            } else if (clearExistingPhoto) {
+                driverData.photoBase64 = null;
             }
 
-            // Pulisci eventuali proprieta undefined per evitare blocchi Firebase
-            for (let k in driverData) {
-                if (driverData[k] === undefined) driverData[k] = null;
+            if (pendingBase64Doc) {
+                driverData.docBase64 = pendingBase64Doc;
+                driverData.docFileName = pendingFileNameDoc;
+            } else if (clearExistingFile) {
+                driverData.docBase64 = null;
+                driverData.docFileName = null;
             }
 
-            try {
-                if (editId) {
-                    db.ref('operai/' + editId).update(driverData, (error) => {
-                        if (!error) {
-                            showToast("Conducente aggiornato nel Cloud!", "success");
-                            driversMap[editId] = { ...driversMap[editId], ...driverData, id: editId };
-                            resetDriverForm();
-                            renderFleetTable();
-                            updateAdminBadges();
-                        } else {
-                            showToast("Errore scrittura Firebase: " + error.message, "error");
-                        }
-                    });
-                } else {
-                    const newRef = db.ref('operai').push();
-                    newRef.set(driverData, (error) => {
-                        if (!error) {
-                            showToast("Conducente salvato nel Cloud con successo!", "success");
-                            resetDriverForm();
-                            renderFleetTable();
-                            updateAdminBadges();
-                        } else {
-                            showToast("Errore scrittura Firebase: " + error.message, "error");
-                        }
-                    });
-                }
-            } catch (err) {
-                console.error("Errore saveDriver:", err);
-                showToast("Errore durante il salvataggio: " + err.message, "error");
+            if (editId) {
+                dbCompanyRef('operai/' + editId).update(driverData, (error) => {
+                    if (!error) {
+                        showToast("Conducente aggiornato nel Cloud!", "success");
+                        resetDriverForm();
+                        updateAdminBadges();
+                    } else {
+                        alert("Errore aggiornamento Firebase: " + error.message);
+                    }
+                });
+            } else {
+                const newRef = dbCompanyRef('operai').push();
+                newRef.set(driverData, (error) => {
+                    if (!error) {
+                        showToast("Conducente salvato nel Cloud con successo!", "success");
+                        resetDriverForm();
+                        updateAdminBadges();
+                    } else {
+                        alert("Errore scrittura Firebase: " + error.message);
+                    }
+                });
             }
         }
 
@@ -1593,10 +2738,11 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('editDriverId').value = id;
             document.getElementById('addName').value = d.name;
             document.getElementById('addSurname').value = d.surname;
-            document.getElementById('addCard').value = d.cardNumber;
-            document.getElementById('addCantiere').value = d.cantiere;
-            document.getElementById('addPin').value = d.pin;
-            document.getElementById('addPhone').value = d.phone || "";
+            document.getElementById('addCard').value = d.cardNumber !== "-" ? d.cardNumber : "";
+            document.getElementById('addCantiere').value = d.cantiere || "";
+            document.getElementById('addPin').value = d.pin || "";
+            document.getElementById('addPhone').value = d.phone !== "-" ? d.phone : "";
+            
             if (d.lastDownloadDate) {
                 const actualDlDate = parseLocalDate(d.lastDownloadDate);
                 actualDlDate.setDate(actualDlDate.getDate() - 28);
@@ -1604,39 +2750,31 @@ if ("Notification" in window && Notification.permission === "granted") {
             } else {
                 document.getElementById('addLastDl').value = "";
             }
-            document.getElementById('addExpiry').value = d.cardExpiryDate;
+
+            document.getElementById('addExpiry').value = d.cardExpiryDate || "";
             document.getElementById('addVacationStart').value = d.vacationStartDate || "";
             document.getElementById('addVacationEnd').value = d.vacationEndDate || "";
-            document.getElementById('addAllowPhotoUpload').checked = !!d.allowPhotoUpload;
+            document.getElementById('addAllowPhotoUpload').checked = d.allowPhotoUpload || false;
 
-            clearExistingFile = false;
-            pendingBase64Doc = "";
-            pendingFileNameDoc = "";
-            clearExistingPhoto = false;
-            pendingBase64Photo = "";
-            document.getElementById('addDriverPhotoInput').value = "";
-
-            if (d.photoBase64) {
+            if (d.photoBase64 && d.photoBase64.length > 50) {
                 document.getElementById('photoPreviewImg').src = d.photoBase64;
                 document.getElementById('photoPreviewImg').classList.remove('hidden');
                 document.getElementById('photoPreviewPlaceholder').classList.add('hidden');
                 document.getElementById('clearPhotoBtn').classList.remove('hidden');
             } else {
-                document.getElementById('photoPreviewImg').src = "";
-                document.getElementById('photoPreviewImg').classList.add('hidden');
-                document.getElementById('photoPreviewPlaceholder').classList.remove('hidden');
-                document.getElementById('clearPhotoBtn').classList.add('hidden');
+                clearDriverPhoto();
             }
+
             if (d.docFileName) {
                 document.getElementById('currentAttachmentStatus').innerText = "Allegato attuale: " + d.docFileName;
                 document.getElementById('clearFileBtn').classList.remove('hidden');
             } else {
-                document.getElementById('currentAttachmentStatus').innerText = "Nessun allegato presente.";
+                document.getElementById('currentAttachmentStatus').innerText = "";
                 document.getElementById('clearFileBtn').classList.add('hidden');
             }
 
             document.getElementById('formTitle').innerText = "Modifica Conducente";
-            document.getElementById('saveBtn').innerText = "Aggiorna Conducente";
+            document.getElementById('saveBtn').innerHTML = "<span>💾</span> <span>Aggiorna Conducente</span>";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1655,78 +2793,79 @@ if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('addVacationStart').value = "";
             document.getElementById('addVacationEnd').value = "";
             document.getElementById('addAllowPhotoUpload').checked = false;
-            document.getElementById('addDocumentFile').value = "";
-            pendingBase64Doc = "";
-            pendingFileNameDoc = "";
-            clearExistingFile = false;
-            document.getElementById('currentAttachmentStatus').innerText = "";
-            document.getElementById('clearFileBtn').classList.add('hidden');
+            
             clearDriverPhoto();
+            clearAttachedFile();
+            document.getElementById('currentAttachmentStatus').innerText = "";
 
             document.getElementById('formTitle').innerText = "Aggiungi Conducente";
-            document.getElementById('saveBtn').innerText = "Salva Conducente";
+            document.getElementById('saveBtn').innerHTML = "<span>💾</span> <span>Salva Conducente</span>";
             document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
         function quickSetOneDayDeadline(id) {
-            const targetDate = new Date();
-            targetDate.setDate(targetDate.getDate() + 1);
-            const targetStr = formatDateYYYYMMDD(targetDate);
-            db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const targetStr = formatDateYYYYMMDD(tomorrow);
+            dbCompanyRef('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
-                    showToast("Scadenza impostata a 1 Giorno rimasto (Domani)!", "success");
-                    if (driversMap[id]) driversMap[id].lastDownloadDate = targetStr;
-                    renderFleetTable();
+                    showToast("Test impostato: Scadenza impostata a 1 Giorno!", "success");
                     updateAdminBadges();
                 }
             });
         }
 
         function requestDriverObligation(id) {
-            db.ref('operai/' + id).update({ obligationAccepted: false }, (error) => {
+            dbCompanyRef('operai/' + id).update({ obligationAccepted: false }, (error) => {
                 if(!error) {
-                    showToast("Lettura normativa richiesta con successo!", "success");
-                    if (driversMap[id]) driversMap[id].obligationAccepted = false;
-                } else {
-                    showToast("Errore: " + error.message, "error");
+                    showToast("Richiesta di presa visione inviata all'autista!", "success");
                 }
             });
         }
 
-        function quickDownloadToday(id) {
+        function quickDownloadDriver(id) {
             const today = new Date();
             today.setDate(today.getDate() + 28);
             const targetStr = formatDateYYYYMMDD(today);
-            db.ref('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
+            dbCompanyRef('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
-                    showToast("Nuova scadenza a 28 giorni registrata nel Cloud!", "success");
+                    showToast("Nuova scadenza a 28 giorni registrata!", "success");
                     updateAdminBadges();
                 }
             });
         }
 
         function toggleDriverPhotoPermission(id) {
-            const currentStatus = driversMap[id] ? !!driversMap[id].allowPhotoUpload : false;
-            const newStatus = !currentStatus;
-            db.ref('operai/' + id).update({ allowPhotoUpload: newStatus }, (error) => {
+            const d = driversMap[id];
+            if (!d) return;
+            const newStatus = !d.allowPhotoUpload;
+            dbCompanyRef('operai/' + id).update({ allowPhotoUpload: newStatus }, (error) => {
                 if (!error) {
-                    showToast(newStatus ? "Caricamento foto sbloccato per l'operaio!" : "Caricamento foto bloccato per l'operaio.", "success");
-                    updateAdminBadges();
+                    showToast(newStatus ? "Caricamento foto autorizzato per l'autista." : "Caricamento foto bloccato.", "success");
                 }
             });
         }
 
+        function openDriverViewModal(id) {
+            const d = driversMap[id];
+            if (!d) return;
+            renderDriverView({ id, ...d });
+            showSection('driver');
+        }
+
         function renderFleetTable() {
             const tbody = document.getElementById('fleetTableBody');
+            if (!tbody) return;
             tbody.innerHTML = "";
             
-            const filterTerm = document.getElementById('adminSearchTableInput').value.trim().toLowerCase();
+            const searchInput = document.getElementById('adminSearchTableInput') || document.getElementById('adminSearchInput');
+            const filterTerm = searchInput ? searchInput.value.trim().toLowerCase() : "";
             let count = 0;
 
             for (let id in driversMap) {
                 const d = driversMap[id];
                 if (!d) continue;
-                const searchStr = `${d.name || ''} ${d.surname || ''} ${d.cantiere || ''}`.toLowerCase();
+                const searchStr = `${d.name || ''} ${d.surname || ''} ${d.cardNumber || ''} ${d.cantiere || ''}`.toLowerCase();
                 if (filterTerm && !searchStr.includes(filterTerm)) continue;
                 count++;
 
@@ -1734,44 +2873,35 @@ if ("Notification" in window && Notification.permission === "granted") {
                 const daysRem = getDaysRemaining(targetDateStr);
 
                 let isVacation = false;
-                let vacationText = "";
                 if (d.vacationStartDate && d.vacationEndDate) {
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    const vStart = new Date(d.vacationStartDate);
-                    vStart.setHours(0, 0, 0, 0);
-                    const vEnd = new Date(d.vacationEndDate);
-                    vEnd.setHours(0, 0, 0, 0);
-                    if (today >= vStart && today <= vEnd) {
-                        isVacation = true;
-                        vacationText = `🏖️ In Ferie (fino al ${formatDateItalian(d.vacationEndDate)})`;
-                    }
+                    const today = new Date(); today.setHours(0,0,0,0);
+                    const vStart = parseLocalDate(d.vacationStartDate); vStart.setHours(0,0,0,0);
+                    const vEnd = parseLocalDate(d.vacationEndDate); vEnd.setHours(0,0,0,0);
+                    if (today >= vStart && today <= vEnd) isVacation = true;
                 }
 
-                const hasAttachment = d.docBase64 && d.docBase64.length > 0;
-                const hasPhone = d.phone && d.phone.trim().length > 0;
+                const hasAttachment = d.docBase64 ? true : false;
+                const hasPhoto = d.photoBase64 ? true : false;
 
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-800/50 transition border-b border-slate-800/60";
                 tr.innerHTML = `
-                    <td class="py-3.5 px-3 font-bold text-white">
+                    <td class="py-3.5 px-3">
                         <div class="flex items-center space-x-2.5">
-                            ${d.photoBase64 ? `
-                                <img src="${d.photoBase64}" class="w-8 h-8 rounded-full object-cover border border-emerald-500/50 shadow-sm flex-shrink-0">
-                            ` : `
-                                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs text-slate-400 flex-shrink-0 font-normal">👤</div>
-                            `}
+                            <div class="w-8 h-8 rounded-xl bg-slate-800 border border-slate-700 overflow-hidden flex items-center justify-center flex-shrink-0 shadow-sm">
+                                ${hasPhoto ? `<img src="${d.photoBase64}" class="w-full h-full object-cover">` : `<span class="text-xs">👤</span>`}
+                            </div>
                             <div>
-                                ${d.name || ''} ${d.surname || ''}<br/>
-                                <span class="text-[10px] text-emerald-400 font-mono">${d.cantiere || 'Generale'} • PIN: <span class="bg-slate-800/90 border border-slate-700 px-1.5 py-0.5 rounded text-white font-bold">${d.pin || ''}</span></span>
+                                <span class="font-bold text-white text-xs block leading-tight">${d.name} ${d.surname}</span>
+                                <span class="text-[10px] text-slate-400 block tracking-wider font-mono">PIN: <strong class="text-emerald-400 font-bold">${d.pin || '••••'}</strong> &bull; ${d.cantiere || 'Generale'}</span>
                             </div>
                         </div>
                     </td>
-                    <td class="py-3.5 px-3 font-mono text-slate-400 text-[11px]">${d.cardNumber || ''}</td>
+                    <td class="py-3.5 px-3 text-emerald-400 font-mono text-[11px] font-semibold">${d.cardNumber || '-'}</td>
                     <td class="py-3.5 px-3">
                         ${isVacation ? `
-                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center space-x-1 shadow-sm bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                                <span>🏖️</span> <span>${vacationText}</span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 inline-flex items-center space-x-1">
+                                <span>🏖️</span> <span>In Ferie</span>
                             </span>
                         ` : `
                             <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center space-x-1.5 shadow-sm ${daysRem <= 2 ? 'bg-red-500/10 text-red-400 border border-red-500/30' : (daysRem <= 7 ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30')}">
@@ -1780,19 +2910,16 @@ if ("Notification" in window && Notification.permission === "granted") {
                             </span>
                         `}
                     </td>
-                    <td class="py-3.5 px-3 text-slate-400 text-xs">
-                        ${formatDateItalian(d.cardExpiryDate)}
-                    </td>
+                    <td class="py-3.5 px-3 text-slate-300 font-mono text-[11px]">${formatDateItalian(d.cardExpiryDate) || '-'}</td>
                     <td class="py-3.5 px-3 text-right no-print">
                         <div class="flex items-center justify-end space-x-1.5">
-                            <button onclick="quickDownloadToday('${id}')" title="Rinnova di 28 Giorni" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                            <button onclick="quickDownloadDriver('${id}')" title="Rinnova di 28 Giorni" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
                                 <span>🔄</span>
                                 <span>+28gg</span>
                             </button>
-
-                            ${hasPhone ? `
-                                <button onclick="sendWhatsAppReminder('${id}')" title="Invia Avviso WhatsApp" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 px-2 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95">
-                                    💬 WA
+                            ${d.phone && d.phone !== '-' ? `
+                                <button onclick="sendWhatsAppReminder('${id}')" title="Invia Notifica WhatsApp" class="bg-emerald-600 hover:bg-emerald-500 text-white p-1.5 rounded-xl text-xs transition shadow-sm">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                                 </button>
                             ` : ''}
 
@@ -1836,12 +2963,13 @@ if ("Notification" in window && Notification.permission === "granted") {
                 `;
                 tbody.appendChild(tr);
             }
-            document.getElementById('fleetCount').innerText = count;
+            const countEl = document.getElementById('fleetCount');
+            if (countEl) countEl.innerText = count;
         }
 
         function deleteDriver(id) {
             if (confirm("Vuoi davvero eliminare questo conducente dal Cloud?")) {
-                db.ref('operai/' + id).remove((error) => {
+                dbCompanyRef('operai/' + id).remove((error) => {
                     if(!error) {
                         showToast("Conducente eliminato.", "success");
                         updateAdminBadges();
@@ -1941,7 +3069,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                         }
                     }
 
-                    // 2. TENTATIVO DI MATCH PER COGNOME (Solo se il numero carta non ha trovato match)
+                    // 2. TENTATIVO DI MATCH PER COGNOME
                     if (!isExactCardMatch) {
                         for (let id in driversMap) {
                             const d = driversMap[id];
@@ -1962,7 +3090,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                     const targetStr = formatDateYYYYMMDD(baseDate);
 
                     if (matchedDriverId) {
-                        db.ref('operai/' + matchedDriverId).update({ lastDownloadDate: targetStr }, (err) => {
+                        dbCompanyRef('operai/' + matchedDriverId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
                                 const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(formatDateYYYYMMDD(fileDate))})` : '';
                                 showToast(`✅ ${file.name}: Nuova scadenza registrata per ${matchedDriverName}${dateInfoStr}!`, "success");
@@ -2003,7 +3131,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             const vehicleData = { plate, model, cantiere, lastDownloadDate: lastDl };
 
             if (editId) {
-                db.ref('veicoli/' + editId).set(vehicleData, (error) => {
+                dbCompanyRef('veicoli/' + editId).set(vehicleData, (error) => {
                     if (!error) {
                         showToast("Veicolo aggiornato nel Cloud!", "success");
                         resetVehicleForm();
@@ -2013,7 +3141,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                     }
                 });
             } else {
-                const newRef = db.ref('veicoli').push();
+                const newRef = dbCompanyRef('veicoli').push();
                 newRef.set(vehicleData, (error) => {
                     if (!error) {
                         showToast("Veicolo salvato nel Cloud con successo!", "success");
@@ -2065,7 +3193,7 @@ if ("Notification" in window && Notification.permission === "granted") {
             const today = new Date();
             today.setDate(today.getDate() + 90);
             const targetStr = today.toISOString().split('T')[0];
-            db.ref('veicoli/' + id).update({ lastDownloadDate: targetStr }, (error) => {
+            dbCompanyRef('veicoli/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
                     showToast("Nuova scadenza a 90 giorni registrata per il mezzo!", "success");
                     updateAdminBadges();
@@ -2075,9 +3203,11 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function renderVehicleTable() {
             const tbody = document.getElementById('vehicleTableBody');
+            if (!tbody) return;
             tbody.innerHTML = "";
             
-            const filterTerm = document.getElementById('adminSearchVehicleInput').value.trim().toLowerCase();
+            const searchInput = document.getElementById('adminSearchVehicleInput');
+            const filterTerm = searchInput ? searchInput.value.trim().toLowerCase() : "";
             let count = 0;
 
             for (let id in vehiclesMap) {
@@ -2137,7 +3267,7 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function deleteVehicle(id) {
             if (confirm("Vuoi davvero eliminare questo veicolo dal Cloud?")) {
-                db.ref('veicoli/' + id).remove((error) => {
+                dbCompanyRef('veicoli/' + id).remove((error) => {
                     if(!error) {
                         showToast("Veicolo eliminato.", "success");
                         updateAdminBadges();
@@ -2213,7 +3343,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                     const targetStr = formatDateYYYYMMDD(baseDate);
 
                     if (matchedVehicleId) {
-                        db.ref('veicoli/' + matchedVehicleId).update({ lastDownloadDate: targetStr }, (err) => {
+                        dbCompanyRef('veicoli/' + matchedVehicleId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
                                 const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(formatDateYYYYMMDD(fileDate))})` : '';
                                 showToast(`✅ ${file.name}: Nuova scadenza mezzo registrata per ${matchedVehiclePlate}${dateInfoStr}!`, "success");
@@ -2230,7 +3360,7 @@ if ("Notification" in window && Notification.permission === "granted") {
 
         function acceptDriverObligations() {
             if (currentLoggedInDriver && currentLoggedInDriver.id) {
-                db.ref('operai/' + currentLoggedInDriver.id).update({ obligationAccepted: true });
+                dbCompanyRef('operai/' + currentLoggedInDriver.id).update({ obligationAccepted: true });
                 currentLoggedInDriver.obligationAccepted = true;
             } else {
                 localStorage.setItem('tacho_obligation_accepted', 'true');
@@ -2242,17 +3372,14 @@ if ("Notification" in window && Notification.permission === "granted") {
         function renderDriverView(d) {
             if (!d) return;
 
-            // Mostra il modale obblighi se non accettato su database (o fallback locale per retrocompatibilità)
             const acceptedInDB = d.obligationAccepted === true;
             const acceptedLocally = localStorage.getItem('tacho_obligation_accepted') === 'true';
             
-            // Se l'admin ha richiesto esplicitamente la lettura (false) o se non l'ha mai fatto
             if (d.obligationAccepted === false || (!acceptedInDB && !acceptedLocally)) {
                 const obligationModal = document.getElementById('driverObligationModal');
                 if (obligationModal) obligationModal.classList.remove('hidden');
             }
 
-            // Pulisce il pallino ed il contatore di notifica sull'icona del cellulare
             if ('clearAppBadge' in navigator) {
                 navigator.clearAppBadge().catch(() => {});
             }
@@ -2268,9 +3395,9 @@ if ("Notification" in window && Notification.permission === "granted") {
             if (d.vacationStartDate && d.vacationEndDate) {
                 const today = new Date();
                 today.setHours(0, 0, 0, 0);
-                const vStart = new Date(d.vacationStartDate);
+                const vStart = parseLocalDate(d.vacationStartDate);
                 vStart.setHours(0, 0, 0, 0);
-                const vEnd = new Date(d.vacationEndDate);
+                const vEnd = parseLocalDate(d.vacationEndDate);
                 vEnd.setHours(0, 0, 0, 0);
                 if (today >= vStart && today <= vEnd) {
                     isVacation = true;
@@ -2298,7 +3425,6 @@ if ("Notification" in window && Notification.permission === "granted") {
                 }
             }
 
-            // Sincronizzazione automatica Token Notifiche FCM
             if ("Notification" in window) {
                 const banner = document.getElementById('pushNotificationBanner');
                 if (Notification.permission === "granted") {
@@ -2310,7 +3436,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                                 serviceWorkerRegistration: registration
                             }).then((currentToken) => {
                                 if (currentToken) {
-                                    db.ref('operai/' + d.id + '/fcmToken').set(currentToken);
+                                    dbCompanyRef('operai/' + d.id + '/fcmToken').set(currentToken);
                                     d.fcmToken = currentToken;
                                     console.log("Token FCM sincronizzato automaticamente per l'operaio:", currentToken);
                                 }
@@ -2324,7 +3450,6 @@ if ("Notification" in window && Notification.permission === "granted") {
                 }
             }
 
-            // Aggiorna Sezione Ferie Autista
             document.getElementById('driverVacationStart').value = d.vacationStartDate || "";
             document.getElementById('driverVacationEnd').value = d.vacationEndDate || "";
 
@@ -2335,9 +3460,9 @@ if ("Notification" in window && Notification.permission === "granted") {
                 clearBtn.classList.remove('hidden');
                 statusBadge.classList.remove('hidden');
                 if (isVacation) {
-                    statusBadge.innerHTML = `<span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-yellow-950 text-yellow-300 border border-yellow-700 shadow-sm">🏖️ IN FERIE</span>`;
+                    statusBadge.innerHTML = `<span class="inline-flex items-center space-x-1.5 whitespace-nowrap px-3 py-1.5 rounded-xl text-[10px] font-black tracking-wide bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-300 border border-amber-500/40 shadow-sm"><span>🏖️</span><span>IN FERIE</span></span>`;
                 } else {
-                    statusBadge.innerHTML = `<span class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold bg-blue-950 text-blue-300 border border-blue-700 shadow-sm">📅 PROGRAMMATE</span>`;
+                    statusBadge.innerHTML = `<span class="inline-flex items-center space-x-1.5 whitespace-nowrap px-3 py-1.5 rounded-xl text-[10px] font-black tracking-wide bg-gradient-to-r from-blue-500/20 to-indigo-500/20 text-blue-300 border border-blue-500/40 shadow-sm"><span>📅</span><span>PROGRAMMATE</span></span>`;
                 }
             } else {
                 clearBtn.classList.add('hidden');
@@ -2428,7 +3553,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                 vacationEndDate: endVal || null
             };
 
-            db.ref('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
+            dbCompanyRef('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
                 if (error) {
                     showToast("Errore durante il salvataggio delle ferie.", "error");
                 } else {
@@ -2449,7 +3574,7 @@ if ("Notification" in window && Notification.permission === "granted") {
                     vacationEndDate: null
                 };
 
-                db.ref('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
+                dbCompanyRef('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
                     if (error) {
                         showToast("Errore durante la rimozione delle ferie.", "error");
                     } else {
@@ -2465,18 +3590,393 @@ if ("Notification" in window && Notification.permission === "granted") {
         }
 
         function exportBackupJSON() {
-            const backupData = { drivers: driversMap, vehicles: vehiclesMap, companyCard: companyCardData };
+            const backupData = { 
+                companyId: activeCompanyId,
+                companyName: currentCompanyName,
+                drivers: driversMap, 
+                vehicles: vehiclesMap, 
+                companyCard: companyCardData 
+            };
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
             const dlAnchor = document.createElement('a');
             dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `GC-TachoControl_Cloud_Backup_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchor.setAttribute("download", `GC-TachoControl_${activeCompanyId}_Backup_${new Date().toISOString().split('T')[0]}.json`);
             document.body.appendChild(dlAnchor);
             dlAnchor.click();
             dlAnchor.remove();
-            showToast("Backup Cloud completo esportato con successo!", "success");
+            showToast("Backup Cloud esportato con successo!", "success");
         }
 
-        function printReportPDF() { window.print(); }
+        // =================== LOGICA SIMULATORE TEMPI DI GUIDA (CE 561/2006) ===================
+        let lastSimulationData = null;
+
+        function openDrivingSimulatorModal() {
+            document.getElementById('drivingSimulatorModal').classList.remove('hidden');
+            switchSimulatorTab('calc');
+            calculateDrivingSimulation();
+        }
+
+        function closeDrivingSimulatorModal() {
+            document.getElementById('drivingSimulatorModal').classList.add('hidden');
+        }
+
+        function switchSimulatorTab(tab) {
+            const calcBtn = document.getElementById('btnSimTabCalc');
+            const guideBtn = document.getElementById('btnSimTabGuide');
+            const calcView = document.getElementById('simCalcView');
+            const guideView = document.getElementById('simGuideView');
+
+            if (tab === 'calc') {
+                calcBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5";
+                guideBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5";
+                calcView.classList.remove('hidden');
+                guideView.classList.add('hidden');
+            } else {
+                guideBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5";
+                calcBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5";
+                calcView.classList.add('hidden');
+                guideView.classList.remove('hidden');
+            }
+        }
+
+        function setSimTimeNow() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('simStartTime').value = `${hh}:${mm}`;
+            calculateDrivingSimulation();
+        }
+
+        function formatMinutesToTimeString(totalMinutes) {
+            totalMinutes = Math.round(totalMinutes);
+            const days = Math.floor(totalMinutes / (24 * 60));
+            const remainingMinutes = totalMinutes % (24 * 60);
+            const hh = String(Math.floor(remainingMinutes / 60)).padStart(2, '0');
+            const mm = String(remainingMinutes % 60).padStart(2, '0');
+            return {
+                timeStr: `${hh}:${mm}`,
+                daysOffset: days
+            };
+        }
+
+        function formatDurationHM(min) {
+            if (min <= 0) return "0 min";
+            const h = Math.floor(min / 60);
+            const m = min % 60;
+            if (h > 0 && m > 0) return `${h}h ${m}m`;
+            if (h > 0) return `${h} ore`;
+            return `${m} minuti`;
+        }
+
+        function calculateDrivingSimulation() {
+            const timeInput = (document.getElementById('simStartTime') && document.getElementById('simStartTime').value) ? document.getElementById('simStartTime').value : "06:00";
+            const [hStr, mStr] = timeInput.split(':');
+            const startMinutes = (parseInt(hStr, 10) * 60) + parseInt(mStr, 10);
+
+            const dailyDriveHours = parseInt(document.getElementById('simDailyDrive')?.value || 9, 10);
+            const pauseType = document.getElementById('simPauseType')?.value || '45';
+            const otherWorkMin = parseInt(document.getElementById('simOtherWork')?.value || 0, 10);
+            const restType = document.getElementById('simRestType')?.value || '11';
+
+            // 1° Periodo di guida: Max 4h 30m = 270 minuti
+            const firstDriveMinutes = 270;
+            const firstBreakMinutes = startMinutes + firstDriveMinutes + (otherWorkMin > 0 ? Math.floor(otherWorkMin / 2) : 0);
+            const firstBreakFormatted = formatMinutesToTimeString(firstBreakMinutes);
+
+            // Pausa: 45 min
+            const pauseDuration = 45;
+            const resumeDriveMinutes = firstBreakMinutes + pauseDuration;
+            const resumeDriveFormatted = formatMinutesToTimeString(resumeDriveMinutes);
+
+            // 2° Periodo di guida: 4h30m (standard) oppure 5h30m (se 10h tot)
+            const secondDriveMinutes = (dailyDriveHours === 10 ? 330 : 270);
+            const totalDriveMinutes = firstDriveMinutes + secondDriveMinutes;
+
+            // Fine Turno Guida
+            const endTurnMinutes = startMinutes + totalDriveMinutes + pauseDuration + otherWorkMin;
+            const endTurnFormatted = formatMinutesToTimeString(endTurnMinutes);
+
+            // Calcolo Riposo
+            let restHours = 11;
+            if (restType === '9') restHours = 9;
+            if (restType === 'multipresenza') restHours = 9;
+
+            const nextStartMinutes = endTurnMinutes + (restHours * 60);
+            const nextStartFormatted = formatMinutesToTimeString(nextStartMinutes);
+
+            // Output nei 3 riquadri di riepilogo
+            const elFirstBreak = document.getElementById('simResultFirstBreakTime');
+            const elFirstBreakDesc = document.getElementById('simResultFirstBreakDesc');
+            const elEndTime = document.getElementById('simResultEndTime');
+            const elEndDesc = document.getElementById('simResultEndDesc');
+            const elNextStart = document.getElementById('simResultNextStartTime');
+            const elNextStartDesc = document.getElementById('simResultNextStartDesc');
+            const elDiag = document.getElementById('simDiagnosticsBox');
+
+            if (elFirstBreak) {
+                elFirstBreak.innerText = `${firstBreakFormatted.timeStr}${firstBreakFormatted.daysOffset > 0 ? ' (+1g)' : ''}`;
+                elFirstBreakDesc.innerText = (pauseType === '15_30') 
+                    ? "Pausa frazionata: 15m prima + 30m entro le 4h30m" 
+                    : "Pausa obbligatoria di 45m continuativi";
+            }
+
+            if (elEndTime) {
+                elEndTime.innerText = `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ` (+${endTurnFormatted.daysOffset}g)` : ''}`;
+                elEndDesc.innerText = `Guida tot: ${dailyDriveHours}h • Lavoro: ${otherWorkMin}m • Pausa: 45m`;
+            }
+
+            if (elNextStart) {
+                elNextStart.innerText = `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ` (+${nextStartFormatted.daysOffset}g)` : ''}`;
+                elNextStartDesc.innerText = `Dopo riposo obbligatorio di ${restHours} ore`;
+            }
+
+            // Diagnostica e consigli normativi
+            if (elDiag) {
+                let diagHtml = `
+                    <div class="flex items-center space-x-2 font-bold text-white text-xs mb-1">
+                        <span>🚦</span> <span>Pianificazione Conforme al Regolamento CE 561/2006</span>
+                    </div>
+                    <ul class="space-y-1 text-[11px] list-disc list-inside">
+                        <li><strong>1ª Pausa:</strong> Fermati tassativamente entro le <strong class="text-amber-300 font-mono">${firstBreakFormatted.timeStr}</strong> per almeno 45 minuti di riposo continuativo.</li>
+                        <li><strong>Termine Guida:</strong> Guida massima giornaliera consentita di <strong>${dailyDriveHours} ore</strong> raggiunta alle ore <strong class="text-indigo-300 font-mono">${endTurnFormatted.timeStr}</strong>.</li>
+                        <li><strong>Ripartenza:</strong> Effettua il riposo di <strong>${restHours} ore</strong>. Potrai ripartire legalmente dalle ore <strong class="text-emerald-300 font-mono">${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' di domani' : ''}</strong>.</li>
+                `;
+
+                if (dailyDriveHours === 10) {
+                    diagHtml += `<li class="text-yellow-300">⚡ <strong>Deroga 10 Ore:</strong> Consentita per un massimo di <strong>2 volte a settimana</strong>.</li>`;
+                }
+
+                if (restType === '9') {
+                    diagHtml += `<li class="text-amber-300">⚠️ <strong>Riposo Ridotto (9h):</strong> Consentito massimo <strong>3 volte</strong> tra due riposi settimanali (non richiede compensazione).</li>`;
+                }
+
+                if (restType === 'multipresenza') {
+                    diagHtml += `<li class="text-blue-300">👥 <strong>Doppio Autista:</strong> Entro 30 ore dall'inizio servizio, entrambi gli autisti devono completare almeno 9h di riposo continuativo.</li>`;
+                }
+
+                diagHtml += `</ul>`;
+                elDiag.innerHTML = diagHtml;
+            }
+
+            // =================== COSTRUZIONE TABELLA DI MARCIA PASSO-PASSO ===================
+            const now = new Date();
+            const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+
+            // Definizione delle 5 Tappe
+            const stages = [
+                {
+                    id: 1,
+                    title: "1. Inizio Servizio & Partenza Guida",
+                    timeStr: formatMinutesToTimeString(startMinutes).timeStr,
+                    duration: "4h 30m di guida ininterrotta",
+                    desc: "Inserisci la carta nel tachigrafo e avvia il 1° blocco di guida.",
+                    icon: "🟢",
+                    startMin: startMinutes,
+                    endMin: firstBreakMinutes
+                },
+                {
+                    id: 2,
+                    title: "2. Sosta Obbligatoria (Pausa 45 Minuti)",
+                    timeStr: `${firstBreakFormatted.timeStr} ➔ ${resumeDriveFormatted.timeStr}`,
+                    duration: "45 minuti di sosta continuativa",
+                    desc: (pauseType === '15_30') ? "Fermati ora! Completa i 30m di sosta (dopo i 15m preliminari)." : "FERMATI ORA! Metti il selettore tachigrafo su Pausa/Riposo.",
+                    icon: "🛑",
+                    startMin: firstBreakMinutes,
+                    endMin: resumeDriveMinutes
+                },
+                {
+                    id: 3,
+                    title: "3. Ripresa Guida (2° Blocco)",
+                    timeStr: resumeDriveFormatted.timeStr,
+                    duration: (dailyDriveHours === 10) ? "5h 30m di guida restante" : "4h 30m di guida restante",
+                    desc: "Pausa ultimata. Puoi ripartire per completare la tratta giornaliera.",
+                    icon: "🟢",
+                    startMin: resumeDriveMinutes,
+                    endMin: endTurnMinutes
+                },
+                {
+                    id: 4,
+                    title: "4. Fine Guida & Fine Turno Giornaliero",
+                    timeStr: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
+                    duration: `Totale ${dailyDriveHours} ore di guida raggiunte`,
+                    desc: "Arresto definitivo del veicolo. Inizia il periodo di riposo giornaliero.",
+                    icon: "🏁",
+                    startMin: endTurnMinutes,
+                    endMin: endTurnMinutes + 15
+                },
+                {
+                    id: 5,
+                    title: "5. Ripartenza Consentita (Nuovo Turno)",
+                    timeStr: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' (Giorno dopo)' : ''}`,
+                    duration: `Dopo ${restHours} ore di riposo obbligatorio`,
+                    desc: `Riposo giornaliero (${restHours}h) completato legalmente. Sei pronto per ripartire!`,
+                    icon: "🛏️",
+                    startMin: endTurnMinutes,
+                    endMin: nextStartMinutes
+                }
+            ];
+
+            // Determinazione dello step ATTIVO
+            let activeStageId = 0;
+            let radarText = "";
+            let radarSubText = "";
+
+            if (currentMinutes < startMinutes) {
+                activeStageId = 1;
+                const diffMin = startMinutes - currentMinutes;
+                radarText = `⏳ Turno in Programmazione (Inizio alle ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
+                radarSubText = `La partenza è programmata tra <strong>${formatDurationHM(diffMin)}</strong>.`;
+            } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
+                activeStageId = 1;
+                const diffMin = firstBreakMinutes - currentMinutes;
+                radarText = `🟢 IN CORSO: 1° Periodo di Guida`;
+                radarSubText = `Ti mancano <strong class="text-amber-300 font-bold">${formatDurationHM(diffMin)}</strong> prima della sosta obbligatoria delle ore <strong>${firstBreakFormatted.timeStr}</strong>.`;
+            } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
+                activeStageId = 2;
+                const diffMin = resumeDriveMinutes - currentMinutes;
+                radarText = `🛑 IN CORSO: Pausa Obbligatoria (45 Minuti)`;
+                radarSubText = `Resta fermo in sosta. Potrai ripartire tra <strong class="text-emerald-300 font-bold">${formatDurationHM(diffMin)}</strong> (ore <strong>${resumeDriveFormatted.timeStr}</strong>).`;
+            } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
+                activeStageId = 3;
+                const diffMin = endTurnMinutes - currentMinutes;
+                radarText = `🟢 IN CORSO: 2° Periodo di Guida`;
+                radarSubText = `Fine turno di guida tra <strong class="text-indigo-300 font-bold">${formatDurationHM(diffMin)}</strong> (alle ore <strong>${endTurnFormatted.timeStr}</strong>).`;
+            } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
+                activeStageId = 5;
+                const diffMin = nextStartMinutes - currentMinutes;
+                radarText = `🛏️ IN CORSO: Periodo di Riposo Giornaliero (${restHours}h)`;
+                radarSubText = `Riposo in corso. Ripartenza legale tra <strong class="text-emerald-300 font-bold">${formatDurationHM(diffMin)}</strong> (ore <strong>${nextStartFormatted.timeStr}</strong>).`;
+            } else {
+                activeStageId = 5;
+                radarText = `✅ Turno e Riposo Completati`;
+                radarSubText = `Hai completato il ciclo di guida e riposo. Puoi iniziare un nuovo turno!`;
+            }
+
+            // Popolamento del Live Radar Banner
+            const elRadar = document.getElementById('simLiveRadarBanner');
+            if (elRadar) {
+                elRadar.innerHTML = `
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <div class="w-3 h-3 rounded-full bg-emerald-400 animate-ping flex-shrink-0"></div>
+                        <div class="min-w-0">
+                            <h5 class="text-xs font-black text-white truncate">${radarText}</h5>
+                            <p class="text-[11px] text-slate-300">${radarSubText}</p>
+                        </div>
+                    </div>
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold font-mono px-2 py-1 rounded-lg border border-emerald-500/30 flex-shrink-0">
+                        ORE ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}
+                    </span>
+                `;
+            }
+
+            // Popolamento delle 5 Tappe nella Timeline Verticale
+            const elTimeline = document.getElementById('simTimelineContainer');
+            if (elTimeline) {
+                let timelineHtml = "";
+                stages.forEach((st) => {
+                    const isCurrent = (st.id === activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes);
+                    const isPassed = (currentMinutes > st.endMin && currentMinutes <= nextStartMinutes);
+
+                    let statusBadge = "";
+                    let cardBorder = "bg-[#15243E]/80 border-slate-800 text-slate-300";
+
+                    if (isCurrent) {
+                        cardBorder = "bg-emerald-950/90 border-2 border-emerald-400 shadow-xl ring-2 ring-emerald-500/30 text-white animate-pulse";
+                        statusBadge = `<span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-emerald-500 text-slate-950 shadow-sm flex items-center space-x-1"><span>🟢</span><span>IN CORSO ADESSO</span></span>`;
+                    } else if (isPassed) {
+                        cardBorder = "bg-slate-900/60 border-slate-800/80 text-slate-400 opacity-75";
+                        statusBadge = `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-slate-800 text-emerald-400 border border-emerald-500/30">✔️ COMPLETATA</span>`;
+                    } else {
+                        statusBadge = `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-slate-800/80 text-slate-400">⏳ IN PROGRAMMA</span>`;
+                    }
+
+                    timelineHtml += `
+                        <div class="relative pl-8">
+                            <div class="absolute left-0 top-3 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isCurrent ? 'bg-emerald-500 text-slate-950 shadow-lg ring-4 ring-emerald-500/30' : (isPassed ? 'bg-emerald-950 border border-emerald-600 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400')}">
+                                ${st.id}
+                            </div>
+                            <div class="p-3.5 rounded-2xl border transition-all ${cardBorder}">
+                                <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm">${st.icon}</span>
+                                        <h5 class="font-extrabold text-xs text-white">${st.title}</h5>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-mono font-bold text-xs text-amber-300">${st.timeStr}</span>
+                                        ${statusBadge}
+                                    </div>
+                                </div>
+                                <p class="text-[11px] text-slate-300 leading-snug">${st.desc}</p>
+                                <span class="text-[10px] text-slate-400 block mt-1">⏱️ ${st.duration}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                elTimeline.innerHTML = timelineHtml;
+            }
+
+            // Salvataggio dati per invio WhatsApp
+            lastSimulationData = {
+                startTime: formatMinutesToTimeString(startMinutes).timeStr,
+                firstBreak: `${firstBreakFormatted.timeStr} - ${resumeDriveFormatted.timeStr}`,
+                resumeTime: resumeDriveFormatted.timeStr,
+                endTime: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
+                nextStart: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
+                dailyDriveHours,
+                restHours
+            };
+
+            // Aggiornamento dinamico del pulsante sulla dashboard conducente (Monitor Live di tutte le fasi)
+            const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
+            if (elBtnSubtitle) {
+                if (currentMinutes < startMinutes) {
+                    const diffMin = startMinutes - currentMinutes;
+                    elBtnSubtitle.innerHTML = `⏳ <strong>Partenza programmata:</strong> Inizio turno tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
+                } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
+                    const diffMin = firstBreakMinutes - currentMinutes;
+                    elBtnSubtitle.innerHTML = `🟢 <strong>1° Blocco Guida:</strong> Pausa obbligatoria (45m) tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${firstBreakFormatted.timeStr})`;
+                } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
+                    const diffMin = resumeDriveMinutes - currentMinutes;
+                    elBtnSubtitle.innerHTML = `🛑 <strong>In Pausa (45m):</strong> Ripartenza tra <strong class="text-emerald-300">${formatDurationHM(diffMin)}</strong> (ore ${resumeDriveFormatted.timeStr})`;
+                } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
+                    const diffMin = endTurnMinutes - currentMinutes;
+                    elBtnSubtitle.innerHTML = `🟢 <strong>2° Blocco Guida:</strong> Fine turno tra <strong class="text-indigo-300">${formatDurationHM(diffMin)}</strong> (ore ${endTurnFormatted.timeStr})`;
+                } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
+                    const diffMin = nextStartMinutes - currentMinutes;
+                    elBtnSubtitle.innerHTML = `🛏️ <strong>In Riposo (${restHours}h):</strong> Ripartenza consentita alle ore <strong class="text-emerald-300">${nextStartFormatted.timeStr}</strong>`;
+                } else {
+                    elBtnSubtitle.innerHTML = `✅ <strong>Turno &amp; Riposo Ultimati:</strong> Pronto per un nuovo servizio.`;
+                }
+            }
+        }
+
+        function shareDrivingScheduleWhatsApp() {
+            if (!lastSimulationData) return;
+            const driverName = (currentLoggedInDriver && currentLoggedInDriver.name) 
+                ? `${currentLoggedInDriver.name} ${currentLoggedInDriver.surname}` 
+                : "Conducente";
+            const companyName = currentCompanyName || "Azienda";
+
+            const msg = `🚛 *TABELLA DI MARCIA & TEMPI DI GUIDA (Reg. CE 561/2006)*\n` +
+                `👤 *Autista:* ${driverName}\n` +
+                `🏢 *Azienda:* ${companyName}\n\n` +
+                `🟢 *1. Partenza / Inizio Servizio:* Ore ${lastSimulationData.startTime} (1° Blocco 4h 30m)\n` +
+                `🛑 *2. Pausa Obbligatoria (45m):* Ore ${lastSimulationData.firstBreak}\n` +
+                `🟢 *3. Ripresa Guida:* Ore ${lastSimulationData.resumeTime} (2° Blocco)\n` +
+                `🏁 *4. Fine Guida Giornaliera:* Ore ${lastSimulationData.endTime} (${lastSimulationData.dailyDriveHours}h totali)\n` +
+                `🛏️ *5. Ripartenza Consentita:* Ore ${lastSimulationData.nextStart} (dopo ${lastSimulationData.restHours}h di riposo)\n\n` +
+                `✅ _Pianificazione conforme alle norme tachigrafiche vigenti (GC CodeLab)._`;
+
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function initApp() {
+            setupCompanyListeners();
+            updateCompanyActivationUI();
+            calculateDrivingSimulation();
+            setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
+        }
 
         window.onload = initApp;
     </script>
