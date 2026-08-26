@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TachoApp Pro • Versione Demo Dimostrativa (GC CodeLab)</title>
+    <title>TachoApp Pro • Demo Dimostrativa (GC CodeLab)</title>
     
     <!-- Icone PWA (Assolute per massima compatibilità) -->
     <link rel="apple-touch-icon" href="https://giannivicla74-jpg.github.io/tachoapp/logo.jpg">
@@ -27,127 +27,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
-    
-    <script>
-        // =================== MOTORE DEMO STANDALONE GC CODELAB ===================
-        let isDemoModeActive = true;
-        let isSuperAdmin = false;
-        let activeCompanyId = 'AZ-DEMO';
-        let currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
-        let companyCardData = { number: "IT-10029384-AZ", expiry: "2029-10-30" };
-        let currentLoggedInDriver = null;
-
-        const now = Date.now();
-        const d8 = new Date(now - 8 * 86400000).toISOString().split('T')[0];
-        const d22 = new Date(now - 22 * 86400000).toISOString().split('T')[0];
-        const d29 = new Date(now - 29 * 86400000).toISOString().split('T')[0];
-
-        let driversMap = {
-            "demo_1": {
-                id: "demo_1",
-                name: "Mario",
-                surname: "Rossi",
-                cardNumber: "E00984721A00",
-                cantiere: "CANTIERE NORD",
-                pin: "1111",
-                phone: "+39 333 1234567",
-                lastDownloadDate: d8,
-                cardExpiryDate: "2029-05-15",
-                allowPhotoUpload: true,
-                obligationAccepted: true
-            },
-            "demo_2": {
-                id: "demo_2",
-                name: "Giuseppe",
-                surname: "Verdi",
-                cardNumber: "E00481920B01",
-                cantiere: "LINEA SUD",
-                pin: "2222",
-                phone: "+39 333 7654321",
-                lastDownloadDate: d22,
-                cardExpiryDate: "2028-11-20",
-                allowPhotoUpload: true,
-                obligationAccepted: true
-            },
-            "demo_3": {
-                id: "demo_3",
-                name: "Antonio",
-                surname: "Bianchi",
-                cardNumber: "E00293810C02",
-                cantiere: "LOGISTICA 1",
-                pin: "3333",
-                phone: "+39 333 9988776",
-                lastDownloadDate: d29,
-                cardExpiryDate: "2027-03-10",
-                allowPhotoUpload: true,
-                obligationAccepted: true
-            }
-        };
-
-        const v45 = new Date(now - 45 * 86400000).toISOString().split('T')[0];
-        const v88 = new Date(now - 88 * 86400000).toISOString().split('T')[0];
-
-        let vehiclesMap = {
-            "demo_v1": {
-                id: "demo_v1",
-                plate: "FZ 492 LK",
-                model: "Iveco S-Way 510",
-                cantiere: "CANTIERE NORD",
-                lastDownloadDate: v45
-            },
-            "demo_v2": {
-                id: "demo_v2",
-                plate: "GA 810 TR",
-                model: "Scania R500 V8",
-                cantiere: "LINEA SUD",
-                lastDownloadDate: v88
-            }
-        };
-
-        let companiesRegistry = {
-            "AZ-DEMO": {
-                code: "AZ-DEMO",
-                name: "DEMO TRASPORTI ITALIA S.R.L.",
-                adminPin: "0000",
-                createdAt: new Date().toISOString()
-            }
-        };
-
-        function openContactSalesModal() {
-            const m = document.getElementById('contactSalesModal');
-            if (m) m.classList.remove('hidden');
-        }
-        function closeContactSalesModal() {
-            const m = document.getElementById('contactSalesModal');
-            if (m) m.classList.add('hidden');
-        }
-
-        function quickAdminDemoLogin() {
-            showSection("admin");
-            switchTab('fleet');
-            renderFleetTable();
-            renderVehicleTable();
-            updateAdminBadges();
-            updateDOMCompanyName();
-            updateDOMCompanyCard();
-            showToast("🎮 Benvenuto nell'Area Gestione Demo!", "success");
-        }
-
-        function quickDriverDemoLogin() {
-            currentLoggedInDriver = driversMap["demo_1"];
-            showSection("driver");
-            renderDriverView(currentLoggedInDriver);
-            showToast("👤 Benvenuto Mario Rossi (Autista Demo)", "success");
-        }
-
-        function setupCompanyListeners() {
-            updateDOMCompanyName();
-            updateDOMCompanyCard();
-            populateDatalist();
-            updateAdminBadges();
-        }
-    </script>
-
     <script>
         // CONFIGURAZIONE FIREBASE CLOUD
         const firebaseConfig = {
@@ -162,15 +41,15 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = {
-    ref: function(path) {
-        return {
-            on: function(ev, cb) { },
-            set: function(val) { console.log('Demo mock set:', path, val); return Promise.resolve(); },
-            remove: function() { console.log('Demo mock remove:', path); return Promise.resolve(); },
-            off: function() { }
+            ref: function(path) {
+                return {
+                    on: function(ev, cb) { },
+                    set: function(val) { return Promise.resolve(); },
+                    remove: function() { return Promise.resolve(); },
+                    off: function() { }
+                };
+            }
         };
-    }
-};
         
         // Inizializzazione Messaging (se supportato dal browser)
         let messaging = null;
@@ -319,22 +198,8 @@
                 
                 <button id="adminLoginBtn" onclick="handleAdminLogin()" disabled
                     class="w-full bg-slate-800 text-slate-500 font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-300 transform text-sm cursor-not-allowed">
-                    Accedi ad Area Gestione Dati (PIN Demo: 0000 o 8528)
+                    Accedi ad Area Gestione Dati
                 </button>
-
-                <!-- Tasti di Accesso Rapido Demo Senza PIN -->
-                <div class="pt-2 pb-1 space-y-2">
-                    <button type="button" onclick="quickAdminDemoLogin()"
-                        class="w-full bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 hover:brightness-110 text-slate-950 font-black py-3.5 px-4 rounded-xl text-xs transition-all shadow-lg flex items-center justify-center space-x-2 border border-emerald-400/40">
-                        <span class="text-sm">🎮</span>
-                        <span>Entra subito come Amministratore Flotta</span>
-                    </button>
-                    <button type="button" onclick="quickDriverDemoLogin()"
-                        class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all shadow-md flex items-center justify-center space-x-2 border border-emerald-400/30">
-                        <span>👤</span>
-                        <span>Entra subito come Conducente (Mario Rossi)</span>
-                    </button>
-                </div>
 
                 <button onclick="goToDriverSelection()"
                     class="w-full text-center py-3.5 px-4 rounded-xl text-slate-300 hover:bg-slate-800/40 transition-all duration-200 text-xs font-medium border border-slate-700/60 leading-relaxed">
@@ -406,7 +271,7 @@
                     <span class="text-2xl">🎮</span>
                     <div>
                         <h4 class="text-xs font-bold text-amber-300">VERSIONE DEMO DIMOSTRATIVA GC CODELAB</h4>
-                        <p class="text-[10px] text-slate-300">Stai esplorando l'app di prova con dati fittizi. Testa la flotta, le scadenze e il <strong>Report PDF</strong>.</p>
+                        <p class="text-[10px] text-slate-300">Flotta di prova attiva. Dati e modifiche restano isolati sul tuo dispositivo.</p>
                     </div>
                 </div>
                 <button type="button" onclick="openContactSalesModal()" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-xs whitespace-nowrap shadow-lg transition transform active:scale-95">
@@ -1577,17 +1442,88 @@
     <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
 
     <script>
-        const ADMIN_PIN = "8528"; // PIN Master Super Admin (Giovanni)
-        let companiesRegistry = {};
-        let activeCompanyId = localStorage.getItem('tacho_active_company') || '';
+        const ADMIN_PIN = "9999"; // PIN Demo Amministratore (GC CodeLab)
+        let companiesRegistry = {
+            "AZ-DEMO": {
+                code: "AZ-DEMO",
+                name: "DEMO TRASPORTI ITALIA S.R.L.",
+                adminPin: "9999"
+            }
+        };
+        let activeCompanyId = 'AZ-DEMO';
         let isSuperAdmin = false;
         let activeListeners = [];
         let lastRegisteredCompany = null;
 
-        let driversMap = {};
-        let vehiclesMap = {};
-        let currentCompanyName = "GC CodeLab - Gestione Flotta";
-        let companyCardData = { number: "", expiry: "" };
+        const now = Date.now();
+        const d8 = new Date(now - 8 * 86400000).toISOString().split('T')[0];
+        const d22 = new Date(now - 22 * 86400000).toISOString().split('T')[0];
+        const d29 = new Date(now - 29 * 86400000).toISOString().split('T')[0];
+
+        let driversMap = {
+            "demo_1": {
+                id: "demo_1",
+                name: "Mario",
+                surname: "Rossi",
+                cardNumber: "E00984721A00",
+                cantiere: "CANTIERE NORD",
+                pin: "1111",
+                phone: "+39 333 1234567",
+                lastDownloadDate: d8,
+                cardExpiryDate: "2029-05-15",
+                allowPhotoUpload: true,
+                obligationAccepted: true
+            },
+            "demo_2": {
+                id: "demo_2",
+                name: "Giuseppe",
+                surname: "Verdi",
+                cardNumber: "E00481920B01",
+                cantiere: "LINEA SUD",
+                pin: "2222",
+                phone: "+39 333 7654321",
+                lastDownloadDate: d22,
+                cardExpiryDate: "2028-11-20",
+                allowPhotoUpload: true,
+                obligationAccepted: true
+            },
+            "demo_3": {
+                id: "demo_3",
+                name: "Antonio",
+                surname: "Bianchi",
+                cardNumber: "E00293810C02",
+                cantiere: "LOGISTICA 1",
+                pin: "3333",
+                phone: "+39 333 9988776",
+                lastDownloadDate: d29,
+                cardExpiryDate: "2027-03-10",
+                allowPhotoUpload: true,
+                obligationAccepted: true
+            }
+        };
+
+        const v45 = new Date(now - 45 * 86400000).toISOString().split('T')[0];
+        const v88 = new Date(now - 88 * 86400000).toISOString().split('T')[0];
+
+        let vehiclesMap = {
+            "demo_v1": {
+                id: "demo_v1",
+                plate: "FZ 492 LK",
+                model: "Iveco S-Way 510",
+                cantiere: "CANTIERE NORD",
+                lastDownloadDate: v45
+            },
+            "demo_v2": {
+                id: "demo_v2",
+                plate: "GA 810 TR",
+                model: "Scania R500 V8",
+                cantiere: "LINEA SUD",
+                lastDownloadDate: v88
+            }
+        };
+
+        let currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
+        let companyCardData = { number: "IT-10029384-AZ", expiry: "2029-10-30" };
         let currentLoggedInDriver = null;
         let pendingBase64Doc = "";
         let pendingFileNameDoc = "";
@@ -1600,43 +1536,36 @@
             taci: "https://taci.infocamere.it/"
         };
 
-        // Listener globale per il registro di tutte le aziende
-        db.ref('aziende_registry').on('value', (snapshot) => {
-            companiesRegistry = snapshot.val() || {};
-            if (activeCompanyId && companiesRegistry[activeCompanyId]) {
-                currentCompanyName = companiesRegistry[activeCompanyId].name;
-                updateDOMCompanyName();
-            }
-            updateCompanyActivationUI();
-            if (isSuperAdmin) renderSuperAdminCompaniesList();
-        });
-
-        // --- GESTIONE PERCORSI E RIFERIMENTI FIREBASE MULTI-AZIENDA ---
-        function getCompanyPath(subPath) {
-            if (!activeCompanyId || activeCompanyId === 'AZ-MAIN') {
-                return subPath; // Retrocompatibilità totale: legge/scrive sui nodi storici
-            }
-            return `aziende/${activeCompanyId}/${subPath}`;
+        function openContactSalesModal() {
+            const m = document.getElementById('contactSalesModal');
+            if (m) m.classList.remove('hidden');
+        }
+        function closeContactSalesModal() {
+            const m = document.getElementById('contactSalesModal');
+            if (m) m.classList.add('hidden');
         }
 
-        function dbCompanyRef(subPath) {
-            return db.ref(getCompanyPath(subPath));
+        function quickAdminDemoLogin() {
+            showSection("admin");
+            switchTab('fleet');
+            renderFleetTable();
+            renderVehicleTable();
+            updateAdminBadges();
+            updateDOMCompanyName();
+            updateDOMCompanyCard();
+            showToast("🎮 Accesso Amministratore Demo effettuato!", "success");
         }
 
-        function switchActiveCompany(companyCode) {
-            if (!companyCode) companyCode = 'AZ-MAIN';
-            activeCompanyId = companyCode;
-            localStorage.setItem('tacho_active_company', activeCompanyId);
-            updateCompanyActivationUI();
-            
-            const badgeDriver = document.getElementById('driverActiveCompanyBadge');
-            if (badgeDriver) {
-                const compInfo = companiesRegistry[activeCompanyId];
-                badgeDriver.innerText = compInfo ? `${compInfo.name} (${activeCompanyId})` : activeCompanyId;
-            }
-
-            setupCompanyListeners();
+        function quickDriverDemoLogin() {
+            currentLoggedInDriver = driversMap["demo_1"];
+            showSection("driver");
+            renderDriverView(currentLoggedInDriver);
+            showToast("👤 Accesso Conducente: Mario Rossi (PIN 1111)", "success");
         }
+
+        function getCompanyPath(subPath) { return subPath; }
+        function dbCompanyRef(subPath) { return db.ref(subPath); }
+        function switchActiveCompany(code) { }
 
         function setupCompanyListeners() {
             // Rimuove i listener precedenti
@@ -2285,75 +2214,13 @@
         }
 
         function handleAdminLogin() {
-            const pinVal = document.getElementById('pinInput').value.trim();
-            const errorEl = document.getElementById('loginError');
-            const errorText = document.getElementById('loginErrorText');
-            errorEl.classList.add('hidden');
-
-            if (!pinVal) {
-                errorText.innerText = "Inserisci il PIN Amministrativo.";
-                errorEl.classList.remove('hidden');
-                return;
+            const pinVal = (document.getElementById('pinInput').value || '').trim();
+            if (pinVal === '9999' || pinVal === '0000' || pinVal === '') {
+                quickAdminDemoLogin();
+                if (document.getElementById('pinInput')) document.getElementById('pinInput').value = "";
+            } else {
+                showToast("PIN Demo non valido. Usa 9999 oppure i tasti rapidi", "error");
             }
-
-            // 1. Accesso "Dietro le Quinte" Super Admin Master (Giovanni - PIN 8528)
-            if (pinVal === ADMIN_PIN) {
-                isSuperAdmin = true;
-                const superBadge = document.getElementById('superAdminBadge');
-                if (superBadge) superBadge.classList.remove('hidden');
-                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
-                if (switchBtn) switchBtn.classList.remove('hidden');
-
-                if (!activeCompanyId) switchActiveCompany('AZ-MAIN');
-
-                showSection("admin");
-                showToast(`👑 Accesso Supervisore (Giovanni) Effettuato`, "success");
-                document.getElementById('pinInput').value = "";
-                return;
-            }
-
-            // 2. Accesso Amministratore Azienda Corrente
-            const comp = companiesRegistry[activeCompanyId];
-            if (comp && String(comp.adminPin).trim() === pinVal) {
-                isSuperAdmin = false;
-                const superBadge = document.getElementById('superAdminBadge');
-                if (superBadge) superBadge.classList.add('hidden');
-                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
-                if (switchBtn) switchBtn.classList.add('hidden');
-
-                showSection("admin");
-                showToast(`Accesso Amministratore: ${comp.name}`, "success");
-                document.getElementById('pinInput').value = "";
-                return;
-            }
-
-            // 3. Riconoscimento intelligente del PIN aziendale tra tutte le flotte registrate
-            let foundComp = null;
-            for (let code in companiesRegistry) {
-                if (String(companiesRegistry[code].adminPin).trim() === pinVal) {
-                    foundComp = companiesRegistry[code];
-                    break;
-                }
-            }
-
-            if (foundComp) {
-                isSuperAdmin = false;
-                const superBadge = document.getElementById('superAdminBadge');
-                if (superBadge) superBadge.classList.add('hidden');
-                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
-                if (switchBtn) switchBtn.classList.add('hidden');
-
-                switchActiveCompany(foundComp.code);
-                updateCompanyActivationUI();
-                showSection("admin");
-                showToast(`Accesso Amministratore: ${foundComp.name}`, "success");
-                document.getElementById('pinInput').value = "";
-                return;
-            }
-
-            errorText.innerText = "PIN Amministrativo non corretto.";
-            errorEl.classList.remove('hidden');
-            showToast("PIN Amministrativo non valido", "error");
         }
 
         function goToDriverSelection() {

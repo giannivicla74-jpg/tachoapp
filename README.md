@@ -22,7 +22,7 @@
 
 #### 2. 🎮 Versione Demo Standalone (`demo.html`)
 * **URL:** `https://giannivicla74-jpg.github.io/tachoapp/demo.html`
-* **Accesso:** Immediato senza PIN obbligatorio (o PIN rapido `0000` per Admin e `1111` per Mario Rossi).
+* **Accesso:** Immediato senza PIN obbligatorio (o PIN rapido `9999` per Admin e `1111` per Mario Rossi).
 * **Funzionalità:** Dati dimostrativi pre-caricati (*DEMO TRASPORTI ITALIA S.R.L.*, *Mario Rossi*, *Iveco S-Way*), cronotachigrafo simulato, Report PDF ispettiva, e pulsante commerciale per l'acquisto licenza.
 
 ---
