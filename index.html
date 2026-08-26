@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -168,14 +168,6 @@
             </div>
 
             <div class="space-y-4">
-                <!-- Accesso Rapido Autista Demo -->
-                <div id="demoDriverQuickBox" class="pb-2 border-b border-slate-800/80">
-                    <button type="button" onclick="accessDemoDriver()"
-                        class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition-all shadow-md flex items-center justify-center space-x-2 border border-emerald-400/30 animate-pulse">
-                        <span>👤</span>
-                        <span>Accedi come Autista Demo (Mario Rossi - PIN 1111)</span>
-                    </button>
-                </div>
                 <!-- Tasto Attivazione Azienda (Visibile solo una tantum al primo avvio su dispositivo vergine) -->
                 <div id="companyActivationBox" class="hidden pb-2 border-b border-slate-800/80">
                     <button onclick="openRegisterCompanyModal()"
@@ -199,15 +191,6 @@
                     class="w-full bg-slate-800 text-slate-500 font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-300 transform text-sm cursor-not-allowed">
                     Accedi ad Area Gestione Dati
                 </button>
-
-                <!-- Tasto Accesso Rapido Demo Dimostrativa (Senza PIN) -->
-                <div class="pt-1 pb-1">
-                    <button type="button" onclick="activateDemoMode()"
-                        class="w-full bg-gradient-to-r from-amber-500 via-emerald-500 to-teal-500 hover:brightness-110 text-slate-950 font-black py-3.5 px-4 rounded-xl text-xs transition-all shadow-lg flex items-center justify-center space-x-2 border border-emerald-400/40 animate-pulse">
-                        <span class="text-sm">🎮</span>
-                        <span>Prova la Demo dal Vivo (Senza PIN)</span>
-                    </button>
-                </div>
 
                 <button onclick="goToDriverSelection()"
                     class="w-full text-center py-3.5 px-4 rounded-xl text-slate-300 hover:bg-slate-800/40 transition-all duration-200 text-xs font-medium border border-slate-700/60 leading-relaxed">
@@ -273,29 +256,6 @@
 
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="hidden space-y-6 w-full min-w-0">
-            <!-- Banner Modalità Demo Attiva -->
-            <div id="demoActiveBanner" class="hidden no-print bg-gradient-to-r from-amber-950/90 via-slate-900 to-emerald-950/90 border border-amber-500/50 rounded-2xl p-3.5 shadow-xl flex items-center justify-between gap-3">
-                <div class="flex items-center space-x-3">
-                    <span class="text-2xl">🟡</span>
-                    <div>
-                        <h4 class="text-xs font-bold text-amber-300">MODALITÀ DEMO GC CODELAB</h4>
-                        <p class="text-[10px] text-slate-300">Stai visualizzando dati di prova. I tuoi dati aziendali reali sono al sicuro nel cloud.</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button type="button" onclick="exitDemoMode()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl text-[10px] whitespace-nowrap border border-slate-600 transition">
-                        Esci dalla Demo
-                    </button>
-                    <button type="button" onclick="openContactSalesModal()" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-[10px] whitespace-nowrap shadow-md transition">
-                        Attiva Flotta Reale
-                    </button>
-                </div>
-            </div>
-                </div>
-                <button type="button" onclick="openContactSalesModal()" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-[10px] whitespace-nowrap shadow-md transition">
-                    Attiva Flotta Reale
-                </button>
-            </div>
             <div class="no-print grid grid-cols-3 gap-2">
                 <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
                     Conducenti
@@ -1532,7 +1492,6 @@
 
             const configNameRef = dbCompanyRef('config/denominazioneAzienda');
             const configNameCb = configNameRef.on('value', snapshot => {
-                if (isDemoModeActive) return;
                 const name = snapshot.val();
                 if (name) {
                     currentCompanyName = name;
@@ -1546,7 +1505,6 @@
 
             const configCardRef = dbCompanyRef('config/cartaAzienda');
             const configCardCb = configCardRef.on('value', snapshot => {
-                if (isDemoModeActive) return;
                 const data = snapshot.val();
                 companyCardData = data || { number: "", expiry: "" };
                 updateDOMCompanyCard();
@@ -1556,7 +1514,6 @@
 
             const operaiRef = dbCompanyRef('operai');
             const operaiCb = operaiRef.on('value', snapshot => {
-                if (isDemoModeActive) return;
                 driversMap = snapshot.val() || {};
                 populateDatalist();
                 if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
@@ -1758,23 +1715,23 @@
         }
 
         function updateDOMCompanyName() {
-            if (isDemoModeActive) {
-                currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
-            }
+            const loginComp = document.getElementById('loginCompanyNameDisplay');
+            if (loginComp) loginComp.innerText = currentCompanyName;
+            
+            const driverComp = document.getElementById('driverSelCompanyNameDisplay');
+            if (driverComp) driverComp.innerText = currentCompanyName;
+            
+            const adminComp = document.getElementById('adminHeaderCompanyName');
+            if (adminComp) adminComp.innerText = `${currentCompanyName} • v9.0 Pro`;
 
-            const loginDisplay = document.getElementById('loginCompanyNameDisplay');
-            if (loginDisplay) loginDisplay.innerText = currentCompanyName;
-            
-            const driverSelComp = document.getElementById('driverSelCompanyNameDisplay');
-            if (driverSelComp) driverSelComp.innerText = currentCompanyName;
-            
+            const headerCode = document.getElementById('adminHeaderCompanyCode');
+            if (headerCode) headerCode.innerText = activeCompanyId;
+
             const headerNameShort = document.getElementById('adminHeaderCompanyNameShort');
-            if (headerNameShort) headerNameShort.innerText = isDemoModeActive ? "DEMO FLOTTA" : currentCompanyName;
+            if (headerNameShort) headerNameShort.innerText = currentCompanyName;
             
             const compInput = document.getElementById('companyNameInput');
-            if (compInput) {
-                compInput.value = isDemoModeActive ? "DEMO TRASPORTI ITALIA S.R.L." : ((currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}`) ? currentCompanyName : "");
-            }
+            if (compInput) compInput.value = (currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}`) ? currentCompanyName : "";
             
             const cardHeader = document.getElementById('driverCardCompanyHeader');
             if (cardHeader) cardHeader.innerText = "REPUBBLICA ITALIANA";
@@ -2171,14 +2128,6 @@
         }
 
         function handleAdminLogin() {
-            // Se l'utente inserisce un PIN reale, disattiviamo la modalità Demo e ripristiniamo la flotta reale
-            isDemoModeActive = false;
-            const demoBanner = document.getElementById('demoActiveBanner');
-            if (demoBanner) demoBanner.classList.add('hidden');
-            if (window.location.search.includes('demo=')) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
             const pinVal = document.getElementById('pinInput').value.trim();
             const errorEl = document.getElementById('loginError');
             const errorText = document.getElementById('loginErrorText');
@@ -2251,16 +2200,6 @@
         }
 
         function goToDriverSelection() {
-            if (isDemoModeActive) {
-                populateDemoData();
-                const searchInput = document.getElementById('driverSearchInput');
-                if (searchInput && !searchInput.value) searchInput.value = "Mario Rossi";
-                const pinInput = document.getElementById('driverPersonalPinInput');
-                if (pinInput && !pinInput.value) pinInput.value = "1111";
-            } else {
-                const demoBox = document.getElementById('demoDriverQuickBox');
-                if (demoBox) demoBox.classList.add('hidden');
-            }
             populateDatalist();
             updateDriverActiveCompanyDisplay();
             showSection("driverSelection");
@@ -2344,21 +2283,11 @@
         function logout() {
             currentLoggedInDriver = null;
             isSuperAdmin = false;
-            isDemoModeActive = false;
-
-            const demoBanner = document.getElementById('demoActiveBanner');
-            if (demoBanner) demoBanner.classList.add('hidden');
-
             const superBadge = document.getElementById('superAdminBadge');
             if (superBadge) superBadge.classList.add('hidden');
             const switchBtn = document.getElementById('btnSwitchCompanyHeader');
             if (switchBtn) switchBtn.classList.add('hidden');
 
-            if (window.location.search.includes('demo=')) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
-            setupCompanyListeners();
             showSection("login");
             showToast("Sessione terminata", "success");
         }
@@ -2371,27 +2300,25 @@
             const tabVehicles = document.getElementById('tabVehicles');
             const tabSanctions = document.getElementById('tabSanctions');
 
-            if (btnFleet) btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            if (btnVehicles) btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            if (btnSanctions) btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-
-            if (tabFleet) tabFleet.classList.add('hidden');
-            if (tabVehicles) tabVehicles.classList.add('hidden');
-            if (tabSanctions) tabSanctions.classList.add('hidden');
+            btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            
+            tabFleet.classList.add('hidden');
+            tabVehicles.classList.add('hidden');
+            tabSanctions.classList.add('hidden');
 
             if (tab === 'fleet') {
-                if (btnFleet) btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                if (tabFleet) tabFleet.classList.remove('hidden');
+                btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                tabFleet.classList.remove('hidden');
                 renderFleetTable();
             } else if (tab === 'vehicles') {
-                if (btnVehicles) btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                if (tabVehicles) tabVehicles.classList.remove('hidden');
+                btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                tabVehicles.classList.remove('hidden');
                 renderVehicleTable();
             } else {
-                if (btnSanctions) btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                if (tabSanctions) tabSanctions.classList.remove('hidden');
-                updateDOMCompanyName();
-                updateDOMCompanyCard();
+                btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                tabSanctions.classList.remove('hidden');
             }
         }
 
@@ -4044,218 +3971,14 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        
-        // =================== MODALITA DEMO INTERATTIVA GC CODELAB ===================
-        let isDemoModeActive = false;
-
-        function openContactSalesModal() {
-            const m = document.getElementById('contactSalesModal');
-            if (m) m.classList.remove('hidden');
-        }
-        window.openContactSalesModal = openContactSalesModal;
-
-        function closeContactSalesModal() {
-            const m = document.getElementById('contactSalesModal');
-            if (m) m.classList.add('hidden');
-        }
-        window.closeContactSalesModal = closeContactSalesModal;
-
-        function populateDemoData() {
-            currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
-            const now = Date.now();
-            const d8 = new Date(now - 8 * 86400000).toISOString().split('T')[0];
-            const d22 = new Date(now - 22 * 86400000).toISOString().split('T')[0];
-            const d29 = new Date(now - 29 * 86400000).toISOString().split('T')[0];
-
-            driversMap = {
-                "demo_1": {
-                    id: "demo_1",
-                    name: "Mario",
-                    surname: "Rossi",
-                    cardNumber: "E00984721A00",
-                    cantiere: "CANTIERE NORD",
-                    pin: "1111",
-                    phone: "+39 333 1234567",
-                    lastDownloadDate: d8,
-                    cardExpiryDate: "2029-05-15",
-                    allowPhotoUpload: true,
-                    obligationAccepted: true
-                },
-                "demo_2": {
-                    id: "demo_2",
-                    name: "Giuseppe",
-                    surname: "Verdi",
-                    cardNumber: "E00481920B01",
-                    cantiere: "LINEA SUD",
-                    pin: "2222",
-                    phone: "+39 333 7654321",
-                    lastDownloadDate: d22,
-                    cardExpiryDate: "2028-11-20",
-                    allowPhotoUpload: true,
-                    obligationAccepted: true
-                },
-                "demo_3": {
-                    id: "demo_3",
-                    name: "Antonio",
-                    surname: "Bianchi",
-                    cardNumber: "E00293810C02",
-                    cantiere: "LOGISTICA 1",
-                    pin: "3333",
-                    phone: "+39 333 9988776",
-                    lastDownloadDate: d29,
-                    cardExpiryDate: "2027-03-10",
-                    allowPhotoUpload: true,
-                    obligationAccepted: true
-                }
-            };
-
-            const v45 = new Date(now - 45 * 86400000).toISOString().split('T')[0];
-            const v88 = new Date(now - 88 * 86400000).toISOString().split('T')[0];
-
-            vehiclesMap = {
-                "demo_v1": {
-                    id: "demo_v1",
-                    plate: "FZ 492 LK",
-                    model: "Iveco S-Way 510",
-                    cantiere: "CANTIERE NORD",
-                    lastDownloadDate: v45
-                },
-                "demo_v2": {
-                    id: "demo_v2",
-                    plate: "GA 810 TR",
-                    model: "Scania R500 V8",
-                    cantiere: "LINEA SUD",
-                    lastDownloadDate: v88
-                }
-            };
-
-            companyCardData = {
-                number: "IT-10029384-AZ",
-                expiry: "2029-10-30"
-            };
-
-            populateDatalist();
-        }
-
-        
-        function exitDemoMode() {
-            isDemoModeActive = false;
-            const demoBanner = document.getElementById('demoActiveBanner');
-            if (demoBanner) demoBanner.classList.add('hidden');
-
-            if (window.location.search.includes('demo=')) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
-
-            setupCompanyListeners();
-            showSection("login");
-            showToast("Modalità Demo chiusa. Caricamento dati reali...", "info");
-        }
-        window.exitDemoMode = exitDemoCode;
-
-        function activateDemoMode() {
-            isDemoModeActive = true;
-            populateDemoData();
-
-            const demoBanner = document.getElementById('demoActiveBanner');
-            if (demoBanner) demoBanner.classList.remove('hidden');
-
-            const compNameShort = document.getElementById('adminHeaderCompanyNameShort');
-            if (compNameShort) compNameShort.textContent = "DEMO FLOTTA";
-            const compCode = document.getElementById('adminHeaderCompanyCode');
-            if (compCode) compCode.textContent = "AZ-DEMO";
-            const loginComp = document.getElementById('loginCompanyNameDisplay');
-            if (loginComp) loginComp.textContent = "DEMO TRASPORTI ITALIA";
-
-            showSection("admin");
-            switchTab('fleet');
-            renderFleetTable();
-            renderVehicleTable();
-            updateAdminBadges();
-            updateDOMCompanyName();
-            updateDOMCompanyCard();
-
-            const compInput = document.getElementById('companyNameInput');
-            if (compInput) compInput.value = "DEMO TRASPORTI ITALIA S.R.L.";
-            showToast("🎮 Modalità Demo GC CodeLab: Dati inventati e Report PDF pronti.", "success");
-        }
-        window.activateDemoMode = activateDemoMode;
-
-        function accessDemoDriver() {
-            isDemoModeActive = true;
-            populateDemoData();
-
-            currentLoggedInDriver = {
-                id: "demo_1",
-                name: "Mario",
-                surname: "Rossi",
-                cardNumber: "E00984721A00",
-                cantiere: "CANTIERE NORD",
-                pin: "1111",
-                phone: "+39 333 1234567",
-                lastDownloadDate: new Date(Date.now() - 8 * 86400000).toISOString().split('T')[0],
-                cardExpiryDate: "2029-05-15",
-                allowPhotoUpload: true,
-                obligationAccepted: true
-            };
-
-            showSection("driver");
-            renderDriverView(currentLoggedInDriver);
-            showToast("👤 Area Conducente Demo: Mario Rossi (PIN 1111)", "success");
-        }
-        window.accessDemoDriver = accessDemoDriver;
-
-        function checkUrlDemoMode() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('demo') === 'true' || urlParams.get('mode') === 'demo') {
-                isDemoModeActive = true;
-                populateDemoData();
-                setTimeout(activateDemoMode, 200);
-            }
-        }
-
         function initApp() {
-
             setupCompanyListeners();
             updateCompanyActivationUI();
             calculateDrivingSimulation();
             setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
-        
-            checkUrlDemoMode();
         }
 
         window.onload = initApp;
     </script>
-
-    <!-- Modal Contatto Commerciale per Attivazione Flotta Reale -->
-    <div id="contactSalesModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-[#15243E] border border-emerald-500/50 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-in fade-in zoom-in duration-200">
-            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl shadow-inner">
-                🏢
-            </div>
-            <div>
-                <h3 class="text-base font-bold text-white">Attiva TachoApp Pro per la tua Azienda</h3>
-                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Spazio cloud riservato con la tua ragione sociale, PIN privati, autisti illimitati, notifiche push e conformità 28gg/90gg.
-                </p>
-            </div>
-            <div class="bg-[#0F1C32] p-3.5 rounded-2xl border border-slate-700/80 text-left text-xs space-y-1.5">
-                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Contatto Sviluppatore:</div>
-                <div class="font-bold text-emerald-300">Giovanni Cavallo • GC CodeLab</div>
-                <div class="text-slate-300">📧 <a href="mailto:info@gccodelab.com" class="text-emerald-400 hover:underline font-semibold">info@gccodelab.com</a></div>
-            </div>
-            <div class="flex flex-col gap-2 pt-1">
-                <a href="mailto:info@gccodelab.com?subject=Richiesta%20Attivazione%20TachoApp%20Pro&body=Salve%20Giovanni,%20desidero%20attivare%20uno%20spazio%20riservato%20TachoApp%20Pro%20per%20la%20mia%20azienda." 
-                   class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-xl text-xs shadow-lg transition flex items-center justify-center space-x-2">
-                    <span>✉️</span>
-                    <span>Richiedi Attivazione Immediata</span>
-                </a>
-                <button type="button" onclick="closeContactSalesModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
-                    Continua a Esplorare la Demo
-                </button>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
