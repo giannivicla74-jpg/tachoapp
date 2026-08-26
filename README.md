@@ -1,0 +1,33 @@
+# 🚛 TachoApp Pro • GC-TachoControl Cloud
+
+> Piattaforma Cloud ad alte prestazioni per la gestione delle flotte, scadenze carte tachigrafiche (28gg) e veicoli (90gg) in conformità con i Regolamenti (CE) n. 561/2006, (UE) n. 165/2014 e (UE) n. 581/2010.
+
+---
+
+## 🚀 Collegamenti Rapidi Diretti (Live Web Apps)
+
+| Applicazione | Descrizione | Link Diretto |
+| :--- | :--- | :--- |
+| 🏢 **App Ufficiale (Produzione)** | Versione per clienti registrati e gestione flotta aziendale reale (PIN riservati, DB Cloud privato, registrazione `AZ-xxx`). | 👉 [**Apri App Ufficiale**](https://giannivicla74-jpg.github.io/tachoapp/) |
+| 🎮 **App Demo (Dimostrativa)** | Versione autonoma per visitatori e prove live (dati fittizi, tesserini demo, Report PDF, zero impatto su dati reali). | 👉 [**Apri App Demo Live**](https://giannivicla74-jpg.github.io/tachoapp/demo.html) |
+
+---
+
+### 📋 Dettagli Versioni
+
+#### 1. 🏢 Versione Ufficiale (`index.html`)
+* **URL:** `https://giannivicla74-jpg.github.io/tachoapp/`
+* **Accesso:** PIN Amministratore e PIN Personale Conducenti.
+* **Funzionalità:** Gestione flotta reale, aggiunta autisti e mezzi, caricamento documenti e foto, scadenze quinquennali Carta Azienda CCIAA, backup cloud e registrazione automatica codice azienda.
+
+#### 2. 🎮 Versione Demo Standalone (`demo.html`)
+* **URL:** `https://giannivicla74-jpg.github.io/tachoapp/demo.html`
+* **Accesso:** Immediato senza PIN obbligatorio (o PIN rapido `0000` per Admin e `1111` per Mario Rossi).
+* **Funzionalità:** Dati dimostrativi pre-caricati (*DEMO TRASPORTI ITALIA S.R.L.*, *Mario Rossi*, *Iveco S-Way*), cronotachigrafo simulato, Report PDF ispettiva, e pulsante commerciale per l'acquisto licenza.
+
+---
+
+## 👨‍💻 Sviluppo & Contatti Commerciali
+* **Autore & Sviluppatore:** Giovanni Cavallo
+* **Brand:** GC CodeLab
+* **Email:** [info@gccodelab.com](mailto:info@gccodelab.com)
