@@ -274,9 +274,9 @@
                         <p class="text-[10px] text-slate-300">Stai visualizzando dati e scadenze di prova. Prova i filtri, la flotta e il <strong>Report PDF</strong>.</p>
                     </div>
                 </div>
-                <a href="https://giannivicla74-jpg.github.io/sito_internet/#contact" target="_blank" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-[10px] whitespace-nowrap shadow-md transition">
+                <button type="button" onclick="openContactSalesModal()" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-[10px] whitespace-nowrap shadow-md transition">
                     Attiva Flotta Reale
-                </a>
+                </button>
             </div>
             <div class="no-print grid grid-cols-3 gap-2">
                 <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
@@ -1514,6 +1514,7 @@
 
             const configNameRef = dbCompanyRef('config/denominazioneAzienda');
             const configNameCb = configNameRef.on('value', snapshot => {
+                if (isDemoModeActive) return;
                 const name = snapshot.val();
                 if (name) {
                     currentCompanyName = name;
@@ -1527,6 +1528,7 @@
 
             const configCardRef = dbCompanyRef('config/cartaAzienda');
             const configCardCb = configCardRef.on('value', snapshot => {
+                if (isDemoModeActive) return;
                 const data = snapshot.val();
                 companyCardData = data || { number: "", expiry: "" };
                 updateDOMCompanyCard();
@@ -1536,6 +1538,7 @@
 
             const operaiRef = dbCompanyRef('operai');
             const operaiCb = operaiRef.on('value', snapshot => {
+                if (isDemoModeActive) return;
                 driversMap = snapshot.val() || {};
                 populateDatalist();
                 if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
@@ -3997,6 +4000,18 @@
         // =================== MODALITA DEMO INTERATTIVA GC CODELAB ===================
         let isDemoModeActive = false;
 
+        function openContactSalesModal() {
+            const m = document.getElementById('contactSalesModal');
+            if (m) m.classList.remove('hidden');
+        }
+        window.openContactSalesModal = openContactSalesModal;
+
+        function closeContactSalesModal() {
+            const m = document.getElementById('contactSalesModal');
+            if (m) m.classList.add('hidden');
+        }
+        window.closeContactSalesModal = closeContactSalesModal;
+
         function activateDemoMode() {
             isDemoModeActive = true;
 
@@ -4004,13 +4019,17 @@
             const demoBanner = document.getElementById('demoActiveBanner');
             if (demoBanner) demoBanner.classList.remove('hidden');
 
-            // Imposta etichette header demo
+            // Imposta etichette e denominazione demo fittizia
+            currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
             const compNameShort = document.getElementById('adminHeaderCompanyNameShort');
             if (compNameShort) compNameShort.textContent = "DEMO FLOTTA";
             const compCode = document.getElementById('adminHeaderCompanyCode');
             if (compCode) compCode.textContent = "AZ-DEMO";
             const loginComp = document.getElementById('loginCompanyNameDisplay');
             if (loginComp) loginComp.textContent = "DEMO TRASPORTI ITALIA";
+            
+            const compInput = document.getElementById('companyNameInput');
+            if (compInput) compInput.value = "DEMO TRASPORTI ITALIA S.R.L.";
 
             // Popola autisti dimostrativi con scadenze 28gg realistiche
             const now = Date.now();
@@ -4088,15 +4107,20 @@
             renderFleetTable();
             renderVehicleTable();
             updateAdminBadges();
-            showToast("🎮 Benvenuto nella Demo di TachoApp Pro! Dati dimostrativi attivi.", "success");
+            updateDOMCompanyName();
+            updateDOMCompanyCard();
+
+            if (compInput) compInput.value = "DEMO TRASPORTI ITALIA S.R.L.";
+            showToast("🎮 Modalità Demo GC CodeLab: Dati inventati e Report PDF pronti.", "success");
         }
         window.activateDemoMode = activateDemoMode;
 
         function checkUrlDemoMode() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('demo') === 'true' || urlParams.get('mode') === 'demo') {
-                setTimeout(activateDemoMode, 400);
+                setTimeout(activateDemoMode, 300);
             }
+        }
         }
 
         function initApp() {
@@ -4111,5 +4135,36 @@
 
         window.onload = initApp;
     </script>
+
+    <!-- Modal Contatto Commerciale per Attivazione Flotta Reale -->
+    <div id="contactSalesModal" class="hidden fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-[#15243E] border border-emerald-500/50 rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 animate-in fade-in zoom-in duration-200">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-2xl shadow-inner">
+                🏢
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white">Attiva TachoApp Pro per la tua Azienda</h3>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                    Spazio cloud riservato con la tua ragione sociale, PIN privati, autisti illimitati, notifiche push e conformità 28gg/90gg.
+                </p>
+            </div>
+            <div class="bg-[#0F1C32] p-3.5 rounded-2xl border border-slate-700/80 text-left text-xs space-y-1.5">
+                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Contatto Sviluppatore:</div>
+                <div class="font-bold text-emerald-300">Giovanni Cavallo • GC CodeLab</div>
+                <div class="text-slate-300">📧 <a href="mailto:info@gccodelab.com" class="text-emerald-400 hover:underline font-semibold">info@gccodelab.com</a></div>
+            </div>
+            <div class="flex flex-col gap-2 pt-1">
+                <a href="mailto:info@gccodelab.com?subject=Richiesta%20Attivazione%20TachoApp%20Pro&body=Salve%20Giovanni,%20desidero%20attivare%20uno%20spazio%20riservato%20TachoApp%20Pro%20per%20la%20mia%20azienda." 
+                   class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-xl text-xs shadow-lg transition flex items-center justify-center space-x-2">
+                    <span>✉️</span>
+                    <span>Richiedi Attivazione Immediata</span>
+                </a>
+                <button type="button" onclick="closeContactSalesModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
+                    Continua a Esplorare la Demo
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
