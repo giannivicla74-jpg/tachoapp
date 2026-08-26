@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TachoApp Pro • Demo Dimostrativa (GC CodeLab)</title>
+    <title>GC-TachoControl • Versione Demo</title>
     
     <!-- Icone PWA (Assolute per massima compatibilità) -->
     <link rel="apple-touch-icon" href="https://giannivicla74-jpg.github.io/tachoapp/logo.jpg">
@@ -41,15 +41,15 @@
         
         firebase.initializeApp(firebaseConfig);
         const db = {
-            ref: function(path) {
-                return {
-                    on: function(ev, cb) { },
-                    set: function(val) { return Promise.resolve(); },
-                    remove: function() { return Promise.resolve(); },
-                    off: function() { }
-                };
-            }
-        };
+        ref: function(path) {
+            return {
+                on: function(ev, cb) { },
+                set: function(val) { return Promise.resolve(); },
+                remove: function() { return Promise.resolve(); },
+                off: function() { }
+            };
+        }
+    };
         
         // Inizializzazione Messaging (se supportato dal browser)
         let messaging = null;
@@ -188,7 +188,7 @@
 
                 <div>
                     <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Amministratore (4 cifre)</label>
-                    <input type="password" id="pinInput" placeholder="Codice PIN / Accesso Admin" maxlength="4" inputmode="numeric" autocomplete="one-time-code" oninput="checkAdminPinLength()"
+                    <input type="password" id="pinInput" placeholder="PIN Demo: 1234" maxlength="4" inputmode="numeric" autocomplete="one-time-code" oninput="checkAdminPinLength()"
                         class="w-full px-4 py-3.5 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-left text-sm font-semibold tracking-wider text-white placeholder-slate-500 transition-all">
                 </div>
                 <div id="loginError" class="text-red-400 text-xs font-semibold text-center hidden flex items-center justify-center space-x-1">
@@ -265,19 +265,21 @@
 
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="hidden space-y-6 w-full min-w-0">
-            <!-- Banner Modalità Demo Indipendente -->
-            <div class="no-print bg-gradient-to-r from-amber-950/90 via-slate-900 to-emerald-950/90 border border-amber-500/50 rounded-2xl p-4 shadow-xl flex items-center justify-between gap-3">
+
+            <!-- Banner Modalità Demo GC CodeLab -->
+            <div id="demoBannerBox" class="no-print bg-gradient-to-r from-amber-950/90 via-slate-900 to-emerald-950/90 border border-amber-500/50 rounded-2xl p-4 shadow-xl flex items-center justify-between gap-3">
                 <div class="flex items-center space-x-3">
                     <span class="text-2xl">🎮</span>
                     <div>
-                        <h4 class="text-xs font-bold text-amber-300">VERSIONE DEMO DIMOSTRATIVA GC CODELAB</h4>
-                        <p class="text-[10px] text-slate-300">Flotta di prova attiva. Dati e modifiche restano isolati sul tuo dispositivo.</p>
+                        <h4 class="text-xs font-bold text-amber-300 uppercase tracking-wider">Versione Demo Dimostrativa (GC CodeLab)</h4>
+                        <p class="text-[10px] text-slate-300">Stai visualizzando una flotta di prova con scadenze fittizie e Report PDF.</p>
                     </div>
                 </div>
-                <button type="button" onclick="openContactSalesModal()" class="px-4 py-2.5 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-xs whitespace-nowrap shadow-lg transition transform active:scale-95">
+                <button type="button" onclick="openContactSalesModal()" class="px-3.5 py-2 bg-gradient-to-r from-amber-500 to-emerald-500 hover:opacity-90 text-slate-950 font-black rounded-xl text-xs whitespace-nowrap shadow-md transition">
                     Attiva Licenza Ufficiale
                 </button>
             </div>
+
             <div class="no-print grid grid-cols-3 gap-2">
                 <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
                     Conducenti
@@ -1442,12 +1444,12 @@
     <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
 
     <script>
-        const ADMIN_PIN = "9999"; // PIN Demo Amministratore (GC CodeLab)
+        const ADMIN_PIN = "1234"; // PIN Demo Amministratore (Inventato)
         let companiesRegistry = {
             "AZ-DEMO": {
                 code: "AZ-DEMO",
                 name: "DEMO TRASPORTI ITALIA S.R.L.",
-                adminPin: "9999"
+                adminPin: "1234"
             }
         };
         let activeCompanyId = 'AZ-DEMO';
@@ -1543,24 +1545,6 @@
         function closeContactSalesModal() {
             const m = document.getElementById('contactSalesModal');
             if (m) m.classList.add('hidden');
-        }
-
-        function quickAdminDemoLogin() {
-            showSection("admin");
-            switchTab('fleet');
-            renderFleetTable();
-            renderVehicleTable();
-            updateAdminBadges();
-            updateDOMCompanyName();
-            updateDOMCompanyCard();
-            showToast("🎮 Accesso Amministratore Demo effettuato!", "success");
-        }
-
-        function quickDriverDemoLogin() {
-            currentLoggedInDriver = driversMap["demo_1"];
-            showSection("driver");
-            renderDriverView(currentLoggedInDriver);
-            showToast("👤 Accesso Conducente: Mario Rossi (PIN 1111)", "success");
         }
 
         function getCompanyPath(subPath) { return subPath; }
@@ -2215,11 +2199,31 @@
 
         function handleAdminLogin() {
             const pinVal = (document.getElementById('pinInput').value || '').trim();
-            if (pinVal === '9999' || pinVal === '0000' || pinVal === '') {
-                quickAdminDemoLogin();
+            const errorEl = document.getElementById('loginError');
+            const errorText = document.getElementById('loginErrorText');
+            if (errorEl) errorEl.classList.add('hidden');
+
+            if (!pinVal) {
+                if (errorText) errorText.innerText = "Inserisci il PIN (Demo: 1234).";
+                if (errorEl) errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // PIN Demo Accettati: 1234, 0000, 9999
+            if (pinVal === '1234' || pinVal === '0000' || pinVal === '9999') {
+                showSection("admin");
+                switchTab('fleet');
+                renderFleetTable();
+                renderVehicleTable();
+                updateAdminBadges();
+                updateDOMCompanyName();
+                updateDOMCompanyCard();
+                showToast("🎮 Accesso Amministratore Demo effettuato!", "success");
                 if (document.getElementById('pinInput')) document.getElementById('pinInput').value = "";
             } else {
-                showToast("PIN Demo non valido. Usa 9999 oppure i tasti rapidi", "error");
+                if (errorText) errorText.innerText = "PIN Demo non valido. Usa il PIN demo: 1234";
+                if (errorEl) errorEl.classList.remove('hidden');
+                showToast("PIN Demo: usa 1234", "error");
             }
         }
 
@@ -4014,19 +4018,19 @@
             <div>
                 <h3 class="text-base font-bold text-white">Attiva TachoApp Pro per la tua Azienda</h3>
                 <p class="text-xs text-slate-300 mt-1 leading-relaxed">
-                    Ottieni l'applicazione ufficiale con spazio cloud riservato, la tua ragione sociale, PIN privati, autisti illimitati, notifiche push e conformità 28gg/90gg.
+                    Personalizzazione completa con la tua ragione sociale, PIN privati, gestione autisti illimitata, notifiche push e backup cloud conformi a norma di legge.
                 </p>
             </div>
             <div class="bg-[#0F1C32] p-3.5 rounded-2xl border border-slate-700/80 text-left text-xs space-y-1.5">
-                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Sviluppatore & Licenze:</div>
+                <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Contatto Sviluppatore:</div>
                 <div class="font-bold text-emerald-300">Giovanni Cavallo • GC CodeLab</div>
                 <div class="text-slate-300">📧 <a href="mailto:info@gccodelab.com" class="text-emerald-400 hover:underline font-semibold">info@gccodelab.com</a></div>
             </div>
             <div class="flex flex-col gap-2 pt-1">
-                <a href="mailto:info@gccodelab.com?subject=Richiesta%20Attivazione%20TachoApp%20Pro%20Ufficiale&body=Salve%20Giovanni,%20ho%20provato%20la%20demo%20e%20desidero%20attivare%20TachoApp%20Pro%20per%20la%20mia%20azienda." 
+                <a href="mailto:info@gccodelab.com?subject=Richiesta%20Attivazione%20TachoApp%20Pro&body=Salve%20Giovanni,%20desidero%20attivare%20TachoApp%20Pro%20per%20la%20mia%20azienda." 
                    class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-xl text-xs shadow-lg transition flex items-center justify-center space-x-2">
                     <span>✉️</span>
-                    <span>Richiedi Licenza Ufficiale</span>
+                    <span>Richiedi Attivazione Immediata</span>
                 </a>
                 <button type="button" onclick="closeContactSalesModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
                     Continua a Esplorare la Demo

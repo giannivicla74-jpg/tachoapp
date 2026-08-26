@@ -13,16 +13,20 @@
 
 ---
 
-### 📋 Dettagli Versioni
+### 📋 Credenziali e Dettagli Versioni
 
 #### 1. 🏢 Versione Ufficiale (`index.html`)
 * **URL:** `https://giannivicla74-jpg.github.io/tachoapp/`
-* **Accesso:** PIN Amministratore e PIN Personale Conducenti.
+* **Accesso:** PIN Amministratore Riservato e PIN Personale Conducenti.
 * **Funzionalità:** Gestione flotta reale, aggiunta autisti e mezzi, caricamento documenti e foto, scadenze quinquennali Carta Azienda CCIAA, backup cloud e registrazione automatica codice azienda.
 
 #### 2. 🎮 Versione Demo Standalone (`demo.html`)
 * **URL:** `https://giannivicla74-jpg.github.io/tachoapp/demo.html`
-* **Accesso:** Immediato senza PIN obbligatorio (o PIN rapido `9999` per Admin e `1111` per Mario Rossi).
+* **PIN Demo Amministratore:** `1234`
+* **PIN Demo Conducenti:**
+  * *Mario Rossi:* PIN `1111`
+  * *Giuseppe Verdi:* PIN `2222`
+  * *Antonio Bianchi:* PIN `3333`
 * **Funzionalità:** Dati dimostrativi pre-caricati (*DEMO TRASPORTI ITALIA S.R.L.*, *Mario Rossi*, *Iveco S-Way*), cronotachigrafo simulato, Report PDF ispettiva, e pulsante commerciale per l'acquisto licenza.
 
 ---
