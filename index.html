@@ -2340,35 +2340,27 @@
             const tabVehicles = document.getElementById('tabVehicles');
             const tabSanctions = document.getElementById('tabSanctions');
 
-            btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            if (btnFleet) btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            if (btnVehicles) btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            if (btnSanctions) btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
 
-            tabFleet.classList.add('hidden');
-            tabVehicles.classList.add('hidden');
-            tabSanctions.classList.add('hidden');
+            if (tabFleet) tabFleet.classList.add('hidden');
+            if (tabVehicles) tabVehicles.classList.add('hidden');
+            if (tabSanctions) tabSanctions.classList.add('hidden');
 
             if (tab === 'fleet') {
-                btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabFleet.classList.remove('hidden');
+                if (btnFleet) btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                if (tabFleet) tabFleet.classList.remove('hidden');
                 renderFleetTable();
             } else if (tab === 'vehicles') {
-                btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabVehicles.classList.remove('hidden');
+                if (btnVehicles) btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                if (tabVehicles) tabVehicles.classList.remove('hidden');
                 renderVehicleTable();
             } else {
-                btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabSanctions.classList.remove('hidden');
+                if (btnSanctions) btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                if (tabSanctions) tabSanctions.classList.remove('hidden');
                 updateDOMCompanyName();
                 updateDOMCompanyCard();
-            }
-        } else if (tab === 'vehicles') {
-                btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabVehicles.classList.remove('hidden');
-                renderVehicleTable();
-            } else {
-                btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabSanctions.classList.remove('hidden');
             }
         }
 
@@ -4173,8 +4165,6 @@
                 populateDemoData();
                 setTimeout(activateDemoMode, 200);
             }
-        }
-        }
         }
 
         function initApp() {
