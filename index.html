@@ -168,6 +168,14 @@
             </div>
 
             <div class="space-y-4">
+                <!-- Accesso Rapido Autista Demo -->
+                <div id="demoDriverQuickBox" class="pb-2 border-b border-slate-800/80">
+                    <button type="button" onclick="accessDemoDriver()"
+                        class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition-all shadow-md flex items-center justify-center space-x-2 border border-emerald-400/30 animate-pulse">
+                        <span>👤</span>
+                        <span>Accedi come Autista Demo (Mario Rossi - PIN 1111)</span>
+                    </button>
+                </div>
                 <!-- Tasto Attivazione Azienda (Visibile solo una tantum al primo avvio su dispositivo vergine) -->
                 <div id="companyActivationBox" class="hidden pb-2 border-b border-slate-800/80">
                     <button onclick="openRegisterCompanyModal()"
@@ -1740,23 +1748,23 @@
         }
 
         function updateDOMCompanyName() {
-            const loginComp = document.getElementById('loginCompanyNameDisplay');
-            if (loginComp) loginComp.innerText = currentCompanyName;
-            
-            const driverComp = document.getElementById('driverSelCompanyNameDisplay');
-            if (driverComp) driverComp.innerText = currentCompanyName;
-            
-            const adminComp = document.getElementById('adminHeaderCompanyName');
-            if (adminComp) adminComp.innerText = `${currentCompanyName} • v9.0 Pro`;
+            if (isDemoModeActive || window.location.search.includes('demo=true')) {
+                currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
+            }
 
-            const headerCode = document.getElementById('adminHeaderCompanyCode');
-            if (headerCode) headerCode.innerText = activeCompanyId;
-
+            const loginDisplay = document.getElementById('loginCompanyNameDisplay');
+            if (loginDisplay) loginDisplay.innerText = currentCompanyName;
+            
+            const driverSelComp = document.getElementById('driverSelCompanyNameDisplay');
+            if (driverSelComp) driverSelComp.innerText = currentCompanyName;
+            
             const headerNameShort = document.getElementById('adminHeaderCompanyNameShort');
-            if (headerNameShort) headerNameShort.innerText = currentCompanyName;
+            if (headerNameShort) headerNameShort.innerText = (isDemoModeActive || window.location.search.includes('demo=true')) ? "DEMO FLOTTA" : currentCompanyName;
             
             const compInput = document.getElementById('companyNameInput');
-            if (compInput) compInput.value = (currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}`) ? currentCompanyName : "";
+            if (compInput) {
+                compInput.value = (isDemoModeActive || window.location.search.includes('demo=true')) ? "DEMO TRASPORTI ITALIA S.R.L." : ((currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}`) ? currentCompanyName : "");
+            }
             
             const cardHeader = document.getElementById('driverCardCompanyHeader');
             if (cardHeader) cardHeader.innerText = "REPUBBLICA ITALIANA";
@@ -2225,6 +2233,13 @@
         }
 
         function goToDriverSelection() {
+            if (isDemoModeActive || window.location.search.includes('demo=true')) {
+                populateDemoData();
+                const searchInput = document.getElementById('driverSearchInput');
+                if (searchInput && !searchInput.value) searchInput.value = "Mario Rossi";
+                const pinInput = document.getElementById('driverPersonalPinInput');
+                if (pinInput && !pinInput.value) pinInput.value = "1111";
+            }
             populateDatalist();
             updateDriverActiveCompanyDisplay();
             showSection("driverSelection");
@@ -2328,7 +2343,7 @@
             btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
             btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
             btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            
+
             tabFleet.classList.add('hidden');
             tabVehicles.classList.add('hidden');
             tabSanctions.classList.add('hidden');
@@ -2338,6 +2353,16 @@
                 tabFleet.classList.remove('hidden');
                 renderFleetTable();
             } else if (tab === 'vehicles') {
+                btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                tabVehicles.classList.remove('hidden');
+                renderVehicleTable();
+            } else {
+                btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+                tabSanctions.classList.remove('hidden');
+                updateDOMCompanyName();
+                updateDOMCompanyCard();
+            }
+        } else if (tab === 'vehicles') {
                 btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
                 tabVehicles.classList.remove('hidden');
                 renderVehicleTable();
@@ -4012,26 +4037,8 @@
         }
         window.closeContactSalesModal = closeContactSalesModal;
 
-        function activateDemoMode() {
-            isDemoModeActive = true;
-
-            // Mostra il banner demo in alto
-            const demoBanner = document.getElementById('demoActiveBanner');
-            if (demoBanner) demoBanner.classList.remove('hidden');
-
-            // Imposta etichette e denominazione demo fittizia
+        function populateDemoData() {
             currentCompanyName = "DEMO TRASPORTI ITALIA S.R.L.";
-            const compNameShort = document.getElementById('adminHeaderCompanyNameShort');
-            if (compNameShort) compNameShort.textContent = "DEMO FLOTTA";
-            const compCode = document.getElementById('adminHeaderCompanyCode');
-            if (compCode) compCode.textContent = "AZ-DEMO";
-            const loginComp = document.getElementById('loginCompanyNameDisplay');
-            if (loginComp) loginComp.textContent = "DEMO TRASPORTI ITALIA";
-            
-            const compInput = document.getElementById('companyNameInput');
-            if (compInput) compInput.value = "DEMO TRASPORTI ITALIA S.R.L.";
-
-            // Popola autisti dimostrativi con scadenze 28gg realistiche
             const now = Date.now();
             const d8 = new Date(now - 8 * 86400000).toISOString().split('T')[0];
             const d22 = new Date(now - 22 * 86400000).toISOString().split('T')[0];
@@ -4048,7 +4055,8 @@
                     phone: "+39 333 1234567",
                     lastDownloadDate: d8,
                     cardExpiryDate: "2029-05-15",
-                    allowPhotoUpload: true
+                    allowPhotoUpload: true,
+                    obligationAccepted: true
                 },
                 "demo_2": {
                     id: "demo_2",
@@ -4060,7 +4068,8 @@
                     phone: "+39 333 7654321",
                     lastDownloadDate: d22,
                     cardExpiryDate: "2028-11-20",
-                    allowPhotoUpload: true
+                    allowPhotoUpload: true,
+                    obligationAccepted: true
                 },
                 "demo_3": {
                     id: "demo_3",
@@ -4072,11 +4081,11 @@
                     phone: "+39 333 9988776",
                     lastDownloadDate: d29,
                     cardExpiryDate: "2027-03-10",
-                    allowPhotoUpload: true
+                    allowPhotoUpload: true,
+                    obligationAccepted: true
                 }
             };
 
-            // Popola veicoli dimostrativi con scadenze 90gg realistiche
             const v45 = new Date(now - 45 * 86400000).toISOString().split('T')[0];
             const v88 = new Date(now - 88 * 86400000).toISOString().split('T')[0];
 
@@ -4102,6 +4111,23 @@
                 expiry: "2029-10-30"
             };
 
+            populateDatalist();
+        }
+
+        function activateDemoMode() {
+            isDemoModeActive = true;
+            populateDemoData();
+
+            const demoBanner = document.getElementById('demoActiveBanner');
+            if (demoBanner) demoBanner.classList.remove('hidden');
+
+            const compNameShort = document.getElementById('adminHeaderCompanyNameShort');
+            if (compNameShort) compNameShort.textContent = "DEMO FLOTTA";
+            const compCode = document.getElementById('adminHeaderCompanyCode');
+            if (compCode) compCode.textContent = "AZ-DEMO";
+            const loginComp = document.getElementById('loginCompanyNameDisplay');
+            if (loginComp) loginComp.textContent = "DEMO TRASPORTI ITALIA";
+
             showSection("admin");
             switchTab('fleet');
             renderFleetTable();
@@ -4110,16 +4136,44 @@
             updateDOMCompanyName();
             updateDOMCompanyCard();
 
+            const compInput = document.getElementById('companyNameInput');
             if (compInput) compInput.value = "DEMO TRASPORTI ITALIA S.R.L.";
             showToast("🎮 Modalità Demo GC CodeLab: Dati inventati e Report PDF pronti.", "success");
         }
         window.activateDemoMode = activateDemoMode;
 
+        function accessDemoDriver() {
+            isDemoModeActive = true;
+            populateDemoData();
+
+            currentLoggedInDriver = {
+                id: "demo_1",
+                name: "Mario",
+                surname: "Rossi",
+                cardNumber: "E00984721A00",
+                cantiere: "CANTIERE NORD",
+                pin: "1111",
+                phone: "+39 333 1234567",
+                lastDownloadDate: new Date(Date.now() - 8 * 86400000).toISOString().split('T')[0],
+                cardExpiryDate: "2029-05-15",
+                allowPhotoUpload: true,
+                obligationAccepted: true
+            };
+
+            showSection("driver");
+            renderDriverView(currentLoggedInDriver);
+            showToast("👤 Area Conducente Demo: Mario Rossi (PIN 1111)", "success");
+        }
+        window.accessDemoDriver = accessDemoDriver;
+
         function checkUrlDemoMode() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('demo') === 'true' || urlParams.get('mode') === 'demo') {
-                setTimeout(activateDemoMode, 300);
+                isDemoModeActive = true;
+                populateDemoData();
+                setTimeout(activateDemoMode, 200);
             }
+        }
         }
         }
 
