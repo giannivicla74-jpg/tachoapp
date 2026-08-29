@@ -143,20 +143,27 @@
     <!-- Header / Navbar Amministratore -->
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/95 backdrop-blur-md shadow-lg border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-lg w-full mx-auto px-4 py-3 sm:px-6 flex justify-between items-center">
-            <div class="space-y-1">
+            <div class="space-y-0.5 min-w-0 flex-1 pr-2">
                 <div class="flex items-center space-x-2">
-                    <h1 class="text-sm sm:text-base font-bold text-white tracking-tight" id="adminHeaderAppName">TachoApp &bull; Pro</h1>
+                    <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center space-x-1.5" id="adminHeaderAppName">
+                        <span>TachoApp Pro</span>
+                        <span class="text-emerald-400 text-xs font-bold">&bull; Area Amministrativa</span>
+                    </h1>
                     <span id="superAdminBadge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">SuperAdmin</span>
                 </div>
-                <!-- Selettore Flotta Attiva -->
-                <div id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden inline-flex items-center space-x-1.5 bg-slate-900/90 hover:bg-slate-800 border border-indigo-800/80 px-2.5 py-1 rounded-xl cursor-pointer transition shadow-sm group">
-                    <span class="text-[10px]">🏢</span>
-                    <span class="text-[10px] font-mono font-bold text-indigo-300 bg-indigo-950 px-1.5 py-0.2 rounded border border-indigo-700/60" id="adminHeaderCompanyCode">AZ-MAIN</span>
-                    <span class="text-[11px] font-bold text-emerald-300 max-w-[130px] truncate" id="adminHeaderCompanyNameShort">GC CodeLab</span>
-                    <span class="text-[9px] text-indigo-400 font-extrabold group-hover:text-indigo-200 underline">⇄ Cambia</span>
+                
+                <!-- Nome Azienda Attiva -->
+                <div class="flex items-center space-x-1.5 text-[11px] text-slate-300">
+                    <span class="text-xs">🏢</span>
+                    <span class="font-bold text-emerald-300 truncate max-w-[190px]" id="adminHeaderCompanyNameShort">Azienda</span>
+                    <span class="text-[9px] font-mono text-indigo-300 bg-indigo-950 px-1.5 py-0.2 rounded border border-indigo-700/60" id="adminHeaderCompanyCode">AZ-MAIN</span>
+                    <!-- Tasto cambia (visibile solo per SuperAdmin) -->
+                    <button id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden text-[9px] text-indigo-400 hover:text-indigo-200 underline font-bold ml-1">
+                        ⇄ Cambia
+                    </button>
                 </div>
             </div>
-            <div>
+            <div class="flex-shrink-0">
                 <button onclick="logout()" class="px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-white bg-[#2A1F2B] border border-red-900/40 rounded-xl hover:bg-red-950/40 transition-all duration-200 active:scale-95">
                     Esci
                 </button>
