@@ -227,7 +227,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Amministratore (4 cifre)</label>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[10px] uppercase font-bold text-slate-400">PIN Amministratore (4 cifre)</label>
+                        <button type="button" onclick="contactSupportForgotPin()" class="text-[10px] text-emerald-400 hover:text-emerald-300 hover:underline font-bold transition">
+                            PIN Dimenticato?
+                        </button>
+                    </div>
                     <input type="password" id="pinInput" placeholder="Codice PIN / Accesso Admin" maxlength="4" inputmode="numeric" autocomplete="one-time-code" oninput="checkAdminPinLength()"
                         class="w-full px-4 py-3.5 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-left text-sm font-semibold tracking-wider text-white placeholder-slate-500 transition-all">
                 </div>
@@ -586,6 +591,35 @@
                             Salva Dati Azienda &amp; Carta Azienda
                         </button>
                     </div>
+                </div>
+
+                <!-- Box Modifica PIN Amministratore Riservato -->
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-base">🔑</span>
+                        <h3 class="font-bold text-sm text-amber-400">Sicurezza &bull; Personalizza PIN Amministratore</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Modifica in autonomia il tuo codice PIN a 4 cifre per accedere all'Area Amministrativa riservata della tua flotta.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nuovo PIN (4 Cifre)</label>
+                            <input type="password" id="newAdminPinInput" maxlength="4" inputmode="numeric" placeholder="••••" 
+                                class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-amber-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Conferma Nuovo PIN</label>
+                            <input type="password" id="confirmAdminPinInput" maxlength="4" inputmode="numeric" placeholder="••••" 
+                                class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-amber-400">
+                        </div>
+                    </div>
+
+                    <button onclick="saveAdminPersonalPin()" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
+                        <span>🔒</span>
+                        <span>Salva Nuovo PIN Riservato</span>
+                    </button>
                 </div>
 
                 <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
@@ -1887,6 +1921,42 @@
                     showToast("Errore durante il salvataggio", "error");
                 }
             });
+        }
+
+        function saveAdminPersonalPin() {
+            const p1 = document.getElementById('newAdminPinInput').value.trim();
+            const p2 = document.getElementById('confirmAdminPinInput').value.trim();
+
+            if (!p1 || p1.length !== 4 || !/^\d{4}$/.test(p1)) {
+                showToast("Il PIN deve essere composto da 4 cifre numeriche.", "error");
+                return;
+            }
+            if (p1 !== p2) {
+                showToast("I due PIN inseriti non coincidono. Riprova.", "error");
+                return;
+            }
+
+            const code = activeCompanyId || 'AZ-MAIN';
+            db.ref('aziende_registry/' + code + '/adminPin').set(p1, (err) => {
+                if (!err) {
+                    if (companiesRegistry[code]) {
+                        companiesRegistry[code].adminPin = p1;
+                    }
+                    document.getElementById('newAdminPinInput').value = "";
+                    document.getElementById('confirmAdminPinInput').value = "";
+                    showToast("✅ PIN Amministratore aggiornato con successo!", "success");
+                } else {
+                    showToast("Errore durante il salvataggio del PIN: " + err.message, "error");
+                }
+            });
+        }
+
+        function contactSupportForgotPin() {
+            const compName = (currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") ? currentCompanyName : (activeCompanyId ? `Azienda ${activeCompanyId}` : "Flotta");
+            const compCode = activeCompanyId || "";
+            const msg = `Salve Giovanni (Assistenza Tecnica GC CodeLab), sono il responsabile di *${compName}*${compCode ? ` (Codice Flotta: ${compCode})` : ''}. Ho dimenticato il PIN di accesso Amministratore e chiedo il reset delle mie credenziali.`;
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
         }
 
         function requestPushPermission() {
