@@ -1936,10 +1936,16 @@
                 `👉 ${appUrl}\n\n` +
                 `🏢 *Azienda:* ${compName} (${compCode})\n` +
                 `🔑 *Il tuo PIN Personale:* *${d.pin || '••••'}*\n\n` +
-                `_Istruzioni veloci:_\n` +
-                `1. Clicca sul link sopra con lo smartphone\n` +
-                `2. La tua azienda è già impostata: seleziona il tuo nome e digita il tuo PIN\n` +
-                `3. Clicca su "Aggiungi a schermata Home" dal menu del browser per avere l'icona sul telefono!`;
+                `📲 *COME INSTALLARE L'APP SUL TELEFONO:*\n\n` +
+                `🤖 *Su Android (Chrome):*\n` +
+                `1. Clicca sul link sopra per aprirlo in Google Chrome\n` +
+                `2. Tocca i 3 puntini in alto a destra (⋮)\n` +
+                `3. Seleziona *"Installa app"* o *"Aggiungi a schermata Home"*\n\n` +
+                `🍏 *Su iPhone (Safari):*\n` +
+                `1. Clicca sul link sopra per aprirlo in Safari\n` +
+                `2. Tocca il tasto Condividi in basso al centro (icona con quadrato e freccia in su ⎋)\n` +
+                `3. Scorri e tocca *"Aggiungi alla schermata Home"*\n\n` +
+                `✅ *Una volta installata, apri l'icona TachoControl, scegli il tuo nome e digita il tuo PIN!*`;
 
             const cleanPhone = (d.phone || '').replace(/[^0-9]/g, '');
             let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
@@ -1957,10 +1963,13 @@
 
             const msg = `🚛 *APP TACHOCONTROL • AREA CONDUCENTI*\n\n` +
                 `Per tutti gli autisti di *${compName}*:\n` +
-                `Ecco il link diretto per installare l'App Flotta e registrare gli scarichi della carta tachigrafica:\n\n` +
+                `Ecco il link per installare l'App Flotta e registrare gli scarichi della carta tachigrafica:\n\n` +
                 `👉 ${appUrl}\n\n` +
                 `🏢 *Codice Flotta:* ${compCode}\n\n` +
-                `_Aprite il link dallo smartphone, selezionate il vostro nome e inserite il PIN personale a 4 cifre assegnato dall'azienda._`;
+                `📲 *COME INSTALLARLA SULLO SMARTPHONE:*\n\n` +
+                `🤖 *Android:* Apri il link con Chrome ➔ tocca i 3 puntini in alto a destra (⋮) ➔ seleziona *"Installa app"* o *"Aggiungi a schermata Home"*.\n\n` +
+                `🍏 *iPhone:* Apri il link con Safari ➔ tocca il tasto Condividi in basso (⎋ con freccia in su) ➔ seleziona *"Aggiungi alla schermata Home"*.\n\n` +
+                `_Aprite l'App, selezionate il vostro nome e inserite il PIN personale a 4 cifre fornito dall'azienda._`;
 
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
             window.open(whatsappUrl, '_blank');
