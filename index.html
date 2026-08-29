@@ -379,18 +379,34 @@
 
                     <div class="space-y-3">
                         <div class="grid grid-cols-2 gap-2">
-                            <input type="text" id="addName" placeholder="Nome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
-                            <input type="text" id="addSurname" placeholder="Cognome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome *</label>
+                                <input type="text" id="addName" placeholder="Nome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500 font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Cognome *</label>
+                                <input type="text" id="addSurname" placeholder="Cognome" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500 font-semibold">
+                            </div>
                         </div>
                         <div>
-                            <input type="text" id="addCard" placeholder="Numero Carta Tachigrafica" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono text-sm text-white placeholder-slate-500">
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Numero Carta Tachigrafica Conducente</label>
+                            <input type="text" id="addCard" placeholder="es. E000000000000000" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono text-sm text-white placeholder-slate-500">
                         </div>
                         <div>
-                            <input type="text" id="addCantiere" placeholder="CANTIERE DI APPARTENENZA" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm uppercase text-white placeholder-slate-500">
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Cantiere o Sede di Appartenenza</label>
+                            <input type="text" id="addCantiere" placeholder="CANTIERE / SEDE" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm uppercase text-white placeholder-slate-500">
                         </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="text" maxlength="4" inputmode="numeric" id="addPin" placeholder="PIN Personale (4 cifre)" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
-                            <input type="tel" id="addPhone" placeholder="Cellulare (WhatsApp)" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Personale (4 cifre)</label>
+                                <input type="text" maxlength="4" inputmode="numeric" id="addPin" placeholder="es. 1234" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono font-bold text-amber-300 placeholder-slate-500 text-sm text-center">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1 flex items-center space-x-1">
+                                    <span>📲</span> <span>Cellulare WhatsApp (Accesso &amp; Reset)</span>
+                                </label>
+                                <input type="tel" id="addPhone" placeholder="es. +39 347 1234567" class="w-full px-4 py-3 bg-[#0F1C32] border border-emerald-500/50 focus:border-emerald-400 rounded-2xl outline-none text-sm text-white placeholder-slate-500 font-semibold shadow-inner">
+                            </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
