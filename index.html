@@ -1429,7 +1429,7 @@
 
         let driversMap = {};
         let vehiclesMap = {};
-        let currentCompanyName = "GC CodeLab - Gestione Flotta";
+        let currentCompanyName = activeCompanyId ? "GC CodeLab - Gestione Flotta" : "Piattaforma Cloud • Gestione Flotte";
         let companyCardData = { number: "", expiry: "" };
         let currentLoggedInDriver = null;
         let pendingBase64Doc = "";
@@ -1467,15 +1467,24 @@
         }
 
         function switchActiveCompany(companyCode) {
-            if (!companyCode) companyCode = 'AZ-MAIN';
-            activeCompanyId = companyCode;
-            localStorage.setItem('tacho_active_company', activeCompanyId);
+            activeCompanyId = companyCode || '';
+            if (activeCompanyId) {
+                localStorage.setItem('tacho_active_company', activeCompanyId);
+            } else {
+                localStorage.removeItem('tacho_active_company');
+            }
             updateCompanyActivationUI();
             
             const badgeDriver = document.getElementById('driverActiveCompanyBadge');
             if (badgeDriver) {
-                const compInfo = companiesRegistry[activeCompanyId];
-                badgeDriver.innerText = compInfo ? `${compInfo.name} (${activeCompanyId})` : activeCompanyId;
+                if (activeCompanyId && companiesRegistry[activeCompanyId]) {
+                    const compInfo = companiesRegistry[activeCompanyId];
+                    badgeDriver.innerText = `${compInfo.name} (${activeCompanyId})`;
+                } else if (activeCompanyId) {
+                    badgeDriver.innerText = activeCompanyId === 'AZ-MAIN' ? 'Azienda Principale' : activeCompanyId;
+                } else {
+                    badgeDriver.innerText = "Seleziona Codice Flotta (es. AZ-101)";
+                }
             }
 
             setupCompanyListeners();
@@ -1488,6 +1497,16 @@
                     if (l.ref && l.callback) l.ref.off('value', l.callback);
                 });
                 activeListeners = [];
+            }
+
+            if (!activeCompanyId) {
+                currentCompanyName = "Piattaforma Cloud • Gestione Flotte";
+                driversMap = {};
+                vehiclesMap = {};
+                companyCardData = { number: "", expiry: "" };
+                updateDOMCompanyName();
+                populateDatalist();
+                return;
             }
 
             const configNameRef = dbCompanyRef('config/denominazioneAzienda');
@@ -1716,22 +1735,38 @@
 
         function updateDOMCompanyName() {
             const loginComp = document.getElementById('loginCompanyNameDisplay');
-            if (loginComp) loginComp.innerText = currentCompanyName;
+            if (loginComp) {
+                if (activeCompanyId && companiesRegistry[activeCompanyId]) {
+                    loginComp.innerText = companiesRegistry[activeCompanyId].name;
+                } else if (activeCompanyId === 'AZ-MAIN' && currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
+                    loginComp.innerText = currentCompanyName;
+                } else {
+                    loginComp.innerText = "PIATTAFORMA CLOUD GESTIONE FLOTTA";
+                }
+            }
             
             const driverComp = document.getElementById('driverSelCompanyNameDisplay');
-            if (driverComp) driverComp.innerText = currentCompanyName;
+            if (driverComp) {
+                if (activeCompanyId && companiesRegistry[activeCompanyId]) {
+                    driverComp.innerText = companiesRegistry[activeCompanyId].name;
+                } else if (activeCompanyId === 'AZ-MAIN' && currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
+                    driverComp.innerText = currentCompanyName;
+                } else {
+                    driverComp.innerText = "Inserisci Codice Azienda per iniziare";
+                }
+            }
             
             const adminComp = document.getElementById('adminHeaderCompanyName');
-            if (adminComp) adminComp.innerText = `${currentCompanyName} • v9.0 Pro`;
+            if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v9.0 Pro`;
 
             const headerCode = document.getElementById('adminHeaderCompanyCode');
-            if (headerCode) headerCode.innerText = activeCompanyId;
+            if (headerCode) headerCode.innerText = activeCompanyId || 'AZ-MAIN';
 
             const headerNameShort = document.getElementById('adminHeaderCompanyNameShort');
-            if (headerNameShort) headerNameShort.innerText = currentCompanyName;
+            if (headerNameShort) headerNameShort.innerText = currentCompanyName || 'Gestione Flotta';
             
             const compInput = document.getElementById('companyNameInput');
-            if (compInput) compInput.value = (currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}`) ? currentCompanyName : "";
+            if (compInput) compInput.value = (currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}` && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") ? currentCompanyName : "";
             
             const cardHeader = document.getElementById('driverCardCompanyHeader');
             if (cardHeader) cardHeader.innerText = "REPUBBLICA ITALIANA";
@@ -2203,6 +2238,9 @@
             populateDatalist();
             updateDriverActiveCompanyDisplay();
             showSection("driverSelection");
+            if (!activeCompanyId) {
+                openSwitchDriverCompanyModal();
+            }
         }
 
         function handleDriverAccess() {
