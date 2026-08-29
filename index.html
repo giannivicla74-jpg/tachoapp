@@ -98,6 +98,48 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased w-full max-w-full overflow-x-hidden">
 
+    <!-- =================== SPLASH SCREEN DI AVVIO =================== -->
+    <div id="appSplashScreen" class="fixed inset-0 z-[999] bg-[#0B1626] flex flex-col items-center justify-center transition-all duration-500 ease-out">
+        <div class="relative flex flex-col items-center text-center p-6 select-none pointer-events-none">
+            <!-- Alone luminoso pulsante -->
+            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500/20 blur-3xl rounded-full w-40 h-40 animate-pulse"></div>
+            
+            <!-- Scudo con animazione fluttuante continua -->
+            <div class="p-5 bg-gradient-to-b from-[#15243E] to-[#0A1220] rounded-3xl border border-slate-700/60 shadow-2xl relative z-10 animate-shield-premium mb-6">
+                <svg class="w-16 h-16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="splashShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#10B981" />
+                            <stop offset="100%" stop-color="#047857" />
+                        </linearGradient>
+                        <linearGradient id="splashInnerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#064E3B" />
+                            <stop offset="100%" stop-color="#022C22" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M50 10L12 28v22c0 24 13.8 44.2 38 50 24.2-5.8 38-26 38-50V28L50 10z" fill="url(#splashShieldGrad)" stroke="#34D399" stroke-width="1.5"/>
+                    <path d="M50 18L18 33v17c0 18 10.4 33.1 32 38 21.6-4.9 32-20 32-38V33L50 18z" fill="url(#splashInnerGrad)"/>
+                    <path d="M 35 32 L 65 32 M 50 32 L 50 66" stroke="#FBBF24" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <path d="M 60 42 C 28 35, 28 75, 60 64" stroke="#F8FAFC" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+                </svg>
+            </div>
+
+            <h1 class="text-2xl font-black tracking-tight text-white mb-1">
+                GC-TachoControl <span class="text-emerald-400 font-mono text-sm">v9.0</span>
+            </h1>
+            <p class="text-xs text-slate-400 font-medium mb-6">Cloud &bull; Conformità Reg. CE 561/2006</p>
+
+            <!-- Spinner / Indicatore di Caricamento -->
+            <div class="flex items-center space-x-2 bg-slate-900/80 px-4 py-2 rounded-full border border-slate-800 shadow-lg">
+                <svg class="animate-spin h-3.5 w-3.5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span class="text-[11px] font-semibold text-slate-300">Caricamento Cloud in corso...</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Header / Navbar Amministratore -->
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/95 backdrop-blur-md shadow-lg border-b border-slate-800 transition-colors duration-300">
         <div class="max-w-lg w-full mx-auto px-4 py-3 sm:px-6 flex justify-between items-center">
@@ -4009,14 +4051,33 @@
             window.open(whatsappUrl, '_blank');
         }
 
+        let splashScreenDismissed = false;
+        function hideSplashScreen() {
+            if (splashScreenDismissed) return;
+            splashScreenDismissed = true;
+            const splash = document.getElementById('appSplashScreen');
+            if (splash) {
+                splash.style.opacity = '0';
+                splash.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 500);
+            }
+        }
+
         function initApp() {
             setupCompanyListeners();
             updateCompanyActivationUI();
             calculateDrivingSimulation();
             setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
+            
+            // Chiusura morbida della Splash Screen
+            setTimeout(hideSplashScreen, 350);
         }
 
         window.onload = initApp;
+        // Fallback di sicurezza per nascondere sempre la splash screen anche su connessioni lente
+        setTimeout(hideSplashScreen, 2000);
     </script>
 </body>
 </html>
