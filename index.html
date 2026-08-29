@@ -255,15 +255,13 @@
             </div>
 
             <div class="space-y-4">
-                <!-- Selettore rapido Azienda per autista -->
-                <div class="bg-[#0F1C32] p-2.5 rounded-2xl border border-slate-700/60 flex items-center justify-between">
-                    <div>
-                        <span class="text-[9px] uppercase font-bold text-slate-400 block">Flotta / Azienda</span>
-                        <span class="text-xs font-bold text-white truncate block max-w-[190px]" id="driverActiveCompanyBadge">Azienda Principale</span>
+                <!-- Badge Flotta Aziendale (Sola Lettura / Senza tasto Cambia) -->
+                <div class="bg-[#0F1C32] px-4 py-3 rounded-2xl border border-slate-700/60 flex items-center space-x-3 shadow-inner">
+                    <span class="text-lg">🏢</span>
+                    <div class="min-w-0 flex-1">
+                        <span class="text-[9px] uppercase font-bold text-slate-400 block tracking-wider">Flotta / Azienda</span>
+                        <span class="text-xs font-bold text-emerald-300 truncate block" id="driverActiveCompanyBadge">-</span>
                     </div>
-                    <button onclick="openSwitchDriverCompanyModal()" class="text-[10px] text-emerald-400 hover:underline font-bold px-2 py-1 bg-emerald-950/50 rounded-lg border border-emerald-800/50">
-                        Cambia
-                    </button>
                 </div>
 
                 <div class="relative">
