@@ -162,7 +162,7 @@
                 </h2>
                 <div class="mt-1 flex items-center justify-center space-x-1.5 pointer-events-none">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <p id="loginCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold uppercase tracking-wider">Piattaforma Cloud Gestione Flotte</p>
+                    <p id="loginCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold uppercase tracking-wider">Gestione Flotta</p>
                 </div>
                 <p class="text-xs text-slate-400 mt-2 leading-relaxed pointer-events-none">Inserisci il PIN amministrativo o accedi all'Area Conducenti.</p>
             </div>
@@ -1736,7 +1736,13 @@
         function updateDOMCompanyName() {
             const loginComp = document.getElementById('loginCompanyNameDisplay');
             if (loginComp) {
-                loginComp.innerText = "PIATTAFORMA CLOUD GESTIONE FLOTTE";
+                if (activeCompanyId && companiesRegistry[activeCompanyId]) {
+                    loginComp.innerText = companiesRegistry[activeCompanyId].name;
+                } else if (activeCompanyId === 'AZ-MAIN' && currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
+                    loginComp.innerText = currentCompanyName;
+                } else {
+                    loginComp.innerText = "PIATTAFORMA CLOUD GESTIONE FLOTTA";
+                }
             }
             
             const driverComp = document.getElementById('driverSelCompanyNameDisplay');
