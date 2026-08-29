@@ -710,6 +710,29 @@
         <!-- =================== 3. DRIVER SECTION =================== -->
         <div id="driverSection" class="hidden space-y-6 w-full no-print">
             
+            <!-- Header Navigazione: Tasto Torna per Admin / Info Autista con Tasto Esci -->
+            <div class="flex items-center justify-between bg-[#15243E]/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-800 shadow-md">
+                <!-- Se l'Amministratore sta visualizzando la scheda -->
+                <div id="driverViewAdminBackBtn" class="hidden">
+                    <button onclick="backToAdminFromDriverView()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow transition active:scale-95">
+                        <span>⬅️</span>
+                        <span>Torna al Pannello Flotta</span>
+                    </button>
+                </div>
+
+                <!-- Se è l'Autista in sessione -->
+                <div id="driverViewDriverControls" class="flex items-center justify-between w-full">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-xs font-bold text-slate-200">Area Personale Conducente</span>
+                    </div>
+                    <button onclick="logoutDriver()" class="text-xs text-red-300 hover:text-red-200 bg-red-950/60 hover:bg-red-900 border border-red-800/80 px-3 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 active:scale-95 shadow-sm">
+                        <span>🚪</span>
+                        <span>Esci / Cambia</span>
+                    </button>
+                </div>
+            </div>
+
             <div id="pushNotificationBanner" class="bg-[#15243E] border border-blue-500/40 rounded-2xl p-4 flex items-center justify-between shadow-lg">
                 <div class="flex items-center space-x-3">
                     <div class="p-2 bg-blue-500/20 text-blue-400 rounded-xl">
@@ -1557,6 +1580,7 @@
         }
 
         let isSuperAdmin = false;
+        let isAdminViewingDriver = false;
         let activeListeners = [];
         let lastRegisteredCompany = null;
 
@@ -1676,6 +1700,8 @@
                     if (!document.getElementById('driverSection').classList.contains('hidden')) {
                         renderDriverView(currentLoggedInDriver);
                     }
+                } else if (!currentLoggedInDriver && localStorage.getItem('userRole') === 'driver') {
+                    checkAutoLoginDriver();
                 }
                 updateAdminBadges();
                 if (isSuperAdmin) renderSuperAdminCompaniesList();
@@ -2495,6 +2521,11 @@
 
             if (foundDriver) {
                 currentLoggedInDriver = { id: foundKey, ...foundDriver };
+                isAdminViewingDriver = false;
+                localStorage.setItem('savedDriverId', foundKey);
+                localStorage.setItem('savedDriverCompany', activeCompanyId || 'AZ-MAIN');
+                localStorage.setItem('userRole', 'driver');
+                renderDriverView(currentLoggedInDriver);
                 showSection("driver");
                 // Aggiornamento automatico Token Push in Background
                 if ("Notification" in window && Notification.permission === "granted" && messaging) {
@@ -3172,8 +3203,43 @@
         function openDriverViewModal(id) {
             const d = driversMap[id];
             if (!d) return;
+            isAdminViewingDriver = true;
             renderDriverView({ id, ...d });
             showSection('driver');
+        }
+
+        function backToAdminFromDriverView() {
+            isAdminViewingDriver = false;
+            showSection('admin');
+        }
+
+        function logoutDriver() {
+            localStorage.removeItem('savedDriverId');
+            localStorage.removeItem('userRole');
+            currentLoggedInDriver = null;
+            isAdminViewingDriver = false;
+            showSection('login');
+            showToast("Disconnessione effettuata", "info");
+        }
+
+        function checkAutoLoginDriver() {
+            const savedRole = localStorage.getItem('userRole');
+            const savedDriverId = localStorage.getItem('savedDriverId');
+            const savedComp = localStorage.getItem('savedDriverCompany');
+
+            if (savedRole === 'driver' && savedDriverId) {
+                if (savedComp && (!activeCompanyId || activeCompanyId !== savedComp)) {
+                    switchActiveCompany(savedComp);
+                }
+                if (driversMap && driversMap[savedDriverId]) {
+                    currentLoggedInDriver = { id: savedDriverId, ...driversMap[savedDriverId] };
+                    isAdminViewingDriver = false;
+                    renderDriverView(currentLoggedInDriver);
+                    showSection('driver');
+                    return true;
+                }
+            }
+            return false;
         }
 
         function renderFleetTable() {
@@ -3739,6 +3805,17 @@
             document.getElementById('driverCardExpiryDisplay').innerText = formatDateItalian(d.cardExpiryDate) || "-";
             document.getElementById('driverNextDownloadDate').innerText = formatDateItalian(targetDateStr);
             document.getElementById('driverDaysCountdown').innerText = isVacation ? "FERIE" : daysRem;
+
+            // Gestione pulsanti di ritorno Admin vs controlli Autista
+            const adminBackBtn = document.getElementById('driverViewAdminBackBtn');
+            const driverControls = document.getElementById('driverViewDriverControls');
+            if (isAdminViewingDriver) {
+                if (adminBackBtn) adminBackBtn.classList.remove('hidden');
+                if (driverControls) driverControls.classList.add('hidden');
+            } else {
+                if (adminBackBtn) adminBackBtn.classList.add('hidden');
+                if (driverControls) driverControls.classList.remove('hidden');
+            }
 
             const photoImg = document.getElementById('driverPhotoImg');
             const defaultAvatar = document.getElementById('driverPhotoDefaultAvatar');
@@ -4320,8 +4397,11 @@
             calculateDrivingSimulation();
             setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
             
-            // Se l'app è stata aperta con link diretto per autisti (es. ?az=AZ-101)
-            if (azQuery) {
+            // 1. Controllo se l'autista ha una sessione memorizzata su questo dispositivo
+            const isAutoDriver = checkAutoLoginDriver();
+
+            // 2. Se l'app è stata aperta con link diretto per autisti (es. ?az=AZ-101) e non è già loggato
+            if (!isAutoDriver && azQuery) {
                 goToDriverSelection();
             }
 
