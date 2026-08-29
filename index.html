@@ -175,7 +175,7 @@
     <main class="flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0">
         
         <!-- =================== 1. LOGIN PRINCIPALE =================== -->
-        <div id="loginSection" class="no-print max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
+        <div id="loginSection" class="no-print hidden max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
             <div class="text-center mb-8 select-none cursor-pointer" onclick="handleSecretSupervisorTap()" style="user-select: none; -webkit-user-select: none;" title="GC CodeLab">
                 <!-- Logo con gesto segreto per SuperAdmin -->
                 <div class="flex justify-center mb-6 mt-2 relative">
@@ -1728,8 +1728,9 @@
                     if (!document.getElementById('driverSection').classList.contains('hidden')) {
                         renderDriverView(currentLoggedInDriver);
                     }
-                } else if (!currentLoggedInDriver && localStorage.getItem('userRole') === 'driver') {
-                    checkAutoLoginDriver();
+                } else if (localStorage.getItem('userRole') === 'driver') {
+                    const ok = checkAutoLoginDriver();
+                    if (ok === true) hideSplashScreen();
                 }
                 updateAdminBadges();
                 if (isSuperAdmin) renderSuperAdminCompaniesList();
@@ -3319,8 +3320,10 @@
                     isAdminViewingDriver = false;
                     renderDriverView(currentLoggedInDriver);
                     showSection('driver');
+                    hideSplashScreen();
                     return true;
                 }
+                return 'pending';
             }
             return false;
         }
@@ -4481,15 +4484,23 @@
             setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
             
             // 1. Controllo se l'autista ha una sessione memorizzata su questo dispositivo
-            const isAutoDriver = checkAutoLoginDriver();
+            const autoStatus = checkAutoLoginDriver();
 
-            // 2. Se l'app è stata aperta con link diretto per autisti (es. ?az=AZ-101) e non è già loggato
-            if (!isAutoDriver && azQuery) {
-                goToDriverSelection();
+            if (autoStatus === true) {
+                // Autista caricato istantaneamente
+                setTimeout(hideSplashScreen, 300);
+            } else if (autoStatus === 'pending') {
+                // In attesa che arrivino i dati da Firebase: la splash screen rimane attiva ed elegante
+                setTimeout(hideSplashScreen, 1500); // Fallback di sicurezza
+            } else {
+                // Utente non autenticato come autista
+                if (azQuery) {
+                    goToDriverSelection();
+                } else {
+                    showSection('login');
+                }
+                setTimeout(hideSplashScreen, 300);
             }
-
-            // Chiusura morbida della Splash Screen
-            setTimeout(hideSplashScreen, 350);
         }
 
         window.onload = initApp;
