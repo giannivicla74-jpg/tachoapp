@@ -5193,14 +5193,10 @@
             const text = document.getElementById('offlineStatusText');
             if (!banner || !text) return;
             if (navigator.onLine) {
-                banner.className = "no-print bg-emerald-600/90 text-white px-4 py-1.5 text-center text-xs font-bold shadow-md flex items-center justify-center space-x-1.5 sticky top-0 z-50 transition-all duration-300";
-                text.innerHTML = "🟢 Connesso al Cloud • Sincronizzazione in tempo reale attiva";
-                setTimeout(() => {
-                    if (navigator.onLine) banner.classList.add('hidden');
-                }, 3000);
+                banner.classList.add('hidden');
             } else {
                 banner.className = "no-print bg-amber-500/95 text-slate-950 px-4 py-1.5 text-center text-xs font-black shadow-md flex items-center justify-center space-x-1.5 sticky top-0 z-50 transition-all duration-300";
-                text.innerHTML = "⚡ Modalità Offline (Senza Connessione) • Dati Locali Pronti";
+                text.innerText = "Modalità Offline";
                 banner.classList.remove('hidden');
             }
         }
