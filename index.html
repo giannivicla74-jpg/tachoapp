@@ -4116,12 +4116,69 @@
                     
                     <div style="text-align: center; margin-top: 10px; font-size: 8.5px; color: #555;">
                         Documento redatto in conformità alla Decisione della Commissione Europea 2009/959/UE (Reg. CE n. 561/2006)
+                    <div style="border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h2 style="font-size: 13px; font-weight: bold; margin: 0 0 2px 0; text-transform: uppercase; letter-spacing: 0.5px;">MODULO DI ATTESTAZIONE DI ATTIVITÀ</h2>
+                            <h3 style="font-size: 10px; font-weight: normal; margin: 0; color: #333;">REGOLAMENTO (CE) N. 561/2006 O ACCORDO AETR</h3>
+                        </div>
+                        <div>${logoHtml}</div>
+                    </div>
+
+                    <div style="border: 1px solid #000; padding: 5px; margin-bottom: 6px; background-color: #f9f9f9;">
+                        <div style="font-weight: bold; font-size: 10px; margin-bottom: 3px;">PARTE DA COMPILARE A CURA DELL'IMPRESA</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10.5px;">
+                            <div><strong>1. Nome Impresa:</strong> ${compName}</div>
+                            <div><strong>2. Indirizzo, C.A.P., Città:</strong> ${companyAddress}</div>
+                            <div><strong>3. Telefono / Fax:</strong> -</div>
+                            <div><strong>4. Partita IVA / CF:</strong> ${companyVat}</div>
+                            <div><strong>5. Cognome e Nome Firmatario:</strong> ${signatory}</div>
+                            <div><strong>6. Funzione nell'impresa:</strong> ${signatoryRole}</div>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #000; padding: 5px; margin-bottom: 6px;">
+                        <div style="font-weight: bold; font-size: 10px; margin-bottom: 3px;">IL SOTTOSCRITTO DICHIARA CHE IL CONDUCENTE:</div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 10.5px;">
+                            <div><strong>7. Cognome e Nome:</strong> ${driverName}</div>
+                            <div><strong>8. Data di Nascita:</strong> -</div>
+                            <div><strong>9. Numero Patente di Guida:</strong> -</div>
+                            <div><strong>10. Numero Carta Conducente:</strong> ${driverCard}</div>
+                            <div><strong>11. Data inizio servizio nell'impresa:</strong> -</div>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #000; padding: 5px; margin-bottom: 8px;">
+                        <div style="font-weight: bold; font-size: 10px; margin-bottom: 3px;">PER IL PERIODO:</div>
+                        <div style="font-size: 10.5px; margin-bottom: 4px;">
+                            <strong>12. Dalle ore (ora, giorno, mese, anno):</strong> ${startDT} <br>
+                            <strong>13. Alle ore (ora, giorno, mese, anno):</strong> ${endDT}
+                        </div>
+                        <div style="font-weight: bold; font-size: 10px; margin: 4px 0 2px 0;">14. HA USUFRUITO DI:</div>
+                        <div style="font-size: 10px; line-height: 1.4;">
+                            <div>${reason === '14' ? '&#9632;' : '&#9633;'} 14. Congedo per malattia</div>
+                            <div>${reason === '15' ? '&#9632;' : '&#9633;'} 15. Ferie annuali / Riposo</div>
+                            <div>${reason === '16' ? '&#9632;' : '&#9633;'} 16. Congedo o riposo per altri motivi</div>
+                            <div>${reason === '17' ? '&#9632;' : '&#9633;'} 17. Guida di un veicolo escluso dal campo di applicazione del Reg. (CE) 561/2006</div>
+                            <div>${reason === '18' ? '&#9632;' : '&#9633;'} 18. Esecuzione di altre mansioni diverse dalla guida</div>
+                            <div>${reason === '19' ? '&#9632;' : '&#9633;'} 19. Disponibilità</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border: 1px solid #000; padding: 6px;">
+                        <div>
+                            <div style="font-size: 10px; margin-bottom: 12px;"><strong>20. Luogo e Data:</strong> ${placeDate}</div>
+                            <div style="font-size: 10px; border-top: 1px dashed #666; padding-top: 2px;"><strong>21. Firma del Responsabile dell'Impresa:</strong><br><br></div>
+                        </div>
+                        <div>
+                            <div style="font-size: 10px; margin-bottom: 12px;"><strong>22. Luogo e Data:</strong> ${placeDate}</div>
+                            <div style="font-size: 10px; border-top: 1px dashed #666; padding-top: 2px;"><strong>Firma del Conducente:</strong><br><br></div>
+                        </div>
                     </div>
                 </div>
             `;
 
             const originalTitle = document.title;
-            document.title = `Modulo_Assenze_UE_${driverName.replace(/[^a-zA-Z0-9]/g, '_')}`;
+            document.title = `Modulo_Assenze_UE_${driverName.replace(/\s+/g, '_')}_${startDT.split(' ')[0]}`;
             window.print();
             setTimeout(() => { document.title = originalTitle; }, 1000);
         }
@@ -4140,30 +4197,41 @@
         }
 
         function deleteSavedAttestation(driverId, attId) {
+            let targetDriverId = driverId;
+            if (!targetDriverId || targetDriverId === 'undefined') {
+                for (let id in driversMap) {
+                    if (driversMap[id] && driversMap[id].attestazioni && driversMap[id].attestazioni[attId]) {
+                        targetDriverId = id;
+                        break;
+                    }
+                }
+            }
+            if (!targetDriverId || targetDriverId === 'undefined') {
+                showToast("Errore: Impossibile individuare il conducente associato a questo modulo.", "error");
+                return;
+            }
             if (!isCurrentUserManager()) {
                 showToast("Accesso negato: solo il Responsabile Flotta può eliminare o revocare un Modulo Assenze.", "error");
                 return;
             }
             if (confirm("Vuoi davvero eliminare questo Modulo Assenze UE salvato?")) {
-                dbCompanyRef(`operai/${driverId}/attestazioni/${attId}`).remove((err) => {
+                dbCompanyRef(`operai/${targetDriverId}/attestazioni/${attId}`).remove((err) => {
                     if (!err) {
-                        showToast("Modulo assenze eliminato dal Responsabile.", "success");
-                        if (driversMap[driverId] && driversMap[driverId].attestazioni) {
-                            delete driversMap[driverId].attestazioni[attId];
+                        showToast("Modulo assenze eliminato con successo!", "success");
+                        if (driversMap[targetDriverId] && driversMap[targetDriverId].attestazioni) {
+                            delete driversMap[targetDriverId].attestazioni[attId];
                         }
-                        if (currentLoggedInDriver && currentLoggedInDriver.id === driverId) {
+                        if (currentLoggedInDriver && (currentLoggedInDriver.id === targetDriverId || currentLoggedInDriver.id === String(targetDriverId))) {
                             if (currentLoggedInDriver.attestazioni) {
                                 delete currentLoggedInDriver.attestazioni[attId];
                             }
                             renderDriverView(currentLoggedInDriver);
                         }
-                        if (driversMap[driverId]) {
-                            renderDriverView({ id: driverId, ...driversMap[driverId] });
-                        }
                         const modal = document.getElementById('driverAttestationsModal');
                         if (modal && !modal.classList.contains('hidden')) {
-                            openDriverAttestationsModal(driverId);
+                            openDriverAttestationsModal(targetDriverId);
                         }
+                        renderFleetTable();
                     } else {
                         showToast("Errore durante l'eliminazione: " + err.message, "error");
                     }
@@ -4174,6 +4242,7 @@
         function openDriverAttestationsModal(driverId) {
             const d = driversMap[driverId];
             if (!d) return;
+            const validDriverId = driverId || d.id;
 
             const modal = document.getElementById('driverAttestationsModal');
             const title = document.getElementById('attestModalDriverTitle');
@@ -4190,7 +4259,7 @@
                     <div class="text-center py-8 text-slate-400">
                         <span class="text-3xl block mb-2">📄</span>
                         <p class="text-xs">Nessun modulo di assenza salvato per questo conducente.</p>
-                        <button onclick="closeDriverAttestationsModal(); openAttestationModal(); document.getElementById('attestDriverSelect').value='${driverId}'; onAttestDriverChange();" class="mt-3 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+                        <button onclick="closeDriverAttestationsModal(); openAttestationModal(); document.getElementById('attestDriverSelect').value='${validDriverId}'; onAttestDriverChange();" class="mt-3 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
                             + Compila Nuovo Modulo
                         </button>
                     </div>
@@ -4211,11 +4280,11 @@
                                 <p class="text-[9px] text-slate-400 mt-0.5">Firmato da: ${att.signatory || 'Impresa'} &bull; ${att.placeDate || ''}</p>
                             </div>
                             <div class="flex items-center space-x-1.5 flex-shrink-0">
-                                <button onclick="reprintSavedAttestation('${d.id}', '${att.id}')" title="Stampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                                <button onclick="reprintSavedAttestation('${validDriverId}', '${att.id}')" title="Stampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
                                     <span>🖨️</span>
                                     <span>Stampa</span>
                                 </button>
-                                <button onclick="deleteSavedAttestation('${d.id}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition">
+                                <button onclick="deleteSavedAttestation('${validDriverId}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition">
                                     🗑️
                                 </button>
                             </div>
@@ -6174,6 +6243,7 @@
             const attestList = document.getElementById('driverAttestationsList');
             const attestCount = document.getElementById('driverAttestationsCount');
             const isManager = isCurrentUserManager();
+            const validDriverId = (d && d.id) || (currentLoggedInDriver && currentLoggedInDriver.id) || '';
 
             if (attestBox && attestList) {
                 const attEntries = d.attestazioni ? Object.values(d.attestazioni).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || '')) : [];
@@ -6194,12 +6264,12 @@
                                     <p class="text-[9px] text-slate-400 mt-0.5">Rilasciato da: ${att.signatory || 'Impresa'}</p>
                                 </div>
                                 <div class="flex items-center space-x-1.5 flex-shrink-0">
-                                    <button onclick="reprintSavedAttestation('${d.id}', '${att.id}')" title="Ristampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                                    <button onclick="reprintSavedAttestation('${validDriverId}', '${att.id}')" title="Ristampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
                                         <span>🖨️</span>
                                         <span>Stampa PDF</span>
                                     </button>
                                     ${isManager ? `
-                                        <button onclick="deleteSavedAttestation('${d.id}', '${att.id}')" title="Revoca / Elimina Modulo (Riservato Responsabile)" class="p-1.5 bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition active:scale-95">
+                                        <button onclick="deleteSavedAttestation('${validDriverId}', '${att.id}')" title="Revoca / Elimina Modulo (Riservato Responsabile)" class="p-1.5 bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition active:scale-95">
                                             🗑️
                                         </button>
                                     ` : ''}
