@@ -706,6 +706,17 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                             <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Indirizzo Sede Legale</label>
+                                <input type="text" id="companyLegalAddressInput" placeholder="Es. Via Roma 10, 00100 Roma (RM), Italia" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">Indirizzo Sede Operativa (Modulo UE Casella 3)</label>
+                                <input type="text" id="companyOperativeAddressInput" placeholder="Es. Via dell'Industria 5, 00040 Pomezia (RM), Italia" class="w-full px-4 py-3 bg-[#0F1C32] border border-emerald-500/50 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div>
                                 <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Numero Carta Azienda</label>
                                 <input type="text" id="companyCardNumberInput" placeholder="Num. Carta Azienda..." class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs font-mono text-white placeholder-slate-500">
                             </div>
@@ -1603,6 +1614,11 @@
                     </div>
                 </div>
 
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">3. Indirizzo Sede Operativa (Indirizzo, CAP, Città, Paese)</label>
+                    <input type="text" id="attestCompanyAddressInput" placeholder="Es. Via dell'Industria 5, 00040 Pomezia (RM), Italia" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-semibold">
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Inizio Assenza (Data e Ora)</label>
@@ -2292,6 +2308,8 @@
         let vehiclesMap = {};
         let currentCompanyName = activeCompanyId ? "GC CodeLab - Gestione Flotta" : "Piattaforma Cloud • Gestione Flotte";
         let currentCompanyVat = "";
+        let currentCompanyLegalAddress = "";
+        let currentCompanyOperativeAddress = "";
         let currentCompanyLogoBase64 = "";
         let pendingCompanyLogoBase64 = "";
         let companyCardData = { number: "", expiry: "" };
@@ -2316,6 +2334,8 @@
             if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                 currentCompanyName = companiesRegistry[activeCompanyId].name;
                 currentCompanyVat = companiesRegistry[activeCompanyId].vat || "";
+                currentCompanyLegalAddress = companiesRegistry[activeCompanyId].legalAddress || "";
+                currentCompanyOperativeAddress = companiesRegistry[activeCompanyId].operativeAddress || "";
                 updateDOMCompanyName();
             }
             updateCompanyActivationUI();
@@ -2370,6 +2390,8 @@
             if (!activeCompanyId) {
                 currentCompanyName = "Piattaforma Cloud • Gestione Flotte";
                 currentCompanyVat = "";
+                currentCompanyLegalAddress = "";
+                currentCompanyOperativeAddress = "";
                 currentCompanyLogoBase64 = "";
                 driversMap = {};
                 vehiclesMap = {};
@@ -2386,6 +2408,10 @@
                 if (cachedComp) currentCompanyName = cachedComp;
                 const cachedVat = localStorage.getItem('cached_compVat_' + activeCompanyId);
                 if (cachedVat) currentCompanyVat = cachedVat;
+                const cachedLegalAddr = localStorage.getItem('cached_compLegalAddr_' + activeCompanyId);
+                if (cachedLegalAddr) currentCompanyLegalAddress = cachedLegalAddr;
+                const cachedOpAddr = localStorage.getItem('cached_compOpAddr_' + activeCompanyId);
+                if (cachedOpAddr) currentCompanyOperativeAddress = cachedOpAddr;
                 const cachedLogo = localStorage.getItem('cached_compLogo_' + activeCompanyId);
                 if (cachedLogo) currentCompanyLogoBase64 = cachedLogo;
                 const cachedCard = localStorage.getItem('cached_compCard_' + activeCompanyId);
@@ -2437,6 +2463,30 @@
                 if (vatInput) vatInput.value = currentCompanyVat;
             });
             activeListeners.push({ ref: configVatRef, callback: configVatCb });
+
+            const configLegalAddrRef = dbCompanyRef('config/indirizzoSedeLegale');
+            const configLegalAddrCb = configLegalAddrRef.on('value', snapshot => {
+                const addr = snapshot.val();
+                currentCompanyLegalAddress = addr || (companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].legalAddress) || "";
+                try {
+                    localStorage.setItem('cached_compLegalAddr_' + activeCompanyId, currentCompanyLegalAddress);
+                } catch(e) {}
+                const el = document.getElementById('companyLegalAddressInput');
+                if (el) el.value = currentCompanyLegalAddress;
+            });
+            activeListeners.push({ ref: configLegalAddrRef, callback: configLegalAddrCb });
+
+            const configOperativeAddrRef = dbCompanyRef('config/indirizzoSedeOperativa');
+            const configOperativeAddrCb = configOperativeAddrRef.on('value', snapshot => {
+                const addr = snapshot.val();
+                currentCompanyOperativeAddress = addr || (companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].operativeAddress) || "";
+                try {
+                    localStorage.setItem('cached_compOpAddr_' + activeCompanyId, currentCompanyOperativeAddress);
+                } catch(e) {}
+                const el = document.getElementById('companyOperativeAddressInput');
+                if (el) el.value = currentCompanyOperativeAddress;
+            });
+            activeListeners.push({ ref: configOperativeAddrRef, callback: configOperativeAddrCb });
 
             const configLogoRef = dbCompanyRef('config/logoBase64');
             const configLogoCb = configLogoRef.on('value', snapshot => {
@@ -2709,6 +2759,12 @@
             const vatInput = document.getElementById('companyVatInput');
             if (vatInput) vatInput.value = currentCompanyVat || (companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].vat) || "";
 
+            const legalAddrInput = document.getElementById('companyLegalAddressInput');
+            if (legalAddrInput) legalAddrInput.value = currentCompanyLegalAddress || (companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].legalAddress) || "";
+
+            const opAddrInput = document.getElementById('companyOperativeAddressInput');
+            if (opAddrInput) opAddrInput.value = currentCompanyOperativeAddress || (companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].operativeAddress) || "";
+
             const cardHeader = document.getElementById('driverCardCompanyHeader');
             if (cardHeader) cardHeader.innerText = "REPUBBLICA ITALIANA";
             
@@ -2802,6 +2858,8 @@
         function saveCompanyDetails() {
             const newName = document.getElementById('companyNameInput').value.trim();
             const newVat = (document.getElementById('companyVatInput')?.value || '').trim();
+            const newLegalAddr = (document.getElementById('companyLegalAddressInput')?.value || '').trim();
+            const newOpAddr = (document.getElementById('companyOperativeAddressInput')?.value || '').trim();
             const cardNum = document.getElementById('companyCardNumberInput').value.trim();
             const cardExp = document.getElementById('companyCardExpiryInput').value;
 
@@ -2812,10 +2870,19 @@
 
             dbCompanyRef('config/denominazioneAzienda').set(newName);
             dbCompanyRef('config/partitaIva').set(newVat);
+            dbCompanyRef('config/indirizzoSedeLegale').set(newLegalAddr);
+            dbCompanyRef('config/indirizzoSedeOperativa').set(newOpAddr);
             dbCompanyRef('config/cartaAzienda').set({ number: cardNum, expiry: cardExp });
 
             currentCompanyVat = newVat;
-            try { localStorage.setItem('cached_compVat_' + (activeCompanyId || 'AZ-MAIN'), newVat); } catch(e) {}
+            currentCompanyLegalAddress = newLegalAddr;
+            currentCompanyOperativeAddress = newOpAddr;
+            try {
+                const cCode = activeCompanyId || 'AZ-MAIN';
+                localStorage.setItem('cached_compVat_' + cCode, newVat);
+                localStorage.setItem('cached_compLegalAddr_' + cCode, newLegalAddr);
+                localStorage.setItem('cached_compOpAddr_' + cCode, newOpAddr);
+            } catch(e) {}
 
             if (pendingCompanyLogoBase64 || currentCompanyLogoBase64) {
                 const logoToSave = pendingCompanyLogoBase64 || currentCompanyLogoBase64;
@@ -2830,8 +2897,10 @@
             if (companiesRegistry[activeCompanyId]) {
                 db.ref(`aziende_registry/${activeCompanyId}/name`).set(newName);
                 db.ref(`aziende_registry/${activeCompanyId}/vat`).set(newVat);
+                db.ref(`aziende_registry/${activeCompanyId}/legalAddress`).set(newLegalAddr);
+                db.ref(`aziende_registry/${activeCompanyId}/operativeAddress`).set(newOpAddr);
             }
-            showToast("Dati azienda, P.IVA, carta e logo salvati con successo!", "success");
+            showToast("Dati azienda, indirizzi sede, P.IVA, carta e logo salvati con successo!", "success");
             updateAdminBadges();
         }
 
@@ -3308,6 +3377,9 @@
             const compVat = currentCompanyVat || (companiesRegistry[compCode] && companiesRegistry[compCode].vat) || localStorage.getItem('cached_compVat_' + compCode) || compCode;
             document.getElementById('attestCompanyVatInput').value = compVat;
 
+            const compAddr = currentCompanyOperativeAddress || currentCompanyLegalAddress || (companiesRegistry[compCode] && (companiesRegistry[compCode].operativeAddress || companiesRegistry[compCode].legalAddress)) || localStorage.getItem('cached_compOpAddr_' + compCode) || localStorage.getItem('cached_compLegalAddr_' + compCode) || "";
+            document.getElementById('attestCompanyAddressInput').value = compAddr;
+
             // Imposta date di default
             const now = new Date();
             const startStr = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 16);
@@ -3356,6 +3428,7 @@
             const driverName = (document.getElementById('attestDriverNameInput').value || `${d.name || ''} ${d.surname || ''}`).trim() || "NOME CONDUCENTE";
             const driverCard = (document.getElementById('attestDriverCardInput').value || d.cardNumber || d.cardCode || "IN VIGORE").trim();
             const companyVat = document.getElementById('attestCompanyVatInput').value.trim() || currentCompanyVat || activeCompanyId || 'AZ-MAIN';
+            const companyAddress = (document.getElementById('attestCompanyAddressInput')?.value || currentCompanyOperativeAddress || currentCompanyLegalAddress || "Sede operativa impresa di autotrasporto").trim();
 
             const reason = document.getElementById('attestReasonSelect').value;
             const startDT = document.getElementById('attestStartDateTime').value.replace('T', ' ');
@@ -3390,10 +3463,10 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>1. Denominazione dell'impresa:</strong><br>${compName}</td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${companyVat}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Partita IVA / Codice Fiscale:</strong><br>${companyVat}</td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese:</strong> Sede operativa impresa di autotrasporto</td>
+                            <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese (Sede Operativa):</strong><br>${companyAddress}</td>
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
@@ -3470,6 +3543,7 @@
             const driverName = (document.getElementById('attestDriverNameInput').value || `${d.name || ''} ${d.surname || ''}`).trim();
             const driverCard = (document.getElementById('attestDriverCardInput').value || d.cardNumber || d.cardCode || '').trim();
             const companyVat = document.getElementById('attestCompanyVatInput').value.trim() || currentCompanyVat || activeCompanyId || 'AZ-MAIN';
+            const companyAddress = (document.getElementById('attestCompanyAddressInput')?.value || currentCompanyOperativeAddress || currentCompanyLegalAddress || '').trim();
 
             const reasonCode = document.getElementById('attestReasonSelect').value;
             const reasonSelect = document.getElementById('attestReasonSelect');
@@ -3491,6 +3565,7 @@
                 driverName: driverName,
                 driverCard: driverCard,
                 companyVat: companyVat,
+                companyAddress: companyAddress,
                 reasonCode: reasonCode,
                 reasonText: reasonText,
                 startDateTime: startDT,
@@ -3529,6 +3604,7 @@
             const driverName = att.driverName || `${d.name || ''} ${d.surname || ''}`.trim() || "NOME CONDUCENTE";
             const driverCard = att.driverCard || d.cardNumber || d.cardCode || "IN VIGORE";
             const companyVat = att.companyVat || currentCompanyVat || activeCompanyId || 'AZ-MAIN';
+            const companyAddress = att.companyAddress || currentCompanyOperativeAddress || currentCompanyLegalAddress || "Sede operativa impresa di autotrasporto";
             const reason = att.reasonCode;
             const startDT = (att.startDateTime || '').replace('T', ' ');
             const endDT = (att.endDateTime || '').replace('T', ' ');
@@ -3564,10 +3640,10 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>1. Denominazione dell'impresa:</strong><br>${compName}</td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${companyVat}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Partita IVA / Codice Fiscale:</strong><br>${companyVat}</td>
                         </tr>
                         <tr>
-                            <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese:</strong> Sede operativa impresa di autotrasporto</td>
+                            <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese (Sede Operativa):</strong><br>${companyAddress}</td>
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
@@ -3632,6 +3708,8 @@
             document.title = `Modulo_Assenze_UE_${driverName.replace(/[^a-zA-Z0-9]/g, '_')}`;
             window.print();
             setTimeout(() => { document.title = originalTitle; }, 1000);
+        }
+
         function isCurrentUserManager() {
             if (isSuperAdmin) return true;
             if (isAdminViewingDriver) return true;
