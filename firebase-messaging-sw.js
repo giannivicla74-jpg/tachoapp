@@ -1,8 +1,8 @@
-// Service Worker GC-TachoControl v10.4 Pro - Supporto Notifiche Push & Offline PWA Caching
+// Service Worker GC-TachoControl v10.5 Pro - Supporto Notifiche Push & Offline PWA Caching
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v10.4';
+const CACHE_NAME = 'tachocontrol-offline-v10.5';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -10,6 +10,8 @@ const ASSETS_TO_CACHE = [
     'favicon.ico',
     'logo-192.png',
     'logo-512.png',
+    'logo-maskable-192.png',
+    'logo-maskable-512.png',
     'icon-192.png',
     'icon-512.png',
     'logo.jpg',
