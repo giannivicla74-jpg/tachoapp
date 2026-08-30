@@ -1,11 +1,14 @@
 {
-  "name": "TachoControl",
+  "name": "GC-CodeLab TachoControl Pro",
   "short_name": "TachoControl",
   "description": "App gestionale professionale per lo scarico dati del Tachigrafo Digitale e delle Carte Conducente.",
-  "start_url": "./index.html",
+  "id": "gccodelab-tachocontrol-pro",
+  "start_url": "https://gccodelab.it/",
+  "scope": "https://gccodelab.it/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "background_color": "#0B1626",
+  "theme_color": "#0B1626",
   "icons": [
     {
       "src": "logo-192.png",
