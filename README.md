@@ -8,15 +8,15 @@
 
 | Applicazione | Descrizione | Link Diretto |
 | :--- | :--- | :--- |
-| 🏢 **App Ufficiale (Produzione)** | Versione per clienti registrati e gestione flotta aziendale reale (PIN riservati, DB Cloud privato, registrazione `AZ-xxx`). | 👉 [**Apri App Ufficiale**](https://giannivicla74-jpg.github.io/tachoapp/) |
-| 🎮 **App Demo (Dimostrativa)** | Versione autonoma per visitatori e prove live (dati fittizi, tesserini demo, Report PDF, zero impatto su dati reali). | 👉 [**Apri App Demo Live**](https://giannivicla74-jpg.github.io/tachoapp/demo.html) |
+| 🏢 **App Ufficiale (Produzione)** | Versione per clienti registrati e gestione flotta aziendale reale (PIN riservati, DB Cloud privato, registrazione `AZ-xxx`). | 👉 [**Apri App Ufficiale**](https://gccodelab.it/) |
+| 🎮 **App Demo (Dimostrativa)** | Versione autonoma per visitatori e prove live (dati fittizi, tesserini demo, Report PDF, zero impatto su dati reali). | 👉 [**Apri App Demo Live**](https://gccodelab.it/demo.html) |
 
 ---
 
-### 📋 Credenziali e Dettagli Versioni
-
-#### 1. 🏢 Versione Ufficiale (`index.html`)
-* **URL:** `https://giannivicla74-jpg.github.io/tachoapp/`
+### 🌐 Accesso e Link Ufficiali
+* **Piattaforma Ufficiale:** `https://gccodelab.it/`
+* **Versione:** `v9.6 Pro Cloud & Offline Ready`
+* **Demo Pubblica:** `https://gccodelab.it/demo.html`
 * **Accesso:** PIN Amministratore Riservato e PIN Personale Conducenti.
 * **Funzionalità:** Gestione flotta reale, aggiunta autisti e mezzi, caricamento documenti e foto, scadenze quinquennali Carta Azienda CCIAA, backup cloud e registrazione automatica codice azienda.
 

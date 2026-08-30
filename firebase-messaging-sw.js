@@ -110,37 +110,33 @@ messaging.onBackgroundMessage((payload) => {
     console.log('[SW v9.6] Ricevuto messaggio in background ', payload);
     const notificationTitle = payload.notification.title || '🔔 Avviso TachoControl';
     const notificationOptions = {
-        body: payload.notification.body,
-        icon: 'https://giannivicla74-jpg.github.io/tachoapp/logo.jpg',
-        badge: 'https://giannivicla74-jpg.github.io/tachoapp/logo.jpg',
-        vibrate: [200, 100, 200]
+        body: payload.notification.body || "Promemoria scarico tachigrafo",
+        icon: 'https://gccodelab.it/logo.jpg',
+        badge: 'https://gccodelab.it/logo.jpg',
+        vibrate: [200, 100, 200],
+        data: {
+            url: payload.data && payload.data.url ? payload.data.url : 'https://gccodelab.it/'
+        }
     };
 
-    if ('setAppBadge' in navigator) {
-        navigator.setAppBadge(1).catch(() => {});
-    }
-
-    self.registration.showNotification(notificationTitle, notificationOptions);
+    return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
+// GESTIONE CLICK SULLA NOTIFICA
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
-    if ('clearAppBadge' in navigator) {
-        navigator.clearAppBadge().catch(() => {});
-    }
-    if ('setAppBadge' in navigator) {
-        navigator.setAppBadge(0).catch(() => {});
-    }
+    const targetUrl = (event.notification.data && event.notification.data.url) ? event.notification.data.url : 'https://gccodelab.it/';
+    
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
             for (let i = 0; i < clientList.length; i++) {
-                let client = clientList[i];
-                if (client.url.includes('tachoapp') && 'focus' in client) {
+                const client = clientList[i];
+                if (client.url === targetUrl && 'focus' in client) {
                     return client.focus();
                 }
             }
             if (clients.openWindow) {
-                return clients.openWindow('https://giannivicla74-jpg.github.io/tachoapp/');
+                return clients.openWindow(targetUrl);
             }
         })
     );
