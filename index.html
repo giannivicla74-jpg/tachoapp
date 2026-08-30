@@ -693,9 +693,15 @@
                     </p>
 
                     <div class="space-y-3 pt-2">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Denominazione Azienda</label>
-                            <input type="text" id="companyNameInput" placeholder="Es. Trasporti Rossi S.r.l." class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 font-bold uppercase">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Denominazione Azienda</label>
+                                <input type="text" id="companyNameInput" placeholder="Es. Trasporti Rossi S.r.l." class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 font-bold uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Partita IVA / Codice Fiscale</label>
+                                <input type="text" id="companyVatInput" placeholder="Es. IT01234567890" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs font-mono text-white placeholder-slate-500 uppercase">
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -1556,19 +1562,42 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Seleziona Conducente</label>
-                        <select id="attestDriverSelect" onchange="onAttestDriverChange()" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                        <select id="attestDriverSelect" onchange="onAttestDriverChange()" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-bold text-emerald-400">
                             <option value="">-- Seleziona un Autista --</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Motivo dell'Assenza (Casella UE)</label>
-                        <select id="attestReasonSelect" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-bold text-emerald-400">
+                        <select id="attestReasonSelect" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-bold text-amber-400">
                             <option value="14">14. Era in congedo per MALATTIA</option>
                             <option value="15">15. Era in congedo annuale / FERIE</option>
                             <option value="16">16. Era in congedo o RIPOSO</option>
                             <option value="18">18. Eseguiva un altro lavoro diverso dalla guida</option>
                             <option value="19">19. Era DISPONIBILE</option>
                         </select>
+                    </div>
+                </div>
+
+                <!-- Dati Conducente Auto-Compilati -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#0F1C32]/60 p-3 rounded-2xl border border-slate-700/60">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">6. Cognome e Nome Conducente</label>
+                        <input type="text" id="attestDriverNameInput" placeholder="Cognome e Nome..." class="w-full px-3.5 py-2 bg-[#0A1220] border border-slate-700 rounded-xl outline-none text-xs text-white font-bold uppercase">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">7. Numero Carta Conducente / Patente</label>
+                        <input type="text" id="attestDriverCardInput" placeholder="N° Carta Tachigrafica..." class="w-full px-3.5 py-2 bg-[#0A1220] border border-slate-700 rounded-xl outline-none text-xs text-white font-mono font-bold">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">2. Partita IVA / Codice Fiscale Impresa</label>
+                        <input type="text" id="attestCompanyVatInput" placeholder="P.IVA o Codice Fiscale..." class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome Firmatario Impresa</label>
+                        <input type="text" id="attestSignatoryName" placeholder="Es. Mario Rossi (Titolare)" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
                     </div>
                 </div>
 
@@ -1583,15 +1612,9 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome Rappresentante Firmatario Impresa</label>
-                        <input type="text" id="attestSignatoryName" placeholder="Es. Mario Rossi (Titolare)" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Luogo e Data di Rilascio</label>
-                        <input type="text" id="attestPlaceDate" placeholder="Es. Roma, 30/08/2026" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
-                    </div>
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Luogo e Data di Rilascio</label>
+                    <input type="text" id="attestPlaceDate" placeholder="Es. Roma, 30/08/2026" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
                 </div>
             </div>
 
@@ -2266,6 +2289,7 @@
         let driversMap = {};
         let vehiclesMap = {};
         let currentCompanyName = activeCompanyId ? "GC CodeLab - Gestione Flotta" : "Piattaforma Cloud • Gestione Flotte";
+        let currentCompanyVat = "";
         let currentCompanyLogoBase64 = "";
         let pendingCompanyLogoBase64 = "";
         let companyCardData = { number: "", expiry: "" };
@@ -2289,6 +2313,7 @@
             } catch(e) {}
             if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                 currentCompanyName = companiesRegistry[activeCompanyId].name;
+                currentCompanyVat = companiesRegistry[activeCompanyId].vat || "";
                 updateDOMCompanyName();
             }
             updateCompanyActivationUI();
@@ -2342,6 +2367,7 @@
 
             if (!activeCompanyId) {
                 currentCompanyName = "Piattaforma Cloud • Gestione Flotte";
+                currentCompanyVat = "";
                 currentCompanyLogoBase64 = "";
                 driversMap = {};
                 vehiclesMap = {};
@@ -2356,6 +2382,8 @@
             try {
                 const cachedComp = localStorage.getItem('cached_compName_' + activeCompanyId);
                 if (cachedComp) currentCompanyName = cachedComp;
+                const cachedVat = localStorage.getItem('cached_compVat_' + activeCompanyId);
+                if (cachedVat) currentCompanyVat = cachedVat;
                 const cachedLogo = localStorage.getItem('cached_compLogo_' + activeCompanyId);
                 if (cachedLogo) currentCompanyLogoBase64 = cachedLogo;
                 const cachedCard = localStorage.getItem('cached_compCard_' + activeCompanyId);
@@ -2390,6 +2418,23 @@
                 updateDOMCompanyName();
             });
             activeListeners.push({ ref: configNameRef, callback: configNameCb });
+
+            const configVatRef = dbCompanyRef('config/partitaIva');
+            const configVatCb = configVatRef.on('value', snapshot => {
+                const vat = snapshot.val();
+                if (vat) {
+                    currentCompanyVat = vat;
+                } else {
+                    const regInfo = companiesRegistry[activeCompanyId];
+                    currentCompanyVat = (regInfo && regInfo.vat) ? regInfo.vat : "";
+                }
+                try {
+                    localStorage.setItem('cached_compVat_' + activeCompanyId, currentCompanyVat);
+                } catch(e) {}
+                const vatInput = document.getElementById('companyVatInput');
+                if (vatInput) vatInput.value = currentCompanyVat;
+            });
+            activeListeners.push({ ref: configVatRef, callback: configVatCb });
 
             const configLogoRef = dbCompanyRef('config/logoBase64');
             const configLogoCb = configLogoRef.on('value', snapshot => {
@@ -2659,6 +2704,9 @@
             const compInput = document.getElementById('companyNameInput');
             if (compInput) compInput.value = (currentCompanyName !== "GC CodeLab - Gestione Flotta" && currentCompanyName !== `Azienda ${activeCompanyId}` && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") ? currentCompanyName : "";
             
+            const vatInput = document.getElementById('companyVatInput');
+            if (vatInput) vatInput.value = currentCompanyVat || (companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].vat) || "";
+
             const cardHeader = document.getElementById('driverCardCompanyHeader');
             if (cardHeader) cardHeader.innerText = "REPUBBLICA ITALIANA";
             
@@ -2751,6 +2799,7 @@
 
         function saveCompanyDetails() {
             const newName = document.getElementById('companyNameInput').value.trim();
+            const newVat = (document.getElementById('companyVatInput')?.value || '').trim();
             const cardNum = document.getElementById('companyCardNumberInput').value.trim();
             const cardExp = document.getElementById('companyCardExpiryInput').value;
 
@@ -2760,7 +2809,11 @@
             }
 
             dbCompanyRef('config/denominazioneAzienda').set(newName);
+            dbCompanyRef('config/partitaIva').set(newVat);
             dbCompanyRef('config/cartaAzienda').set({ number: cardNum, expiry: cardExp });
+
+            currentCompanyVat = newVat;
+            try { localStorage.setItem('cached_compVat_' + (activeCompanyId || 'AZ-MAIN'), newVat); } catch(e) {}
 
             if (pendingCompanyLogoBase64 || currentCompanyLogoBase64) {
                 const logoToSave = pendingCompanyLogoBase64 || currentCompanyLogoBase64;
@@ -2774,8 +2827,9 @@
 
             if (companiesRegistry[activeCompanyId]) {
                 db.ref(`aziende_registry/${activeCompanyId}/name`).set(newName);
+                db.ref(`aziende_registry/${activeCompanyId}/vat`).set(newVat);
             }
-            showToast("Dati azienda, carta e logo salvati con successo!", "success");
+            showToast("Dati azienda, P.IVA, carta e logo salvati con successo!", "success");
             updateAdminBadges();
         }
 
@@ -3233,12 +3287,24 @@
         function openAttestationModal() {
             const select = document.getElementById('attestDriverSelect');
             select.innerHTML = '<option value="">-- Seleziona un Autista --</option>';
-            Object.values(driversMap).forEach(d => {
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                if (!d) continue;
                 const opt = document.createElement('option');
-                opt.value = d.id;
-                opt.textContent = `${d.name} (${d.cardCode || 'Carta n/d'})`;
+                opt.value = id;
+                const fullName = `${d.name || ''} ${d.surname || ''}`.trim();
+                const cardNum = d.cardNumber && d.cardNumber !== '-' ? d.cardNumber : (d.cardCode || 'Carta n/d');
+                opt.textContent = `${fullName} (${cardNum})`;
                 select.appendChild(opt);
-            });
+            }
+
+            document.getElementById('attestDriverNameInput').value = "";
+            document.getElementById('attestDriverCardInput').value = "";
+
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
+            const compVat = currentCompanyVat || (companiesRegistry[compCode] && companiesRegistry[compCode].vat) || localStorage.getItem('cached_compVat_' + compCode) || compCode;
+            document.getElementById('attestCompanyVatInput').value = compVat;
 
             // Imposta date di default
             const now = new Date();
@@ -3247,8 +3313,6 @@
             document.getElementById('attestStartDateTime').value = startStr;
             document.getElementById('attestEndDateTime').value = endStr;
 
-            const compCode = activeCompanyId || 'AZ-MAIN';
-            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
             document.getElementById('attestSignatoryName').value = `Direzione ${compName}`;
             document.getElementById('attestPlaceDate').value = `${new Date().toLocaleDateString('it-IT')}`;
 
@@ -3261,8 +3325,19 @@
 
         function onAttestDriverChange() {
             const driverId = document.getElementById('attestDriverSelect').value;
+            if (!driverId || !driversMap[driverId]) {
+                document.getElementById('attestDriverNameInput').value = "";
+                document.getElementById('attestDriverCardInput').value = "";
+                return;
+            }
             const d = driversMap[driverId];
-            if (d && d.vacationStartDate && d.vacationEndDate) {
+            const fullName = `${d.name || ''} ${d.surname || ''}`.trim();
+            const cardNum = d.cardNumber && d.cardNumber !== '-' ? d.cardNumber : (d.cardCode || '');
+
+            document.getElementById('attestDriverNameInput').value = fullName;
+            document.getElementById('attestDriverCardInput').value = cardNum;
+
+            if (d.vacationStartDate && d.vacationEndDate) {
                 document.getElementById('attestStartDateTime').value = `${d.vacationStartDate}T00:00`;
                 document.getElementById('attestEndDateTime').value = `${d.vacationEndDate}T23:59`;
                 document.getElementById('attestReasonSelect').value = "15";
@@ -3274,7 +3349,12 @@
             if (fleetSheet) fleetSheet.innerHTML = "";
 
             const driverId = document.getElementById('attestDriverSelect').value;
-            const d = driversMap[driverId] || { name: "NOME CONDUCENTE", cardCode: "IT0000000000" };
+            const d = driversMap[driverId] || {};
+
+            const driverName = (document.getElementById('attestDriverNameInput').value || `${d.name || ''} ${d.surname || ''}`).trim() || "NOME CONDUCENTE";
+            const driverCard = (document.getElementById('attestDriverCardInput').value || d.cardNumber || d.cardCode || "IN VIGORE").trim();
+            const companyVat = document.getElementById('attestCompanyVatInput').value.trim() || currentCompanyVat || activeCompanyId || 'AZ-MAIN';
+
             const reason = document.getElementById('attestReasonSelect').value;
             const startDT = document.getElementById('attestStartDateTime').value.replace('T', ' ');
             const endDT = document.getElementById('attestEndDateTime').value.replace('T', ' ');
@@ -3308,7 +3388,7 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>1. Denominazione dell'impresa:</strong><br>${compName}</td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${compCode}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${companyVat}</td>
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese:</strong> Sede operativa impresa di autotrasporto</td>
@@ -3325,8 +3405,8 @@
 
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
-                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${d.name.toUpperCase()}</strong></td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> ${d.cardCode || d.cardNumber || 'IN VIGORE'}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${driverName.toUpperCase()}</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> <strong>${driverCard.toUpperCase()}</strong></td>
                         </tr>
                     </table>
 
@@ -3367,12 +3447,15 @@
                     </table>
 
                     <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
-                        Documento conforme al Modello Ufficiale UE • Generato con GC-TachoControl Cloud
+                        Documento redatto in conformità alla Decisione della Commissione Europea 2009/959/UE (Reg. CE n. 561/2006)
                     </div>
                 </div>
             `;
 
+            const originalTitle = document.title;
+            document.title = `Modulo_Assenze_UE_${driverName.replace(/[^a-zA-Z0-9]/g, '_')}`;
             window.print();
+            setTimeout(() => { document.title = originalTitle; }, 1000);
         }
 
         function saveAttestationToDriverProfile() {
@@ -3382,6 +3465,10 @@
                 return;
             }
             const d = driversMap[driverId];
+            const driverName = (document.getElementById('attestDriverNameInput').value || `${d.name || ''} ${d.surname || ''}`).trim();
+            const driverCard = (document.getElementById('attestDriverCardInput').value || d.cardNumber || d.cardCode || '').trim();
+            const companyVat = document.getElementById('attestCompanyVatInput').value.trim() || currentCompanyVat || activeCompanyId || 'AZ-MAIN';
+
             const reasonCode = document.getElementById('attestReasonSelect').value;
             const reasonSelect = document.getElementById('attestReasonSelect');
             const reasonText = reasonSelect.options[reasonSelect.selectedIndex].text;
@@ -3399,8 +3486,9 @@
             const attestationRecord = {
                 id: attestationId,
                 driverId: driverId,
-                driverName: `${d.name} ${d.surname}`,
-                driverCard: d.cardNumber || d.cardCode || '',
+                driverName: driverName,
+                driverCard: driverCard,
+                companyVat: companyVat,
                 reasonCode: reasonCode,
                 reasonText: reasonText,
                 startDateTime: startDT,
@@ -3421,7 +3509,7 @@
                             vacationEndDate: eDate
                         });
                     }
-                    showToast(`✅ Modulo Assenze UE salvato nel profilo di ${d.name} ${d.surname}!`, "success");
+                    showToast(`✅ Modulo Assenze UE salvato nel profilo di ${driverName}!`, "success");
                     closeAttestationModal();
                 } else {
                     showToast("Errore durante il salvataggio: " + error.message, "error");
@@ -3436,6 +3524,9 @@
                 return;
             }
             const att = d.attestazioni[attId];
+            const driverName = att.driverName || `${d.name || ''} ${d.surname || ''}`.trim() || "NOME CONDUCENTE";
+            const driverCard = att.driverCard || d.cardNumber || d.cardCode || "IN VIGORE";
+            const companyVat = att.companyVat || currentCompanyVat || activeCompanyId || 'AZ-MAIN';
             const reason = att.reasonCode;
             const startDT = (att.startDateTime || '').replace('T', ' ');
             const endDT = (att.endDateTime || '').replace('T', ' ');
@@ -3471,7 +3562,7 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>1. Denominazione dell'impresa:</strong><br>${compName}</td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${compCode}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${companyVat}</td>
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese:</strong> Sede operativa impresa di autotrasporto</td>
@@ -3488,8 +3579,8 @@
 
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
-                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${(d.name + ' ' + (d.surname || '')).toUpperCase()}</strong></td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> ${d.cardNumber || d.cardCode || 'IN VIGORE'}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${driverName.toUpperCase()}</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> <strong>${driverCard.toUpperCase()}</strong></td>
                         </tr>
                     </table>
 
@@ -3530,12 +3621,15 @@
                     </table>
 
                     <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
-                        Documento conforme al Modello Ufficiale UE • Generato con GC-TachoControl Cloud
+                        Documento redatto in conformità alla Decisione della Commissione Europea 2009/959/UE (Reg. CE n. 561/2006)
                     </div>
                 </div>
             `;
 
+            const originalTitle = document.title;
+            document.title = `Modulo_Assenze_UE_${driverName.replace(/[^a-zA-Z0-9]/g, '_')}`;
             window.print();
+            setTimeout(() => { document.title = originalTitle; }, 1000);
         }
 
         function deleteSavedAttestation(driverId, attId) {
@@ -3750,12 +3844,15 @@
 
                     <!-- Note legali a piè di pagina -->
                     <div style="border-top: 1px solid #cbd5e1; padding-top: 6px; margin-top: 14px; font-size: 8px; color: #64748b; text-align: center;">
-                        Registro Ufficiale generato da GC-TachoControl Cloud &bull; Conforme alle disposizioni del Regolamento CE 561/2006 e Reg. UE 581/2010
+                        Registro Ufficiale Scarichi Tachigrafo &bull; Conforme alle disposizioni del Regolamento CE 561/2006 e Reg. UE 581/2010
                     </div>
                 </div>
             `;
 
+            const originalTitle = document.title;
+            document.title = `Report_Flotta_Tachigrafo_${compCode}_${new Date().toISOString().split('T')[0]}`;
             window.print();
+            setTimeout(() => { document.title = originalTitle; }, 1000);
         }
 
         // --- GESTIONE LOGIN AMMINISTRATORE (SUPER ADMIN & MULTI-AZIENDA) ---
