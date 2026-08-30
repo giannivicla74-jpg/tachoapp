@@ -675,6 +675,23 @@
                     </button>
                 </div>
 
+                <!-- Box Manuale & Guida Normativa Integrata Ufficiale -->
+                <div class="bg-gradient-to-r from-blue-950/80 via-[#15243E] to-indigo-950/80 rounded-3xl p-6 border border-blue-500/40 shadow-xl space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-blue-500/20 text-blue-400 rounded-2xl border border-blue-500/30 text-2xl">
+                            📖
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white">Manuale d'Istruzioni &amp; Guida Normativa</h3>
+                            <p class="text-xs text-blue-300/80">Spiegazione del Piano Ferie, obbligo consegna carta, termini dei 28 giorni e sanzioni di legge.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <span>📘</span>
+                        <span>Consulta il Manuale d'Istruzioni Ufficiale</span>
+                    </button>
+                </div>
+
                 <!-- Box Simulatore e Guida Normativa CE 561/2006 (Admin) -->
                 <div class="bg-gradient-to-r from-emerald-950/70 via-[#15243E] to-indigo-950/70 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-4">
                     <div class="flex items-center space-x-3">
@@ -688,7 +705,7 @@
                     </div>
                     <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
                         <span>🚀</span>
-                        <span>Apri Simulatore di Guida &amp; Manuale CE 561/2006</span>
+                        <span>Apri Simulatore di Guida &amp; Norme CE 561/2006</span>
                     </button>
                 </div>
 
@@ -900,6 +917,135 @@
             <button onclick="logout()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl text-xs transition">
                 Torna al Login
             </button>
+        </div>
+
+        <!-- =================== MODALE MANUALE D'ISTRUZIONI & GUIDA NORMATIVA =================== -->
+        <div id="manualModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-[#111C2E] border border-slate-800 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+                
+                <!-- Header Modale -->
+                <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-blue-500/20 text-blue-400 rounded-2xl text-xl">
+                            📖
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-base text-white tracking-tight">Manuale d'Uso &amp; Guida Normativa Tachigrafo</h3>
+                            <p class="text-[11px] text-blue-400 font-bold">GC-TachoControl &bull; Regolamento (UE) n. 581/2010 &amp; CE 561/2006</p>
+                        </div>
+                    </div>
+                    <button onclick="closeManualModal()" class="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <!-- Contenuto Scorrevole con Capitoli -->
+                <div class="p-6 overflow-y-auto space-y-6 text-xs text-slate-300 leading-relaxed">
+                    
+                    <!-- CAPITOLO 1: PIANO FERIE & CONSEGNA CARTA -->
+                    <div class="bg-[#15243E] border-l-4 border-amber-400 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center space-x-2 text-amber-400">
+                            <span class="text-lg">🏖️</span>
+                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">1. Perché l'App prevede il Piano Ferie &amp; Obbligo Consegna Carta</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs">
+                            La legge stabilisce che tra due scarichi successivi della carta autista non possono trascorrere più di <strong>28 giorni solari</strong>. 
+                        </p>
+                        <div class="bg-amber-950/50 border border-amber-700/60 p-3 rounded-xl text-amber-200">
+                            <p class="font-bold text-xs mb-1">⚠️ Cosa succede se un autista va in ferie senza consegnare la carta?</p>
+                            <p class="text-[11px] leading-relaxed">
+                                Se l'autista parte per le ferie e porta con sé la propria carta tachigrafica, il 28° giorno scadrà durante la sua assenza. Al rientro, l'azienda e l'autista risulteranno <strong>fuori legge</strong> e soggetti a sanzione amministrativa.
+                            </p>
+                        </div>
+                        <p class="text-emerald-300 font-semibold text-xs">
+                            👉 <strong>La soluzione dell'App:</strong> Inserendo il periodo di ferie, l'App calcola in anticipo se la scadenza dei 28 giorni cadrà durante l'assenza. In tal caso, emette un avviso perentorio sia all'autista che al titolare: <strong>l'autista deve consegnare la carta in ufficio prima della partenza</strong>, consentendo al responsabile di effettuare lo scarico nel giorno opportuno ed evitare sanzioni.
+                        </p>
+                    </div>
+
+                    <!-- CAPITOLO 2: LIMITI DI LEGGE & SANZIONI -->
+                    <div class="bg-[#15243E] border-l-4 border-red-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center space-x-2 text-red-400">
+                            <span class="text-lg">⚖️</span>
+                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">2. Termini di Legge &amp; Sanzioni (Reg. UE 581/2010)</h4>
+                        </div>
+                        <p class="text-slate-300 text-xs">
+                            Il <strong>Regolamento (UE) n. 581/2010</strong> impone alle imprese di trasporto su strada i seguenti termini massimi di scarico:
+                        </p>
+                        <ul class="space-y-1.5 pl-2">
+                            <li class="flex items-start space-x-2">
+                                <span class="text-red-400 font-bold">&bull;</span>
+                                <span><strong>Carta Conducente:</strong> scarico obbligatorio entro e non oltre <strong>28 GIORNI</strong> solari.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-red-400 font-bold">&bull;</span>
+                                <span><strong>Memoria di Massa Veicolo:</strong> scarico obbligatorio entro e non oltre <strong>90 GIORNI</strong> solari.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-red-400 font-bold">&bull;</span>
+                                <span><strong>Conservazione Dati:</strong> I file digitali (.ddd) devono essere custoditi in azienda per almeno <strong>1 ANNO (12 Mesi)</strong> in ordine cronologico.</span>
+                            </li>
+                        </ul>
+                        <div class="bg-red-950/60 border border-red-800 p-3 rounded-xl text-red-200 text-[11px]">
+                            <strong>🚨 Quadro Sanzionatorio (Art. 19 L. 727/1978 e C.d.S.):</strong>
+                            La mancata o tardiva estrazione dei dati comporta sanzioni amministrative da <strong>€ 831,00 a oltre € 3.328,00</strong>, con responsabilità diretta dell'impresa e decurtazione di punti sulla CQC.
+                        </div>
+                    </div>
+
+                    <!-- CAPITOLO 3: GUIDA PER IL CONDUCENTE -->
+                    <div class="bg-[#15243E] border-l-4 border-emerald-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center space-x-2 text-emerald-400">
+                            <span class="text-lg">🚛</span>
+                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">3. Come Usare l'App per l'Autista / Conducente</h4>
+                        </div>
+                        <ol class="space-y-2 list-decimal pl-4 text-xs text-slate-300">
+                            <li>
+                                <strong>Accesso Immediato (Auto-Login):</strong> Alla prima apertura, tocca <em>"Area Conducenti"</em>, scegli il tuo nome e digita il tuo PIN a 4 cifre. Dalle volte successive l'App si apre <strong>direttamente sulla tua scheda personale</strong>.
+                            </li>
+                            <li>
+                                <strong>Recupero PIN su WhatsApp:</strong> Se dimentichi il tuo codice, tocca <em>"PIN dimenticato?"</em>: riceverai subito il tuo codice tramite WhatsApp.
+                            </li>
+                            <li>
+                                <strong>Controllo Scadenza:</strong> Nella tua scheda trovi il conto alla rovescia in giorni e la data precisa in cui effettuare il prossimo scarico in azienda.
+                            </li>
+                        </ol>
+                    </div>
+
+                    <!-- CAPITOLO 4: GUIDA PER IL RESPONSABILE FLOTTA -->
+                    <div class="bg-[#15243E] border-l-4 border-indigo-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center space-x-2 text-indigo-400">
+                            <span class="text-lg">🏢</span>
+                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">4. Strumenti del Responsabile Flotta &amp; Ufficio</h4>
+                        </div>
+                        <ul class="space-y-2 text-xs text-slate-300 pl-2">
+                            <li class="flex items-start space-x-2">
+                                <span class="text-indigo-400 font-bold">✔️</span>
+                                <span><strong>Pannello di Controllo a Semaforo:</strong> Monitora istantaneamente gli autisti regolari (verde), in scadenza entro 7 giorni (giallo) o scaduti (rosso).</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-indigo-400 font-bold">✔️</span>
+                                <span><strong>Solleciti WhatsApp in 1 Click:</strong> Dalla tabella puoi inviare promemoria di scarico o credenziali di accesso direttamente sul cellulare dell'autista.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-indigo-400 font-bold">✔️</span>
+                                <span><strong>Visualizzazione Scheda Conducente:</strong> Puoi aprire la scheda identica a quella che vede l'autista e tornare al pannello con il tasto rapido <em>"Torna al Pannello Flotta"</em>.</span>
+                            </li>
+                            <li class="flex items-start space-x-2">
+                                <span class="text-indigo-400 font-bold">✔️</span>
+                                <span><strong>Report PDF &amp; Backup Cloud:</strong> Genera il report ufficiale da esibire alle autorità di controllo ed esporta copie di sicurezza in qualsiasi momento.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- Footer Modale -->
+                <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
+                    <span class="text-[10px] text-slate-400">GC CodeLab &bull; TachoControl v9.0</span>
+                    <button type="button" onclick="closeManualModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow-md">
+                        Ho Capito / Chiudi
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- =================== MODALE CCIAA =================== -->
@@ -2384,6 +2530,9 @@
 
         function openCciaaModal() { document.getElementById('cciaaModal').classList.remove('hidden'); }
         function closeCciaaModal() { document.getElementById('cciaaModal').classList.add('hidden'); }
+
+        function openManualModal() { document.getElementById('manualModal').classList.remove('hidden'); }
+        function closeManualModal() { document.getElementById('manualModal').classList.add('hidden'); }
 
         // --- GESTIONE LOGIN AMMINISTRATORE (SUPER ADMIN & MULTI-AZIENDA) ---
         // --- GESTO SEGRETO SUPERVISORE (5 tocchi veloci sullo stemma) ---
@@ -3946,14 +4095,42 @@
             const alertBox = document.getElementById('driverExpiryAlertBox');
             alertBox.classList.add('hidden');
 
+            // Verifica se la scadenza cadrà durante le ferie programmate
+            let isUpcomingVacation = false;
+            let vacationExpiresDuring = false;
+            if (d.vacationStartDate && d.vacationEndDate) {
+                const todayObj = new Date(); todayObj.setHours(0, 0, 0, 0);
+                const vStartObj = parseLocalDate(d.vacationStartDate); vStartObj.setHours(0, 0, 0, 0);
+                const vEndObj = parseLocalDate(d.vacationEndDate); vEndObj.setHours(0, 0, 0, 0);
+                const expDateObj = parseLocalDate(targetDateStr); expDateObj.setHours(0, 0, 0, 0);
+
+                if (todayObj < vStartObj) {
+                    isUpcomingVacation = true;
+                    if (expDateObj <= vEndObj) {
+                        vacationExpiresDuring = true;
+                    }
+                }
+            }
+
             if (isVacation) {
                 alertBox.className = "rounded-2xl p-4 shadow-xl bg-yellow-950/90 border border-yellow-500 text-yellow-200";
                 alertBox.innerHTML = `
                     <div class="flex items-center space-x-3">
                         <span class="text-2xl">🏖️</span>
                         <div>
-                            <h5 class="font-extrabold text-sm text-yellow-300">SEI IN FERIE PROGRAMMATE</h5>
-                            <p class="text-xs mt-0.5">Le notifiche sono sospese fino al ${formatDateItalian(d.vacationEndDate)}.</p>
+                            <h5 class="font-extrabold text-sm text-yellow-300">SEI IN FERIE PROGRAMMATE (Fino al ${formatDateItalian(d.vacationEndDate)})</h5>
+                            <p class="text-xs mt-0.5">La tua carta deve essere in custodia all'ufficio per lo scarico del ${formatDateItalian(targetDateStr)}.</p>
+                        </div>
+                    </div>`;
+                alertBox.classList.remove('hidden');
+            } else if (isUpcomingVacation && vacationExpiresDuring) {
+                alertBox.className = "rounded-2xl p-4 shadow-xl bg-amber-950/90 border border-amber-500 text-amber-200 animate-pulse";
+                alertBox.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl">⚠️</span>
+                        <div>
+                            <h5 class="font-extrabold text-sm text-amber-300">AVVISO IMPORTANTE PRE-FERIE</h5>
+                            <p class="text-xs mt-0.5 leading-snug">La scadenza dei 28 giorni cade durante le tue ferie (il <strong>${formatDateItalian(targetDateStr)}</strong>). Ricordati di <strong>CONSEGNARE LA CARTA TACHIGRAFICA AL RESPONSABILE</strong> prima di partire per lo scarico in ufficio!</p>
                         </div>
                     </div>`;
                 alertBox.classList.remove('hidden');
