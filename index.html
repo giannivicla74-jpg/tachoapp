@@ -2780,13 +2780,12 @@
             
             const badgeDriver = document.getElementById('driverActiveCompanyBadge');
             if (badgeDriver) {
-                if (activeCompanyId && companiesRegistry[activeCompanyId]) {
-                    const compInfo = companiesRegistry[activeCompanyId];
-                    badgeDriver.innerText = `${compInfo.name} (${activeCompanyId})`;
-                } else if (activeCompanyId) {
-                    badgeDriver.innerText = activeCompanyId === 'AZ-MAIN' ? 'Azienda Principale' : activeCompanyId;
+                if (activeCompanyId && companiesRegistry[activeCompanyId] && companiesRegistry[activeCompanyId].name) {
+                    badgeDriver.innerText = companiesRegistry[activeCompanyId].name;
+                } else if (currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
+                    badgeDriver.innerText = currentCompanyName;
                 } else {
-                    badgeDriver.innerText = "Seleziona Codice Flotta (es. AZ-101)";
+                    badgeDriver.innerText = "Gestione Flotta";
                 }
             }
 
@@ -3049,7 +3048,13 @@
             const badgeDriver = document.getElementById('driverActiveCompanyBadge');
             if (badgeDriver) {
                 const comp = companiesRegistry[activeCompanyId];
-                badgeDriver.innerText = comp ? `${comp.name} (${comp.code})` : (activeCompanyId === 'AZ-MAIN' ? 'Azienda Principale' : activeCompanyId);
+                if (comp && comp.name) {
+                    badgeDriver.innerText = comp.name;
+                } else if (currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
+                    badgeDriver.innerText = currentCompanyName;
+                } else {
+                    badgeDriver.innerText = "Gestione Flotta";
+                }
             }
         }
 

@@ -1734,7 +1734,13 @@
             const badgeDriver = document.getElementById('driverActiveCompanyBadge');
             if (badgeDriver) {
                 const comp = companiesRegistry[activeCompanyId];
-                badgeDriver.innerText = comp ? `${comp.name} (${comp.code})` : (activeCompanyId === 'AZ-MAIN' ? 'Azienda Principale' : activeCompanyId);
+                if (comp && comp.name) {
+                    badgeDriver.innerText = comp.name;
+                } else if (currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
+                    badgeDriver.innerText = currentCompanyName;
+                } else {
+                    badgeDriver.innerText = "Gestione Flotta";
+                }
             }
         }
 
