@@ -3470,7 +3470,7 @@
             const baseAppUrl = window.location.href.split('?')[0];
             const appUrl = `${baseAppUrl}?az=${compCode}`;
             
-            const msg = `🚛 *ACCESSO APP TACHOCONTROL*\n\n` +
+            const msg = `🚛 *GC-CODELAB TACHOCONTROL PRO*\n\n` +
                 `Ciao *${d.name}*,\n` +
                 `Ecco il tuo link personale per accedere all'App Flotta e registrare lo scarico della tua Carta Conducente:\n\n` +
                 `👉 ${appUrl}\n\n` +
@@ -3485,7 +3485,7 @@
                 `1. Clicca sul link sopra per aprirlo in Safari\n` +
                 `2. Tocca il tasto Condividi in basso al centro (icona con quadrato e freccia in su ⎋)\n` +
                 `3. Scorri e tocca *"Aggiungi alla schermata Home"*\n\n` +
-                `✅ *Una volta installata, apri l'icona TachoControl, clicca su "Area Conducenti (Seleziona Nome & PIN)", scegli il tuo nome e digita il tuo PIN!*`;
+                `✅ *Una volta installata, apri l'icona TachoControl, clicca su "Area Conducenti", scegli il tuo nome e digita il tuo PIN!*`;
 
             const cleanPhone = (d.phone || '').replace(/[^0-9]/g, '');
             let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
@@ -3501,7 +3501,7 @@
             const baseAppUrl = window.location.href.split('?')[0];
             const appUrl = `${baseAppUrl}?az=${compCode}`;
 
-            const msg = `🚛 *APP TACHOCONTROL • AREA CONDUCENTI*\n\n` +
+            const msg = `🚛 *GC-CODELAB TACHOCONTROL PRO • AREA CONDUCENTI*\n\n` +
                 `Per tutti gli autisti di *${compName}*:\n` +
                 `Ecco il link per installare l'App Flotta e registrare gli scarichi della carta tachigrafica:\n\n` +
                 `👉 ${appUrl}\n\n` +
@@ -3509,7 +3509,7 @@
                 `📲 *COME INSTALLARLA SULLO SMARTPHONE:*\n\n` +
                 `🤖 *Android:* Apri il link con Chrome ➔ tocca i 3 puntini in alto a destra (⋮) ➔ seleziona *"Installa app"*.\n\n` +
                 `🍏 *iPhone:* Apri il link con Safari ➔ tocca il tasto Condividi in basso (⎋ con freccia in su) ➔ seleziona *"Aggiungi alla schermata Home"*.\n\n` +
-                `_Aprite l'App, cliccate su "Area Conducenti (Seleziona Nome & PIN)", selezionate il vostro nome e inserite il PIN personale a 4 cifre fornito dall'azienda._`;
+                `_Aprite l'App, cliccate su "Area Conducenti", selezionate il vostro nome e inserite il PIN personale a 4 cifre fornito dall'azienda._`;
 
             const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
             window.open(whatsappUrl, '_blank');
