@@ -2701,7 +2701,7 @@
         // Rilevamento automatico parametro URL per link diretto autisti (es. ?az=AZ-101)
         const urlParams = new URLSearchParams(window.location.search);
         const azQuery = urlParams.get('az') || urlParams.get('azienda') || urlParams.get('flotta') || urlParams.get('c');
-        let activeCompanyId = azQuery ? azQuery.trim().toUpperCase() : (localStorage.getItem('tacho_active_company') || '');
+        let activeCompanyId = azQuery ? azQuery.trim().toUpperCase() : (localStorage.getItem('tacho_active_company') || 'AZ-MAIN');
         if (azQuery) {
             localStorage.setItem('tacho_active_company', activeCompanyId);
         }
@@ -4485,12 +4485,12 @@
         }
 
         function goToDriverSelection() {
+            if (!activeCompanyId) {
+                switchActiveCompany('AZ-MAIN');
+            }
             populateDatalist();
             updateDriverActiveCompanyDisplay();
             showSection("driverSelection");
-            if (!activeCompanyId) {
-                openSwitchDriverCompanyModal();
-            }
         }
 
         function handleDriverAccess() {
