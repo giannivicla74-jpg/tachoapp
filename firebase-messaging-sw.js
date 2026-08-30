@@ -1,8 +1,8 @@
-// Service Worker GC-TachoControl v9.6 Pro - Supporto Notifiche Push & Offline PWA Caching
+// Service Worker GC-TachoControl v10.0 Pro - Supporto Notifiche Push & Offline PWA Caching
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v9.9';
+const CACHE_NAME = 'tachocontrol-offline-v10.0';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',

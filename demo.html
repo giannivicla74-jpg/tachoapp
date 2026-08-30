@@ -893,7 +893,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v9.6 Pro Cloud & Push
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v10.0 Pro Cloud & Push
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -1467,7 +1467,7 @@
 
             <!-- Footer Modale -->
             <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
-                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v9.6 Pro</span>
+                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v10.0 Pro</span>
                 <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
                     Chiudi
                 </button>
@@ -1728,56 +1728,7 @@
             if (banner) banner.classList.add('hidden');
         }
         
-        function initApp() {
-            document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
-            document.getElementById('addDriverPhotoInput').addEventListener('change', handlePhotoSelect);
-            
-            const savedLinks = localStorage.getItem('tacho_custom_links');
-            if (savedLinks) { customLinks = JSON.parse(savedLinks); }
-            updateDOMCustomLinks();
-
-            // Ascolto Registro Aziende su Firebase
-            db.ref('aziende_registry').on('value', snapshot => {
-                companiesRegistry = snapshot.val() || {};
-                
-                // Se non c'è ancora l'Azienda Principale nel registry, registriamola
-                if (!companiesRegistry['AZ-MAIN']) {
-                    const mainCompany = {
-                        code: "AZ-MAIN",
-                        name: "GC CodeLab - Gestione Flotta",
-                        vat: "Principale",
-                        adminPin: ADMIN_PIN,
-                        createdAt: "2026-08-25T00:00:00.000Z"
-                    };
-                    db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
-                }
-
-                updateDriverActiveCompanyDisplay();
-                if (isSuperAdmin) renderSuperAdminCompaniesList();
-            });
-
-            // Inizializza listener per l'azienda attiva
-            switchActiveCompany(activeCompanyId);
-
-            // Registrazione Service Worker per Push in Background & Auto-Update
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('firebase-messaging-sw.js')
-                .then((registration) => {
-                    console.log('Service Worker registrato con successo:', registration);
-                    registration.update();
-                }).catch((err) => {
-                    console.log('Registrazione Service Worker fallita:', err);
-                });
-
-                let refreshing = false;
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    if (!refreshing) {
-                        refreshing = true;
-                        window.location.reload();
-                    }
-                });
-            }
-        }
+        // Inizializzazione unificata eseguita tramite initApp()
 
         function updateDriverActiveCompanyDisplay() {
             const badgeDriver = document.getElementById('driverActiveCompanyBadge');
@@ -1845,7 +1796,7 @@
             if (driverComp) driverComp.innerText = currentCompanyName;
             
             const adminComp = document.getElementById('adminHeaderCompanyName');
-            if (adminComp) adminComp.innerText = `${currentCompanyName} • v9.6 Pro`;
+            if (adminComp) adminComp.innerText = `${currentCompanyName} • v10.0 Pro`;
 
             const headerCode = document.getElementById('adminHeaderCompanyCode');
             if (headerCode) headerCode.innerText = activeCompanyId;
@@ -4071,13 +4022,31 @@
         }
 
         function initApp() {
-            setupCompanyListeners();
-            updateCompanyActivationUI();
-            calculateDrivingSimulation();
-            setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
+            try {
+                const docFile = document.getElementById('addDocumentFile');
+                if (docFile) docFile.addEventListener('change', handleFileSelect);
+                const photoInput = document.getElementById('addDriverPhotoInput');
+                if (photoInput) photoInput.addEventListener('change', handlePhotoSelect);
+                
+                const savedLinks = localStorage.getItem('tacho_custom_links');
+                if (savedLinks) { try { customLinks = JSON.parse(savedLinks); } catch(e) {} }
+                updateDOMCustomLinks();
+
+                setupCompanyListeners();
+                updateCompanyActivationUI();
+                calculateDrivingSimulation();
+                setInterval(calculateDrivingSimulation, 30000);
+            } catch(e) {
+                console.error("Errore initApp demo:", e);
+            }
         }
 
-        window.onload = initApp;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+        window.addEventListener('load', initApp);
     </script>
 
     <!-- Modal Contatto Commerciale per Attivazione Flotta Reale -->

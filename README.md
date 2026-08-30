@@ -15,7 +15,7 @@
 
 ### 🌐 Accesso e Link Ufficiali
 * **Piattaforma Ufficiale:** `https://gccodelab.it/`
-* **Versione:** `v9.6 Pro Cloud & Offline Ready`
+* **Versione:** `v10.0 Pro Cloud & Offline Ready`
 * **Demo Pubblica:** `https://gccodelab.it/demo.html`
 * **Accesso:** PIN Amministratore Riservato e PIN Personale Conducenti.
 * **Funzionalità:** Gestione flotta reale, aggiunta autisti e mezzi, caricamento documenti e foto, scadenze quinquennali Carta Azienda CCIAA, backup cloud e registrazione automatica codice azienda.

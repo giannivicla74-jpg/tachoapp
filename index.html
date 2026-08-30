@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v9.6 Pro - Cloud & Offline Ready</title>
+    <title>GC-TachoControl v10.0 Pro - Cloud & Offline Ready</title>
     
     <!-- Icone PWA (Assolute per massima compatibilità) -->
     <link rel="apple-touch-icon" href="https://gccodelab.it/logo.jpg">
@@ -205,7 +205,7 @@
             </div>
 
             <h1 class="text-2xl font-black tracking-tight text-white mb-1">
-                GC-TachoControl <span class="text-emerald-400 font-mono text-sm">v9.6</span>
+                GC-TachoControl <span class="text-emerald-400 font-mono text-sm">v10.0</span>
             </h1>
             <p class="text-xs text-slate-400 font-medium mb-6">Cloud &bull; PWA Offline &bull; Reg. CE 561/2006</p>
 
@@ -1471,7 +1471,7 @@
 
                 <!-- Footer Modale -->
                 <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
-                    <span class="text-[10px] text-slate-400">GC CodeLab &bull; TachoControl v9.6 Pro</span>
+                    <span class="text-[10px] text-slate-400">GC CodeLab &bull; TachoControl v10.0 Pro</span>
                     <button type="button" onclick="closeManualModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow-md">
                         Ho Capito / Chiudi
                     </button>
@@ -1582,7 +1582,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v9.6 Pro Cloud &amp; Offline Ready
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v10.0 Pro Cloud &amp; Offline Ready
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -2684,7 +2684,7 @@
 
             <!-- Footer Modale -->
             <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
-                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v9.6 Pro</span>
+                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v10.0 Pro</span>
                 <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
                     Chiudi
                 </button>
@@ -2932,17 +2932,24 @@
                     localStorage.setItem('cached_driversMap_' + activeCompanyId, JSON.stringify(driversMap));
                 } catch(e) {}
                 populateDatalist();
-                if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
+                const adminSec = document.getElementById('adminSection');
+                const tabFleet = document.getElementById('tabFleet');
+                if (adminSec && !adminSec.classList.contains('hidden') && tabFleet && !tabFleet.classList.contains('hidden')) {
                     renderFleetTable();
                 }
+                const driverSec = document.getElementById('driverSection');
                 if (currentLoggedInDriver && driversMap[currentLoggedInDriver.id]) {
                     currentLoggedInDriver = { id: currentLoggedInDriver.id, ...driversMap[currentLoggedInDriver.id] };
-                    if (!document.getElementById('driverSection').classList.contains('hidden')) {
+                    if (driverSec && !driverSec.classList.contains('hidden')) {
                         renderDriverView(currentLoggedInDriver);
                     }
                 } else if (localStorage.getItem('userRole') === 'driver') {
                     const ok = checkAutoLoginDriver();
-                    if (ok === true) hideSplashScreen();
+                    if (ok === true) {
+                        hideSplashScreen();
+                    } else if (ok === false) {
+                        if (typeof ensureInitialSection === 'function') ensureInitialSection();
+                    }
                 }
                 updateAdminBadges();
                 if (isSuperAdmin) renderSuperAdminCompaniesList();
@@ -3036,56 +3043,7 @@
             if (banner) banner.classList.add('hidden');
         }
         
-        function initApp() {
-            document.getElementById('addDocumentFile').addEventListener('change', handleFileSelect);
-            document.getElementById('addDriverPhotoInput').addEventListener('change', handlePhotoSelect);
-            
-            const savedLinks = localStorage.getItem('tacho_custom_links');
-            if (savedLinks) { customLinks = JSON.parse(savedLinks); }
-            updateDOMCustomLinks();
-
-            // Ascolto Registro Aziende su Firebase
-            db.ref('aziende_registry').on('value', snapshot => {
-                companiesRegistry = snapshot.val() || {};
-                
-                // Se non c'è ancora l'Azienda Principale nel registry, registriamola
-                if (!companiesRegistry['AZ-MAIN']) {
-                    const mainCompany = {
-                        code: "AZ-MAIN",
-                        name: "GC CodeLab - Gestione Flotta",
-                        vat: "Principale",
-                        adminPin: ADMIN_PIN,
-                        createdAt: "2026-08-25T00:00:00.000Z"
-                    };
-                    db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
-                }
-
-                updateDriverActiveCompanyDisplay();
-                if (isSuperAdmin) renderSuperAdminCompaniesList();
-            });
-
-            // Inizializza listener per l'azienda attiva
-            switchActiveCompany(activeCompanyId);
-
-            // Registrazione Service Worker per Push in Background & Auto-Update
-            if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('firebase-messaging-sw.js')
-                .then((registration) => {
-                    console.log('Service Worker registrato con successo:', registration);
-                    registration.update();
-                }).catch((err) => {
-                    console.log('Registrazione Service Worker fallita:', err);
-                });
-
-                let refreshing = false;
-                navigator.serviceWorker.addEventListener('controllerchange', () => {
-                    if (!refreshing) {
-                        refreshing = true;
-                        window.location.reload();
-                    }
-                });
-            }
-        }
+        // Inizializzazione unificata eseguita a fine script tramite initApp()
 
         function updateDriverActiveCompanyDisplay() {
             const badgeDriver = document.getElementById('driverActiveCompanyBadge');
@@ -3169,7 +3127,7 @@
             }
             
             const adminComp = document.getElementById('adminHeaderCompanyName');
-            if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v9.6 Pro`;
+            if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v10.0 Pro`;
 
             const headerCode = document.getElementById('adminHeaderCompanyCode');
             if (headerCode) headerCode.innerText = activeCompanyId || 'AZ-MAIN';
@@ -4649,48 +4607,54 @@
         }
 
         function scrollToTop() {
-            if (document.activeElement && typeof document.activeElement.blur === 'function') {
-                document.activeElement.blur();
-            }
-            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-            setTimeout(() => {
-                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-            }, 25);
-            setTimeout(() => {
-                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-            }, 100);
+            try {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    document.activeElement.blur();
+                }
+            } catch(e) {}
+            try {
+                window.scrollTo(0, 0);
+                if (document.documentElement) document.documentElement.scrollTop = 0;
+                if (document.body) document.body.scrollTop = 0;
+            } catch(e) {}
         }
 
         function showSection(sec) {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('driverSelectionSection').classList.add('hidden');
-            document.getElementById('adminSection').classList.add('hidden');
-            document.getElementById('driverSection').classList.add('hidden');
-            document.getElementById('adminHeader').classList.add('hidden');
+            try {
+                const loginSec = document.getElementById('loginSection');
+                const driverSelSec = document.getElementById('driverSelectionSection');
+                const adminSec = document.getElementById('adminSection');
+                const driverSec = document.getElementById('driverSection');
+                const adminHeader = document.getElementById('adminHeader');
 
-            scrollToTop();
+                if (loginSec) loginSec.classList.add('hidden');
+                if (driverSelSec) driverSelSec.classList.add('hidden');
+                if (adminSec) adminSec.classList.add('hidden');
+                if (driverSec) driverSec.classList.add('hidden');
+                if (adminHeader) adminHeader.classList.add('hidden');
 
-            if (sec === "admin") {
-                document.getElementById('adminSection').classList.remove('hidden');
-                document.getElementById('adminHeader').classList.remove('hidden');
-                switchTab('fleet');
-                updateAdminBadges();
-            } else if (sec === "driverSelection") {
-                document.getElementById('driverSelectionSection').classList.remove('hidden');
-            } else if (sec === "driver") {
-                document.getElementById('driverSection').classList.remove('hidden');
-                renderDriverView(currentLoggedInDriver);
-            } else {
-                document.getElementById('loginSection').classList.remove('hidden');
+                if (sec === "admin") {
+                    if (adminSec) adminSec.classList.remove('hidden');
+                    if (adminHeader) adminHeader.classList.remove('hidden');
+                    switchTab('fleet');
+                    updateAdminBadges();
+                } else if (sec === "driverSelection") {
+                    if (driverSelSec) driverSelSec.classList.remove('hidden');
+                } else if (sec === "driver") {
+                    if (driverSec) driverSec.classList.remove('hidden');
+                    if (currentLoggedInDriver) {
+                        renderDriverView(currentLoggedInDriver);
+                    }
+                } else {
+                    if (loginSec) loginSec.classList.remove('hidden');
+                }
+
+                scrollToTop();
+            } catch(err) {
+                console.error("Errore in showSection:", err);
+                const loginSec = document.getElementById('loginSection');
+                if (loginSec) loginSec.classList.remove('hidden');
             }
-
-            scrollToTop();
         }
 
         function logout() {
@@ -6721,36 +6685,114 @@
         window.addEventListener('online', updateOnlineStatusUI);
         window.addEventListener('offline', updateOnlineStatusUI);
 
-        function initApp() {
-            updateOnlineStatusUI();
-            setupCompanyListeners();
-            updateCompanyActivationUI();
-            calculateDrivingSimulation();
-            setInterval(calculateDrivingSimulation, 30000); // Aggiorna i conti alla rovescia in tempo reale ogni 30 secondi
-            
-            // 1. Controllo se l'autista ha una sessione memorizzata su questo dispositivo
-            const autoStatus = checkAutoLoginDriver();
+        let initialSectionDetermined = false;
+        function ensureInitialSection() {
+            if (initialSectionDetermined) return;
+            initialSectionDetermined = true;
 
-            if (autoStatus === true) {
-                // Autista caricato istantaneamente dalla memoria locale o cloud
-                setTimeout(hideSplashScreen, 200);
-            } else if (autoStatus === 'pending') {
-                // In attesa di Firebase; se offline o lento, sblocca comunque in fretta
-                setTimeout(hideSplashScreen, navigator.onLine ? 1000 : 200);
-            } else {
-                // Utente non autenticato come autista
-                if (azQuery) {
+            const driverSec = document.getElementById('driverSection');
+            const adminSec = document.getElementById('adminSection');
+            const driverSelSec = document.getElementById('driverSelectionSection');
+            const loginSec = document.getElementById('loginSection');
+
+            const isAnyVisible = 
+                (driverSec && !driverSec.classList.contains('hidden')) ||
+                (adminSec && !adminSec.classList.contains('hidden')) ||
+                (driverSelSec && !driverSelSec.classList.contains('hidden')) ||
+                (loginSec && !loginSec.classList.contains('hidden'));
+
+            if (!isAnyVisible) {
+                if (typeof azQuery !== 'undefined' && azQuery) {
                     goToDriverSelection();
                 } else {
                     showSection('login');
                 }
-                setTimeout(hideSplashScreen, 200);
+            }
+            hideSplashScreen();
+        }
+
+        function initApp() {
+            try {
+                // Event listener file inputs
+                const docFile = document.getElementById('addDocumentFile');
+                if (docFile) docFile.addEventListener('change', handleFileSelect);
+                const photoInput = document.getElementById('addDriverPhotoInput');
+                if (photoInput) photoInput.addEventListener('change', handlePhotoSelect);
+
+                // Caricamento link personalizzati
+                const savedLinks = localStorage.getItem('tacho_custom_links');
+                if (savedLinks) { try { customLinks = JSON.parse(savedLinks); } catch(e) {} }
+                updateDOMCustomLinks();
+
+                // Ascolto Registro Aziende su Firebase
+                db.ref('aziende_registry').on('value', snapshot => {
+                    companiesRegistry = snapshot.val() || {};
+                    if (!companiesRegistry['AZ-MAIN']) {
+                        const mainCompany = {
+                            code: "AZ-MAIN",
+                            name: "GC CodeLab - Gestione Flotta",
+                            vat: "Principale",
+                            adminPin: ADMIN_PIN,
+                            createdAt: "2026-08-25T00:00:00.000Z"
+                        };
+                        db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
+                    }
+                    updateDriverActiveCompanyDisplay();
+                    if (isSuperAdmin) renderSuperAdminCompaniesList();
+                });
+
+                // Registrazione Service Worker per Push & Offline
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('firebase-messaging-sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrato con successo:', registration);
+                        registration.update();
+                    }).catch((err) => {
+                        console.log('Registrazione Service Worker fallita:', err);
+                    });
+
+                    let refreshing = false;
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (!refreshing) {
+                            refreshing = true;
+                            window.location.reload();
+                        }
+                    });
+                }
+
+                updateOnlineStatusUI();
+                setupCompanyListeners();
+                updateCompanyActivationUI();
+                calculateDrivingSimulation();
+                setInterval(calculateDrivingSimulation, 30000);
+
+                // Controllo sessione autista salvata
+                const autoStatus = checkAutoLoginDriver();
+                if (autoStatus === true) {
+                    initialSectionDetermined = true;
+                    setTimeout(hideSplashScreen, 150);
+                } else if (autoStatus === 'pending') {
+                    // Se in attesa di Firebase, timeout di sicurezza per sbloccare l'interfaccia
+                    setTimeout(ensureInitialSection, 1200);
+                } else {
+                    ensureInitialSection();
+                }
+            } catch(err) {
+                console.error("Errore durante initApp:", err);
+                ensureInitialSection();
             }
         }
 
-        window.onload = initApp;
-        // Fallback di sicurezza per nascondere sempre la splash screen in max 1.5s
-        setTimeout(hideSplashScreen, 1500);
+        // Avvio garantito al caricamento DOM o Window
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
+        window.addEventListener('load', initApp);
+
+        // Fallback estremo: garantisce che la schermata iniziale non rimanga mai bloccata
+        setTimeout(ensureInitialSection, 1800);
     </script>
 </body>
 </html>
