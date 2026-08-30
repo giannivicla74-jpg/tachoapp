@@ -1040,6 +1040,25 @@
                 </div>
             </div>
 
+            <!-- Box Moduli Assenze UE Rilasciati (Attestati di Attività) -->
+            <div id="driverAttestationsBox" class="hidden bg-[#15243E] border border-emerald-500/30 rounded-3xl p-5 shadow-xl space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 text-xl">
+                            📄
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-white text-sm">Moduli Assenze UE Rilasciati</h4>
+                            <p class="text-[11px] text-slate-400">Attestati di Attività (Dec. 2009/959/UE) in custodia.</p>
+                        </div>
+                    </div>
+                    <span id="driverAttestationsCount" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
+                </div>
+                <div id="driverAttestationsList" class="space-y-2 pt-1">
+                    <!-- Generato dinamicamente da JS -->
+                </div>
+            </div>
+
             <!-- Box Norme & Sanzioni -->
             <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
                 <div class="flex items-start space-x-3 mb-3">
@@ -1576,13 +1595,17 @@
                 </div>
             </div>
 
-            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex gap-2">
-                <button type="button" onclick="closeAttestationModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3.5 rounded-xl transition">
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <button type="button" onclick="closeAttestationModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3.5 rounded-xl transition text-center">
                     Chiudi
                 </button>
-                <button type="button" onclick="printOfficialAttestationSheet()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-2 active:scale-95">
+                <button type="button" onclick="saveAttestationToDriverProfile()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-1.5 active:scale-95 text-center">
+                    <span>💾</span>
+                    <span>Salva nel Profilo Autista</span>
+                </button>
+                <button type="button" onclick="printOfficialAttestationSheet()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-1.5 active:scale-95 text-center">
                     <span>🖨️</span>
-                    <span>Stampa / Salva PDF Ufficiale</span>
+                    <span>Stampa / PDF Ufficiale</span>
                 </button>
             </div>
         </div>
@@ -1611,6 +1634,34 @@
             <div class="p-3.5 border-t border-slate-800 bg-[#15233A] flex justify-end flex-shrink-0">
                 <button type="button" onclick="closeHistoryModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3 rounded-xl transition">
                     Chiudi Storico
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE LISTA MODULI ASSENZE UE SALVATI =================== -->
+    <div id="driverAttestationsModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-slate-800 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#15233A] flex-shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-xl">📋</span>
+                    <div>
+                        <h3 class="font-extrabold text-white text-sm" id="attestModalDriverTitle">Moduli Assenze UE Salvati</h3>
+                        <p class="text-[10px] text-slate-400" id="attestModalDriverSubtitle">Attestati di Attività (Dec. 2009/959/UE)</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeDriverAttestationsModal()" class="text-slate-400 hover:text-white font-bold text-xl px-2">&times;</button>
+            </div>
+            
+            <div class="p-4 overflow-y-auto flex-1 space-y-3 bg-[#0B1424]">
+                <div id="modalAttestationsList" class="space-y-2.5">
+                    <!-- Popolato dinamicamente da openDriverAttestationsModal() -->
+                </div>
+            </div>
+
+            <div class="p-3.5 border-t border-slate-800 bg-[#15233A] flex justify-end flex-shrink-0">
+                <button type="button" onclick="closeDriverAttestationsModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3 rounded-xl transition">
+                    Chiudi
                 </button>
             </div>
         </div>
@@ -2614,14 +2665,27 @@
             updateDriverActiveCompanyDisplay();
         }
 
+        function getActiveCompanyLogoSrc() {
+            if (pendingCompanyLogoBase64 && pendingCompanyLogoBase64.length > 50) return pendingCompanyLogoBase64;
+            if (currentCompanyLogoBase64 && currentCompanyLogoBase64.length > 50) return currentCompanyLogoBase64;
+            const imgEl = document.getElementById('companyLogoImg');
+            if (imgEl && imgEl.src && !imgEl.src.includes('logo_tachocontrol_3d.jpg') && imgEl.src.length > 50) return imgEl.src;
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const cached = localStorage.getItem('cached_compLogo_' + compCode);
+            if (cached && cached.length > 50) return cached;
+            if (companiesRegistry[compCode] && companiesRegistry[compCode].logoBase64) return companiesRegistry[compCode].logoBase64;
+            return "assets/logo_tachocontrol_3d.jpg";
+        }
+
         function updateDOMCompanyLogo() {
+            const logoSrc = getActiveCompanyLogoSrc();
             const imgEl = document.getElementById('companyLogoImg');
             if (imgEl) {
-                imgEl.src = currentCompanyLogoBase64 || "assets/logo_tachocontrol_3d.jpg";
+                imgEl.src = logoSrc;
             }
             const fnEl = document.getElementById('companyLogoFilename');
             if (fnEl) {
-                fnEl.innerText = currentCompanyLogoBase64 ? "Logo personalizzato attivo" : "Logo predefinito 3D attivo";
+                fnEl.innerText = (logoSrc && !logoSrc.includes('logo_tachocontrol_3d.jpg')) ? "Logo personalizzato attivo" : "Logo predefinito 3D attivo";
             }
         }
 
@@ -2635,11 +2699,23 @@
             const reader = new FileReader();
             reader.onload = (e) => {
                 pendingCompanyLogoBase64 = e.target.result;
+                currentCompanyLogoBase64 = pendingCompanyLogoBase64;
+                const compCode = activeCompanyId || 'AZ-MAIN';
+                try {
+                    localStorage.setItem('cached_compLogo_' + compCode, currentCompanyLogoBase64);
+                } catch(err) {}
+                
+                // Salva subito nel Cloud Firebase per l'azienda attiva
+                dbCompanyRef('config/logoBase64').set(currentCompanyLogoBase64);
+                if (companiesRegistry[activeCompanyId]) {
+                    db.ref(`aziende_registry/${activeCompanyId}/logoBase64`).set(currentCompanyLogoBase64);
+                }
+
                 const imgEl = document.getElementById('companyLogoImg');
                 if (imgEl) imgEl.src = pendingCompanyLogoBase64;
                 const fnEl = document.getElementById('companyLogoFilename');
-                if (fnEl) fnEl.innerText = file.name;
-                showToast("Logo selezionato! Clicca su 'Salva Dati Azienda' per confermare.", "info");
+                if (fnEl) fnEl.innerText = file.name + " (Attivo e Sincronizzato)";
+                showToast("✅ Logo aziendale aggiornato e sincronizzato per tutte le stampe e PDF!", "success");
             };
             reader.readAsDataURL(file);
         }
@@ -2686,12 +2762,13 @@
             dbCompanyRef('config/denominazioneAzienda').set(newName);
             dbCompanyRef('config/cartaAzienda').set({ number: cardNum, expiry: cardExp });
 
-            if (pendingCompanyLogoBase64) {
-                dbCompanyRef('config/logoBase64').set(pendingCompanyLogoBase64);
+            if (pendingCompanyLogoBase64 || currentCompanyLogoBase64) {
+                const logoToSave = pendingCompanyLogoBase64 || currentCompanyLogoBase64;
+                dbCompanyRef('config/logoBase64').set(logoToSave);
                 if (companiesRegistry[activeCompanyId]) {
-                    db.ref(`aziende_registry/${activeCompanyId}/logoBase64`).set(pendingCompanyLogoBase64);
+                    db.ref(`aziende_registry/${activeCompanyId}/logoBase64`).set(logoToSave);
                 }
-                currentCompanyLogoBase64 = pendingCompanyLogoBase64;
+                currentCompanyLogoBase64 = logoToSave;
                 pendingCompanyLogoBase64 = "";
             }
 
@@ -3207,9 +3284,8 @@
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
 
-            const logoHtml = currentCompanyLogoBase64
-                ? `<img src="${currentCompanyLogoBase64}" style="max-height: 48px; max-width: 120px; object-fit: contain; margin-left: 10px;">`
-                : `<img src="assets/logo_tachocontrol_3d.jpg" style="max-height: 48px; max-width: 48px; object-fit: cover; border-radius: 6px; margin-left: 10px;">`;
+            const logoSrc = getActiveCompanyLogoSrc();
+            const logoHtml = `<img src="${logoSrc}" style="max-height: 48px; max-width: 120px; object-fit: contain; margin-left: 10px;">`;
 
             const printSheet = document.getElementById('printableAttestationSheet');
             printSheet.innerHTML = `
@@ -3250,7 +3326,7 @@
                     <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${d.name.toUpperCase()}</strong></td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> ${d.cardCode || 'IN VIGORE'}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> ${d.cardCode || d.cardNumber || 'IN VIGORE'}</td>
                         </tr>
                     </table>
 
@@ -3299,6 +3375,251 @@
             window.print();
         }
 
+        function saveAttestationToDriverProfile() {
+            const driverId = document.getElementById('attestDriverSelect').value;
+            if (!driverId || !driversMap[driverId]) {
+                showToast("Seleziona prima un conducente per salvare il modulo.", "error");
+                return;
+            }
+            const d = driversMap[driverId];
+            const reasonCode = document.getElementById('attestReasonSelect').value;
+            const reasonSelect = document.getElementById('attestReasonSelect');
+            const reasonText = reasonSelect.options[reasonSelect.selectedIndex].text;
+            const startDT = document.getElementById('attestStartDateTime').value;
+            const endDT = document.getElementById('attestEndDateTime').value;
+            const signatory = document.getElementById('attestSignatoryName').value.trim() || 'Direzione Impresa';
+            const placeDate = document.getElementById('attestPlaceDate').value.trim() || new Date().toLocaleDateString('it-IT');
+
+            if (!startDT || !endDT) {
+                showToast("Inserisci sia la data di inizio che di fine assenza.", "error");
+                return;
+            }
+
+            const attestationId = 'att_' + Date.now();
+            const attestationRecord = {
+                id: attestationId,
+                driverId: driverId,
+                driverName: `${d.name} ${d.surname}`,
+                driverCard: d.cardNumber || d.cardCode || '',
+                reasonCode: reasonCode,
+                reasonText: reasonText,
+                startDateTime: startDT,
+                endDateTime: endDT,
+                signatory: signatory,
+                placeDate: placeDate,
+                createdAt: new Date().toISOString()
+            };
+
+            // Salva nel nodo Firebase dell'operaio
+            dbCompanyRef(`operai/${driverId}/attestazioni/${attestationId}`).set(attestationRecord, (error) => {
+                if (!error) {
+                    if (reasonCode === "15") {
+                        const sDate = startDT.split('T')[0];
+                        const eDate = endDT.split('T')[0];
+                        dbCompanyRef(`operai/${driverId}`).update({
+                            vacationStartDate: sDate,
+                            vacationEndDate: eDate
+                        });
+                    }
+                    showToast(`✅ Modulo Assenze UE salvato nel profilo di ${d.name} ${d.surname}!`, "success");
+                    closeAttestationModal();
+                } else {
+                    showToast("Errore durante il salvataggio: " + error.message, "error");
+                }
+            });
+        }
+
+        function reprintSavedAttestation(driverId, attId) {
+            const d = driversMap[driverId];
+            if (!d || !d.attestazioni || !d.attestazioni[attId]) {
+                showToast("Modulo assenze non trovato.", "error");
+                return;
+            }
+            const att = d.attestazioni[attId];
+            const reason = att.reasonCode;
+            const startDT = (att.startDateTime || '').replace('T', ' ');
+            const endDT = (att.endDateTime || '').replace('T', ' ');
+            const signatory = att.signatory || 'Legale Rappresentante';
+            const placeDate = att.placeDate || new Date().toLocaleDateString('it-IT');
+
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
+            const logoSrc = getActiveCompanyLogoSrc();
+            const logoHtml = `<img src="${logoSrc}" style="max-height: 48px; max-width: 120px; object-fit: contain; margin-left: 10px;">`;
+
+            const fleetSheet = document.getElementById('printableFleetReportSheet');
+            if (fleetSheet) fleetSheet.innerHTML = "";
+
+            const printSheet = document.getElementById('printableAttestationSheet');
+            printSheet.innerHTML = `
+                <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.35; color: #000; padding: 4px 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
+                        <div style="flex: 1; text-align: center;">
+                            <h2 style="font-size: 13px; font-weight: bold; margin: 0; text-transform: uppercase;">ATTESTATO DI ATTIVITÀ / MODULO DI CONTROLLO DELLE ASSENZE</h2>
+                            <p style="font-size: 9px; margin: 2px 0 0 0;">(REGOLAMENTO CE N. 561/2006 O AETR) • DECISIONE DELLA COMMISSIONE EUROPEA 2009/959/UE</p>
+                            <p style="font-size: 8.5px; font-style: italic; margin: 2px 0 0 0;">(DA COMPILARSI A MACCHINA E FIRMARE PRIMA DEL VIAGGIO - DA CONSERVARSI A BORDO CON I DATI DEL TACHIGRAFO ORIGINALI)</p>
+                        </div>
+                        <div style="flex-shrink: 0;">
+                            ${logoHtml}
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 8px;">
+                        <strong>Parte da compilare a cura dell'impresa:</strong>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>1. Denominazione dell'impresa:</strong><br>${compName}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${compCode}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese:</strong> Sede operativa impresa di autotrasporto</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
+                            <td style="border: 1px solid #000; padding: 4px;"><strong>5. Funzione nell'impresa:</strong> Legale Rappresentante / Resp. Trasporti</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>Il sottoscritto dichiara che il conducente:</strong>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${(d.name + ' ' + (d.surname || '')).toUpperCase()}</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> ${d.cardNumber || d.cardCode || 'IN VIGORE'}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>Per il periodo:</strong>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>8. Dalle ore e data:</strong> ${startDT}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>9. Alle ore e data:</strong> ${endDT}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>10. Motivo dell'assenza:</strong>
+                    </div>
+                    <div style="border: 1px solid #000; padding: 6px; margin-bottom: 12px; font-size: 9.5px; line-height: 1.5;">
+                        <div>[ ${reason === '14' ? 'X' : '&nbsp;&nbsp;'} ] <strong>14. Era in congedo per malattia</strong></div>
+                        <div>[ ${reason === '15' ? 'X' : '&nbsp;&nbsp;'} ] <strong>15. Era in congedo annuale (Ferie)</strong></div>
+                        <div>[ ${reason === '16' ? 'X' : '&nbsp;&nbsp;'} ] <strong>16. Era in congedo o riposo</strong></div>
+                        <div>[ ${reason === '18' ? 'X' : '&nbsp;&nbsp;'} ] <strong>18. Eseguiva un altro lavoro diverso dalla guida</strong></div>
+                        <div>[ ${reason === '19' ? 'X' : '&nbsp;&nbsp;'} ] <strong>19. Era disponibile</strong></div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
+                                <strong>20. Luogo e Data:</strong><br>${placeDate}<br><br>
+                                <strong>21. Firma dell'impresa (Timbro e Firma):</strong><br><br>
+                                ___________________________________
+                            </td>
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
+                                <strong>22. Firma del conducente:</strong><br>
+                                <em>Il sottoscritto conducente conferma che durante il periodo sopra menzionato non ha guidato alcun veicolo soggetto al Regolamento (CE) n. 561/2006.</em><br><br>
+                                ___________________________________
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
+                        Documento conforme al Modello Ufficiale UE • Generato con GC-TachoControl Cloud
+                    </div>
+                </div>
+            `;
+
+            window.print();
+        }
+
+        function deleteSavedAttestation(driverId, attId) {
+            if (confirm("Vuoi davvero eliminare questo Modulo Assenze UE salvato?")) {
+                dbCompanyRef(`operai/${driverId}/attestazioni/${attId}`).remove((err) => {
+                    if (!err) {
+                        showToast("Modulo assenze eliminato.", "success");
+                        if (driversMap[driverId] && driversMap[driverId].attestazioni) {
+                            delete driversMap[driverId].attestazioni[attId];
+                        }
+                        if (currentLoggedInDriver && currentLoggedInDriver.id === driverId) {
+                            if (currentLoggedInDriver.attestazioni) {
+                                delete currentLoggedInDriver.attestazioni[attId];
+                            }
+                            renderDriverView(currentLoggedInDriver);
+                        }
+                        openDriverAttestationsModal(driverId);
+                    }
+                });
+            }
+        }
+
+        function openDriverAttestationsModal(driverId) {
+            const d = driversMap[driverId];
+            if (!d) return;
+
+            const modal = document.getElementById('driverAttestationsModal');
+            const title = document.getElementById('attestModalDriverTitle');
+            const subtitle = document.getElementById('attestModalDriverSubtitle');
+            const list = document.getElementById('modalAttestationsList');
+
+            if (title) title.innerText = `Moduli Assenze UE • ${d.name} ${d.surname}`;
+            if (subtitle) subtitle.innerText = `Carta: ${d.cardNumber || d.cardCode || '-'} • Sede: ${d.cantiere || 'Generale'}`;
+
+            const attEntries = d.attestazioni ? Object.values(d.attestazioni).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || '')) : [];
+
+            if (attEntries.length === 0) {
+                list.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <span class="text-3xl block mb-2">📄</span>
+                        <p class="text-xs">Nessun modulo di assenza salvato per questo conducente.</p>
+                        <button onclick="closeDriverAttestationsModal(); openAttestationModal(); document.getElementById('attestDriverSelect').value='${driverId}'; onAttestDriverChange();" class="mt-3 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+                            + Compila Nuovo Modulo
+                        </button>
+                    </div>
+                `;
+            } else {
+                let html = "";
+                attEntries.forEach(att => {
+                    const sD = (att.startDateTime || '').replace('T', ' ');
+                    const eD = (att.endDateTime || '').replace('T', ' ');
+                    html += `
+                        <div class="bg-[#15233A] p-3.5 rounded-2xl border border-slate-700/80 flex items-center justify-between gap-3 shadow-md">
+                            <div class="min-w-0 flex-1">
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-bold text-xs text-white truncate">${att.reasonText || 'Modulo Assenze UE'}</span>
+                                    <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono font-bold">Art. ${att.reasonCode}</span>
+                                </div>
+                                <p class="text-[11px] text-emerald-400 font-mono mt-1">Dal ${sD} al ${eD}</p>
+                                <p class="text-[9px] text-slate-400 mt-0.5">Firmato da: ${att.signatory || 'Impresa'} &bull; ${att.placeDate || ''}</p>
+                            </div>
+                            <div class="flex items-center space-x-1.5 flex-shrink-0">
+                                <button onclick="reprintSavedAttestation('${d.id}', '${att.id}')" title="Stampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                                    <span>🖨️</span>
+                                    <span>Stampa</span>
+                                </button>
+                                <button onclick="deleteSavedAttestation('${d.id}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition">
+                                    🗑️
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html;
+            }
+
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeDriverAttestationsModal() {
+            const modal = document.getElementById('driverAttestationsModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
         function printReportPDF() {
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
@@ -3306,9 +3627,8 @@
             const attestSheet = document.getElementById('printableAttestationSheet');
             if (attestSheet) attestSheet.innerHTML = "";
 
-            const logoHtml = currentCompanyLogoBase64
-                ? `<img src="${currentCompanyLogoBase64}" style="max-height: 50px; max-width: 120px; object-fit: contain;">`
-                : `<img src="assets/logo_tachocontrol_3d.jpg" style="max-height: 50px; max-width: 50px; object-fit: cover; border-radius: 8px;">`;
+            const logoSrc = getActiveCompanyLogoSrc();
+            const logoHtml = `<img src="${logoSrc}" style="max-height: 50px; max-width: 120px; object-fit: contain;">`;
 
             let driversRowsHtml = "";
             let dCount = 0;
@@ -4552,6 +4872,9 @@
                                         <button onclick="openDriverViewModal('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-slate-200 transition">
                                             <span>📄</span> <span>Visualizza Scheda</span>
                                         </button>
+                                        <button onclick="openDriverAttestationsModal('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-emerald-400 font-semibold transition">
+                                            <span>📋</span> <span>Moduli Assenze (${d.attestazioni ? Object.keys(d.attestazioni).length : 0})</span>
+                                        </button>
                                         <button onclick="openDownloadHistoryModal('driver', '${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-indigo-300 font-semibold transition">
                                             <span>📜</span> <span>Storico Scarichi (Log)</span>
                                         </button>
@@ -5197,6 +5520,48 @@
                 cardVisual.className = "bg-gradient-to-tr from-red-950 via-slate-900 to-rose-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-red-500/50 flex flex-col justify-between h-64";
             } else {
                 cardVisual.className = "bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64";
+            }
+
+            // Rendering lista attestati / moduli assenze UE salvati per l'autista
+            const attestBox = document.getElementById('driverAttestationsBox');
+            const attestList = document.getElementById('driverAttestationsList');
+            const attestCount = document.getElementById('driverAttestationsCount');
+            if (attestBox && attestList) {
+                const attEntries = d.attestazioni ? Object.values(d.attestazioni).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || '')) : [];
+                if (attestCount) attestCount.innerText = attEntries.length;
+                if (attEntries.length > 0) {
+                    attestBox.classList.remove('hidden');
+                    let aHtml = "";
+                    attEntries.forEach(att => {
+                        const sD = (att.startDateTime || '').replace('T', ' ');
+                        const eD = (att.endDateTime || '').replace('T', ' ');
+                        aHtml += `
+                            <div class="bg-[#0F1C32] p-3 rounded-2xl border border-slate-700/80 flex items-center justify-between gap-2 shadow-sm">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="font-bold text-xs text-white truncate">${att.reasonText || 'Modulo Assenze UE'}</span>
+                                    </div>
+                                    <p class="text-[10px] text-emerald-400 font-mono mt-0.5">Dal ${sD} al ${eD}</p>
+                                    <p class="text-[9px] text-slate-400 mt-0.5">Rilasciato da: ${att.signatory || 'Impresa'}</p>
+                                </div>
+                                <div class="flex items-center space-x-1.5 flex-shrink-0">
+                                    <button onclick="reprintSavedAttestation('${d.id}', '${att.id}')" title="Ristampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
+                                        <span>🖨️</span>
+                                        <span>Stampa PDF</span>
+                                    </button>
+                                    ${isAdminViewingDriver ? `
+                                        <button onclick="deleteSavedAttestation('${d.id}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition">
+                                            🗑️
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    attestList.innerHTML = aHtml;
+                } else {
+                    attestBox.classList.add('hidden');
+                }
             }
         }
 
