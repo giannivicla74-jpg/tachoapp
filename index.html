@@ -822,6 +822,23 @@
                     </button>
                 </div>
 
+                <!-- Box Guida Procedurale Malattia, Ferie & Mancato Scarico (28 gg) -->
+                <div class="bg-gradient-to-r from-blue-950/90 via-[#15243E] to-emerald-950/90 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-2xl">
+                            🩺
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white">Procedura: Malattia, Ferie &amp; Mancato Scarico (28 gg)</h3>
+                            <p class="text-xs text-emerald-300/80">Guida per la tutela dell'azienda e degli autisti: forza maggiore, scarico preventivo e modulo assenze.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <span>📘</span>
+                        <span>Apri Guida Procedurale Malattia &amp; Ferie</span>
+                    </button>
+                </div>
+
                 <!-- Box Modulo Assenze UE (Attestato di Attività) -->
                 <div class="bg-gradient-to-r from-emerald-950/80 via-[#15243E] to-teal-950/80 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-3">
                     <div class="flex items-center space-x-3">
@@ -1103,12 +1120,16 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-2 transition active:scale-95">
-                        <span>📖</span>
-                        <span>Manuale Completo del Conducente</span>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                    <button onclick="openAbsenceGuideModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition active:scale-95">
+                        <span>📘</span>
+                        <span>Guida Malattia &amp; Ferie</span>
                     </button>
-                    <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                    <button onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition active:scale-95">
+                        <span>📖</span>
+                        <span>Manuale Conducente</span>
+                    </button>
+                    <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition-all active:scale-[0.98]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         <span>Informativa CCIAA</span>
                     </button>
@@ -1548,6 +1569,113 @@
         </footer>
     </main>
 
+    <!-- =================== MODALE GUIDA PROCEDURA MALATTIA, FERIE & MANCATO SCARICO 28 GG =================== -->
+    <div id="absenceGuideModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[96] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-blue-500/50 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-blue-500/20 text-blue-400 rounded-2xl text-xl">
+                        📘
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-white tracking-tight">Guida &amp; Procedura: Malattia, Ferie e Mancato Scarico 28 Giorni</h3>
+                        <p class="text-[11px] text-blue-300 font-semibold">Tutele per l'Azienda e il Conducente &bull; Reg. (CE) 561/2006 &bull; Artt. 174 e 192 C.d.S.</p>
+                    </div>
+                </div>
+                <button onclick="closeAbsenceGuideModal()" class="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-200 leading-relaxed">
+                
+                <!-- INTRO -->
+                <div class="bg-blue-950/40 border border-blue-800/60 p-4 rounded-2xl text-blue-200">
+                    <p class="font-bold text-sm text-blue-300 mb-1">⚖️ Quadro Normativo &amp; Termini di Legge</p>
+                    <p class="text-[11px] leading-relaxed">
+                        Per il Codice della Strada italiano e le normative europee (Reg. CE 561/2006, Reg. UE 581/2010), i dati della carta conducente <strong>devono essere scaricati obbligatoriamente ogni 28 giorni</strong>. 
+                        Se un autista non consegna i dati nei termini per <strong>motivi di forza maggiore (come la malattia)</strong> o per <strong>ferie</strong>, l'azienda e il conducente devono applicare una procedura precisa per tutelarsi ed evitare pesanti sanzioni.
+                    </p>
+                </div>
+
+                <!-- SEZIONE 1: MALATTIA E FORZA MAGGIORE -->
+                <div class="bg-[#15243E] border-l-4 border-emerald-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                    <div class="flex items-center space-x-2 text-emerald-400">
+                        <span class="text-lg">🩺</span>
+                        <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">1. Malattia e Giustificazione per Forza Maggiore</h4>
+                    </div>
+                    <p class="text-slate-300">
+                        La malattia è considerata un <strong>impedimento oggettivo (forza maggiore)</strong>. Se l'autista è assente per malattia, non è fisicamente in azienda e non sta guidando. Di conseguenza, il mancato scarico dei dati entro il 28° giorno è <strong>pienamente giustificabile</strong>, a patto che l'assenza sia regolarmente documentata.
+                    </p>
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 space-y-2">
+                        <p class="font-bold text-emerald-300">📋 Obblighi dell'Azienda e dell'Autista per la Malattia:</p>
+                        <ul class="space-y-1.5 pl-2 text-[11px] text-slate-300">
+                            <li>✔️ <strong>Certificato Medico Telematico:</strong> L'autista deve coprire l'intero periodo di assenza con i regolari certificati di malattia INPS e comunicare il protocollo all'azienda.</li>
+                            <li>✔️ <strong>Modulo di Controllo delle Assenze UE:</strong> L'azienda compila l'Attestato di Attività (Dec. 2009/959/UE), barrando la <em>Casella 14 (Malattia)</em> e specificando che il conducente non ha guidato alcun veicolo soggetto all'obbligo di cronotachigrafo.</li>
+                            <li>✔️ <strong>Scarico Immediato al Rientro:</strong> Il conducente deve consegnare la carta per lo scarico dei dati <strong>il giorno stesso del rientro in servizio, PRIMA di riprendere a guidare</strong>.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SEZIONE 2: FERIE E ASSENZE PROGRAMMATE -->
+                <div class="bg-[#15243E] border-l-4 border-yellow-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                    <div class="flex items-center space-x-2 text-yellow-400">
+                        <span class="text-lg">🏖️</span>
+                        <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">2. Gestione delle Ferie e Scarico Dati</h4>
+                    </div>
+                    <p class="text-slate-300">
+                        Lo stesso principio vale anche per le <strong>ferie</strong>, poiché rientrano tra i motivi di assenza giustificata in cui il dipendente non si trova sul posto di lavoro e non sta guidando. Tuttavia, <strong>a differenza della malattia (evento improvviso e imprevedibile), le ferie sono programmate</strong>, richiedendo la massima diligenza per evitare contestazioni.
+                    </p>
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-700/60 space-y-2">
+                        <p class="font-bold text-yellow-300">📌 Come Gestire Correttamente le Ferie:</p>
+                        <ul class="space-y-1.5 pl-2 text-[11px] text-slate-300">
+                            <li>⭐ <strong>Scarico Preventivo (Buona Prassi Fondamentale):</strong> Se l'autista sta per andare in ferie e il termine dei 28 giorni scadrà durante la sua assenza, la buona prassi richiede di effettuare lo scarico dei dati il giorno prima della partenza.</li>
+                            <li>✔️ <strong>Registrazione LUL:</strong> Il periodo di ferie deve essere regolarmente registrato sul Libro Unico del Lavoro dell'azienda.</li>
+                            <li>✔️ <strong>Registrazione Manuale sul Tachigrafo:</strong> Al rientro, quando l'autista inserisce la carta nel tachigrafo, deve effettuare la procedura di inserimento manuale (Manual Entry) confermando il <strong>simbolo del Letto (Riposo 🛌)</strong> per tutto il periodo di assenza.</li>
+                            <li>✔️ <strong>Attestato di Attività (Modulo Assenze UE):</strong> Compilazione della <em>Casella 15 (Ferie)</em> a supporto interno e per i controlli dell'Ispettorato del Lavoro.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- SEZIONE 3: SANZIONI PER MANCATA GIUSTIFICAZIONE -->
+                <div class="bg-[#15243E] border-l-4 border-red-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                    <div class="flex items-center space-x-2 text-red-400">
+                        <span class="text-lg">⚠️</span>
+                        <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">3. Sanzioni per Mancata Giustificazione o Omesso Scarico</h4>
+                    </div>
+                    <p class="text-slate-300">
+                        Se l'azienda non dimostra il motivo della mancata lettura dei dati entro i 28 giorni (o se al rientro non provvede allo scarico immediato), scattano le sanzioni previste dall'<strong>Art. 174 e Art. 192 del Codice della Strada</strong> e dal <strong>Regolamento CE 561/2006</strong>.
+                    </p>
+                    <div class="bg-red-950/40 p-3 rounded-xl border border-red-800/50 text-[11px] text-red-200">
+                        Le sanzioni per omesso controllo e mancata conservazione dei dati colpiscono direttamente l'<strong>impresa di autotrasporto</strong> (da centinaia a migliaia di euro con decurtazione punti e responsabilità amministrativa) e, nei casi di mancata esibizione dei dati di guida a bordo, anche il <strong>conducente</strong>.
+                    </div>
+                </div>
+
+                <!-- SEZIONE 4: CHECKLIST OPERATIVA -->
+                <div class="bg-emerald-950/30 border border-emerald-500/40 p-4 rounded-2xl space-y-2">
+                    <p class="font-bold text-sm text-emerald-300 flex items-center space-x-1.5">
+                        <span>✅</span> <span>Checklist Rapida in 3 Passi per l'Autista:</span>
+                    </p>
+                    <ol class="space-y-1.5 pl-4 list-decimal text-[11px] text-slate-300 font-medium">
+                        <li><strong>Durante l'assenza:</strong> Comunica tempestivamente certificati medici o accordi ferie all'ufficio.</li>
+                        <li><strong>Prima di partire per ferie lunghe:</strong> Chiedi sempre lo scarico preventivo della carta in azienda.</li>
+                        <li><strong>Il giorno del rientro:</strong> Consegna la carta per lo scarico <u>PRIMA di accendere il camion</u> e ritira il Modulo Assenze UE compilato.</li>
+                    </ol>
+                </div>
+
+            </div>
+
+            <!-- Footer Modale -->
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
+                <span class="text-[10px] text-slate-400">GC CodeLab &bull; Formazione Flotta &amp; Normativa UE</span>
+                <button type="button" onclick="closeAbsenceGuideModal()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-md">
+                    Ho Capito / Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- =================== MODALE ATTESTATO DI ATTIVITA UE (MODULO ASSENZE) =================== -->
     <div id="attestationModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[95] flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="bg-[#111C2E] border border-slate-700/80 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
@@ -1568,8 +1696,14 @@
             </div>
 
             <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-300">
-                <div class="bg-blue-950/40 border border-blue-800/50 p-3 rounded-2xl text-blue-200 text-[11px] leading-relaxed">
-                    ℹ️ <strong>Obbligo di Legge UE:</strong> Questo modulo deve essere compilato al computer e stampato prima del viaggio. Deve essere firmato sia dall'impresa che dal conducente e conservato a bordo per i controlli dei 56 giorni successivi.
+                <div class="bg-blue-950/40 border border-blue-800/50 p-3.5 rounded-2xl text-blue-200 text-[11px] leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-inner">
+                    <div>
+                        ℹ️ <strong>Obbligo di Legge UE:</strong> Compila a computer prima del viaggio. Firma originale e custodia a bordo per 56 giorni.
+                    </div>
+                    <button type="button" onclick="openAbsenceGuideModal()" class="self-start sm:self-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1.5 flex-shrink-0 shadow-md">
+                        <span>📘</span>
+                        <span>Guida Malattia &amp; Ferie</span>
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -3395,6 +3529,9 @@
 
         function openManualModal() { document.getElementById('manualModal').classList.remove('hidden'); }
         function closeManualModal() { document.getElementById('manualModal').classList.add('hidden'); }
+
+        function openAbsenceGuideModal() { document.getElementById('absenceGuideModal').classList.remove('hidden'); }
+        function closeAbsenceGuideModal() { document.getElementById('absenceGuideModal').classList.add('hidden'); }
 
         function openAttestationModal() {
             const select = document.getElementById('attestDriverSelect');
