@@ -3632,11 +3632,21 @@
             document.title = `Modulo_Assenze_UE_${driverName.replace(/[^a-zA-Z0-9]/g, '_')}`;
             window.print();
             setTimeout(() => { document.title = originalTitle; }, 1000);
+        function isCurrentUserManager() {
+            if (isSuperAdmin) return true;
+            if (isAdminViewingDriver) return true;
+            if (localStorage.getItem('userRole') === 'admin') return true;
+            const adminSec = document.getElementById('adminSection');
+            if (adminSec && !adminSec.classList.contains('hidden')) return true;
+            const adminHdr = document.getElementById('adminHeader');
+            if (adminHdr && !adminHdr.classList.contains('hidden')) return true;
+            const modal = document.getElementById('driverAttestationsModal');
+            if (modal && !modal.classList.contains('hidden')) return true;
+            return false;
         }
 
         function deleteSavedAttestation(driverId, attId) {
-            const isManager = isAdminViewingDriver || (localStorage.getItem('userRole') === 'admin') || isSuperAdmin;
-            if (!isManager) {
+            if (!isCurrentUserManager()) {
                 showToast("Accesso negato: solo il Responsabile Flotta può eliminare o revocare un Modulo Assenze.", "error");
                 return;
             }
@@ -3653,13 +3663,15 @@
                             }
                             renderDriverView(currentLoggedInDriver);
                         }
-                        if (isAdminViewingDriver && driversMap[driverId]) {
+                        if (driversMap[driverId]) {
                             renderDriverView({ id: driverId, ...driversMap[driverId] });
                         }
                         const modal = document.getElementById('driverAttestationsModal');
                         if (modal && !modal.classList.contains('hidden')) {
                             openDriverAttestationsModal(driverId);
                         }
+                    } else {
+                        showToast("Errore durante l'eliminazione: " + err.message, "error");
                     }
                 });
             }
@@ -3923,6 +3935,7 @@
             // 1. Accesso "Dietro le Quinte" Super Admin Master (Giovanni - PIN 8528)
             if (pinVal === ADMIN_PIN) {
                 isSuperAdmin = true;
+                localStorage.setItem('userRole', 'admin');
                 const superBadge = document.getElementById('superAdminBadge');
                 if (superBadge) superBadge.classList.remove('hidden');
                 const switchBtn = document.getElementById('btnSwitchCompanyHeader');
@@ -3940,6 +3953,7 @@
             const comp = companiesRegistry[activeCompanyId];
             if (comp && String(comp.adminPin).trim() === pinVal) {
                 isSuperAdmin = false;
+                localStorage.setItem('userRole', 'admin');
                 const superBadge = document.getElementById('superAdminBadge');
                 if (superBadge) superBadge.classList.add('hidden');
                 const switchBtn = document.getElementById('btnSwitchCompanyHeader');
@@ -3962,6 +3976,7 @@
 
             if (foundComp) {
                 isSuperAdmin = false;
+                localStorage.setItem('userRole', 'admin');
                 const superBadge = document.getElementById('superAdminBadge');
                 if (superBadge) superBadge.classList.add('hidden');
                 const switchBtn = document.getElementById('btnSwitchCompanyHeader');
@@ -5636,7 +5651,7 @@
             const attestBox = document.getElementById('driverAttestationsBox');
             const attestList = document.getElementById('driverAttestationsList');
             const attestCount = document.getElementById('driverAttestationsCount');
-            const isManager = isAdminViewingDriver || (localStorage.getItem('userRole') === 'admin') || isSuperAdmin;
+            const isManager = isCurrentUserManager();
 
             if (attestBox && attestList) {
                 const attEntries = d.attestazioni ? Object.values(d.attestazioni).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || '')) : [];
