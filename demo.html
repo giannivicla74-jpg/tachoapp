@@ -980,6 +980,19 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Indirizzo Sede Legale</label>
+                            <input type="text" id="regCompanyLegalAddress" placeholder="es. Via Roma 10, 00100 Roma (RM), Italia" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-indigo-400">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">Indirizzo Sede Operativa (Modulo UE)</label>
+                            <input type="text" id="regCompanyOperativeAddress" placeholder="es. Via dell'Industria 5, 00040 Pomezia (RM), Italia" 
+                                class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-emerald-500/50 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-emerald-400">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
                             <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Email Referente</label>
                             <input type="email" id="regCompanyEmail" placeholder="info@azienda.it" 
                                 class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-indigo-400">
@@ -1143,6 +1156,19 @@
                         <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Admin (4 Cifre) *</label>
                         <input type="password" maxlength="4" inputmode="numeric" id="editCompanyPin" placeholder="PIN" 
                             class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-center text-amber-300 text-xs focus:border-amber-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Indirizzo Sede Legale</label>
+                        <input type="text" id="editCompanyLegalAddress" placeholder="Via, CAP, Città..." 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-indigo-400">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">Indirizzo Sede Operativa (Modulo UE)</label>
+                        <input type="text" id="editCompanyOperativeAddress" placeholder="Via, CAP, Città..." 
+                            class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-emerald-500/50 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
                     </div>
                 </div>
 
@@ -2386,6 +2412,8 @@
             document.getElementById('regCompanyVat').value = "";
             document.getElementById('regCompanyFiscalCode').value = "";
             document.getElementById('regCompanyCode').value = generateNextCompanyCode();
+            document.getElementById('regCompanyLegalAddress').value = "";
+            document.getElementById('regCompanyOperativeAddress').value = "";
             document.getElementById('regCompanyEmail').value = "";
             document.getElementById('regCompanyPhone').value = "";
             document.getElementById('regCompanyPin').value = "";
@@ -2408,6 +2436,8 @@
             const vat = document.getElementById('regCompanyVat').value.trim().toUpperCase();
             const fiscalCode = document.getElementById('regCompanyFiscalCode').value.trim().toUpperCase();
             let code = document.getElementById('regCompanyCode').value.trim().toUpperCase();
+            const legalAddress = (document.getElementById('regCompanyLegalAddress')?.value || '').trim();
+            const operativeAddress = (document.getElementById('regCompanyOperativeAddress')?.value || '').trim();
             const email = document.getElementById('regCompanyEmail').value.trim();
             const phone = document.getElementById('regCompanyPhone').value.trim();
             const pin = document.getElementById('regCompanyPin').value.trim();
@@ -2456,6 +2486,8 @@
                 adminName: adminName || "",
                 vat: vat,
                 fiscalCode: fiscalCode || "",
+                legalAddress: legalAddress || "",
+                operativeAddress: operativeAddress || "",
                 email: email || "",
                 phone: phone || "",
                 adminPin: pin,
@@ -2465,6 +2497,9 @@
             db.ref('aziende_registry/' + code).set(newCompany, (err) => {
                 if (!err) {
                     db.ref('aziende/' + code + '/config/denominazioneAzienda').set(name);
+                    db.ref('aziende/' + code + '/config/partitaIva').set(vat);
+                    db.ref('aziende/' + code + '/config/indirizzoSedeLegale').set(legalAddress);
+                    db.ref('aziende/' + code + '/config/indirizzoSedeOperativa').set(operativeAddress);
                     db.ref('aziende/' + code + '/config/cartaAzienda').set({ number: "", expiry: "" });
 
                     document.getElementById('successRegCompanyCode').innerText = code;
@@ -2529,6 +2564,7 @@
                             ${comp.adminName ? `<span>Admin: <strong class="text-slate-200 font-semibold">${comp.adminName}</strong></span>` : ''}
                             <span>P.IVA: <strong class="text-slate-300 font-mono">${comp.vat || '-'}</strong></span>
                             ${comp.fiscalCode ? `<span>C.F.: <strong class="text-slate-300 font-mono">${comp.fiscalCode}</strong></span>` : ''}
+                            ${comp.operativeAddress ? `<span>Sede Op: <strong class="text-slate-300">${comp.operativeAddress}</strong></span>` : (comp.legalAddress ? `<span>Sede: <strong class="text-slate-300">${comp.legalAddress}</strong></span>` : '')}
                             <span>PIN Admin: <strong class="text-amber-300 font-mono font-bold">${comp.adminPin || '••••'}</strong></span>
                             ${comp.phone ? `<span>Tel: <strong class="text-slate-300">${comp.phone}</strong></span>` : ''}
                             ${comp.email ? `<span>Email: <strong class="text-slate-300">${comp.email}</strong></span>` : ''}
@@ -2564,6 +2600,8 @@
             document.getElementById('editCompanyAdminName').value = comp.adminName || '';
             document.getElementById('editCompanyVat').value = comp.vat || '';
             document.getElementById('editCompanyFiscalCode').value = comp.fiscalCode || '';
+            document.getElementById('editCompanyLegalAddress').value = comp.legalAddress || '';
+            document.getElementById('editCompanyOperativeAddress').value = comp.operativeAddress || '';
             document.getElementById('editCompanyPin').value = comp.adminPin || '';
             document.getElementById('editCompanyEmail').value = comp.email || '';
             document.getElementById('editCompanyPhone').value = comp.phone || '';
@@ -2583,6 +2621,8 @@
             const newAdminName = document.getElementById('editCompanyAdminName').value.trim();
             const newVat = document.getElementById('editCompanyVat').value.trim().toUpperCase();
             const newFiscalCode = document.getElementById('editCompanyFiscalCode').value.trim().toUpperCase();
+            const newLegalAddress = (document.getElementById('editCompanyLegalAddress')?.value || '').trim();
+            const newOperativeAddress = (document.getElementById('editCompanyOperativeAddress')?.value || '').trim();
             const newPin = document.getElementById('editCompanyPin').value.trim();
             const newEmail = document.getElementById('editCompanyEmail').value.trim();
             const newPhone = document.getElementById('editCompanyPhone').value.trim();
@@ -2605,6 +2645,8 @@
                 adminName: newAdminName,
                 vat: newVat,
                 fiscalCode: newFiscalCode,
+                legalAddress: newLegalAddress,
+                operativeAddress: newOperativeAddress,
                 adminPin: newPin,
                 email: newEmail,
                 phone: newPhone
@@ -2613,6 +2655,9 @@
             db.ref('aziende_registry/' + code).update(updates, (err) => {
                 if (!err) {
                     db.ref('aziende/' + code + '/config/denominazioneAzienda').set(newName);
+                    db.ref('aziende/' + code + '/config/partitaIva').set(newVat);
+                    db.ref('aziende/' + code + '/config/indirizzoSedeLegale').set(newLegalAddress);
+                    db.ref('aziende/' + code + '/config/indirizzoSedeOperativa').set(newOperativeAddress);
                     if (code === activeCompanyId) {
                         currentCompanyName = newName;
                         updateDOMCompanyName();
