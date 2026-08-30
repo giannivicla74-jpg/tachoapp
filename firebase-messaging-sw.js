@@ -1,8 +1,8 @@
-// Service Worker GC-TachoControl v12.3 Pro - Supporto Notifiche Push & Offline PWA Caching
+// Service Worker GC-TachoControl v12.4 Pro - Supporto Notifiche Push & Offline PWA Caching
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v12.3';
+const CACHE_NAME = 'tachocontrol-offline-v12.4';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -131,6 +131,15 @@ messaging.onBackgroundMessage((payload) => {
 // GESTIONE CLICK SULLA NOTIFICA
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
+    
+    // Azzera immediatamente il pallino numerico sull'icona dell'app
+    if ('clearAppBadge' in navigator) {
+        navigator.clearAppBadge().catch(() => {});
+    }
+    if ('setAppBadge' in navigator) {
+        navigator.setAppBadge(0).catch(() => {});
+    }
+
     const targetUrl = (event.notification.data && event.notification.data.url) ? event.notification.data.url : 'https://gccodelab.it/';
     
     event.waitUntil(

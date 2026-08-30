@@ -3036,6 +3036,23 @@
             }, 3000);
         }
 
+        // Gestione azzeramento badge numerico sull'icona app quando l'utente apre/torna sull'app
+        function clearAppBadgeIcon() {
+            try {
+                if ('clearAppBadge' in navigator) {
+                    navigator.clearAppBadge().catch(() => {});
+                }
+                if ('setAppBadge' in navigator) {
+                    navigator.setAppBadge(0).catch(() => {});
+                }
+            } catch(e) {}
+        }
+        clearAppBadgeIcon();
+        window.addEventListener('focus', clearAppBadgeIcon);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) clearAppBadgeIcon();
+        });
+
         // Controlla se le notifiche sono già attive per nascondere il banner
         if ("Notification" in window && Notification.permission === "granted") {
             const banner = document.getElementById('pushNotificationBanner');
