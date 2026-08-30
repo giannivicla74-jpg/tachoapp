@@ -5648,11 +5648,9 @@
                                         <span>🖨️</span>
                                         <span>Stampa PDF</span>
                                     </button>
-                                    ${isAdminViewingDriver ? `
-                                        <button onclick="deleteSavedAttestation('${d.id}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition">
-                                            🗑️
-                                        </button>
-                                    ` : ''}
+                                    <button onclick="deleteSavedAttestation('${d.id}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition active:scale-95">
+                                        🗑️
+                                    </button>
                                 </div>
                             </div>
                         `;
