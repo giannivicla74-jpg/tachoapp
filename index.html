@@ -908,10 +908,16 @@
                     In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. La non conformità comporta gravissime sanzioni.
                 </p>
 
-                <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    <span>Informativa Ufficiale Camere di Commercio (CCIAA)</span>
-                </button>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-2 transition active:scale-95">
+                        <span>📖</span>
+                        <span>Manuale Completo del Conducente</span>
+                    </button>
+                    <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        <span>Informativa CCIAA</span>
+                    </button>
+                </div>
             </div>
 
             <button onclick="logout()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3.5 rounded-2xl text-xs transition">
@@ -991,23 +997,67 @@
                         </div>
                     </div>
 
-                    <!-- CAPITOLO 3: GUIDA PER IL CONDUCENTE -->
-                    <div class="bg-[#15243E] border-l-4 border-emerald-500 rounded-2xl p-4 space-y-2.5 shadow-md">
+                    <!-- CAPITOLO 3: GUIDA DETTAGLIATA PER IL CONDUCENTE / OPERAIO -->
+                    <div class="bg-[#15243E] border-l-4 border-emerald-500 rounded-2xl p-4 space-y-3.5 shadow-md">
                         <div class="flex items-center space-x-2 text-emerald-400">
                             <span class="text-lg">🚛</span>
-                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">3. Come Usare l'App per l'Autista / Conducente</h4>
+                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">3. Guida Dettagliata per il Conducente / Autista</h4>
                         </div>
-                        <ol class="space-y-2 list-decimal pl-4 text-xs text-slate-300">
-                            <li>
-                                <strong>Accesso Immediato (Auto-Login):</strong> Alla prima apertura, tocca <em>"Area Conducenti"</em>, scegli il tuo nome e digita il tuo PIN a 4 cifre. Dalle volte successive l'App si apre <strong>direttamente sulla tua scheda personale</strong>.
-                            </li>
-                            <li>
-                                <strong>Recupero PIN su WhatsApp:</strong> Se dimentichi il tuo codice, tocca <em>"PIN dimenticato?"</em>: riceverai subito il tuo codice tramite WhatsApp.
-                            </li>
-                            <li>
-                                <strong>Controllo Scadenza:</strong> Nella tua scheda trovi il conto alla rovescia in giorni e la data precisa in cui effettuare il prossimo scarico in azienda.
-                            </li>
-                        </ol>
+                        
+                        <div class="space-y-3 pl-1 text-xs text-slate-300">
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-white text-xs mb-1 flex items-center space-x-1.5">
+                                    <span>🔑</span> <span>3.1 Accesso Istantaneo &amp; Auto-Login</span>
+                                </h5>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Alla prima apertura, tocca <em>"Area Conducenti"</em>, seleziona il tuo nome e digita il tuo PIN a 4 cifre. L'App memorizzerà in sicurezza il tuo dispositivo: ad ogni riapertura successiva, <strong>entrerai direttamente nella tua scheda personale</strong> senza dover più digitare nulla.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-white text-xs mb-1 flex items-center space-x-1.5">
+                                    <span>📲</span> <span>3.2 Recupero PIN Dimenticato su WhatsApp</span>
+                                </h5>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Se non ricordi il tuo PIN, tocca il tasto verde <em>"PIN dimenticato? Ricevi su WhatsApp"</em>. L'App aprirà istantaneamente WhatsApp sul tuo telefono con il messaggio contenente il tuo PIN personale pronto per l'accesso.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-white text-xs mb-1 flex items-center space-x-1.5">
+                                    <span>🚦</span> <span>3.3 Come Monitorare la Tua Scadenza (Semaforo)</span>
+                                </h5>
+                                <p class="text-[11px] text-slate-400 leading-relaxed mb-2">
+                                    Nella tua scheda personale trovi il conto alla rovescia in giorni e la data del prossimo scarico obbligatorio:
+                                </p>
+                                <ul class="space-y-1 text-[11px] pl-2">
+                                    <li>🟢 <strong>Verde (> 7 giorni):</strong> Situazione regolare.</li>
+                                    <li>🟡 <strong>Giallo (≤ 3 giorni):</strong> Scadenza vicina, pianifica lo scarico in ufficio/cantiere.</li>
+                                    <li>🔴 <strong>Rosso (0 giorni / Scaduto):</strong> Scadenza superata! Consegna subito la carta per evitare sanzioni.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-amber-400 text-xs mb-1 flex items-center space-x-1.5">
+                                    <span>🏖️</span> <span>3.4 Cosa Fare Prima di Andare in Ferie</span>
+                                </h5>
+                                <p class="text-[11px] text-slate-400 leading-relaxed">
+                                    Se inserisci le date delle tue ferie e la scadenza dei 28 giorni cade durante il periodo di assenza, l'App ti mostrerà un avviso giallo lampeggiante: <strong>ricordati di consegnare fisicamente la carta al responsabile in ufficio prima della partenza</strong>.
+                                </p>
+                            </div>
+
+                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800">
+                                <h5 class="font-bold text-white text-xs mb-1 flex items-center space-x-1.5">
+                                    <span>⏱️</span> <span>3.5 Regole Base Tempi di Guida &amp; Riposo (Reg. CE 561/2006)</span>
+                                </h5>
+                                <ul class="space-y-1 text-[11px] text-slate-400 pl-2">
+                                    <li>&bull; <strong>Guida Continua Massima:</strong> 4 ore e 30 minuti.</li>
+                                    <li>&bull; <strong>Pausa Obbligatoria:</strong> Almeno 45 minuti (oppure frazionata in 15m + 30m).</li>
+                                    <li>&bull; <strong>Guida Giornaliera:</strong> Massimo 9 ore (estendibile a 10 ore per max 2 volte a settimana).</li>
+                                    <li>&bull; <strong>Riposo Giornaliero:</strong> Regolare di 11 ore (o ridotto a 9 ore per max 3 volte a settimana).</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- CAPITOLO 4: GUIDA PER IL RESPONSABILE FLOTTA -->
