@@ -3784,41 +3784,63 @@
 
         function openAttestationModal() {
             const select = document.getElementById('attestDriverSelect');
-            select.innerHTML = '<option value="">-- Seleziona un Autista --</option>';
-            for (let id in driversMap) {
-                const d = driversMap[id];
-                if (!d) continue;
-                const opt = document.createElement('option');
-                opt.value = id;
-                const fullName = `${d.name || ''} ${d.surname || ''}`.trim();
-                const cardNum = d.cardNumber && d.cardNumber !== '-' ? d.cardNumber : (d.cardCode || 'Carta n/d');
-                opt.textContent = `${fullName} (${cardNum})`;
-                select.appendChild(opt);
+            if (select) {
+                select.innerHTML = '<option value="">-- Seleziona un Autista --</option>';
+                for (let id in driversMap) {
+                    const d = driversMap[id];
+                    if (!d) continue;
+                    const opt = document.createElement('option');
+                    opt.value = id;
+                    const fullName = `${d.name || ''} ${d.surname || ''}`.trim();
+                    const cardNum = d.cardNumber && d.cardNumber !== '-' ? d.cardNumber : (d.cardCode || 'Carta n/d');
+                    opt.textContent = `${fullName} (${cardNum})`;
+                    select.appendChild(opt);
+                }
             }
 
-            document.getElementById('attestDriverNameInput').value = "";
-            document.getElementById('attestDriverCardInput').value = "";
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
+            const compVat = currentCompanyVat || (companiesRegistry[compCode] && companiesRegistry[compCode].vat) || localStorage.getItem('cached_compVat_' + compCode) || compCode;
+            const compAddr = currentCompanyOperativeAddress || currentCompanyLegalAddress || (companiesRegistry[compCode] && (companiesRegistry[compCode].operativeAddress || companiesRegistry[compCode].legalAddress)) || localStorage.getItem('cached_compOpAddr_' + compCode) || localStorage.getItem('cached_compLegalAddr_' + compCode) || "";
 
-const compAddr = currentCompanyOperativeAddress || currentCompanyLegalAddress || (companiesRegistry[compCode] && (companiesRegistry[compCode].operativeAddress || companiesRegistry[compCode].legalAddress)) || localStorage.getItem('cached_compOpAddr_' + compCode) || localStorage.getItem('cached_compLegalAddr_' + compCode) || "";
-            document.getElementById('attestCompanyAddressInput').value = compAddr;
+            const vatEl = document.getElementById('attestCompanyVatInput');
+            if (vatEl) vatEl.value = compVat;
+
+            const addrEl = document.getElementById('attestCompanyAddressInput');
+            if (addrEl) addrEl.value = compAddr;
+
+            const driverNameEl = document.getElementById('attestDriverNameInput');
+            if (driverNameEl) driverNameEl.value = "";
+
+            const driverCardEl = document.getElementById('attestDriverCardInput');
+            if (driverCardEl) driverCardEl.value = "";
 
             const compAdmin = (companiesRegistry[compCode] && companiesRegistry[compCode].adminName) || "";
-            document.getElementById('attestSignatoryName').value = compAdmin;
-            document.getElementById('attestSignatoryRole').value = "";
-            document.getElementById('attestPlaceDate').value = `${new Date().toLocaleDateString('it-IT')}`;
+            const sigNameEl = document.getElementById('attestSignatoryName');
+            if (sigNameEl) sigNameEl.value = compAdmin;
+
+            const sigRoleEl = document.getElementById('attestSignatoryRole');
+            if (sigRoleEl) sigRoleEl.value = "";
+
+            const placeDateEl = document.getElementById('attestPlaceDate');
+            if (placeDateEl) placeDateEl.value = `${new Date().toLocaleDateString('it-IT')}`;
 
             // Imposta date di default
             const now = new Date();
             const startStr = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 16);
             const endStr = now.toISOString().slice(0, 16);
-            document.getElementById('attestStartDateTime').value = startStr;
-            document.getElementById('attestEndDateTime').value = endStr;
+            const startDtEl = document.getElementById('attestStartDateTime');
+            if (startDtEl) startDtEl.value = startStr;
+            const endDtEl = document.getElementById('attestEndDateTime');
+            if (endDtEl) endDtEl.value = endStr;
 
-            document.getElementById('attestationModal').classList.remove('hidden');
+            const modal = document.getElementById('attestationModal');
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closeAttestationModal() {
-            document.getElementById('attestationModal').classList.add('hidden');
+            const modal = document.getElementById('attestationModal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function onAttestDriverChange() {
