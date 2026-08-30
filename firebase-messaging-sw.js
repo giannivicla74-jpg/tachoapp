@@ -1,4 +1,4 @@
-// Service Worker GC-TachoControl v9.1 Pro - Supporto Notifiche Push & Offline PWA Caching
+// Service Worker GC-TachoControl v9.6 Pro - Supporto Notifiche Push & Offline PWA Caching
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
@@ -30,11 +30,11 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW v9.1] Memorizzazione risorse offline in corso...');
+            console.log('[SW v9.6] Memorizzazione risorse offline in corso...');
             return Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
                     return cache.add(url).catch((err) => {
-                        console.warn('[SW v9.1] File non pre-caricato:', url, err);
+                        console.warn('[SW v9.6] File non pre-caricato:', url, err);
                     });
                 })
             );
@@ -49,7 +49,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
-                        console.log('[SW v9.1] Rimozione vecchia cache:', key);
+                        console.log('[SW v9.6] Rimozione vecchia cache:', key);
                         return caches.delete(key);
                     }
                 })
@@ -107,7 +107,7 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-    console.log('[SW v9.1] Ricevuto messaggio in background ', payload);
+    console.log('[SW v9.6] Ricevuto messaggio in background ', payload);
     const notificationTitle = payload.notification.title || '🔔 Avviso TachoControl';
     const notificationOptions = {
         body: payload.notification.body,
