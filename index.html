@@ -3419,9 +3419,19 @@
             });
         }
 
-        function sendPushNotification(title, body) {
+        function sendPushNotification(title, body, tag) {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
             try {
+                // Throttle giornaliero: invia al massimo 1 notifica al giorno per lo stesso avviso/autista
+                if (tag) {
+                    const todayStr = new Date().toISOString().split('T')[0];
+                    const storageKey = 'last_push_sent_' + tag;
+                    if (localStorage.getItem(storageKey) === todayStr) {
+                        return; // Notifica già inviata oggi per questo conducente
+                    }
+                    localStorage.setItem(storageKey, todayStr);
+                }
+
                 if (navigator.serviceWorker && navigator.serviceWorker.ready) {
                     navigator.serviceWorker.ready.then(function(reg) {
                         if (reg && reg.showNotification) {
@@ -3429,12 +3439,18 @@
                                 body: body,
                                 icon: 'https://gccodelab.it/logo.jpg',
                                 badge: 'https://gccodelab.it/logo.jpg',
+                                tag: tag || 'driver-expiry-alert',
+                                renotify: false,
                                 vibrate: [200, 100, 200]
                             });
                         }
                     }).catch(function() {});
                 } else {
-                    new Notification(title, { body: body, icon: 'https://gccodelab.it/logo.jpg' });
+                    new Notification(title, { 
+                        body: body, 
+                        icon: 'https://gccodelab.it/logo.jpg',
+                        tag: tag || 'driver-expiry-alert'
+                    });
                 }
             } catch (err) {
                 console.warn("sendPushNotification fallback skipped:", err);
@@ -6217,7 +6233,7 @@
                         </div>
                     </div>`;
                 alertBox.classList.remove('hidden');
-                try { sendPushNotification("🚨 SCADENZA CARTA TACHIGRAFO", "La tua carta deve essere scaricata OGGI! Consegnala subito in cantiere."); } catch(e) {}
+                try { sendPushNotification("🚨 SCADENZA CARTA TACHIGRAFO", "La tua carta deve essere scaricata OGGI! Consegnala subito in cantiere.", 'expiry_' + (d.id || 'curr')); } catch(e) {}
             } else if (daysRem <= 3) {
                 alertBox.className = "rounded-2xl p-4 shadow-xl bg-amber-950/90 border border-amber-500 text-amber-200";
                 alertBox.innerHTML = `
@@ -6229,7 +6245,7 @@
                         </div>
                     </div>`;
                 alertBox.classList.remove('hidden');
-                try { sendPushNotification("⚠️ ATTENZIONE SCADENZA TACHIGRAFO", `Mancano solo ${daysRem} giorni allo scarico della tua carta.`); } catch(e) {}
+                try { sendPushNotification("⚠️ ATTENZIONE SCADENZA TACHIGRAFO", `Mancano solo ${daysRem} giorni allo scarico della tua carta.`, 'expiry_' + (d.id || 'curr')); } catch(e) {}
             } else if (daysRem <= 7) {
                 alertBox.className = "rounded-2xl p-4 shadow-xl bg-blue-950/80 border border-blue-500/60 text-blue-200";
                 alertBox.innerHTML = `
@@ -6241,7 +6257,7 @@
                         </div>
                     </div>`;
                 alertBox.classList.remove('hidden');
-                try { sendPushNotification("ℹ️ Promemoria Scarico Carta", `Mancano ${daysRem} giorni allo scarico della tua carta tachigrafica.`); } catch(e) {}
+                try { sendPushNotification("ℹ️ Promemoria Scarico Carta", `Mancano ${daysRem} giorni allo scarico della tua carta tachigrafica.`, 'expiry_' + (d.id || 'curr')); } catch(e) {}
             }
 
             const cardVisual = document.getElementById('driverCardVisual');
