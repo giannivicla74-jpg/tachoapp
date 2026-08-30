@@ -80,9 +80,47 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         @media print {
-            body { background-color: #ffffff !important; color: #000000 !important; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
+            body { 
+                background-color: #ffffff !important; 
+                color: #000000 !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            /* Nasconde l'intera interfaccia dell'applicazione durante la stampa */
+            #appSplashScreen,
+            #offlineStatusBar,
+            #adminHeader,
+            header,
+            main,
+            footer,
+            nav,
+            #loginSection,
+            #driverSelectionSection,
+            #adminSection,
+            #tabFleet,
+            #tabVehicles,
+            #tabSanctions,
+            #driverSection,
+            #toastContainer,
+            .no-print,
+            [id$="Modal"] {
+                display: none !important;
+            }
+
+            .print-only { 
+                display: block !important; 
+                width: 100% !important;
+                background-color: #ffffff !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm 15mm;
+            }
         }
         
         /* Animazione Logo 3D Fluttuante con Bagliore al Neon (Principale) */
@@ -207,7 +245,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0">
+    <main class="no-print flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0">
         
         <!-- =================== 1. LOGIN PRINCIPALE =================== -->
         <div id="loginSection" class="no-print hidden max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
@@ -373,7 +411,7 @@
         </div>
 
         <!-- =================== 2. ADMIN SECTION =================== -->
-        <div id="adminSection" class="hidden space-y-6 w-full min-w-0">
+        <div id="adminSection" class="no-print hidden space-y-6 w-full min-w-0">
             <div class="no-print grid grid-cols-3 gap-2">
                 <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
                     Conducenti
@@ -390,7 +428,7 @@
             </div>
 
             <!-- TAB 1: GESTIONE FLOTTA CONDUCENTI -->
-            <div id="tabFleet" class="space-y-6 w-full min-w-0">
+            <div id="tabFleet" class="no-print space-y-6 w-full min-w-0">
                 
                 <div class="no-print grid grid-cols-3 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
                     <button onclick="exportFleetToExcel()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white text-[10px] font-bold py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center shadow-md">
@@ -565,7 +603,7 @@
             </div>
 
             <!-- TAB 2: FLOTTA MEZZI (90GG) -->
-            <div id="tabVehicles" class="hidden space-y-6 w-full min-w-0">
+            <div id="tabVehicles" class="no-print hidden space-y-6 w-full min-w-0">
                 
                 <!-- Form Aggiungi / Modifica Mezzo -->
                 <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
@@ -645,7 +683,7 @@
             </div>
 
             <!-- TAB 3: AZIENDA & NORME -->
-            <div id="tabSanctions" class="hidden space-y-6 w-full min-w-0">
+            <div id="tabSanctions" class="no-print hidden space-y-6 w-full min-w-0">
                 
                 <!-- Box Personalizzazione Azienda & Carta Azienda -->
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
@@ -1581,6 +1619,11 @@
     <!-- =================== FOGLIO STAMPABILE MODULO ASSENZE UE =================== -->
     <div id="printableAttestationSheet" class="print-only hidden p-8 bg-white text-black font-sans text-xs max-w-3xl mx-auto leading-normal">
         <!-- Generato dinamicamente per la stampa perfetta A4 -->
+    </div>
+
+    <!-- =================== FOGLIO STAMPABILE REPORT FLOTTA PDF =================== -->
+    <div id="printableFleetReportSheet" class="print-only hidden p-8 bg-white text-black font-sans text-xs max-w-4xl mx-auto leading-normal">
+        <!-- Generato dinamicamente per il Report PDF Flotta A4 -->
     </div>
 
     <!-- =================== MODALE OBBLIGHI AUTISTA =================== -->
@@ -3150,6 +3193,9 @@
         }
 
         function printOfficialAttestationSheet() {
+            const fleetSheet = document.getElementById('printableFleetReportSheet');
+            if (fleetSheet) fleetSheet.innerHTML = "";
+
             const driverId = document.getElementById('attestDriverSelect').value;
             const d = driversMap[driverId] || { name: "NOME CONDUCENTE", cardCode: "IT0000000000" };
             const reason = document.getElementById('attestReasonSelect').value;
@@ -3167,7 +3213,7 @@
 
             const printSheet = document.getElementById('printableAttestationSheet');
             printSheet.innerHTML = `
-                <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.35; color: #000;">
+                <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.35; color: #000; padding: 4px 8px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
                         <div style="flex: 1; text-align: center;">
                             <h2 style="font-size: 13px; font-weight: bold; margin: 0; text-transform: uppercase;">ATTESTATO DI ATTIVITÀ / MODULO DI CONTROLLO DELLE ASSENZE</h2>
@@ -3246,6 +3292,145 @@
 
                     <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
                         Documento conforme al Modello Ufficiale UE • Generato con GC-TachoControl Cloud
+                    </div>
+                </div>
+            `;
+
+            window.print();
+        }
+
+        function printReportPDF() {
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
+            
+            const attestSheet = document.getElementById('printableAttestationSheet');
+            if (attestSheet) attestSheet.innerHTML = "";
+
+            const logoHtml = currentCompanyLogoBase64
+                ? `<img src="${currentCompanyLogoBase64}" style="max-height: 50px; max-width: 120px; object-fit: contain;">`
+                : `<img src="assets/logo_tachocontrol_3d.jpg" style="max-height: 50px; max-width: 50px; object-fit: cover; border-radius: 8px;">`;
+
+            let driversRowsHtml = "";
+            let dCount = 0;
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                if (!d) continue;
+                dCount++;
+                const targetDate = d.lastDownloadDate || new Date().toISOString().split('T')[0];
+                const daysRem = getDaysRemaining(targetDate);
+                let statusBadge = `<span style="color: #059669; font-weight: bold;">IN REGOLA</span>`;
+                if (daysRem <= 0) statusBadge = `<span style="color: #dc2626; font-weight: bold;">SCADUTO (${daysRem}gg)</span>`;
+                else if (daysRem <= 2) statusBadge = `<span style="color: #d97706; font-weight: bold;">URGENTE (${daysRem}gg)</span>`;
+
+                let ferieInfo = "-";
+                if (d.vacationStartDate && d.vacationEndDate) {
+                    ferieInfo = `Ferie: ${formatDateItalian(d.vacationStartDate)} al ${formatDateItalian(d.vacationEndDate)}`;
+                }
+
+                driversRowsHtml += `
+                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 10px;">
+                        <td style="padding: 6px 8px; font-weight: bold;">${d.name} ${d.surname}</td>
+                        <td style="padding: 6px 8px; font-family: monospace;">${d.cardNumber || '-'}</td>
+                        <td style="padding: 6px 8px;">${d.cantiere || 'Generale'}</td>
+                        <td style="padding: 6px 8px; font-weight: bold;">${formatDateItalian(targetDate)}</td>
+                        <td style="padding: 6px 8px; font-weight: bold;">${daysRem} gg</td>
+                        <td style="padding: 6px 8px;">${statusBadge}</td>
+                        <td style="padding: 6px 8px; font-size: 9px; color: #475569;">${ferieInfo}</td>
+                    </tr>
+                `;
+            }
+
+            let vehiclesRowsHtml = "";
+            let vCount = 0;
+            for (let id in vehiclesMap) {
+                const v = vehiclesMap[id];
+                if (!v) continue;
+                vCount++;
+                const targetDate = v.lastDownloadDate || new Date().toISOString().split('T')[0];
+                const daysRem = getDaysRemaining(targetDate);
+                let statusBadge = `<span style="color: #059669; font-weight: bold;">IN REGOLA</span>`;
+                if (daysRem <= 0) statusBadge = `<span style="color: #dc2626; font-weight: bold;">SCADUTO (${daysRem}gg)</span>`;
+                else if (daysRem <= 5) statusBadge = `<span style="color: #d97706; font-weight: bold;">URGENTE (${daysRem}gg)</span>`;
+
+                vehiclesRowsHtml += `
+                    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 10px;">
+                        <td style="padding: 6px 8px; font-weight: bold; font-family: monospace;">${v.plate}</td>
+                        <td style="padding: 6px 8px;">${v.model || 'Mezzo flotta'}</td>
+                        <td style="padding: 6px 8px;">${v.cantiere || 'Generale'}</td>
+                        <td style="padding: 6px 8px; font-weight: bold;">${formatDateItalian(targetDate)}</td>
+                        <td style="padding: 6px 8px; font-weight: bold;">${daysRem} gg</td>
+                        <td style="padding: 6px 8px;">${statusBadge}</td>
+                    </tr>
+                `;
+            }
+
+            const printSheet = document.getElementById('printableFleetReportSheet');
+            if (!printSheet) return;
+
+            printSheet.innerHTML = `
+                <div style="font-family: Arial, sans-serif; color: #0f172a; line-height: 1.4; padding: 4px 8px;">
+                    <!-- Intestazione Aziendale -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 14px;">
+                        <div>
+                            <h1 style="font-size: 15px; font-weight: bold; margin: 0; text-transform: uppercase; color: #0f172a;">${compName}</h1>
+                            <p style="font-size: 10px; color: #475569; margin: 2px 0 0 0;">CODICE FLOTTA: <strong>${compCode}</strong> &bull; REPORT CONFORMITÀ SCARICHI TACHIGRAFO (REG. UE 581/2010)</p>
+                            <p style="font-size: 9px; color: #64748b; margin: 2px 0 0 0;">Data Generazione: <strong>${new Date().toLocaleDateString('it-IT')} ore ${new Date().toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'})}</strong></p>
+                        </div>
+                        <div style="flex-shrink: 0; text-align: right;">
+                            ${logoHtml}
+                        </div>
+                    </div>
+
+                    <!-- Sezione 1: Conducenti -->
+                    <div style="margin-bottom: 18px;">
+                        <div style="background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #059669; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 11px; text-transform: uppercase; color: #0f172a;">1. Conducenti &bull; Scarico Carta Autista (Termine Massimo 28 Giorni)</strong>
+                            <span style="font-size: 10px; font-weight: bold; color: #475569;">Totale: ${dCount}</span>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="background-color: #e2e8f0; font-size: 9px; text-transform: uppercase; color: #334155;">
+                                    <th style="padding: 5px 6px;">Conducente</th>
+                                    <th style="padding: 5px 6px;">N° Carta</th>
+                                    <th style="padding: 5px 6px;">Sede / Cantiere</th>
+                                    <th style="padding: 5px 6px;">Scadenza</th>
+                                    <th style="padding: 5px 6px;">Termine</th>
+                                    <th style="padding: 5px 6px;">Stato</th>
+                                    <th style="padding: 5px 6px;">Note / Ferie</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${driversRowsHtml || '<tr><td colspan="7" style="padding: 8px; text-align: center; color: #94a3b8;">Nessun conducente registrato.</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Sezione 2: Mezzi -->
+                    <div style="margin-bottom: 18px;">
+                        <div style="background-color: #f1f5f9; padding: 5px 8px; border-left: 4px solid #0284c7; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="font-size: 11px; text-transform: uppercase; color: #0f172a;">2. Flotta Veicoli &bull; Scarico Memoria di Massa (Termine Massimo 90 Giorni)</strong>
+                            <span style="font-size: 10px; font-weight: bold; color: #475569;">Totale: ${vCount}</span>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                            <thead>
+                                <tr style="background-color: #e2e8f0; font-size: 9px; text-transform: uppercase; color: #334155;">
+                                    <th style="padding: 5px 6px;">Targa Mezzo</th>
+                                    <th style="padding: 5px 6px;">Modello</th>
+                                    <th style="padding: 5px 6px;">Sede / Cantiere</th>
+                                    <th style="padding: 5px 6px;">Scadenza</th>
+                                    <th style="padding: 5px 6px;">Termine</th>
+                                    <th style="padding: 5px 6px;">Stato</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${vehiclesRowsHtml || '<tr><td colspan="6" style="padding: 8px; text-align: center; color: #94a3b8;">Nessun veicolo registrato.</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Note legali a piè di pagina -->
+                    <div style="border-top: 1px solid #cbd5e1; padding-top: 6px; margin-top: 14px; font-size: 8px; color: #64748b; text-align: center;">
+                        Registro Ufficiale generato da GC-TachoControl Cloud &bull; Conforme alle disposizioni del Regolamento CE 561/2006 e Reg. UE 581/2010
                     </div>
                 </div>
             `;
