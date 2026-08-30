@@ -1609,14 +1609,20 @@
                         <input type="text" id="attestCompanyVatInput" placeholder="P.IVA o Codice Fiscale..." class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-mono">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome Firmatario Impresa</label>
-                        <input type="text" id="attestSignatoryName" placeholder="Es. Mario Rossi (Titolare)" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                        <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">3. Indirizzo Sede Operativa (Indirizzo, CAP, Città)</label>
+                        <input type="text" id="attestCompanyAddressInput" placeholder="Es. Via dell'Industria 5, 00040 Pomezia (RM), Italia" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-semibold">
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1">3. Indirizzo Sede Operativa (Indirizzo, CAP, Città, Paese)</label>
-                    <input type="text" id="attestCompanyAddressInput" placeholder="Es. Via dell'Industria 5, 00040 Pomezia (RM), Italia" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-semibold">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">4. Nome del Firmatario (Persona Fisica)</label>
+                        <input type="text" id="attestSignatoryName" placeholder="Nome e Cognome firmatario..." class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">5. Funzione nell'Impresa (Da compilare al momento)</label>
+                        <input type="text" id="attestSignatoryRole" placeholder="Es. Legale Rappresentante, Resp. Trasporti..." class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -3407,13 +3413,13 @@
             document.getElementById('attestDriverNameInput').value = "";
             document.getElementById('attestDriverCardInput').value = "";
 
-            const compCode = activeCompanyId || 'AZ-MAIN';
-            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
-            const compVat = currentCompanyVat || (companiesRegistry[compCode] && companiesRegistry[compCode].vat) || localStorage.getItem('cached_compVat_' + compCode) || compCode;
-            document.getElementById('attestCompanyVatInput').value = compVat;
-
-            const compAddr = currentCompanyOperativeAddress || currentCompanyLegalAddress || (companiesRegistry[compCode] && (companiesRegistry[compCode].operativeAddress || companiesRegistry[compCode].legalAddress)) || localStorage.getItem('cached_compOpAddr_' + compCode) || localStorage.getItem('cached_compLegalAddr_' + compCode) || "";
+const compAddr = currentCompanyOperativeAddress || currentCompanyLegalAddress || (companiesRegistry[compCode] && (companiesRegistry[compCode].operativeAddress || companiesRegistry[compCode].legalAddress)) || localStorage.getItem('cached_compOpAddr_' + compCode) || localStorage.getItem('cached_compLegalAddr_' + compCode) || "";
             document.getElementById('attestCompanyAddressInput').value = compAddr;
+
+            const compAdmin = (companiesRegistry[compCode] && companiesRegistry[compCode].adminName) || "";
+            document.getElementById('attestSignatoryName').value = compAdmin;
+            document.getElementById('attestSignatoryRole').value = "";
+            document.getElementById('attestPlaceDate').value = `${new Date().toLocaleDateString('it-IT')}`;
 
             // Imposta date di default
             const now = new Date();
@@ -3421,9 +3427,6 @@
             const endStr = now.toISOString().slice(0, 16);
             document.getElementById('attestStartDateTime').value = startStr;
             document.getElementById('attestEndDateTime').value = endStr;
-
-            document.getElementById('attestSignatoryName').value = `Direzione ${compName}`;
-            document.getElementById('attestPlaceDate').value = `${new Date().toLocaleDateString('it-IT')}`;
 
             document.getElementById('attestationModal').classList.remove('hidden');
         }
@@ -3468,7 +3471,8 @@
             const reason = document.getElementById('attestReasonSelect').value;
             const startDT = document.getElementById('attestStartDateTime').value.replace('T', ' ');
             const endDT = document.getElementById('attestEndDateTime').value.replace('T', ' ');
-            const signatory = document.getElementById('attestSignatoryName').value || 'Legale Rappresentante';
+            const signatory = document.getElementById('attestSignatoryName').value.trim() || '';
+            const signatoryRole = document.getElementById('attestSignatoryRole').value.trim() || '';
             const placeDate = document.getElementById('attestPlaceDate').value || new Date().toLocaleDateString('it-IT');
 
             const compCode = activeCompanyId || 'AZ-MAIN';
@@ -3505,7 +3509,7 @@
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
-                            <td style="border: 1px solid #000; padding: 4px;"><strong>5. Funzione nell'impresa:</strong> Legale Rappresentante / Resp. Trasporti</td>
+                            <td style="border: 1px solid #000; padding: 4px;"><strong>5. Funzione nell'impresa:</strong> ${signatoryRole}</td>
                         </tr>
                     </table>
 
@@ -3543,20 +3547,20 @@
 
                     <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px;">
                         <tr>
-                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
-                                <strong>20. Luogo e Data:</strong><br>${placeDate}<br><br>
-                                <strong>21. Firma dell'impresa (Timbro e Firma):</strong><br><br>
-                                ___________________________________
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%;">
+                                <strong>20. Luogo e data:</strong> ${placeDate}<br><br>
+                                <strong>Firma dell'impresa:</strong><br><br>
+                                <div style="border-bottom: 1px dotted #000; margin-top: 25px;"></div>
                             </td>
-                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
-                                <strong>22. Firma del conducente:</strong><br>
-                                <em>Il sottoscritto conducente conferma che durante il periodo sopra menzionato non ha guidato alcun veicolo soggetto al Regolamento (CE) n. 561/2006.</em><br><br>
-                                ___________________________________
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%;">
+                                <strong>21. Luogo e data:</strong> ${placeDate}<br><br>
+                                <strong>Firma del conducente:</strong><br><br>
+                                <div style="border-bottom: 1px dotted #000; margin-top: 25px;"></div>
                             </td>
                         </tr>
                     </table>
-
-                    <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
+                    
+                    <div style="text-align: center; margin-top: 10px; font-size: 8.5px; color: #555;">
                         Documento redatto in conformità alla Decisione della Commissione Europea 2009/959/UE (Reg. CE n. 561/2006)
                     </div>
                 </div>
@@ -3585,7 +3589,8 @@
             const reasonText = reasonSelect.options[reasonSelect.selectedIndex].text;
             const startDT = document.getElementById('attestStartDateTime').value;
             const endDT = document.getElementById('attestEndDateTime').value;
-            const signatory = document.getElementById('attestSignatoryName').value.trim() || 'Direzione Impresa';
+            const signatory = document.getElementById('attestSignatoryName').value.trim() || '';
+            const signatoryRole = document.getElementById('attestSignatoryRole').value.trim() || '';
             const placeDate = document.getElementById('attestPlaceDate').value.trim() || new Date().toLocaleDateString('it-IT');
 
             if (!startDT || !endDT) {
@@ -3606,6 +3611,7 @@
                 startDateTime: startDT,
                 endDateTime: endDT,
                 signatory: signatory,
+                signatoryRole: signatoryRole,
                 placeDate: placeDate,
                 createdAt: new Date().toISOString()
             };
@@ -3643,7 +3649,8 @@
             const reason = att.reasonCode;
             const startDT = (att.startDateTime || '').replace('T', ' ');
             const endDT = (att.endDateTime || '').replace('T', ' ');
-            const signatory = att.signatory || 'Legale Rappresentante';
+            const signatory = att.signatory || '';
+            const signatoryRole = att.signatoryRole || '';
             const placeDate = att.placeDate || new Date().toLocaleDateString('it-IT');
 
             const compCode = activeCompanyId || 'AZ-MAIN';
@@ -3682,58 +3689,6 @@
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
-                            <td style="border: 1px solid #000; padding: 4px;"><strong>5. Funzione nell'impresa:</strong> Legale Rappresentante / Resp. Trasporti</td>
-                        </tr>
-                    </table>
-
-                    <div style="margin-bottom: 6px;">
-                        <strong>Il sottoscritto dichiara che il conducente:</strong>
-                    </div>
-
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
-                        <tr>
-                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${driverName.toUpperCase()}</strong></td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> <strong>${driverCard.toUpperCase()}</strong></td>
-                        </tr>
-                    </table>
-
-                    <div style="margin-bottom: 6px;">
-                        <strong>Per il periodo:</strong>
-                    </div>
-                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
-                        <tr>
-                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>8. Dalle ore e data:</strong> ${startDT}</td>
-                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>9. Alle ore e data:</strong> ${endDT}</td>
-                        </tr>
-                    </table>
-
-                    <div style="margin-bottom: 6px;">
-                        <strong>10. Motivo dell'assenza:</strong>
-                    </div>
-                    <div style="border: 1px solid #000; padding: 6px; margin-bottom: 12px; font-size: 9.5px; line-height: 1.5;">
-                        <div>[ ${reason === '14' ? 'X' : '&nbsp;&nbsp;'} ] <strong>14. Era in congedo per malattia</strong></div>
-                        <div>[ ${reason === '15' ? 'X' : '&nbsp;&nbsp;'} ] <strong>15. Era in congedo annuale (Ferie)</strong></div>
-                        <div>[ ${reason === '16' ? 'X' : '&nbsp;&nbsp;'} ] <strong>16. Era in congedo o riposo</strong></div>
-                        <div>[ ${reason === '18' ? 'X' : '&nbsp;&nbsp;'} ] <strong>18. Eseguiva un altro lavoro diverso dalla guida</strong></div>
-                        <div>[ ${reason === '19' ? 'X' : '&nbsp;&nbsp;'} ] <strong>19. Era disponibile</strong></div>
-                    </div>
-
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px;">
-                        <tr>
-                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
-                                <strong>20. Luogo e Data:</strong><br>${placeDate}<br><br>
-                                <strong>21. Firma dell'impresa (Timbro e Firma):</strong><br><br>
-                                ___________________________________
-                            </td>
-                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
-                                <strong>22. Firma del conducente:</strong><br>
-                                <em>Il sottoscritto conducente conferma che durante il periodo sopra menzionato non ha guidato alcun veicolo soggetto al Regolamento (CE) n. 561/2006.</em><br><br>
-                                ___________________________________
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
                         Documento redatto in conformità alla Decisione della Commissione Europea 2009/959/UE (Reg. CE n. 561/2006)
                     </div>
                 </div>
