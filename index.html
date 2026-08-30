@@ -3203,12 +3203,33 @@
             }
         }
 
+        function scrollToTop() {
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                document.activeElement.blur();
+            }
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+            setTimeout(() => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }, 25);
+            setTimeout(() => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }, 100);
+        }
+
         function showSection(sec) {
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('driverSelectionSection').classList.add('hidden');
             document.getElementById('adminSection').classList.add('hidden');
             document.getElementById('driverSection').classList.add('hidden');
             document.getElementById('adminHeader').classList.add('hidden');
+
+            scrollToTop();
 
             if (sec === "admin") {
                 document.getElementById('adminSection').classList.remove('hidden');
@@ -3223,6 +3244,8 @@
             } else {
                 document.getElementById('loginSection').classList.remove('hidden');
             }
+
+            scrollToTop();
         }
 
         function logout() {
@@ -3265,6 +3288,8 @@
                 btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
                 tabSanctions.classList.remove('hidden');
             }
+
+            scrollToTop();
         }
 
         // --- GESTIONE MODALE REGISTRAZIONE AZIENDA ---
