@@ -4097,6 +4097,58 @@
                         </tr>
                         <tr>
                             <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
+                            <td style="border: 1px solid #000; padding: 4px;"><strong>5. Funzione nell'impresa:</strong> ${signatoryRole}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>Il sottoscritto dichiara che il conducente:</strong>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${driverName.toUpperCase()}</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> <strong>${driverCard.toUpperCase()}</strong></td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>Per il periodo:</strong>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>8. Dalle ore e data:</strong> ${startDT}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>9. Alle ore e data:</strong> ${endDT}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>10. Motivo dell'assenza:</strong>
+                    </div>
+                    <div style="border: 1px solid #000; padding: 6px; margin-bottom: 12px; font-size: 9.5px; line-height: 1.5;">
+                        <div>[ ${reason === '14' ? 'X' : '&nbsp;&nbsp;'} ] <strong>14. Era in congedo per malattia</strong></div>
+                        <div>[ ${reason === '15' ? 'X' : '&nbsp;&nbsp;'} ] <strong>15. Era in congedo annuale (Ferie)</strong></div>
+                        <div>[ ${reason === '16' ? 'X' : '&nbsp;&nbsp;'} ] <strong>16. Era in congedo o riposo</strong></div>
+                        <div>[ ${reason === '18' ? 'X' : '&nbsp;&nbsp;'} ] <strong>18. Eseguiva un altro lavoro diverso dalla guida</strong></div>
+                        <div>[ ${reason === '19' ? 'X' : '&nbsp;&nbsp;'} ] <strong>19. Era disponibile</strong></div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%;">
+                                <strong>20. Luogo e data:</strong> ${placeDate}<br><br>
+                                <strong>Firma dell'impresa:</strong><br><br>
+                                <div style="border-bottom: 1px dotted #000; margin-top: 25px;"></div>
+                            </td>
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%;">
+                                <strong>21. Luogo e data:</strong> ${placeDate}<br><br>
+                                <strong>Firma del conducente:</strong><br><br>
+                                <div style="border-bottom: 1px dotted #000; margin-top: 25px;"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <div style="text-align: center; margin-top: 10px; font-size: 8.5px; color: #555;">
                         Documento redatto in conformità alla Decisione della Commissione Europea 2009/959/UE (Reg. CE n. 561/2006)
                     </div>
                 </div>
