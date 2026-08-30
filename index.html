@@ -2678,13 +2678,22 @@
             // Inizializza listener per l'azienda attiva
             switchActiveCompany(activeCompanyId);
 
-            // Registrazione Service Worker per Push in Background
+            // Registrazione Service Worker per Push in Background & Auto-Update
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('firebase-messaging-sw.js')
                 .then((registration) => {
                     console.log('Service Worker registrato con successo:', registration);
+                    registration.update();
                 }).catch((err) => {
                     console.log('Registrazione Service Worker fallita:', err);
+                });
+
+                let refreshing = false;
+                navigator.serviceWorker.addEventListener('controllerchange', () => {
+                    if (!refreshing) {
+                        refreshing = true;
+                        window.location.reload();
+                    }
                 });
             }
         }
