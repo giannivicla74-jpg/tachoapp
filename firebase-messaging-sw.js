@@ -121,6 +121,10 @@ messaging.onBackgroundMessage((payload) => {
         }
     };
 
+    if ('setAppBadge' in navigator) {
+        navigator.setAppBadge(1).catch(() => {});
+    }
+
     return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
