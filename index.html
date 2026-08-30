@@ -925,6 +925,16 @@
                     In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. La non conformità comporta gravissime sanzioni.
                 </p>
 
+                <!-- Box Promemoria Rientro Malattia Conducente -->
+                <div class="bg-gradient-to-r from-slate-900 via-blue-950/60 to-slate-900 border border-blue-500/40 p-3 rounded-xl mb-3 text-[11px] text-blue-200 shadow-md">
+                    <p class="font-bold flex items-center space-x-1.5 text-blue-300 mb-1">
+                        <span>🏥</span> <span>Sei in rientro da Malattia o Assenza Imprevista?</span>
+                    </p>
+                    <p class="text-slate-300 leading-snug">
+                        <strong>Prima di salire sul camion:</strong> consegna la carta in ufficio per lo scarico immediato, ritira il Modulo Assenze UE firmato da tenere a bordo ed effettua l'inserimento manuale a tachigrafo.
+                    </p>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <button onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-2 transition active:scale-95">
                         <span>📖</span>
@@ -1167,12 +1177,14 @@
                         </ul>
                     </div>
 
-                    <!-- CAPITOLO 9: GUIDA RAPIDA ALL'APP PER IL CONDUCENTE -->
-                    <div class="bg-[#15243E] border-l-4 border-emerald-500 rounded-2xl p-4 space-y-3 shadow-md">
+                    <!-- CAPITOLO 9: GUIDA OPERATIVA DETTAGLIATA PER L'AUTISTA -->
+                    <div class="bg-[#15243E] border-l-4 border-emerald-500 rounded-2xl p-4 space-y-4 shadow-md">
                         <div class="flex items-center space-x-2 text-emerald-400">
                             <span class="text-lg">🚛</span>
-                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">9. Come Usare l'App GC-TachoControl (Per l'Autista)</h4>
+                            <h4 class="font-extrabold text-sm text-white uppercase tracking-wide">9. Guida Operativa Dettagliata per l'Autista / Conducente</h4>
                         </div>
+                        
+                        <!-- 9.1 Uso quotidiano -->
                         <div class="space-y-2 text-xs text-slate-300 pl-1">
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
                                 <strong>1. Auto-Login Istantaneo:</strong> Entra con Nome e PIN una sola volta; da allora l'app si aprirà sempre direttamente sulla tua scheda personale.
@@ -1182,6 +1194,48 @@
                             </div>
                             <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
                                 <strong>3. Semaforo Scadenze:</strong> 🟢 Verde (>7gg), 🟡 Giallo (≤3gg, scarica presto), 🔴 Rosso (scaduto, consegna subito la carta).
+                            </div>
+                        </div>
+
+                        <!-- 9.2 PROCEDURA MALATTIA / ASSENZA PASSO-PASSO PER L'AUTISTA -->
+                        <div class="bg-gradient-to-r from-red-950/40 via-slate-900/80 to-amber-950/40 border border-red-500/40 p-4 rounded-2xl space-y-3">
+                            <div class="flex items-center space-x-2 text-amber-300 font-extrabold text-xs">
+                                <span>🏥</span>
+                                <span class="uppercase tracking-wide">Procedura Tassativa per l'Autista: Malattia o Assenza Senza Consegna Preventiva della Carta</span>
+                            </div>
+                            
+                            <p class="text-[11px] text-slate-300 leading-relaxed">
+                                Se ti ammali improvvisamente e non hai potuto consegnare la carta tachigrafica in azienda prima che scadesse il 28° giorno, <strong>ecco tutti i passaggi obbligatori per legge da seguire punto per punto</strong> per non prendere multe:
+                            </p>
+
+                            <div class="space-y-2 text-[11px]">
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-700/60">
+                                    <span class="font-bold text-sky-400">PASSO 1 • Durante la Malattia (A Casa):</span>
+                                    <p class="text-slate-300 mt-0.5 leading-normal">
+                                        Non devi recarti in azienda durante la prognosi medica. Comunica tempestivamente al titolare il numero di protocollo telematico PUC del certificato INPS rilasciato dal tuo medico.
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-amber-500/50">
+                                    <span class="font-bold text-amber-300">PASSO 2 • Il Giorno del Rientro (PRIMA di salire sul camion):</span>
+                                    <p class="text-slate-300 mt-0.5 leading-normal">
+                                        Appena arrivi in sede e <strong>PRIMA di avviare il veicolo</strong>, consegna subito la carta tachigrafica al responsabile in ufficio. L'ufficio effettuerà lo scarico immediato dei dati e aggiornerà il database.
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-emerald-500/50">
+                                    <span class="font-bold text-emerald-300">PASSO 3 • Firma e Ritiro Modulo Assenze UE:</span>
+                                    <p class="text-slate-300 mt-0.5 leading-normal">
+                                        L'ufficio ti consegnerà l'<strong>Attestato di Attività UE (Modulo Assenze)</strong> compilato al computer con barrata la voce <em>"14. Malattia"</em>. Firmalo in originale nello spazio 22 e <strong>riponilo a bordo del camion</strong>: dovrai tenerlo con te per tutti i <strong>56 giorni successivi</strong> per esibirlo nei controlli di Polizia.
+                                    </p>
+                                </div>
+
+                                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-indigo-500/50">
+                                    <span class="font-bold text-indigo-300">PASSO 4 • Inserimento Manuale a Bordo Veicolo (Manual Entry):</span>
+                                    <p class="text-slate-300 mt-0.5 leading-normal">
+                                        Sali sul camion, inserisci la carta nello <strong>Slot 1</strong>. Quando il tachigrafo chiede: <em>"Inserimento manuale attività?"</em>, premi <strong>SÌ (OK)</strong> e conferma il simbolo del <strong>Riposo (Lettino 🛌)</strong> per tutto il periodo di assenza. Solo ora puoi iniziare il viaggio!
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
