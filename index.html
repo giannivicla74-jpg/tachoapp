@@ -392,14 +392,18 @@
             <!-- TAB 1: GESTIONE FLOTTA CONDUCENTI -->
             <div id="tabFleet" class="space-y-6 w-full min-w-0">
                 
-                <div class="no-print grid grid-cols-2 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
-                    <button onclick="exportBackupJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold py-2 px-2 rounded-xl transition text-center flex flex-col items-center">
-                        <svg class="w-4 h-4 mb-1 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Esporta Backup Cloud
+                <div class="no-print grid grid-cols-3 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
+                    <button onclick="exportFleetToExcel()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white text-[10px] font-bold py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center shadow-md">
+                        <svg class="w-4 h-4 mb-1 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Export Excel (.csv)
                     </button>
-                    <button onclick="printReportPDF()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 text-[10px] font-black py-2 px-2 rounded-xl transition text-center flex flex-col items-center">
+                    <button onclick="printReportPDF()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 text-[10px] font-black py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center shadow-md">
                         <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
                         Report PDF
+                    </button>
+                    <button onclick="exportBackupJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center">
+                        <svg class="w-4 h-4 mb-1 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Backup Cloud
                     </button>
                 </div>
 
@@ -669,8 +673,30 @@
 
                         <div id="companyCardStatusBox" class="hidden rounded-xl p-3 text-xs font-bold border"></div>
 
-                        <button onclick="saveCompanyDetails()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md">
-                            Salva Dati Azienda &amp; Carta Azienda
+                        <!-- Caricamento Logo Aziendale Personalizzato -->
+                        <div class="pt-2 border-t border-slate-700/60">
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5 flex items-center justify-between">
+                                <span>Logo Aziendale Ufficiale (per Stampe e Report)</span>
+                                <span class="text-[9px] text-emerald-400 font-normal">PNG, JPG o 3D</span>
+                            </label>
+                            <div class="flex items-center space-x-3 bg-[#0F1C32] p-3 rounded-2xl border border-slate-700/80">
+                                <div id="companyLogoPreviewWrapper" class="w-14 h-14 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner">
+                                    <img id="companyLogoImg" src="assets/logo_tachocontrol_3d.jpg" alt="Logo Azienda" class="w-full h-full object-cover">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <input type="file" id="companyLogoFileInput" accept="image/*" class="hidden" onchange="handleCompanyLogoSelect(event)">
+                                    <button type="button" onclick="document.getElementById('companyLogoFileInput').click()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 active:scale-95 text-slate-200 text-xs font-bold rounded-xl border border-slate-600 transition flex items-center space-x-1.5 shadow-sm">
+                                        <span>📁</span>
+                                        <span>Carica Logo Ditta</span>
+                                    </button>
+                                    <span id="companyLogoFilename" class="block text-[10px] text-slate-400 mt-1 truncate">Logo attivo nel Cloud</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="saveCompanyDetails()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
+                            <span>💾</span>
+                            <span>Salva Dati Azienda, Carta &amp; Logo</span>
                         </button>
                     </div>
                 </div>
@@ -772,6 +798,23 @@
                     <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
                         <span>🚀</span>
                         <span>Apri Simulatore di Guida &amp; Norme CE 561/2006</span>
+                    </button>
+                </div>
+
+                <!-- Box Esportazione Registro Completo Excel (.csv) -->
+                <div class="bg-gradient-to-r from-teal-950/70 via-[#15243E] to-emerald-950/70 rounded-3xl p-6 border border-teal-500/40 shadow-xl space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-teal-500/20 text-teal-400 rounded-2xl border border-teal-500/30 text-2xl">
+                            📊
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white">Registro Scarichi Flotta Excel (.csv)</h3>
+                            <p class="text-xs text-teal-300/80">Genera ed esporta il file tabellare con tutti i conducenti, veicoli, scadenze e stati di conformità.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <span>📥</span>
+                        <span>Scarica Registro Ufficiale Excel (.csv)</span>
                     </button>
                 </div>
 
@@ -1507,6 +1550,34 @@
         </div>
     </div>
 
+    <!-- =================== MODALE STORICO SCARICHI TACHIGRAFO =================== -->
+    <div id="downloadHistoryModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-slate-800 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-[#15233A] flex-shrink-0">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-xl">📜</span>
+                    <div>
+                        <h3 class="font-extrabold text-white text-sm" id="historyModalTitle">Storico Scarichi</h3>
+                        <p class="text-[10px] text-slate-400" id="historyModalSubtitle">Registro cronologico dei download effettuati</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeHistoryModal()" class="text-slate-400 hover:text-white font-bold text-xl px-2">&times;</button>
+            </div>
+            
+            <div class="p-4 overflow-y-auto flex-1 space-y-3 bg-[#0B1424]">
+                <div id="historyTimelineList" class="space-y-2.5">
+                    <!-- Popolato dinamicamente da openDownloadHistoryModal() -->
+                </div>
+            </div>
+
+            <div class="p-3.5 border-t border-slate-800 bg-[#15233A] flex justify-end flex-shrink-0">
+                <button type="button" onclick="closeHistoryModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3 rounded-xl transition">
+                    Chiudi Storico
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- =================== FOGLIO STAMPABILE MODULO ASSENZE UE =================== -->
     <div id="printableAttestationSheet" class="print-only hidden p-8 bg-white text-black font-sans text-xs max-w-3xl mx-auto leading-normal">
         <!-- Generato dinamicamente per la stampa perfetta A4 -->
@@ -2101,6 +2172,8 @@
         let driversMap = {};
         let vehiclesMap = {};
         let currentCompanyName = activeCompanyId ? "GC CodeLab - Gestione Flotta" : "Piattaforma Cloud • Gestione Flotte";
+        let currentCompanyLogoBase64 = "";
+        let pendingCompanyLogoBase64 = "";
         let companyCardData = { number: "", expiry: "" };
         let currentLoggedInDriver = null;
         let pendingBase64Doc = "";
@@ -2175,10 +2248,12 @@
 
             if (!activeCompanyId) {
                 currentCompanyName = "Piattaforma Cloud • Gestione Flotte";
+                currentCompanyLogoBase64 = "";
                 driversMap = {};
                 vehiclesMap = {};
                 companyCardData = { number: "", expiry: "" };
                 updateDOMCompanyName();
+                updateDOMCompanyLogo();
                 populateDatalist();
                 return;
             }
@@ -2187,6 +2262,8 @@
             try {
                 const cachedComp = localStorage.getItem('cached_compName_' + activeCompanyId);
                 if (cachedComp) currentCompanyName = cachedComp;
+                const cachedLogo = localStorage.getItem('cached_compLogo_' + activeCompanyId);
+                if (cachedLogo) currentCompanyLogoBase64 = cachedLogo;
                 const cachedCard = localStorage.getItem('cached_compCard_' + activeCompanyId);
                 if (cachedCard) companyCardData = JSON.parse(cachedCard);
                 const cachedDrivers = localStorage.getItem('cached_driversMap_' + activeCompanyId);
@@ -2195,6 +2272,7 @@
                 if (cachedVehicles) vehiclesMap = JSON.parse(cachedVehicles);
                 
                 updateDOMCompanyName();
+                updateDOMCompanyLogo();
                 updateDOMCompanyCard();
                 populateDatalist();
                 updateAdminBadges();
@@ -2218,6 +2296,16 @@
                 updateDOMCompanyName();
             });
             activeListeners.push({ ref: configNameRef, callback: configNameCb });
+
+            const configLogoRef = dbCompanyRef('config/logoBase64');
+            const configLogoCb = configLogoRef.on('value', snapshot => {
+                currentCompanyLogoBase64 = snapshot.val() || "";
+                try {
+                    localStorage.setItem('cached_compLogo_' + activeCompanyId, currentCompanyLogoBase64);
+                } catch(e) {}
+                updateDOMCompanyLogo();
+            });
+            activeListeners.push({ ref: configLogoRef, callback: configLogoCb });
 
             const configCardRef = dbCompanyRef('config/cartaAzienda');
             const configCardCb = configCardRef.on('value', snapshot => {
@@ -2483,6 +2571,36 @@
             updateDriverActiveCompanyDisplay();
         }
 
+        function updateDOMCompanyLogo() {
+            const imgEl = document.getElementById('companyLogoImg');
+            if (imgEl) {
+                imgEl.src = currentCompanyLogoBase64 || "assets/logo_tachocontrol_3d.jpg";
+            }
+            const fnEl = document.getElementById('companyLogoFilename');
+            if (fnEl) {
+                fnEl.innerText = currentCompanyLogoBase64 ? "Logo personalizzato attivo" : "Logo predefinito 3D attivo";
+            }
+        }
+
+        function handleCompanyLogoSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                showToast("Seleziona un file immagine valido (PNG o JPG).", "error");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                pendingCompanyLogoBase64 = e.target.result;
+                const imgEl = document.getElementById('companyLogoImg');
+                if (imgEl) imgEl.src = pendingCompanyLogoBase64;
+                const fnEl = document.getElementById('companyLogoFilename');
+                if (fnEl) fnEl.innerText = file.name;
+                showToast("Logo selezionato! Clicca su 'Salva Dati Azienda' per confermare.", "info");
+            };
+            reader.readAsDataURL(file);
+        }
+
         function updateDOMCompanyCard() {
             document.getElementById('companyCardNumberInput').value = companyCardData.number || "";
             document.getElementById('companyCardExpiryInput').value = companyCardData.expiry || "";
@@ -2523,17 +2641,82 @@
             }
 
             dbCompanyRef('config/denominazioneAzienda').set(newName);
-            dbCompanyRef('config/cartaAzienda').set({ number: cardNum, expiry: cardExp }, (error) => {
-                if (!error) {
-                    if (companiesRegistry[activeCompanyId]) {
-                        db.ref(`aziende_registry/${activeCompanyId}/name`).set(newName);
-                    }
-                    showToast("Dati azienda e carta aggiornati con successo!", "success");
-                    updateAdminBadges();
-                } else {
-                    showToast("Errore durante il salvataggio", "error");
+            dbCompanyRef('config/cartaAzienda').set({ number: cardNum, expiry: cardExp });
+
+            if (pendingCompanyLogoBase64) {
+                dbCompanyRef('config/logoBase64').set(pendingCompanyLogoBase64);
+                if (companiesRegistry[activeCompanyId]) {
+                    db.ref(`aziende_registry/${activeCompanyId}/logoBase64`).set(pendingCompanyLogoBase64);
                 }
-            });
+                currentCompanyLogoBase64 = pendingCompanyLogoBase64;
+                pendingCompanyLogoBase64 = "";
+            }
+
+            if (companiesRegistry[activeCompanyId]) {
+                db.ref(`aziende_registry/${activeCompanyId}/name`).set(newName);
+            }
+            showToast("Dati azienda, carta e logo salvati con successo!", "success");
+            updateAdminBadges();
+        }
+
+        function exportFleetToExcel() {
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || 'Gestione Flotta');
+            
+            let csvContent = "\uFEFF"; // UTF-8 BOM per corretta apertura in Excel
+            csvContent += `REGISTRO UFFICIALE SCARICHI TACHIGRAFO (Reg. UE 581/2010)\n`;
+            csvContent += `Azienda:;${compName} (${compCode})\n`;
+            csvContent += `Data Generazione:;${new Date().toLocaleDateString('it-IT')} ${new Date().toLocaleTimeString('it-IT')}\n\n`;
+            
+            // SEZIONE 1: CONDUCENTI (28 Giorni)
+            csvContent += `SEZIONE 1 • CONDUCENTI (Limite Massimo 28 Giorni - Reg. UE 581/2010)\n`;
+            csvContent += `Nome;Cognome;Numero Carta Conducente;Cantiere/Sede;Cellulare WhatsApp;Data Prossima Scadenza Scarico;Giorni Rimanenti;Stato di Conformità;Piano Ferie;Note\n`;
+            
+            for (let id in driversMap) {
+                const d = driversMap[id];
+                if (!d) continue;
+                const targetDate = d.lastDownloadDate || new Date().toISOString().split('T')[0];
+                const daysRem = getDaysRemaining(targetDate);
+                let status = "IN REGOLA";
+                if (daysRem <= 0) status = "SCADUTO / NON CONFORME";
+                else if (daysRem <= 2) status = "URGENTE / SCADENZA OGGI";
+                else if (daysRem <= 7) status = "PROMEMORIA ATTIVO";
+
+                let ferieStr = "Nessuna";
+                if (d.vacationStartDate && d.vacationEndDate) {
+                    ferieStr = `${formatDateItalian(d.vacationStartDate)} al ${formatDateItalian(d.vacationEndDate)}`;
+                }
+
+                csvContent += `"${(d.name || '').replace(/"/g, '""')}";"${(d.surname || '').replace(/"/g, '""')}";"${(d.cardNumber || '-').replace(/"/g, '""')}";"${(d.cantiere || '-').replace(/"/g, '""')}";"${(d.phone || '-').replace(/"/g, '""')}";"${formatDateItalian(targetDate)}";"${daysRem}";"${status}";"${ferieStr}";"${(d.notes || '-').replace(/"/g, '""')}"\n`;
+            }
+            
+            csvContent += `\n\n`;
+            
+            // SEZIONE 2: VEICOLI (90 Giorni)
+            csvContent += `SEZIONE 2 • FLOTTA VEICOLI (Limite Massimo 90 Giorni - Reg. UE 581/2010)\n`;
+            csvContent += `Targa Mezzo;Modello/Tipo;Cantiere/Sede;Data Prossima Scadenza Scarico;Giorni Rimanenti;Stato di Conformità;Note\n`;
+            
+            for (let id in vehiclesMap) {
+                const v = vehiclesMap[id];
+                if (!v) continue;
+                const targetDate = v.lastDownloadDate || new Date().toISOString().split('T')[0];
+                const daysRem = getDaysRemaining(targetDate);
+                let status = "IN REGOLA";
+                if (daysRem <= 0) status = "SCADUTO / NON CONFORME";
+                else if (daysRem <= 5) status = "URGENTE / SCADENZA IMMINENTE";
+
+                csvContent += `"${(v.plate || '').replace(/"/g, '""')}";"${(v.model || '-').replace(/"/g, '""')}";"${(v.cantiere || '-').replace(/"/g, '""')}";"${formatDateItalian(targetDate)}";"${daysRem}";"${status}";"${(v.notes || '-').replace(/"/g, '""')}"\n`;
+            }
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', `Registro_Scarichi_Tachigrafo_${compCode}_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            showToast("📊 Registro Excel (.csv) scaricato con successo!", "success");
         }
 
         function saveAdminPersonalPin() {
@@ -2978,13 +3161,22 @@
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
 
+            const logoHtml = currentCompanyLogoBase64
+                ? `<img src="${currentCompanyLogoBase64}" style="max-height: 48px; max-width: 120px; object-fit: contain; margin-left: 10px;">`
+                : `<img src="assets/logo_tachocontrol_3d.jpg" style="max-height: 48px; max-width: 48px; object-fit: cover; border-radius: 6px; margin-left: 10px;">`;
+
             const printSheet = document.getElementById('printableAttestationSheet');
             printSheet.innerHTML = `
                 <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.35; color: #000;">
-                    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
-                        <h2 style="font-size: 13px; font-weight: bold; margin: 0; text-transform: uppercase;">ATTESTATO DI ATTIVITÀ / MODULO DI CONTROLLO DELLE ASSENZE</h2>
-                        <p style="font-size: 9px; margin: 2px 0 0 0;">(REGOLAMENTO CE N. 561/2006 O AETR) • DECISIONE DELLA COMMISSIONE EUROPEA 2009/959/UE</p>
-                        <p style="font-size: 8.5px; font-style: italic; margin: 2px 0 0 0;">(DA COMPILARSI A MACCHINA E FIRMARE PRIMA DEL VIAGGIO - DA CONSERVARSI A BORDO CON I DATI DEL TACHIGRAFO ORIGINALI)</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
+                        <div style="flex: 1; text-align: center;">
+                            <h2 style="font-size: 13px; font-weight: bold; margin: 0; text-transform: uppercase;">ATTESTATO DI ATTIVITÀ / MODULO DI CONTROLLO DELLE ASSENZE</h2>
+                            <p style="font-size: 9px; margin: 2px 0 0 0;">(REGOLAMENTO CE N. 561/2006 O AETR) • DECISIONE DELLA COMMISSIONE EUROPEA 2009/959/UE</p>
+                            <p style="font-size: 8.5px; font-style: italic; margin: 2px 0 0 0;">(DA COMPILARSI A MACCHINA E FIRMARE PRIMA DEL VIAGGIO - DA CONSERVARSI A BORDO CON I DATI DEL TACHIGRAFO ORIGINALI)</p>
+                        </div>
+                        <div style="flex-shrink: 0;">
+                            ${logoHtml}
+                        </div>
                     </div>
 
                     <div style="margin-bottom: 8px;">
@@ -3948,12 +4140,90 @@
             const today = new Date();
             today.setDate(today.getDate() + 28);
             const targetStr = formatDateYYYYMMDD(today);
+            const downloadEvent = {
+                timestamp: new Date().toISOString(),
+                recordedAt: formatDateItalian(new Date().toISOString().split('T')[0]),
+                nextExpiry: formatDateItalian(targetStr),
+                by: 'Ufficio'
+            };
             dbCompanyRef('operai/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
+                    dbCompanyRef('operai/' + id + '/history').push(downloadEvent);
                     showToast("Nuova scadenza a 28 giorni registrata!", "success");
                     updateAdminBadges();
                 }
             });
+        }
+
+        function openDownloadHistoryModal(type, id) {
+            const modal = document.getElementById('downloadHistoryModal');
+            const titleEl = document.getElementById('historyModalTitle');
+            const subtitleEl = document.getElementById('historyModalSubtitle');
+            const listEl = document.getElementById('historyTimelineList');
+            if (!modal || !listEl) return;
+
+            let name = "";
+            let historyObj = null;
+            let currentExp = "";
+
+            if (type === 'driver') {
+                const d = driversMap[id];
+                if (!d) return;
+                name = `${d.name} ${d.surname}`;
+                historyObj = d.history || {};
+                currentExp = formatDateItalian(d.lastDownloadDate || new Date().toISOString().split('T')[0]);
+                titleEl.innerText = `Storico: ${name}`;
+                subtitleEl.innerText = `Carta Conducente • Scadenza attuale: ${currentExp}`;
+            } else {
+                const v = vehiclesMap[id];
+                if (!v) return;
+                name = `Veicolo ${v.plate}`;
+                historyObj = v.history || {};
+                currentExp = formatDateItalian(v.lastDownloadDate || new Date().toISOString().split('T')[0]);
+                titleEl.innerText = `Storico: ${name}`;
+                subtitleEl.innerText = `Memoria Veicolo (90gg) • Scadenza attuale: ${currentExp}`;
+            }
+
+            const entries = Object.values(historyObj).sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+            if (entries.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <span class="text-3xl block mb-2">⏳</span>
+                        <p class="text-xs font-semibold">Nessun evento registrato nello storico recente.</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Gli scarichi registrati con il tasto "+28gg" o "+90gg" compariranno qui con data e operatore.</p>
+                    </div>
+                `;
+            } else {
+                let html = "";
+                entries.forEach((entry) => {
+                    html += `
+                        <div class="p-3 bg-[#0F1C32] rounded-2xl border border-slate-700/80 flex items-start space-x-3 shadow-sm">
+                            <div class="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold flex-shrink-0">
+                                💾
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-bold text-xs text-white">Scarico Dati Registrato</span>
+                                    <span class="text-[10px] font-mono text-emerald-400 font-bold">${entry.recordedAt || '-'}</span>
+                                </div>
+                                <p class="text-[11px] text-slate-300 mt-0.5">
+                                    Nuova scadenza: <strong class="text-amber-300 font-mono">${entry.nextExpiry || '-'}</strong>
+                                </p>
+                                <span class="text-[9px] text-slate-500 block mt-1">Registrato da: ${entry.by || 'Ufficio'} &bull; ${entry.timestamp ? new Date(entry.timestamp).toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                listEl.innerHTML = html;
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeHistoryModal() {
+            const modal = document.getElementById('downloadHistoryModal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function toggleDriverPhotoPermission(id) {
@@ -4096,6 +4366,9 @@
                                     <div class="py-1">
                                         <button onclick="openDriverViewModal('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-slate-200 transition">
                                             <span>📄</span> <span>Visualizza Scheda</span>
+                                        </button>
+                                        <button onclick="openDownloadHistoryModal('driver', '${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-indigo-300 font-semibold transition">
+                                            <span>📜</span> <span>Storico Scarichi (Log)</span>
                                         </button>
                                         ${hasAttachment ? `
                                             <button onclick="openDriverDocument('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-cyan-400 transition">
@@ -4356,9 +4629,16 @@
         function quickDownloadVehicle(id) {
             const today = new Date();
             today.setDate(today.getDate() + 90);
-            const targetStr = today.toISOString().split('T')[0];
+            const targetStr = formatDateYYYYMMDD(today);
+            const downloadEvent = {
+                timestamp: new Date().toISOString(),
+                recordedAt: formatDateItalian(new Date().toISOString().split('T')[0]),
+                nextExpiry: formatDateItalian(targetStr),
+                by: 'Ufficio'
+            };
             dbCompanyRef('veicoli/' + id).update({ lastDownloadDate: targetStr }, (error) => {
                 if(!error) {
+                    dbCompanyRef('veicoli/' + id + '/history').push(downloadEvent);
                     showToast("Nuova scadenza a 90 giorni registrata per il mezzo!", "success");
                     updateAdminBadges();
                 }
@@ -4410,8 +4690,11 @@
                                 <button onclick="toggleVehicleRowMenu(event, '${id}')" title="Altre Opzioni" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
                                     ⋮
                                 </button>
-                                <div id="vehicleRowMenu_${id}" class="hidden absolute right-0 mt-1 w-44 bg-slate-900/95 backdrop-blur-md border border-slate-700/90 rounded-2xl shadow-2xl z-50 py-1.5 text-xs text-slate-200 divide-y divide-slate-800/80">
+                                <div id="vehicleRowMenu_${id}" class="hidden absolute right-0 mt-1 w-48 bg-slate-900/95 backdrop-blur-md border border-slate-700/90 rounded-2xl shadow-2xl z-50 py-1.5 text-xs text-slate-200 divide-y divide-slate-800/80">
                                     <div class="py-1">
+                                        <button onclick="openDownloadHistoryModal('vehicle', '${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-indigo-300 font-semibold transition">
+                                            <span>📜</span> <span>Storico Scarichi (Log)</span>
+                                        </button>
                                         <button onclick="editVehicle('${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-blue-400 transition">
                                             <span>✏️</span> <span>Modifica Mezzo</span>
                                         </button>
