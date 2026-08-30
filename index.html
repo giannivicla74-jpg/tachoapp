@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GC-TachoControl v9.0 Pro - Cloud & Push</title>
+    <title>GC-TachoControl v9.1 Pro - Cloud & Offline Ready</title>
     
     <!-- Icone PWA (Assolute per massima compatibilità) -->
     <link rel="apple-touch-icon" href="https://giannivicla74-jpg.github.io/tachoapp/logo.jpg">
@@ -107,6 +107,12 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased w-full max-w-full overflow-x-hidden">
 
+    <!-- =================== BANNER STATO CONNESSIONE (PWA OFFLINE / CLOUD SYNC) =================== -->
+    <div id="offlineStatusBar" class="hidden no-print bg-amber-500/95 text-slate-950 px-4 py-1.5 text-center text-xs font-black shadow-md flex items-center justify-center space-x-1.5 sticky top-0 z-50 transition-all duration-300">
+        <span>⚡</span>
+        <span id="offlineStatusText">Modalità Offline • Dati Locali Consultabili</span>
+    </div>
+
     <!-- =================== SPLASH SCREEN DI AVVIO =================== -->
     <div id="appSplashScreen" class="fixed inset-0 z-[999] bg-[#0B1626] flex flex-col items-center justify-center transition-all duration-500 ease-out">
         <div class="relative flex flex-col items-center text-center p-6 select-none pointer-events-none">
@@ -120,9 +126,9 @@
             </div>
 
             <h1 class="text-2xl font-black tracking-tight text-white mb-1">
-                GC-TachoControl <span class="text-emerald-400 font-mono text-sm">v9.0</span>
+                GC-TachoControl <span class="text-emerald-400 font-mono text-sm">v9.1</span>
             </h1>
-            <p class="text-xs text-slate-400 font-medium mb-6">Cloud &bull; Conformità Reg. CE 561/2006</p>
+            <p class="text-xs text-slate-400 font-medium mb-6">Cloud &bull; PWA Offline &bull; Reg. CE 561/2006</p>
 
             <!-- Spinner / Indicatore di Caricamento -->
             <div class="flex items-center space-x-2 bg-slate-900/80 px-4 py-2 rounded-full border border-slate-800 shadow-lg">
@@ -130,7 +136,7 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span class="text-[11px] font-semibold text-slate-300">Caricamento Cloud in corso...</span>
+                <span id="splashScreenText" class="text-[11px] font-semibold text-slate-300">Caricamento Cloud in corso...</span>
             </div>
         </div>
     </div>
@@ -1258,7 +1264,7 @@
 
                 <!-- Footer Modale -->
                 <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
-                    <span class="text-[10px] text-slate-400">GC CodeLab &bull; TachoControl v9.0</span>
+                    <span class="text-[10px] text-slate-400">GC CodeLab &bull; TachoControl v9.1 Pro</span>
                     <button type="button" onclick="closeManualModal()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition shadow-md">
                         Ho Capito / Chiudi
                     </button>
@@ -1369,7 +1375,7 @@
         <!-- Footer -->
         <footer class="no-print text-center mt-8 space-y-2">
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
-                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v9.0 Pro Cloud & Push
+                GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v9.1 Pro Cloud &amp; Offline Ready
             </p>
             <p class="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto font-normal">
                 TachoCard Control - Sviluppato in conformità con il Regolamento (CE) n. 561/2006, Regolamento (UE) n. 165/2014 e Regolamento (UE) n. 581/2010.
@@ -2014,7 +2020,7 @@
 
             <!-- Footer Modale -->
             <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
-                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v9.0</span>
+                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v9.1 Pro</span>
                 <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
                     Chiudi
                 </button>
@@ -2041,6 +2047,14 @@
         let activeListeners = [];
         let lastRegisteredCompany = null;
 
+        // Inizializzazione Cache Offline Preventiva da LocalStorage
+        try {
+            const cachedRegistry = localStorage.getItem('cached_companiesRegistry');
+            if (cachedRegistry) companiesRegistry = JSON.parse(cachedRegistry);
+        } catch(e) {
+            console.warn("Errore lettura registro aziende locale:", e);
+        }
+
         let driversMap = {};
         let vehiclesMap = {};
         let currentCompanyName = activeCompanyId ? "GC CodeLab - Gestione Flotta" : "Piattaforma Cloud • Gestione Flotte";
@@ -2057,9 +2071,12 @@
             taci: "https://taci.infocamere.it/"
         };
 
-        // Listener globale per il registro di tutte le aziende
+        // Listener globale per il registro di tutte le aziende (con salvataggio locale per offline)
         db.ref('aziende_registry').on('value', (snapshot) => {
             companiesRegistry = snapshot.val() || {};
+            try {
+                localStorage.setItem('cached_companiesRegistry', JSON.stringify(companiesRegistry));
+            } catch(e) {}
             if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                 currentCompanyName = companiesRegistry[activeCompanyId].name;
                 updateDOMCompanyName();
@@ -2123,6 +2140,26 @@
                 return;
             }
 
+            // 1. CARICAMENTO ISTANTANEO PREVENTIVO DALLA CACHE LOCALE (Funzionamento 100% Offline)
+            try {
+                const cachedComp = localStorage.getItem('cached_compName_' + activeCompanyId);
+                if (cachedComp) currentCompanyName = cachedComp;
+                const cachedCard = localStorage.getItem('cached_compCard_' + activeCompanyId);
+                if (cachedCard) companyCardData = JSON.parse(cachedCard);
+                const cachedDrivers = localStorage.getItem('cached_driversMap_' + activeCompanyId);
+                if (cachedDrivers) driversMap = JSON.parse(cachedDrivers);
+                const cachedVehicles = localStorage.getItem('cached_vehiclesMap_' + activeCompanyId);
+                if (cachedVehicles) vehiclesMap = JSON.parse(cachedVehicles);
+                
+                updateDOMCompanyName();
+                updateDOMCompanyCard();
+                populateDatalist();
+                updateAdminBadges();
+            } catch(e) {
+                console.warn("Errore lettura cache locale flotta:", e);
+            }
+
+            // 2. SINCRONIZZAZIONE REALTIME CLOUD FIREBASE
             const configNameRef = dbCompanyRef('config/denominazioneAzienda');
             const configNameCb = configNameRef.on('value', snapshot => {
                 const name = snapshot.val();
@@ -2132,6 +2169,9 @@
                     const regInfo = companiesRegistry[activeCompanyId];
                     currentCompanyName = (regInfo && regInfo.name) ? regInfo.name : (activeCompanyId === 'AZ-MAIN' ? "GC CodeLab - Gestione Flotta" : `Azienda ${activeCompanyId}`);
                 }
+                try {
+                    localStorage.setItem('cached_compName_' + activeCompanyId, currentCompanyName);
+                } catch(e) {}
                 updateDOMCompanyName();
             });
             activeListeners.push({ ref: configNameRef, callback: configNameCb });
@@ -2140,6 +2180,9 @@
             const configCardCb = configCardRef.on('value', snapshot => {
                 const data = snapshot.val();
                 companyCardData = data || { number: "", expiry: "" };
+                try {
+                    localStorage.setItem('cached_compCard_' + activeCompanyId, JSON.stringify(companyCardData));
+                } catch(e) {}
                 updateDOMCompanyCard();
                 updateAdminBadges();
             });
@@ -2148,6 +2191,9 @@
             const operaiRef = dbCompanyRef('operai');
             const operaiCb = operaiRef.on('value', snapshot => {
                 driversMap = snapshot.val() || {};
+                try {
+                    localStorage.setItem('cached_driversMap_' + activeCompanyId, JSON.stringify(driversMap));
+                } catch(e) {}
                 populateDatalist();
                 if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabFleet').classList.contains('hidden')) {
                     renderFleetTable();
@@ -2169,6 +2215,9 @@
             const veicoliRef = dbCompanyRef('veicoli');
             const veicoliCb = veicoliRef.on('value', snapshot => {
                 vehiclesMap = snapshot.val() || {};
+                try {
+                    localStorage.setItem('cached_vehiclesMap_' + activeCompanyId, JSON.stringify(vehiclesMap));
+                } catch(e) {}
                 if (!document.getElementById('adminSection').classList.contains('hidden') && !document.getElementById('tabVehicles').classList.contains('hidden')) {
                     renderVehicleTable();
                 }
@@ -2374,7 +2423,7 @@
             }
             
             const adminComp = document.getElementById('adminHeaderCompanyName');
-            if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v9.0 Pro`;
+            if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v9.1 Pro`;
 
             const headerCode = document.getElementById('adminHeaderCompanyCode');
             if (headerCode) headerCode.innerText = activeCompanyId || 'AZ-MAIN';
@@ -5096,7 +5145,28 @@
             }
         }
 
+        function updateOnlineStatusUI() {
+            const banner = document.getElementById('offlineStatusBar');
+            const text = document.getElementById('offlineStatusText');
+            if (!banner || !text) return;
+            if (navigator.onLine) {
+                banner.className = "no-print bg-emerald-600/90 text-white px-4 py-1.5 text-center text-xs font-bold shadow-md flex items-center justify-center space-x-1.5 sticky top-0 z-50 transition-all duration-300";
+                text.innerHTML = "🟢 Connesso al Cloud • Sincronizzazione in tempo reale attiva";
+                setTimeout(() => {
+                    if (navigator.onLine) banner.classList.add('hidden');
+                }, 3000);
+            } else {
+                banner.className = "no-print bg-amber-500/95 text-slate-950 px-4 py-1.5 text-center text-xs font-black shadow-md flex items-center justify-center space-x-1.5 sticky top-0 z-50 transition-all duration-300";
+                text.innerHTML = "⚡ Modalità Offline (Senza Connessione) • Dati Locali Pronti";
+                banner.classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatusUI);
+        window.addEventListener('offline', updateOnlineStatusUI);
+
         function initApp() {
+            updateOnlineStatusUI();
             setupCompanyListeners();
             updateCompanyActivationUI();
             calculateDrivingSimulation();
@@ -5106,11 +5176,11 @@
             const autoStatus = checkAutoLoginDriver();
 
             if (autoStatus === true) {
-                // Autista caricato istantaneamente
-                setTimeout(hideSplashScreen, 300);
+                // Autista caricato istantaneamente dalla memoria locale o cloud
+                setTimeout(hideSplashScreen, 200);
             } else if (autoStatus === 'pending') {
-                // In attesa che arrivino i dati da Firebase: la splash screen rimane attiva ed elegante
-                setTimeout(hideSplashScreen, 1500); // Fallback di sicurezza
+                // In attesa di Firebase; se offline o lento, sblocca comunque in fretta
+                setTimeout(hideSplashScreen, navigator.onLine ? 1000 : 200);
             } else {
                 // Utente non autenticato come autista
                 if (azQuery) {
@@ -5118,13 +5188,13 @@
                 } else {
                     showSection('login');
                 }
-                setTimeout(hideSplashScreen, 300);
+                setTimeout(hideSplashScreen, 200);
             }
         }
 
         window.onload = initApp;
-        // Fallback di sicurezza per nascondere sempre la splash screen anche su connessioni lente
-        setTimeout(hideSplashScreen, 2000);
+        // Fallback di sicurezza per nascondere sempre la splash screen in max 1.5s
+        setTimeout(hideSplashScreen, 1500);
     </script>
 </body>
 </html>
