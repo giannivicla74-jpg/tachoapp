@@ -5626,8 +5626,8 @@
             if (attestBox && attestList) {
                 const attEntries = d.attestazioni ? Object.values(d.attestazioni).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || '')) : [];
                 if (attestCount) attestCount.innerText = attEntries.length;
+                attestBox.classList.remove('hidden');
                 if (attEntries.length > 0) {
-                    attestBox.classList.remove('hidden');
                     let aHtml = "";
                     attEntries.forEach(att => {
                         const sD = (att.startDateTime || '').replace('T', ' ');
@@ -5657,7 +5657,11 @@
                     });
                     attestList.innerHTML = aHtml;
                 } else {
-                    attestBox.classList.add('hidden');
+                    attestList.innerHTML = `
+                        <div class="p-3 bg-[#0F1C32]/60 rounded-xl border border-dashed border-slate-700/80 text-center text-xs text-slate-400">
+                            Nessun Modulo Assenze UE registrato per questo conducente.
+                        </div>
+                    `;
                 }
             }
         }
