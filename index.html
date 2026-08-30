@@ -430,18 +430,14 @@
             <!-- TAB 1: GESTIONE FLOTTA CONDUCENTI -->
             <div id="tabFleet" class="no-print space-y-6 w-full min-w-0">
                 
-                <div class="no-print grid grid-cols-3 gap-2 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
-                    <button onclick="exportFleetToExcel()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white text-[10px] font-bold py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center shadow-md">
-                        <svg class="w-4 h-4 mb-1 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Export Excel (.csv)
+                <div class="no-print grid grid-cols-2 gap-3 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
+                    <button onclick="exportFleetToExcel()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2 shadow-md">
+                        <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Export Excel (.csv)</span>
                     </button>
-                    <button onclick="printReportPDF()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 text-[10px] font-black py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center shadow-md">
-                        <svg class="w-4 h-4 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
-                        Report PDF
-                    </button>
-                    <button onclick="exportBackupJSON()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold py-2 px-1.5 rounded-xl transition text-center flex flex-col items-center">
-                        <svg class="w-4 h-4 mb-1 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                        Backup Cloud
+                    <button onclick="printReportPDF()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 text-[11px] font-black py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2 shadow-md">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
+                        <span>Report PDF Flotta</span>
                     </button>
                 </div>
 

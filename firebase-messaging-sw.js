@@ -2,7 +2,7 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v9.8';
+const CACHE_NAME = 'tachocontrol-offline-v9.9';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
