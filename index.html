@@ -839,6 +839,23 @@
                     </button>
                 </div>
 
+                <!-- Box Guida Operativa Display Tachigrafo VDO -->
+                <div class="bg-gradient-to-r from-cyan-950/90 via-[#15243E] to-blue-950/90 rounded-3xl p-6 border border-cyan-500/40 shadow-xl space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-cyan-500/20 text-cyan-400 rounded-2xl border border-cyan-500/30 text-2xl">
+                            📟
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white">Guida Operativa: Inserimento Carta su Tachigrafo VDO</h3>
+                            <p class="text-xs text-cyan-300/80">Istruzioni passo-passo sul display per gli autisti: manual entry, riposo letto 🛌, nazione IT e partenza.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <span>📟</span>
+                        <span>Apri Guida Display VDO (Passo-Passo)</span>
+                    </button>
+                </div>
+
                 <!-- Box Modulo Assenze UE (Attestato di Attività) -->
                 <div class="bg-gradient-to-r from-emerald-950/80 via-[#15243E] to-teal-950/80 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-3">
                     <div class="flex items-center space-x-3">
@@ -1120,18 +1137,22 @@
                     </p>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <button onclick="openVdoManualModal()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition active:scale-95 border border-cyan-400/40">
+                        <span>📟</span>
+                        <span>Guida Display Tachigrafo VDO</span>
+                    </button>
                     <button onclick="openAbsenceGuideModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition active:scale-95">
                         <span>📘</span>
-                        <span>Guida Malattia &amp; Ferie</span>
+                        <span>Guida Malattia &amp; Ferie (28gg)</span>
                     </button>
                     <button onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition active:scale-95">
                         <span>📖</span>
-                        <span>Manuale Conducente</span>
+                        <span>Manuale Conducente Completo</span>
                     </button>
                     <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-3 rounded-xl shadow-lg flex items-center justify-center text-xs space-x-1.5 transition-all active:scale-[0.98]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <span>Informativa CCIAA</span>
+                        <span>Informativa Ufficiale CCIAA</span>
                     </button>
                 </div>
             </div>
@@ -1569,6 +1590,227 @@
         </footer>
     </main>
 
+    <!-- =================== MODALE GUIDA OPERATIVA VDO (INSERIMENTO CARTA & MANUAL ENTRY) =================== -->
+    <div id="vdoManualEntryModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[97] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-cyan-500/50 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            
+            <!-- Header Modale -->
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-cyan-500/20 text-cyan-400 rounded-2xl text-xl border border-cyan-500/30">
+                        📟
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-white tracking-tight">Guida Operativa: Inserimento Carta su Tachigrafo VDO</h3>
+                        <p class="text-[11px] text-cyan-300 font-semibold">Procedura Display Passo-Passo &bull; Inserimento Manuale Riposo (Manual Entry)</p>
+                    </div>
+                </div>
+                <button onclick="closeVdoManualModal()" class="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Contenuto Scorrevole -->
+            <div class="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs text-slate-200 leading-relaxed">
+                
+                <!-- AVVERTENZE FONDAMENTALI PER L'OPERAIO -->
+                <div class="bg-gradient-to-r from-red-950/70 via-[#1F1524] to-red-950/70 border-l-4 border-red-500 rounded-2xl p-4 space-y-2.5 shadow-xl">
+                    <div class="flex items-center space-x-2 text-red-400">
+                        <span class="text-lg">⚠️</span>
+                        <h4 class="font-black text-xs sm:text-sm text-white uppercase tracking-wide">Regole Fondamentali per l'Operaio</h4>
+                    </div>
+                    <ul class="space-y-2 pl-2 text-[11px] text-slate-300">
+                        <li class="flex items-start space-x-2">
+                            <span class="text-red-400 font-bold text-sm leading-none">&bull;</span>
+                            <span><strong>Inserisci la carta appena sali a bordo:</strong> Fallo subito, PRIMA di accendere il motore o svolgere altre operazioni.</span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-red-400 font-bold text-sm leading-none">&bull;</span>
+                            <span><strong>NON muovere il camion:</strong> Non spostare il veicolo finché sul display non compare la schermata classica con <strong>velocità a 0 km/h</strong>. <em>Se ti muovi prima, scatta la sanzione!</em></span>
+                        </li>
+                        <li class="flex items-start space-x-2">
+                            <span class="text-amber-400 font-bold text-sm leading-none">&bull;</span>
+                            <span><strong>Tasti di Controllo:</strong> Usa <strong>Freccia Su (▲)</strong> e <strong>Freccia Giù (▼)</strong> per muoverti nel menu; premi <strong>OK</strong> per confermare ogni scelta.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- I 6 PASSI OPERATIVI CON SIMULATORE DISPLAY -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-extrabold text-sm text-cyan-300 flex items-center space-x-2">
+                            <span>🔄</span>
+                            <span>Passo-Passo: Cosa Fare sul Display del Tachigrafo</span>
+                        </h4>
+                        <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">VDO DTCO Series</span>
+                    </div>
+
+                    <!-- PASSO 1 -->
+                    <div class="bg-[#15243E] border border-slate-700/80 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-cyan-400 flex items-center space-x-1.5">
+                                <span class="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 inline-flex items-center justify-center text-[11px] font-mono">1</span>
+                                <span>Inserimento della Carta</span>
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-mono">Slot 1 Conducente</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px]">
+                            Spingi la carta nello <strong>Slot 1</strong> con il <strong>chip dorato rivolto verso l'ALTO 🔼</strong> e l'immagine della foto rivolta verso il BASSO 🔽.
+                        </p>
+                        <!-- Mockup Display Tachigrafo -->
+                        <div class="bg-[#081512] border-2 border-emerald-600/60 rounded-xl p-3 font-mono text-emerald-400 text-xs shadow-inner flex flex-col space-y-1">
+                            <div class="flex justify-between items-center text-[10px] text-emerald-500/80 border-b border-emerald-900/60 pb-1">
+                                <span>1 🪪 VDO DTCO</span>
+                                <span>UTC +01:00</span>
+                            </div>
+                            <div class="font-bold tracking-wider pt-0.5">MARIO ROSSI</div>
+                            <div class="text-[11px] text-emerald-300">Ultimo prelievo: 24.08 18:30</div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 2 -->
+                    <div class="bg-[#15243E] border border-slate-700/80 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-yellow-400 flex items-center space-x-1.5">
+                                <span class="w-5 h-5 rounded-full bg-yellow-500/20 text-yellow-300 inline-flex items-center justify-center text-[11px] font-mono">2</span>
+                                <span>Domanda: "Inserimento manuale?"</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-yellow-500/20 text-yellow-300 border border-yellow-500/30">SELEZIONA SÌ</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px]">
+                            Sul display appare la domanda: <strong>"Inserimento manuale?"</strong>. Usa le frecce (▲/▼) per selezionare <strong>SÌ</strong> e premi <strong>OK</strong>.
+                        </p>
+                        <!-- Mockup Display Tachigrafo -->
+                        <div class="bg-[#081512] border-2 border-emerald-600/60 rounded-xl p-3 font-mono text-emerald-400 text-xs shadow-inner flex flex-col space-y-1">
+                            <div class="flex justify-between items-center text-[10px] text-emerald-500/80 border-b border-emerald-900/60 pb-1">
+                                <span>1 ❓ INSERIMENTO</span>
+                                <span>MENU GUIDATO</span>
+                            </div>
+                            <div class="font-bold tracking-wider text-amber-300 pt-0.5">Inserimento manuale?</div>
+                            <div class="flex items-center space-x-3 text-sm font-black text-emerald-300">
+                                <span class="bg-emerald-500 text-black px-2 py-0.5 rounded">&gt; SÌ &lt;</span>
+                                <span class="text-emerald-700">NO</span>
+                            </div>
+                        </div>
+                        <div class="bg-amber-950/40 border border-amber-800/60 p-2.5 rounded-xl text-[10px] text-amber-200">
+                            ⚠️ <strong>Attenzione:</strong> Se premi NO per sbaglio, salti la procedura e il tachigrafo memorizza un periodo di tempo non documentato (attività sconosciuta), con rischio di verbale nei controlli!
+                        </div>
+                    </div>
+
+                    <!-- PASSO 3 -->
+                    <div class="bg-[#15243E] border border-slate-700/80 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-emerald-400 flex items-center space-x-1.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 inline-flex items-center justify-center text-[11px] font-mono">3</span>
+                                <span>Inserimento del Riposo (Ferie, Malattia o Riposo Settimanale)</span>
+                            </span>
+                            <span class="text-[10px] text-emerald-400 font-bold">Simbolo Letto 🛌</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px]">
+                            Il tachigrafo ti mostra l'ora dell'ultimo prelievo carta e l'ora attuale. Sul display compare il <strong>simbolo del Letto 🛌 (Riposo)</strong>. Premi <strong>OK</strong> per confermare che in tutto questo tempo sei stato a riposo, poi premi di nuovo <strong>OK</strong> sulla data/ora odierna di fine riposo.
+                        </p>
+                        <!-- Mockup Display Tachigrafo -->
+                        <div class="bg-[#081512] border-2 border-emerald-600/60 rounded-xl p-3 font-mono text-emerald-400 text-xs shadow-inner flex flex-col space-y-1">
+                            <div class="flex justify-between items-center text-[10px] text-emerald-500/80 border-b border-emerald-900/60 pb-1">
+                                <span>1 🛌 ATTIVITÀ RIPOSO</span>
+                                <span>INTERVALLO</span>
+                            </div>
+                            <div class="font-bold tracking-wider pt-0.5">24.08 18:30 &rarr; 30.08 07:00</div>
+                            <div class="text-[11px] text-emerald-300 font-bold flex items-center space-x-1">
+                                <span>Simbolo: [ 🛌 RIPOSO ]</span>
+                                <span class="animate-pulse font-black text-amber-300">&bull; Premi OK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 4 -->
+                    <div class="bg-[#15243E] border border-slate-700/80 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-sky-400 flex items-center space-x-1.5">
+                                <span class="w-5 h-5 rounded-full bg-sky-500/20 text-sky-300 inline-flex items-center justify-center text-[11px] font-mono">4</span>
+                                <span>Paese / Nazione di Inizio Turno</span>
+                            </span>
+                            <span class="text-[10px] text-sky-300 font-bold">Nazione: IT</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px]">
+                            Il display ti chiede: <strong>"Nazione inizio?"</strong> o <strong>"Stato inizio?"</strong>. Usa le frecce (▲/▼) per cercare la voce <strong>IT (Italia)</strong> e premi <strong>OK</strong>.
+                        </p>
+                        <!-- Mockup Display Tachigrafo -->
+                        <div class="bg-[#081512] border-2 border-emerald-600/60 rounded-xl p-3 font-mono text-emerald-400 text-xs shadow-inner flex flex-col space-y-1">
+                            <div class="flex justify-between items-center text-[10px] text-emerald-500/80 border-b border-emerald-900/60 pb-1">
+                                <span>1 🌍 NAZIONE INIZIO</span>
+                                <span>PAESE</span>
+                            </div>
+                            <div class="font-bold tracking-wider pt-0.5">Nazione inizio?</div>
+                            <div class="text-sm font-black text-amber-300">
+                                &gt; [ IT ] ITALIA &lt;
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 5 -->
+                    <div class="bg-[#15243E] border border-slate-700/80 rounded-2xl p-4 space-y-2.5 shadow-md">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-indigo-400 flex items-center space-x-1.5">
+                                <span class="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 inline-flex items-center justify-center text-[11px] font-mono">5</span>
+                                <span>Conferma Finale e Memorizzazione</span>
+                            </span>
+                            <span class="text-[10px] text-indigo-300 font-bold">Salvataggio su Chip</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px]">
+                            Il display chiede: <strong>"Confermare inserimento manuale?"</strong> o <strong>"Memorizzare dati?"</strong>. Seleziona <strong>SÌ</strong> e premi <strong>OK</strong>. Sul display compare il messaggio <em>"Attendere..."</em> mentre i dati vengono scritti sul microchip.
+                        </p>
+                        <!-- Mockup Display Tachigrafo -->
+                        <div class="bg-[#081512] border-2 border-emerald-600/60 rounded-xl p-3 font-mono text-emerald-400 text-xs shadow-inner flex flex-col space-y-1">
+                            <div class="flex justify-between items-center text-[10px] text-emerald-500/80 border-b border-emerald-900/60 pb-1">
+                                <span>1 💾 CONFERMA DATI</span>
+                                <span>SCRITTURA CHIP</span>
+                            </div>
+                            <div class="font-bold tracking-wider text-amber-300 pt-0.5">Memorizzare dati? &gt; SÌ &lt;</div>
+                            <div class="text-[11px] text-emerald-300 flex items-center space-x-1">
+                                <span>⏳ Attendere...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 6 -->
+                    <div class="bg-gradient-to-r from-emerald-950/70 via-[#15243E] to-emerald-950/70 border border-emerald-500/60 rounded-2xl p-4 space-y-2.5 shadow-xl">
+                        <div class="flex items-center justify-between">
+                            <span class="font-extrabold text-emerald-400 flex items-center space-x-1.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 inline-flex items-center justify-center text-[11px] font-bold font-mono">6</span>
+                                <span>Fine della Procedura &bull; Schermata Standard e Partenza!</span>
+                            </span>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950">VIA LIBERA</span>
+                        </div>
+                        <p class="text-slate-300 text-[11px]">
+                            La procedura è completata quando sul display appare la schermata classica di guida (quella con orologio, chilometri e lo zero <strong>0 km/h</strong>). <strong>Ora puoi accendere il motore e partire!</strong>
+                        </p>
+                        <!-- Mockup Display Tachigrafo Schermata Standard -->
+                        <div class="bg-[#081512] border-2 border-emerald-500 rounded-xl p-3 font-mono text-emerald-400 text-xs shadow-inner flex flex-col space-y-1">
+                            <div class="flex justify-between items-center text-[11px] border-b border-emerald-900/80 pb-1">
+                                <span class="font-bold">07:05  🟢  1 🪪</span>
+                                <span class="text-white font-black text-sm">0 km/h</span>
+                            </div>
+                            <div class="flex justify-between items-center pt-0.5 text-[11px]">
+                                <span>km 184.520</span>
+                                <span class="text-emerald-300 font-bold">PRONTO ALLA GUIDA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Modale -->
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
+                <span class="text-[10px] text-slate-400">GC CodeLab &bull; DTCO VDO Inserimento Manuale</span>
+                <button type="button" onclick="closeVdoManualModal()" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl transition shadow-md">
+                    Ho Capito / Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- =================== MODALE GUIDA PROCEDURA MALATTIA, FERIE & MANCATO SCARICO 28 GG =================== -->
     <div id="absenceGuideModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[96] flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="bg-[#111C2E] border border-blue-500/50 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
@@ -1635,6 +1877,10 @@
                             <li>✔️ <strong>Registrazione Manuale sul Tachigrafo:</strong> Al rientro, quando l'autista inserisce la carta nel tachigrafo, deve effettuare la procedura di inserimento manuale (Manual Entry) confermando il <strong>simbolo del Letto (Riposo 🛌)</strong> per tutto il periodo di assenza.</li>
                             <li>✔️ <strong>Attestato di Attività (Modulo Assenze UE):</strong> Compilazione della <em>Casella 15 (Ferie)</em> a supporto interno e per i controlli dell'Ispettorato del Lavoro.</li>
                         </ul>
+                        <button type="button" onclick="closeAbsenceGuideModal(); openVdoManualModal();" class="w-full mt-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-3 rounded-xl text-[11px] transition flex items-center justify-center space-x-1.5 shadow-md active:scale-98">
+                            <span>📟</span>
+                            <span>Visualizza Guida Passo-Passo Display Tachigrafo VDO</span>
+                        </button>
                     </div>
                 </div>
 
@@ -3532,6 +3778,9 @@
 
         function openAbsenceGuideModal() { document.getElementById('absenceGuideModal').classList.remove('hidden'); }
         function closeAbsenceGuideModal() { document.getElementById('absenceGuideModal').classList.add('hidden'); }
+
+        function openVdoManualModal() { document.getElementById('vdoManualEntryModal').classList.remove('hidden'); }
+        function closeVdoManualModal() { document.getElementById('vdoManualEntryModal').classList.add('hidden'); }
 
         function openAttestationModal() {
             const select = document.getElementById('attestDriverSelect');
