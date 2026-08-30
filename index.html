@@ -692,6 +692,23 @@
                     </button>
                 </div>
 
+                <!-- Box Modulo Assenze UE (Attestato di Attività) -->
+                <div class="bg-gradient-to-r from-emerald-950/80 via-[#15243E] to-teal-950/80 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-2xl">
+                            📄
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-sm text-white">Modulo di Controllo Assenze UE (Attestato di Attività)</h3>
+                            <p class="text-xs text-emerald-300/80">Compila a computer e stampa il modello ufficiale per Malattia, Ferie e Permessi (Decisione 2009/959/UE).</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openAttestationModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                        <span>🖨️</span>
+                        <span>Compila e Stampa Modulo Assenze Ufficiale UE</span>
+                    </button>
+                </div>
+
                 <!-- Box Simulatore e Guida Normativa CE 561/2006 (Admin) -->
                 <div class="bg-gradient-to-r from-emerald-950/70 via-[#15243E] to-indigo-950/70 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-4">
                     <div class="flex items-center space-x-3">
@@ -983,6 +1000,12 @@
                                 <li>&bull; <strong>Tutela Documentale Azienda:</strong> In caso di controllo ispettivo (Polizia/Ispettorato), l'azienda giustifica il ritardo esibendo il <em>certificato telematico di malattia INPS</em> e l'<em>Attestato di Attività UE</em>.</li>
                                 <li>&bull; <strong>Se la carta è già in azienda:</strong> Se la carta era stata lasciata in custodia in ufficio, il responsabile può procedere allo scarico regolare anche in assenza del lavoratore.</li>
                             </ul>
+                            <div class="pt-2">
+                                <button type="button" onclick="closeManualModal(); openAttestationModal();" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center space-x-2 shadow transition">
+                                    <span>📄</span>
+                                    <span>Compila e Stampa Subito il Modulo Assenze UE</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
 
@@ -1302,6 +1325,89 @@
             </p>
         </footer>
     </main>
+
+    <!-- =================== MODALE ATTESTATO DI ATTIVITA UE (MODULO ASSENZE) =================== -->
+    <div id="attestationModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[95] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-slate-700/80 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-2xl text-xl">
+                        📄
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-base text-white tracking-tight">Modulo di Controllo delle Assenze UE</h3>
+                        <p class="text-[11px] text-emerald-400 font-bold">Attestato di Attività Conducente &bull; Decisione 2009/959/UE</p>
+                    </div>
+                </div>
+                <button onclick="closeAttestationModal()" class="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-300">
+                <div class="bg-blue-950/40 border border-blue-800/50 p-3 rounded-2xl text-blue-200 text-[11px] leading-relaxed">
+                    ℹ️ <strong>Obbligo di Legge UE:</strong> Questo modulo deve essere compilato al computer e stampato prima del viaggio. Deve essere firmato sia dall'impresa che dal conducente e conservato a bordo per i controlli dei 56 giorni successivi.
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Seleziona Conducente</label>
+                        <select id="attestDriverSelect" onchange="onAttestDriverChange()" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                            <option value="">-- Seleziona un Autista --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Motivo dell'Assenza (Casella UE)</label>
+                        <select id="attestReasonSelect" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white font-bold text-emerald-400">
+                            <option value="14">14. Era in congedo per MALATTIA</option>
+                            <option value="15">15. Era in congedo annuale / FERIE</option>
+                            <option value="16">16. Era in congedo o RIPOSO</option>
+                            <option value="18">18. Eseguiva un altro lavoro diverso dalla guida</option>
+                            <option value="19">19. Era DISPONIBILE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Inizio Assenza (Data e Ora)</label>
+                        <input type="datetime-local" id="attestStartDateTime" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Fine Assenza (Data e Ora)</label>
+                        <input type="datetime-local" id="attestEndDateTime" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nome Rappresentante Firmatario Impresa</label>
+                        <input type="text" id="attestSignatoryName" placeholder="Es. Mario Rossi (Titolare)" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Luogo e Data di Rilascio</label>
+                        <input type="text" id="attestPlaceDate" placeholder="Es. Roma, 30/08/2026" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex gap-2">
+                <button type="button" onclick="closeAttestationModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3.5 rounded-xl transition">
+                    Chiudi
+                </button>
+                <button type="button" onclick="printOfficialAttestationSheet()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-2 active:scale-95">
+                    <span>🖨️</span>
+                    <span>Stampa / Salva PDF Ufficiale</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== FOGLIO STAMPABILE MODULO ASSENZE UE =================== -->
+    <div id="printableAttestationSheet" class="print-only hidden p-8 bg-white text-black font-sans text-xs max-w-3xl mx-auto leading-normal">
+        <!-- Generato dinamicamente per la stampa perfetta A4 -->
+    </div>
 
     <!-- =================== MODALE OBBLIGHI AUTISTA =================== -->
     <div id="driverObligationModal" class="no-print fixed inset-0 bg-black/90 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden">
@@ -2674,6 +2780,140 @@
 
         function openManualModal() { document.getElementById('manualModal').classList.remove('hidden'); }
         function closeManualModal() { document.getElementById('manualModal').classList.add('hidden'); }
+
+        function openAttestationModal() {
+            const select = document.getElementById('attestDriverSelect');
+            select.innerHTML = '<option value="">-- Seleziona un Autista --</option>';
+            Object.values(driversMap).forEach(d => {
+                const opt = document.createElement('option');
+                opt.value = d.id;
+                opt.textContent = `${d.name} (${d.cardCode || 'Carta n/d'})`;
+                select.appendChild(opt);
+            });
+
+            // Imposta date di default
+            const now = new Date();
+            const startStr = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 16);
+            const endStr = now.toISOString().slice(0, 16);
+            document.getElementById('attestStartDateTime').value = startStr;
+            document.getElementById('attestEndDateTime').value = endStr;
+
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
+            document.getElementById('attestSignatoryName').value = `Direzione ${compName}`;
+            document.getElementById('attestPlaceDate').value = `${new Date().toLocaleDateString('it-IT')}`;
+
+            document.getElementById('attestationModal').classList.remove('hidden');
+        }
+
+        function closeAttestationModal() {
+            document.getElementById('attestationModal').classList.add('hidden');
+        }
+
+        function onAttestDriverChange() {
+            const driverId = document.getElementById('attestDriverSelect').value;
+            const d = driversMap[driverId];
+            if (d && d.vacationStartDate && d.vacationEndDate) {
+                document.getElementById('attestStartDateTime').value = `${d.vacationStartDate}T00:00`;
+                document.getElementById('attestEndDateTime').value = `${d.vacationEndDate}T23:59`;
+                document.getElementById('attestReasonSelect').value = "15";
+            }
+        }
+
+        function printOfficialAttestationSheet() {
+            const driverId = document.getElementById('attestDriverSelect').value;
+            const d = driversMap[driverId] || { name: "NOME CONDUCENTE", cardCode: "IT0000000000" };
+            const reason = document.getElementById('attestReasonSelect').value;
+            const startDT = document.getElementById('attestStartDateTime').value.replace('T', ' ');
+            const endDT = document.getElementById('attestEndDateTime').value.replace('T', ' ');
+            const signatory = document.getElementById('attestSignatoryName').value || 'Legale Rappresentante';
+            const placeDate = document.getElementById('attestPlaceDate').value || new Date().toLocaleDateString('it-IT');
+
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : currentCompanyName;
+
+            const printSheet = document.getElementById('printableAttestationSheet');
+            printSheet.innerHTML = `
+                <div style="font-family: Arial, sans-serif; font-size: 11px; line-height: 1.35; color: #000;">
+                    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 12px;">
+                        <h2 style="font-size: 13px; font-weight: bold; margin: 0; text-transform: uppercase;">ATTESTATO DI ATTIVITÀ / MODULO DI CONTROLLO DELLE ASSENZE</h2>
+                        <p style="font-size: 9px; margin: 2px 0 0 0;">(REGOLAMENTO CE N. 561/2006 O AETR) • DECISIONE DELLA COMMISSIONE EUROPEA 2009/959/UE</p>
+                        <p style="font-size: 8.5px; font-style: italic; margin: 2px 0 0 0;">(DA COMPILARSI A MACCHINA E FIRMARE PRIMA DEL VIAGGIO - DA CONSERVARSI A BORDO CON I DATI DEL TACHIGRAFO ORIGINALI)</p>
+                    </div>
+
+                    <div style="margin-bottom: 8px;">
+                        <strong>Parte da compilare a cura dell'impresa:</strong>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>1. Denominazione dell'impresa:</strong><br>${compName}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>2. Codice Flotta / P.IVA:</strong><br>${compCode}</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px;" colspan="2"><strong>3. Indirizzo, CAP, Città, Paese:</strong> Sede operativa impresa di autotrasporto</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px;"><strong>4. Nome del firmatario:</strong> ${signatory}</td>
+                            <td style="border: 1px solid #000; padding: 4px;"><strong>5. Funzione nell'impresa:</strong> Legale Rappresentante / Resp. Trasporti</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>Il sottoscritto dichiara che il conducente:</strong>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 60%;"><strong>6. Cognome e Nome:</strong> <strong>${d.name.toUpperCase()}</strong></td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 40%;"><strong>7. Numero Carta / Patente:</strong> ${d.cardCode || 'IN VIGORE'}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>Per il periodo:</strong>
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>8. Dalle ore e data:</strong> ${startDT}</td>
+                            <td style="border: 1px solid #000; padding: 4px; width: 50%;"><strong>9. Alle ore e data:</strong> ${endDT}</td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-bottom: 6px;">
+                        <strong>10. Motivo dell'assenza:</strong>
+                    </div>
+                    <div style="border: 1px solid #000; padding: 6px; margin-bottom: 12px; font-size: 9.5px; line-height: 1.5;">
+                        <div>[ ${reason === '14' ? 'X' : '&nbsp;&nbsp;'} ] <strong>14. Era in congedo per malattia</strong></div>
+                        <div>[ ${reason === '15' ? 'X' : '&nbsp;&nbsp;'} ] <strong>15. Era in congedo annuale (Ferie)</strong></div>
+                        <div>[ ${reason === '16' ? 'X' : '&nbsp;&nbsp;'} ] <strong>16. Era in congedo o riposo</strong></div>
+                        <div>[ ${reason === '18' ? 'X' : '&nbsp;&nbsp;'} ] <strong>18. Eseguiva un altro lavoro diverso dalla guida</strong></div>
+                        <div>[ ${reason === '19' ? 'X' : '&nbsp;&nbsp;'} ] <strong>19. Era disponibile</strong></div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 10px;">
+                        <tr>
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
+                                <strong>20. Luogo e Data:</strong><br>${placeDate}<br><br>
+                                <strong>21. Firma dell'impresa (Timbro e Firma):</strong><br><br>
+                                ___________________________________
+                            </td>
+                            <td style="border: 1px solid #000; padding: 6px; width: 50%; height: 65px; vertical-align: top;">
+                                <strong>22. Firma del conducente:</strong><br>
+                                <em>Il sottoscritto conducente conferma che durante il periodo sopra menzionato non ha guidato alcun veicolo soggetto al Regolamento (CE) n. 561/2006.</em><br><br>
+                                ___________________________________
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div style="margin-top: 15px; font-size: 8px; color: #555; text-align: center;">
+                        Documento conforme al Modello Ufficiale UE • Generato con GC-TachoControl Cloud
+                    </div>
+                </div>
+            `;
+
+            window.print();
+        }
 
         // --- GESTIONE LOGIN AMMINISTRATORE (SUPER ADMIN & MULTI-AZIENDA) ---
         // --- GESTO SEGRETO SUPERVISORE (5 tocchi veloci sullo stemma) ---
