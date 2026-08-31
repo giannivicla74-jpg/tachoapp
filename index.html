@@ -3032,7 +3032,7 @@
 
         function formatDateItalian(dateStr) {
             if (!dateStr) return "-";
-            const date = new Date(dateStr);
+            const date = parseLocalDate(dateStr);
             if (isNaN(date)) return dateStr;
             return date.toLocaleDateString('it-IT');
         }
