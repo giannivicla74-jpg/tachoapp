@@ -2,7 +2,7 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v12.6';
+const CACHE_NAME = 'tachocontrol-offline-v12.7';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -32,11 +32,11 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW v12.6] Memorizzazione risorse offline in corso...');
+            console.log('[SW v12.7] Memorizzazione risorse offline in corso...');
             return Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
                     return cache.add(url).catch((err) => {
-                        console.warn('[SW v12.6] File non pre-caricato:', url, err);
+                        console.warn('[SW v12.7] File non pre-caricato:', url, err);
                     });
                 })
             );
@@ -51,7 +51,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
-                        console.log('[SW v12.6] Rimozione vecchia cache:', key);
+                        console.log('[SW v12.7] Rimozione vecchia cache:', key);
                         return caches.delete(key);
                     }
                 })
@@ -60,7 +60,7 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// --- 3. FETCH: Strategia Network-First con Fallback Istantaneo su Cache Locale ---
+// --- 3. FETCH: Strategia Ibrida (SWR per asset statici + Network-First per navigazione) ---
 self.addEventListener('fetch', (event) => {
     // Ignora richieste non-GET, non-HTTP, WebSocket Firebase Realtime e chiamate dirette API Google
     if (event.request.method !== 'GET' || 
@@ -71,6 +71,31 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
+    const requestUrl = event.request.url;
+    const isStaticAsset = ASSETS_TO_CACHE.some(url => {
+        const cleanUrl = url.replace('./', '');
+        return cleanUrl && requestUrl.includes(cleanUrl);
+    });
+
+    // 3.1 Strategia Stale-While-Revalidate per asset statici, CDN, immagini e CSS/JS
+    if (isStaticAsset && event.request.mode !== 'navigate') {
+        event.respondWith(
+            caches.match(event.request).then((cachedResponse) => {
+                const fetchPromise = fetch(event.request).then((networkResponse) => {
+                    if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+                    }
+                    return networkResponse;
+                }).catch(() => {});
+
+                return cachedResponse || fetchPromise;
+            })
+        );
+        return;
+    }
+
+    // 3.2 Strategia Network-First con Timeout 3s per navigazione e HTML
     const fetchWithTimeout = new Promise((resolve, reject) => {
         const timer = setTimeout(() => reject(new Error('Network timeout')), 3000);
         fetch(event.request).then((res) => {

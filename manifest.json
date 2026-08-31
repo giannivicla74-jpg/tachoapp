@@ -7,8 +7,26 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
+  "lang": "it",
+  "categories": ["business", "productivity", "utilities"],
   "background_color": "#0B1626",
   "theme_color": "#0B1626",
+  "shortcuts": [
+    {
+      "name": "Area Conducente",
+      "short_name": "Autista",
+      "description": "Accedi alla tua scheda e scadenza scarico",
+      "url": "./#driver",
+      "icons": [{ "src": "logo-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Pannello Flotta Admin",
+      "short_name": "Admin",
+      "description": "Gestione flotta e scadenze aziendali",
+      "url": "./#admin",
+      "icons": [{ "src": "logo-192.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "logo-192.png",
