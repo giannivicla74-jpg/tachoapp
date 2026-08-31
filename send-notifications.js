@@ -9,12 +9,34 @@ admin.initializeApp({
 const db = admin.database();
 
 async function start() {
-    console.log("Inizio controllo scadenze...");
+    console.log("Inizio controllo scadenze (Multi-Azienda Cloud)...");
     try {
-        const snapshot = await db.ref('operai').once('value');
-        const operai = snapshot.val();
+        const driversToProcess = [];
 
-        if (!operai) {
+        // 1. Lettura operai radice (Azienda Principale / AZ-MAIN)
+        const snapshotRoot = await db.ref('operai').once('value');
+        const operaiRoot = snapshotRoot.val();
+        if (operaiRoot) {
+            for (let id in operaiRoot) {
+                driversToProcess.push({ id, company: 'AZ-MAIN', ...operaiRoot[id] });
+            }
+        }
+
+        // 2. Lettura operai di tutte le aziende nel registro aziende (AZ-101, AZ-102, ecc.)
+        const snapshotAziende = await db.ref('aziende').once('value');
+        const aziende = snapshotAziende.val();
+        if (aziende) {
+            for (let compCode in aziende) {
+                if (aziende[compCode] && aziende[compCode].operai) {
+                    const compOperai = aziende[compCode].operai;
+                    for (let id in compOperai) {
+                        driversToProcess.push({ id, company: compCode, ...compOperai[id] });
+                    }
+                }
+            }
+        }
+
+        if (driversToProcess.length === 0) {
             console.log("Nessun operaio trovato nel database.");
             process.exit(0);
         }
@@ -23,9 +45,8 @@ async function start() {
         today.setHours(0, 0, 0, 0);
         let inviate = 0;
 
-        for (let id in operai) {
-            const operaio = operai[id];
-            console.log(`\n--- Analizzo: ${operaio.name} ${operaio.surname || ''} ---`);
+        for (let operaio of driversToProcess) {
+            console.log(`\n--- Analizzo: [${operaio.company}] ${operaio.name} ${operaio.surname || ''} ---`);
             
             if (!operaio.lastDownloadDate) console.log(" ERRORE: Nessuna data di scadenza (lastDownloadDate).");
             if (!operaio.fcmToken) console.log(" ERRORE: Nessun Token registrato (l'operaio deve loggarsi dal telefono e accettare le notifiche).");
@@ -50,7 +71,7 @@ async function start() {
 
                 if (inVacation) {
                     console.log(` -> 🏖️ AUTISTA IN FERIE: Notifiche standard sospese.`);
-                    continue; // Salta il resto del ciclo per questo autista (nessuna notifica 28gg)
+                    continue;
                 }
 
                 if (daysToVacation === 1 || daysToVacation === 2) {
@@ -60,6 +81,15 @@ async function start() {
                         notification: {
                             title: '🏖️ Ferie in Avvicinamento!',
                             body: `Attenzione ${operaio.name}: Mancano ${daysToVacation} giorni all'inizio delle tue ferie. Ricorda di scaricare la carta prima di partire!`
+                        },
+                        webpush: {
+                            fcm_options: {
+                                link: 'https://gccodelab.it/'
+                            },
+                            notification: {
+                                icon: 'https://gccodelab.it/logo.jpg',
+                                badge: 'https://gccodelab.it/logo.jpg'
+                            }
                         }
                     };
                     try {
@@ -72,7 +102,7 @@ async function start() {
                 }
                 // --- FINE CONTROLLO FERIE ---
 
-                // Ora calcoliamo la normale scadenza dei 28 giorni
+                // Calcolo scadenza 28 giorni
                 const nextDeadline = new Date(operaio.lastDownloadDate);
                 nextDeadline.setHours(0, 0, 0, 0);
                 
@@ -90,6 +120,15 @@ async function start() {
                             body: daysRem <= 0 
                                 ? `Attenzione ${operaio.name}: La scadenza per il download dati della carta è SCADUTA!`
                                 : `Attenzione ${operaio.name}: Mancano solo ${daysRem} giorn${daysRem === 1 ? 'o' : 'i'} alla scadenza del download carta.`
+                        },
+                        webpush: {
+                            fcm_options: {
+                                link: 'https://gccodelab.it/'
+                            },
+                            notification: {
+                                icon: 'https://gccodelab.it/logo.jpg',
+                                badge: 'https://gccodelab.it/logo.jpg'
+                            }
                         }
                     };
 
@@ -101,7 +140,7 @@ async function start() {
                         console.error(' -> FALLIMENTO! Errore invio notifica:', error);
                     }
                 } else {
-                    console.log(` -> Nessuna notifica oggi (giorni rimanenti: ${daysRem}, non è 7, 3, 2 o 0).`);
+                    console.log(` -> Nessuna notifica oggi (giorni rimanenti: ${daysRem}, non rientra tra 7, 3, 2, 1, 0).`);
                 }
             }
         }
