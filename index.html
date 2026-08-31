@@ -3045,6 +3045,17 @@
                 if ('setAppBadge' in navigator) {
                     navigator.setAppBadge(0).catch(() => {});
                 }
+                if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+                    navigator.serviceWorker.ready.then(reg => {
+                        if (reg && reg.getNotifications) {
+                            reg.getNotifications().then(notifications => {
+                                notifications.forEach(n => {
+                                    try { n.close(); } catch(e) {}
+                                });
+                            }).catch(() => {});
+                        }
+                    }).catch(() => {});
+                }
             } catch(e) {}
         }
         clearAppBadgeIcon();
