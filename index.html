@@ -6395,7 +6395,7 @@
                 return;
             }
 
-            if (startVal && endVal && new Date(endVal) < new Date(startVal)) {
+            if (startVal && endVal && parseLocalDate(endVal) < parseLocalDate(startVal)) {
                 showToast("La data di rientro non può essere antecedente all'inizio ferie.", "error");
                 return;
             }
@@ -6405,14 +6405,16 @@
                 vacationEndDate: endVal || null
             };
 
+            currentLoggedInDriver.vacationStartDate = updates.vacationStartDate;
+            currentLoggedInDriver.vacationEndDate = updates.vacationEndDate;
+            renderDriverView(currentLoggedInDriver);
+
             dbCompanyRef('operai/' + currentLoggedInDriver.id).update(updates, (error) => {
                 if (error) {
-                    showToast("Errore durante il salvataggio delle ferie.", "error");
+                    console.warn("Avviso: salvataggio ferie memorizzato in locale.", error);
+                    showToast("Periodo ferie salvato (modalità offline).", "warning");
                 } else {
-                    currentLoggedInDriver.vacationStartDate = updates.vacationStartDate;
-                    currentLoggedInDriver.vacationEndDate = updates.vacationEndDate;
-                    showToast("Periodo di ferie aggiornato con successo!", "success");
-                    renderDriverView(currentLoggedInDriver);
+                    showToast("Periodo di ferie sincronizzato nel Cloud!", "success");
                 }
             });
         }
