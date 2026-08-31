@@ -2,7 +2,7 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v12.5';
+const CACHE_NAME = 'tachocontrol-offline-v12.6';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -23,8 +23,8 @@ const ASSETS_TO_CACHE = [
     'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
     'https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js',
     'https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css'
+    'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css'
 ];
 
 // --- 1. INSTALLAZIONE: Pre-caching di tutti i file e risorse statiche ---
@@ -32,11 +32,11 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW v9.6] Memorizzazione risorse offline in corso...');
+            console.log('[SW v12.6] Memorizzazione risorse offline in corso...');
             return Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
                     return cache.add(url).catch((err) => {
-                        console.warn('[SW v9.6] File non pre-caricato:', url, err);
+                        console.warn('[SW v12.6] File non pre-caricato:', url, err);
                     });
                 })
             );
@@ -51,7 +51,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
-                        console.log('[SW v9.6] Rimozione vecchia cache:', key);
+                        console.log('[SW v12.6] Rimozione vecchia cache:', key);
                         return caches.delete(key);
                     }
                 })
@@ -62,16 +62,28 @@ self.addEventListener('activate', (event) => {
 
 // --- 3. FETCH: Strategia Network-First con Fallback Istantaneo su Cache Locale ---
 self.addEventListener('fetch', (event) => {
-    // Ignora richieste non-HTTP, WebSocket Firebase Realtime e chiamate dirette API Google
-    if (!event.request.url.startsWith('http') || 
+    // Ignora richieste non-GET, non-HTTP, WebSocket Firebase Realtime e chiamate dirette API Google
+    if (event.request.method !== 'GET' || 
+        !event.request.url.startsWith('http') || 
         event.request.url.includes('firebasedatabase.app') || 
         event.request.url.includes('googleapis.com/v1') ||
         event.request.url.includes('fcm.googleapis.com')) {
         return;
     }
 
+    const fetchWithTimeout = new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('Network timeout')), 3000);
+        fetch(event.request).then((res) => {
+            clearTimeout(timer);
+            resolve(res);
+        }).catch((err) => {
+            clearTimeout(timer);
+            reject(err);
+        });
+    });
+
     event.respondWith(
-        fetch(event.request)
+        fetchWithTimeout
             .then((networkResponse) => {
                 if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
                     const responseClone = networkResponse.clone();
