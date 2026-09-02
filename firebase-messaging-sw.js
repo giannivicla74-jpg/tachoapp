@@ -150,24 +150,24 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification.title || '🔔 Avviso TachoControl';
     const notificationOptions = {
         body: payload.notification.body || "Promemoria scarico tachigrafo",
-        icon: 'https://gccodelab.it/logo.jpg',
-        badge: 'https://gccodelab.it/logo.jpg',
-        vibrate: [200, 100, 200],
+        icon: 'https://tachoapp.gccodelab.it/logo.jpg',
+        badge: 'https://tachoapp.gccodelab.it/logo.jpg',
         data: {
-            url: payload.data && payload.data.url ? payload.data.url : 'https://gccodelab.it/'
+            dateOfArrival: Date.now(),
+            url: payload.data && payload.data.url ? payload.data.url : 'https://tachoapp.gccodelab.it/'
         }
     };
 
-    if ('setAppBadge' in navigator) {
-        navigator.setAppBadge(1).catch(() => {});
-    }
-
-    return self.registration.showNotification(notificationTitle, notificationOptions);
+    event.waitUntil(
+        self.registration.showNotification(notificationTitle, notificationOptions)
+    );
 });
 
-// GESTIONE CLICK SULLA NOTIFICA
+// Listener per il click sulla notifica
 self.addEventListener('notificationclick', (event) => {
     event.notification.close();
+
+    const targetUrl = (event.notification.data && event.notification.data.url) ? event.notification.data.url : 'https://tachoapp.gccodelab.it/';
     
     // Azzera immediatamente il pallino numerico sull'icona dell'app
     if ('clearAppBadge' in navigator) {
@@ -176,8 +176,6 @@ self.addEventListener('notificationclick', (event) => {
     if ('setAppBadge' in navigator) {
         navigator.setAppBadge(0).catch(() => {});
     }
-
-    const targetUrl = (event.notification.data && event.notification.data.url) ? event.notification.data.url : 'https://gccodelab.it/';
     
     event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {

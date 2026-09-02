@@ -9,14 +9,14 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseio.com https://*.firebasedatabase.app https://*.googleapis.com https://*.gstatic.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com data: blob:; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.googleapis.com https://fcm.googleapis.com; object-src 'none'; base-uri 'self';">
 
     <!-- Icone PWA (Assolute per massima compatibilità) -->
-    <link rel="apple-touch-icon" href="https://gccodelab.it/logo.jpg">
-    <link rel="icon" href="https://gccodelab.it/logo.jpg">
+    <link rel="apple-touch-icon" href="https://tachoapp.gccodelab.it/logo.jpg">
+    <link rel="icon" href="https://tachoapp.gccodelab.it/logo.jpg">
     
     <!-- OpenGraph Meta Tags per Anteprima WhatsApp & Social -->
-    <meta property="og:title" content="GC-CodeLab TachoControl Pro">
-    <meta property="og:description" content="App Professionale per la Gestione Flotta, Scarico Carte Conducente (28gg) e Modulo Assenze UE.">
-    <meta property="og:image" content="https://gccodelab.it/assets/logo_tachocontrol_3d.jpg">
-    <meta property="og:url" content="https://gccodelab.it/">
+    <meta property="og:title" content="TachoControl Cloud - Gestione Tachigrafo e Flotta">
+    <meta property="og:description" content="Piattaforma cloud intelligente per il controllo delle scadenze tachigrafo, patenti e gestione veicoli flotta.">
+    <meta property="og:image" content="https://tachoapp.gccodelab.it/assets/logo_tachocontrol_3d.jpg">
+    <meta property="og:url" content="https://tachoapp.gccodelab.it/">
     <meta property="og:type" content="website">
 
     <!-- CONFIGURAZIONE PWA PER SCHERMO INTERO -->
@@ -3479,8 +3479,8 @@
                         if (reg && reg.showNotification) {
                             reg.showNotification(title, {
                                 body: body,
-                                icon: 'https://gccodelab.it/logo.jpg',
-                                badge: 'https://gccodelab.it/logo.jpg',
+                                icon: 'https://tachoapp.gccodelab.it/logo.jpg',
+                                badge: 'https://tachoapp.gccodelab.it/logo.jpg',
                                 tag: tag || 'driver-expiry-alert',
                                 renotify: false,
                                 vibrate: [200, 100, 200]
@@ -3490,7 +3490,7 @@
                 } else {
                     new Notification(title, { 
                         body: body, 
-                        icon: 'https://gccodelab.it/logo.jpg',
+                        icon: 'https://tachoapp.gccodelab.it/logo.jpg',
                         tag: tag || 'driver-expiry-alert'
                     });
                 }
@@ -3504,7 +3504,7 @@
             if (!d) return;
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || "Gestione Flotta");
-            const appUrl = "https://gccodelab.it/";
+            const appUrl = "https://tachoapp.gccodelab.it/";
             
             const msg = `🚛 *GC-CODELAB TACHOCONTROL PRO*\n\n` +
                 `Ciao *${d.name}*,\n` +
@@ -3534,7 +3534,7 @@
         function shareCompanyFleetLinkWhatsApp() {
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || "Gestione Flotta");
-            const appUrl = "https://gccodelab.it/";
+            const appUrl = "https://tachoapp.gccodelab.it/";
 
             const msg = `🚛 *GC-CODELAB TACHOCONTROL PRO • AREA CONDUCENTI*\n\n` +
                 `Per tutti gli autisti di *${compName}*:\n` +

@@ -84,11 +84,11 @@ async function start() {
                         },
                         webpush: {
                             fcm_options: {
-                                link: 'https://gccodelab.it/'
+                                link: 'https://tachoapp.gccodelab.it/'
                             },
                             notification: {
-                                icon: 'https://gccodelab.it/logo.jpg',
-                                badge: 'https://gccodelab.it/logo.jpg'
+                                icon: 'https://tachoapp.gccodelab.it/logo.jpg',
+                                badge: 'https://tachoapp.gccodelab.it/logo.jpg'
                             }
                         }
                     };
@@ -123,11 +123,11 @@ async function start() {
                         },
                         webpush: {
                             fcm_options: {
-                                link: 'https://gccodelab.it/'
+                                link: 'https://tachoapp.gccodelab.it/'
                             },
                             notification: {
-                                icon: 'https://gccodelab.it/logo.jpg',
-                                badge: 'https://gccodelab.it/logo.jpg'
+                                icon: 'https://tachoapp.gccodelab.it/logo.jpg',
+                                badge: 'https://tachoapp.gccodelab.it/logo.jpg'
                             }
                         }
                     };
