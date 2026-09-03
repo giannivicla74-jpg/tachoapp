@@ -3366,30 +3366,71 @@
                 reader.onload = function(e) {
                     const buffer = e.target.result;
                     const bytes = new Uint8Array(buffer);
-                    
-                    let rawText = "";
-                    for (let i = 0; i < bytes.length; i++) {
-                        if (bytes[i] >= 32 && bytes[i] <= 126) {
-                            rawText += String.fromCharCode(bytes[i]);
-                        } else {
-                            rawText += " ";
-                        }
-                    }
+                    const upperFileName = (file.name || '').toUpperCase();
 
                     let matchedVehicleId = null;
                     let matchedVehiclePlate = "";
 
-                    const cleanRawText = rawText.replace(/[\s-]/g, '').toUpperCase();
+                    // --- STRATEGIA 1: PRIORITÀ ASSOLUTA AL NOME DEL FILE (Delimitato) ---
+                    let bestNameMatch = null;
+                    let bestDelimitedMatch = null;
 
                     for (let id in vehiclesMap) {
                         const v = vehiclesMap[id];
-                        if (v && v.plate) {
-                            const cleanPlate = v.plate.replace(/[\s-]/g, '').toUpperCase();
-                            if (cleanPlate.length >= 3 && (cleanRawText.includes(cleanPlate) || file.name.toUpperCase().replace(/[\s-]/g, '').includes(cleanPlate))) {
-                                matchedVehicleId = id;
-                                matchedVehiclePlate = v.plate;
-                                break;
+                        if (!v || !v.plate) continue;
+                        const cleanPlate = v.plate.replace(/[\s-]/g, '').toUpperCase();
+                        if (cleanPlate.length < 3) continue;
+
+                        const delimitedRegex = new RegExp('(^|[^A-Z0-9])' + cleanPlate + '([^A-Z0-9]|$)', 'i');
+                        if (delimitedRegex.test(upperFileName)) {
+                            if (!bestDelimitedMatch || cleanPlate.length > bestDelimitedMatch.plate.length) {
+                                bestDelimitedMatch = { id, plate: v.plate, cleanPlate };
                             }
+                        } else if (upperFileName.includes(cleanPlate)) {
+                            if (!bestNameMatch || cleanPlate.length > bestNameMatch.plate.length) {
+                                bestNameMatch = { id, plate: v.plate, cleanPlate };
+                            }
+                        }
+                    }
+
+                    if (bestDelimitedMatch) {
+                        matchedVehicleId = bestDelimitedMatch.id;
+                        matchedVehiclePlate = bestDelimitedMatch.plate;
+                    } else if (bestNameMatch) {
+                        matchedVehicleId = bestNameMatch.id;
+                        matchedVehiclePlate = bestNameMatch.plate;
+                    }
+
+                    // --- STRATEGIA 2: HEADER TACHIGRAFO MEZZO (OVERVIEW / TREP 1) ---
+                    if (!matchedVehicleId) {
+                        const headerLimit = Math.min(bytes.length, 2048);
+                        let headerAscii = "";
+                        for (let i = 0; i < headerLimit; i++) {
+                            if (bytes[i] >= 32 && bytes[i] <= 126) {
+                                headerAscii += String.fromCharCode(bytes[i]);
+                            } else {
+                                headerAscii += " ";
+                            }
+                        }
+                        const cleanHeader = headerAscii.replace(/[\s-]/g, '').toUpperCase();
+
+                        let bestHeaderMatch = null;
+                        for (let id in vehiclesMap) {
+                            const v = vehiclesMap[id];
+                            if (!v || !v.plate) continue;
+                            const cleanPlate = v.plate.replace(/[\s-]/g, '').toUpperCase();
+                            if (cleanPlate.length < 3) continue;
+
+                            if (cleanHeader.includes(cleanPlate)) {
+                                if (!bestHeaderMatch || cleanPlate.length > bestHeaderMatch.plate.length) {
+                                    bestHeaderMatch = { id, plate: v.plate, cleanPlate };
+                                }
+                            }
+                        }
+
+                        if (bestHeaderMatch) {
+                            matchedVehicleId = bestHeaderMatch.id;
+                            matchedVehiclePlate = bestHeaderMatch.plate;
                         }
                     }
 
@@ -3399,11 +3440,23 @@
                     const targetStr = formatDateYYYYMMDD(baseDate);
 
                     if (matchedVehicleId) {
+                        const downloadEvent = {
+                            date: formatDateYYYYMMDD(fileDate || new Date()),
+                            timestamp: Date.now(),
+                            fileName: file.name,
+                            recordedBy: 'DDD Auto Upload'
+                        };
+
                         dbCompanyRef('veicoli/' + matchedVehicleId).update({ lastDownloadDate: targetStr }, (err) => {
                             if (!err) {
+                                try {
+                                    dbCompanyRef('veicoli/' + matchedVehicleId + '/history').push(downloadEvent);
+                                } catch (e) {}
                                 const dateInfoStr = fileDate ? ` (Scarico del ${formatDateItalian(formatDateYYYYMMDD(fileDate))})` : '';
                                 showToast(`✅ ${file.name}: Nuova scadenza mezzo registrata per ${matchedVehiclePlate}${dateInfoStr}!`, "success");
                                 updateAdminBadges();
+                            } else {
+                                showToast(`❌ Errore aggiornamento: ${err.message}`, "error");
                             }
                         });
                     } else {
