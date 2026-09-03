@@ -248,7 +248,8 @@
                 
                 <!-- Nome Azienda Attiva -->
                 <div class="flex items-center space-x-1.5 text-[11px] text-slate-300">
-                    <span class="text-xs">🏢</span>
+                    <span class="text-xs" id="adminHeaderCompanyIcon">🏢</span>
+                    <img id="adminHeaderCompanyLogo" src="" alt="Logo" class="hidden h-5 max-w-[75px] object-contain rounded bg-white/95 px-1 py-0.5 shadow-sm border border-slate-600/40">
                     <span class="font-bold text-emerald-300 truncate max-w-[190px]" id="adminHeaderCompanyNameShort">Azienda</span>
                     <span class="text-[9px] font-mono text-indigo-300 bg-indigo-950 px-1.5 py-0.2 rounded border border-indigo-700/60" id="adminHeaderCompanyCode">AZ-MAIN</span>
                     <!-- Tasto cambia (visibile solo per SuperAdmin) -->
@@ -752,8 +753,8 @@
                                 <span class="text-[9px] text-emerald-400 font-normal">PNG, JPG o 3D</span>
                             </label>
                             <div class="flex items-center space-x-3 bg-[#0F1C32] p-3 rounded-2xl border border-slate-700/80">
-                                <div id="companyLogoPreviewWrapper" class="w-14 h-14 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner">
-                                    <img id="companyLogoImg" src="assets/logo_tachocontrol_3d.jpg" alt="Logo Azienda" class="w-full h-full object-cover">
+                                <div id="companyLogoPreviewWrapper" class="w-28 sm:w-32 h-14 rounded-xl bg-white/95 p-1 border border-slate-600/60 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-inner transition-all">
+                                    <img id="companyLogoImg" src="assets/logo_tachocontrol_3d.jpg" alt="Logo Azienda" class="max-w-full max-h-full object-contain">
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <input type="file" id="companyLogoFileInput" accept="image/*" class="hidden" onchange="handleCompanyLogoSelect(event)">
@@ -3222,6 +3223,21 @@
             if (fnEl) {
                 fnEl.innerText = (logoSrc && !logoSrc.includes('logo_tachocontrol_3d.jpg')) ? "Logo personalizzato attivo" : "Logo predefinito 3D attivo";
             }
+
+            // Sincronizzazione dinamica Logo nell'Header Amministratore
+            const headerLogo = document.getElementById('adminHeaderCompanyLogo');
+            const headerIcon = document.getElementById('adminHeaderCompanyIcon');
+            if (headerLogo && headerIcon) {
+                const isCustom = logoSrc && !logoSrc.includes('logo_tachocontrol_3d.jpg') && logoSrc.length > 50;
+                if (isCustom) {
+                    headerLogo.src = logoSrc;
+                    headerLogo.classList.remove('hidden');
+                    headerIcon.classList.add('hidden');
+                } else {
+                    headerLogo.classList.add('hidden');
+                    headerIcon.classList.remove('hidden');
+                }
+            }
         }
 
         function handleCompanyLogoSelect(event) {
@@ -3233,24 +3249,46 @@
             }
             const reader = new FileReader();
             reader.onload = (e) => {
-                pendingCompanyLogoBase64 = e.target.result;
-                currentCompanyLogoBase64 = pendingCompanyLogoBase64;
-                const compCode = activeCompanyId || 'AZ-MAIN';
-                try {
-                    localStorage.setItem('cached_compLogo_' + compCode, currentCompanyLogoBase64);
-                } catch(err) {}
-                
-                // Salva subito nel Cloud Firebase per l'azienda attiva
-                dbCompanyRef('config/logoBase64').set(currentCompanyLogoBase64);
-                if (companiesRegistry[activeCompanyId]) {
-                    db.ref(`aziende_registry/${activeCompanyId}/logoBase64`).set(currentCompanyLogoBase64);
-                }
+                const img = new Image();
+                img.onload = () => {
+                    // Adattamento proporzionale senza distorsione su canvas (max 600x300)
+                    const maxW = 600;
+                    const maxH = 300;
+                    let targetW = img.width;
+                    let targetH = img.height;
+                    if (targetW > maxW || targetH > maxH) {
+                        const ratio = Math.min(maxW / targetW, maxH / targetH);
+                        targetW = Math.round(targetW * ratio);
+                        targetH = Math.round(targetH * ratio);
+                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width = targetW;
+                    canvas.height = targetH;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, targetW, targetH);
 
-                const imgEl = document.getElementById('companyLogoImg');
-                if (imgEl) imgEl.src = pendingCompanyLogoBase64;
-                const fnEl = document.getElementById('companyLogoFilename');
-                if (fnEl) fnEl.innerText = file.name + " (Attivo e Sincronizzato)";
-                showToast("✅ Logo aziendale aggiornato e sincronizzato per tutte le stampe e PDF!", "success");
+                    const isPng = file.type === 'image/png';
+                    const optimizedBase64 = canvas.toDataURL(isPng ? 'image/png' : 'image/jpeg', 0.92);
+
+                    pendingCompanyLogoBase64 = optimizedBase64;
+                    currentCompanyLogoBase64 = pendingCompanyLogoBase64;
+                    const compCode = activeCompanyId || 'AZ-MAIN';
+                    try {
+                        localStorage.setItem('cached_compLogo_' + compCode, currentCompanyLogoBase64);
+                    } catch(err) {}
+                    
+                    // Salva subito nel Cloud Firebase per l'azienda attiva
+                    dbCompanyRef('config/logoBase64').set(currentCompanyLogoBase64);
+                    if (companiesRegistry[activeCompanyId]) {
+                        db.ref(`aziende_registry/${activeCompanyId}/logoBase64`).set(currentCompanyLogoBase64);
+                    }
+
+                    updateDOMCompanyLogo();
+                    const fnEl = document.getElementById('companyLogoFilename');
+                    if (fnEl) fnEl.innerText = file.name + " (Attivo e Sincronizzato)";
+                    showToast("✅ Logo aziendale adattato e sincronizzato per app, stampe e PDF!", "success");
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
