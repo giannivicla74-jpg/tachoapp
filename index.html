@@ -3706,7 +3706,7 @@
             if (!d) return;
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || "Gestione Flotta");
-            const appUrl = "https://tachoapp.gccodelab.it/";
+            const appUrl = activeCompanyId ? `https://tachoapp.gccodelab.it/?az=${encodeURIComponent(activeCompanyId)}` : "https://tachoapp.gccodelab.it/";
             
             const msg = `🚛 *GC-CODELAB TACHOCONTROL PRO*\n\n` +
                 `Ciao *${d.name}*,\n` +
@@ -3723,7 +3723,7 @@
                 `1. Clicca sul link sopra per aprirlo in Safari\n` +
                 `2. Tocca il tasto Condividi in basso al centro (icona con freccia in su ⎋)\n` +
                 `3. Scorri e tocca *"Aggiungi alla schermata Home"*\n\n` +
-                `✅ *Una volta aperta l'app, clicca su "Area Conducenti", seleziona il tuo nome e digita il tuo PIN!*`;
+                `✅ *Il link configurerà automaticamente la tua azienda. Seleziona il tuo nome e digita il tuo PIN!*`;
 
             const cleanPhone = (d.phone || '').replace(/[^0-9]/g, '');
             let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
@@ -3736,12 +3736,13 @@
         function shareCompanyFleetLinkWhatsApp() {
             const compCode = activeCompanyId || 'AZ-MAIN';
             const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || "Gestione Flotta");
-            const appUrl = "https://tachoapp.gccodelab.it/";
+            const appUrl = activeCompanyId ? `https://tachoapp.gccodelab.it/?az=${encodeURIComponent(activeCompanyId)}` : "https://tachoapp.gccodelab.it/";
 
             const msg = `🚛 *GC-CODELAB TACHOCONTROL PRO • AREA CONDUCENTI*\n\n` +
                 `Per tutti gli autisti di *${compName}*:\n` +
                 `Ecco il link per accedere all'App Flotta e registrare gli scarichi della carta tachigrafica:\n\n` +
                 `👉 ${appUrl}\n\n` +
+                `🏢 *Codice Flotta:* *${compCode}*\n\n` +
                 `📲 *COME INSTALLARLA SULLO SMARTPHONE:*\n\n` +
                 `🤖 *Android:* Apri il link con Chrome ➔ tocca i 3 puntini in alto a destra (⋮) ➔ seleziona *"Installa app"*.\n\n` +
                 `🍏 *iPhone:* Apri il link con Safari ➔ tocca il tasto Condividi in basso (⎋ con freccia in su) ➔ seleziona *"Aggiungi alla schermata Home"*.\n\n` +
