@@ -386,13 +386,18 @@
                     </div>
                 </div>
 
-                <!-- Tasto Attivazione Azienda (Visibile solo una tantum al primo avvio su dispositivo vergine) -->
-                <div id="companyActivationBox" class="hidden pt-1">
-                    <button onclick="openRegisterCompanyModal()"
-                        class="w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-semibold py-2.5 px-3 rounded-xl text-[11px] transition-all flex items-center justify-center space-x-1.5">
-                        <span>➕</span>
-                        <span>Nuova Azienda? Registra Flotta</span>
+                <!-- Tasto Inserimento Codice Azienda / Cambio Flotta (Nessuna auto-registrazione pubblica) -->
+                <div id="companyActivationBox" class="pt-1">
+                    <button type="button" onclick="openSwitchDriverCompanyModal()"
+                        class="w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-emerald-400 font-semibold py-2.5 px-3 rounded-xl text-[11px] transition-all flex items-center justify-center space-x-1.5">
+                        <span>🔑</span>
+                        <span id="companyActivationBtnText">Inserisci Codice Azienda</span>
                     </button>
+                    <div class="text-center mt-2">
+                        <a href="https://gccodelab.it/#contatti" target="_blank" class="text-[10px] text-slate-400 hover:text-slate-300 hover:underline">
+                            Non hai ancora una licenza attiva? Richiedila su gccodelab.it
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -4728,12 +4733,12 @@
 
         function updateCompanyActivationUI() {
             const hasCompany = localStorage.getItem('tacho_active_company');
-            const activationBox = document.getElementById('companyActivationBox');
-            if (activationBox) {
-                if (hasCompany && hasCompany !== '') {
-                    activationBox.classList.add('hidden');
+            const btnText = document.getElementById('companyActivationBtnText');
+            if (btnText) {
+                if (hasCompany && hasCompany !== '' && hasCompany !== 'AZ-MAIN') {
+                    btnText.innerText = `Cambia Codice Azienda (${hasCompany})`;
                 } else {
-                    activationBox.classList.remove('hidden');
+                    btnText.innerText = "Inserisci Codice Azienda";
                 }
             }
         }
@@ -5058,6 +5063,14 @@
         }
 
         function openRegisterCompanyModal() {
+            if (!isSuperAdmin) {
+                const checkPin = prompt("Accesso Riservato Sviluppatore GC CodeLab:\nInserisci il PIN Super Admin per creare una nuova azienda:");
+                if (checkPin !== ADMIN_PIN) {
+                    alert("Accesso negato: solo lo sviluppatore GC CodeLab può registrare nuove aziende.");
+                    return;
+                }
+            }
+
             document.getElementById('regCompanyName').value = "";
             document.getElementById('regCompanyAdminName').value = "";
             document.getElementById('regCompanyVat').value = "";
@@ -5082,6 +5095,14 @@
         }
 
         function handleRegisterCompanySubmit() {
+            if (!isSuperAdmin) {
+                const checkPin = prompt("Inserisci il PIN Super Admin per autorizzare la creazione dello spazio cloud:");
+                if (checkPin !== ADMIN_PIN) {
+                    alert("Azione non autorizzata.");
+                    return;
+                }
+            }
+
             const name = document.getElementById('regCompanyName').value.trim();
             const adminName = document.getElementById('regCompanyAdminName').value.trim();
             const vat = document.getElementById('regCompanyVat').value.trim().toUpperCase();
