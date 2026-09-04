@@ -327,7 +327,7 @@
                     <span>GC-TachoControl</span>
                 </h2>
                 <div class="mt-1 flex items-center justify-center space-x-1.5 pointer-events-none">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="loginCompanyPulseDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <p id="loginCompanyNameDisplay" class="text-xs text-emerald-400 font-semibold uppercase tracking-wider">Gestione Flotta</p>
                 </div>
                 <p class="text-xs text-slate-400 mt-2 leading-relaxed pointer-events-none">Seleziona la tua area di accesso per continuare</p>
@@ -2585,13 +2585,13 @@
         <div class="bg-[#111C2E] border border-slate-800 w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4">
             <div class="text-center">
                 <span class="text-3xl block mb-1">🏢</span>
-                <h3 class="font-bold text-white text-base">Seleziona la tua Azienda</h3>
-                <p class="text-slate-400 text-xs mt-1">Inserisci il Codice Azienda fornito dal tuo datore di lavoro.</p>
+                <h3 class="font-bold text-white text-base">Attivazione Flotta Aziendale</h3>
+                <p class="text-slate-400 text-xs mt-1">Inserisci il Codice Azienda (es. AZ-101) fornito via email da GC CodeLab per collegare l'applicazione.</p>
             </div>
 
             <div>
                 <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Codice Azienda</label>
-                <input type="text" id="driverCustomCompanyInput" placeholder="es. AZ-101 o AZ-MAIN" 
+                <input type="text" id="driverCustomCompanyInput" placeholder="es. AZ-101" 
                     class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono uppercase font-bold text-white text-center text-sm focus:border-emerald-400">
             </div>
 
@@ -2600,7 +2600,13 @@
                     Annulla
                 </button>
                 <button type="button" onclick="confirmSwitchDriverCompany()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
-                    Conferma
+                    Attiva Flotta
+                </button>
+            </div>
+
+            <div id="btnResetCompanyBox" class="pt-2 border-t border-slate-800 text-center hidden">
+                <button type="button" onclick="resetActiveCompany()" class="w-full text-[11px] text-rose-400 hover:text-rose-300 hover:underline py-1.5 transition">
+                    🗑️ Disassocia questa Azienda da questo dispositivo
                 </button>
             </div>
         </div>
@@ -2867,7 +2873,7 @@
         // Rilevamento automatico parametro URL per link diretto autisti (es. ?az=AZ-101)
         const urlParams = new URLSearchParams(window.location.search);
         const azQuery = urlParams.get('az') || urlParams.get('azienda') || urlParams.get('flotta') || urlParams.get('c');
-        let activeCompanyId = azQuery ? azQuery.trim().toUpperCase() : (localStorage.getItem('tacho_active_company') || 'AZ-MAIN');
+        let activeCompanyId = azQuery ? azQuery.trim().toUpperCase() : (localStorage.getItem('tacho_active_company') || '');
         if (azQuery) {
             localStorage.setItem('tacho_active_company', activeCompanyId);
         }
@@ -2936,11 +2942,14 @@
         }
 
         function switchActiveCompany(companyCode) {
-            activeCompanyId = companyCode || '';
+            activeCompanyId = companyCode ? companyCode.trim().toUpperCase() : '';
             if (activeCompanyId) {
                 localStorage.setItem('tacho_active_company', activeCompanyId);
             } else {
                 localStorage.removeItem('tacho_active_company');
+                localStorage.removeItem('savedDriverCompany');
+                localStorage.removeItem('savedDriverId');
+                localStorage.removeItem('userRole');
             }
             updateCompanyActivationUI();
             
@@ -2951,7 +2960,7 @@
                 } else if (currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
                     badgeDriver.innerText = currentCompanyName;
                 } else {
-                    badgeDriver.innerText = "Gestione Flotta";
+                    badgeDriver.innerText = "Nessuna Flotta";
                 }
             }
 
@@ -2968,7 +2977,7 @@
             }
 
             if (!activeCompanyId) {
-                currentCompanyName = "Piattaforma Cloud • Gestione Flotte";
+                currentCompanyName = "";
                 currentCompanyVat = "";
                 currentCompanyLegalAddress = "";
                 currentCompanyOperativeAddress = "";
@@ -3304,13 +3313,17 @@
 
         function updateDOMCompanyName() {
             const loginComp = document.getElementById('loginCompanyNameDisplay');
+            const pulseDot = document.getElementById('loginCompanyPulseDot');
             if (loginComp) {
                 if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                     loginComp.innerText = companiesRegistry[activeCompanyId].name;
-                } else if (activeCompanyId === 'AZ-MAIN' && currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
-                    loginComp.innerText = currentCompanyName;
+                    if (pulseDot) pulseDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+                } else if (activeCompanyId) {
+                    loginComp.innerText = `AZIENDA ${activeCompanyId}`;
+                    if (pulseDot) pulseDot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
                 } else {
-                    loginComp.innerText = "PIATTAFORMA CLOUD GESTIONE FLOTTA";
+                    loginComp.innerText = "NESSUNA FLOTTA COLLEGATA";
+                    if (pulseDot) pulseDot.className = "w-2 h-2 rounded-full bg-amber-400";
                 }
             }
             
@@ -3318,8 +3331,8 @@
             if (driverComp) {
                 if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                     driverComp.innerText = companiesRegistry[activeCompanyId].name;
-                } else if (activeCompanyId === 'AZ-MAIN' && currentCompanyName && currentCompanyName !== "Piattaforma Cloud • Gestione Flotte") {
-                    driverComp.innerText = currentCompanyName;
+                } else if (activeCompanyId) {
+                    driverComp.innerText = `Azienda ${activeCompanyId}`;
                 } else {
                     driverComp.innerText = "Inserisci Codice Azienda per iniziare";
                 }
@@ -3329,7 +3342,7 @@
             if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v10.0 Pro`;
 
             const headerCode = document.getElementById('adminHeaderCompanyCode');
-            if (headerCode) headerCode.innerText = activeCompanyId || 'AZ-MAIN';
+            if (headerCode) headerCode.innerText = activeCompanyId || 'NON ASSEGNATA';
 
             const headerNameShort = document.getElementById('adminHeaderCompanyNameShort');
             if (headerNameShort) headerNameShort.innerText = currentCompanyName || 'Gestione Flotta';
@@ -4735,10 +4748,10 @@
             const hasCompany = localStorage.getItem('tacho_active_company');
             const btnText = document.getElementById('companyActivationBtnText');
             if (btnText) {
-                if (hasCompany && hasCompany !== '' && hasCompany !== 'AZ-MAIN') {
+                if (hasCompany && hasCompany !== '') {
                     btnText.innerText = `Cambia Codice Azienda (${hasCompany})`;
                 } else {
-                    btnText.innerText = "Inserisci Codice Azienda";
+                    btnText.innerText = "🔑 Inserisci Codice Azienda per Attivare";
                 }
             }
         }
@@ -4813,6 +4826,14 @@
                 return;
             }
 
+            // Se nessuna azienda è attiva e il PIN non corrisponde ad alcuna flotta
+            if (!activeCompanyId) {
+                errorText.innerText = "Nessuna flotta collegata. Inserisci prima il Codice Azienda.";
+                errorEl.classList.remove('hidden');
+                openSwitchDriverCompanyModal();
+                return;
+            }
+
             errorText.innerText = "PIN Amministrativo non corretto.";
             errorEl.classList.remove('hidden');
             showToast("PIN Amministrativo non valido", "error");
@@ -4820,7 +4841,9 @@
 
         function goToDriverSelection() {
             if (!activeCompanyId) {
-                switchActiveCompany('AZ-MAIN');
+                showToast("⚠️ Inserisci prima il Codice Azienda per accedere all'Area Conducenti", "error");
+                openSwitchDriverCompanyModal();
+                return;
             }
             populateDatalist();
             updateDriverActiveCompanyDisplay();
@@ -5753,24 +5776,40 @@
 
         // --- GESTIONE CAMBIO AZIENDA CONDUCENTE ---
         function openSwitchDriverCompanyModal() {
-            document.getElementById('driverCustomCompanyInput').value = activeCompanyId;
+            const input = document.getElementById('driverCustomCompanyInput');
+            if (input) input.value = activeCompanyId || '';
+            const resetBox = document.getElementById('btnResetCompanyBox');
+            if (resetBox) {
+                if (activeCompanyId) {
+                    resetBox.classList.remove('hidden');
+                } else {
+                    resetBox.classList.add('hidden');
+                }
+            }
             document.getElementById('switchDriverCompanyModal').classList.remove('hidden');
+            setTimeout(() => { if (input) input.focus(); }, 100);
         }
 
         function closeSwitchDriverCompanyModal() {
             document.getElementById('switchDriverCompanyModal').classList.add('hidden');
         }
 
+        function resetActiveCompany() {
+            switchActiveCompany('');
+            closeSwitchDriverCompanyModal();
+            showToast("Flotta disassociata con successo. Nessuna azienda attiva.", "info");
+        }
+
         function confirmSwitchDriverCompany() {
             const inputVal = document.getElementById('driverCustomCompanyInput').value.trim().toUpperCase();
             if (!inputVal) {
-                showToast("Inserisci un codice valido.", "error");
+                showToast("Inserisci un codice valido (es. AZ-101).", "error");
                 return;
             }
             if (companiesRegistry[inputVal] || inputVal === 'AZ-MAIN') {
                 switchActiveCompany(inputVal);
                 closeSwitchDriverCompanyModal();
-                showToast(`Azienda impostata: ${companiesRegistry[inputVal]?.name || inputVal}`, "success");
+                showToast(`Flotta attivata: ${companiesRegistry[inputVal]?.name || inputVal}`, "success");
             } else {
                 showToast("Codice azienda non trovato nel database.", "error");
             }
