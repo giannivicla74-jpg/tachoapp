@@ -269,6 +269,45 @@
     <!-- Main Content Container -->
     <main class="no-print flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0">
         
+        <!-- =================== 0. SCHERMATA BLOCCO LICENZA SCADUTA / SOSPESA =================== -->
+        <div id="licenseLockSection" class="no-print hidden max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-7 border border-red-500/50 text-center space-y-4 transition-all">
+            <div class="w-14 h-14 bg-red-500/20 text-red-400 rounded-2xl border border-red-500/40 flex items-center justify-center text-3xl mx-auto shadow-lg">
+                🛑
+            </div>
+            <div>
+                <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-red-300 bg-red-950/80 px-2.5 py-0.5 rounded-full border border-red-800" id="lockCompanyCodeBadge">AZ-CODE</span>
+                <h3 class="text-lg font-bold text-white mt-1.5" id="lockCompanyTitle">Accesso Temporaneamente Sospeso</h3>
+                <p class="text-xs text-red-400 font-semibold mt-0.5" id="lockReasonText">Abbonamento TachoApp Pro Scaduto o Sospeso</p>
+            </div>
+            
+            <div class="bg-[#0B1626] p-3.5 rounded-2xl border border-slate-800 text-left space-y-2 text-xs text-slate-300">
+                <p class="leading-relaxed">
+                    Gentile Cliente, la licenza d'uso per l'azienda <strong class="text-emerald-400" id="lockCompanyNameText">Azienda</strong> risulta scaduta o in attesa di regolarizzazione del piano.
+                </p>
+                <p class="text-[11px] text-slate-400">
+                    🔒 Tutti i dati relativi a carte tachigrafiche, scadenze dei 28gg e report ispettivi sono conservati in sicurezza nel cloud e non andranno persi.
+                </p>
+            </div>
+
+            <div class="space-y-2 pt-1">
+                <a href="https://gccodelab.it/#prezzi" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition">
+                    <span>💳 Rinnova Piano su gccodelab.it</span>
+                </a>
+                <a href="mailto:info@gccodelab.it?subject=Rinnovo%20Licenza%20TachoApp%20Pro" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition border border-slate-700">
+                    <span>✉️ Contatta GC CodeLab</span>
+                </a>
+                <button type="button" onclick="logoutFromLockScreen()" class="w-full text-slate-400 hover:text-white py-1 text-xs">
+                    ← Torna al Login
+                </button>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800/80">
+                <button type="button" onclick="handleSupervisorUnlockFromLockScreen()" class="text-[10px] text-slate-500 hover:text-indigo-400 underline font-mono">
+                    Sblocco Supervisore (PIN Master)
+                </button>
+            </div>
+        </div>
+
         <!-- =================== 1. LOGIN PRINCIPALE =================== -->
         <div id="loginSection" class="no-print hidden max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-8 border border-slate-800/80 transition-all duration-300">
             <div class="text-center mb-8 select-none cursor-pointer" onclick="handleSecretSupervisorTap()" style="user-select: none; -webkit-user-select: none;" title="GC CodeLab">
@@ -2424,6 +2463,113 @@
                 </button>
                 <button type="button" onclick="saveEditedCompany()" class="flex-1 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
                     <span>💾</span> <span>Salva Modifiche</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE GESTIONE LICENZA & PIANI AZIENDA (SUPER ADMIN) =================== -->
+    <div id="manageLicenseModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[96] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#111C2E] border border-purple-500/50 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4 max-h-[92vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-2xl p-2 bg-purple-500/20 text-purple-400 rounded-xl border border-purple-500/30">🛡️</span>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Gestione Licenza, Piani &amp; Scadenze</h3>
+                        <p id="licenseModalSubtitle" class="text-[10px] text-purple-300 font-mono">Codice: AZ-MAIN &bull; Azienda</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeManageLicenseModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <input type="hidden" id="licenseCompanyCodeHidden">
+
+            <!-- 1. SELEZIONE PIANO -->
+            <div>
+                <label class="block text-[10px] uppercase font-bold text-purple-400 mb-1.5">Piano di Abbonamento Assegnato</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <label class="p-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl cursor-pointer hover:border-purple-400 transition flex flex-col items-center text-center space-y-1">
+                        <input type="radio" name="licensePlanRadio" value="free" onchange="onLicensePlanRadioChange(this.value)" class="accent-purple-500">
+                        <span class="text-xs font-bold text-white">Free Starter</span>
+                        <span class="text-[9px] text-slate-400">1 Mezzo / 1 Autista</span>
+                    </label>
+                    <label class="p-3 bg-[#0F1C32] border border-purple-500/60 rounded-2xl cursor-pointer hover:border-purple-400 transition flex flex-col items-center text-center space-y-1">
+                        <input type="radio" name="licensePlanRadio" value="pro" onchange="onLicensePlanRadioChange(this.value)" class="accent-purple-500" checked>
+                        <span class="text-xs font-bold text-emerald-400">Pro Flotta</span>
+                        <span class="text-[9px] text-slate-400">Fino a 10 Mezzi</span>
+                    </label>
+                    <label class="p-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl cursor-pointer hover:border-purple-400 transition flex flex-col items-center text-center space-y-1">
+                        <input type="radio" name="licensePlanRadio" value="enterprise" onchange="onLicensePlanRadioChange(this.value)" class="accent-purple-500">
+                        <span class="text-xs font-bold text-amber-300">Enterprise</span>
+                        <span class="text-[9px] text-slate-400">Mezzi Illimitati</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 2. STATO ATTIVAZIONE -->
+            <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1.5">Stato di Attivazione Servizio</label>
+                <select id="licenseStatusSelect" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs font-bold focus:border-purple-400">
+                    <option value="active">🟢 Licenza Attiva (Accesso Regolare)</option>
+                    <option value="trial">🟡 In Prova Gratuita</option>
+                    <option value="suspended">🔴 Sospesa / Bloccata (Mancato Pagamento)</option>
+                </select>
+            </div>
+
+            <!-- 3. DATA DI SCADENZA E PULSANTI RAPIDI -->
+            <div class="bg-[#0B1626] p-4 rounded-2xl border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
+                    <label class="block text-[10px] uppercase font-bold text-slate-300">Data Scadenza Licenza (Blocco Automatico)</label>
+                    <span class="text-[10px] font-mono text-purple-300" id="licenseExpiresCountdown">Scadenza</span>
+                </div>
+                <input type="date" id="licenseExpiresAtInput" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700 rounded-xl outline-none text-white text-xs font-mono font-bold focus:border-purple-400">
+                
+                <!-- Pulsanti Rapidi -->
+                <div class="flex gap-2 pt-1 flex-wrap">
+                    <button type="button" onclick="setQuickLicenseDuration(30)" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-lg transition">
+                        +30 Giorni (Mensile)
+                    </button>
+                    <button type="button" onclick="setQuickLicenseDuration(365)" class="px-2.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-[10px] font-bold rounded-lg transition">
+                        +1 Anno (Annuale)
+                    </button>
+                    <button type="button" onclick="setQuickLicenseDuration(730)" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-lg transition">
+                        +2 Anni
+                    </button>
+                    <button type="button" onclick="setQuickLicenseDuration(0)" class="px-2.5 py-1.5 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-300 border border-emerald-700 text-[10px] font-bold rounded-lg transition">
+                        Illimitata (2099)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. LIMITI FLOTTA -->
+            <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Max Veicoli Consentiti</label>
+                    <input type="number" id="licenseMaxVehiclesInput" min="1" max="999" value="10" 
+                        class="w-full px-3 py-2 bg-[#0F1C32] border border-slate-700 rounded-xl outline-none text-white text-xs focus:border-purple-400">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Max Conducenti Consentiti</label>
+                    <input type="number" id="licenseMaxDriversInput" min="1" max="999" value="10" 
+                        class="w-full px-3 py-2 bg-[#0F1C32] border border-slate-700 rounded-xl outline-none text-white text-xs focus:border-purple-400">
+                </div>
+            </div>
+
+            <!-- 5. NOTE AMMINISTRATIVE GIOVANNI -->
+            <div>
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Note Interne Licenza (Visibili solo a te)</label>
+                <input type="text" id="licenseNotesInput" placeholder="es. Bonifico ricevuto fattura n. 01/2026..." 
+                    class="w-full px-3.5 py-2 bg-[#0F1C32] border border-slate-700 rounded-xl outline-none text-white text-xs focus:border-purple-400">
+            </div>
+
+            <div class="flex gap-2 pt-2 border-t border-slate-800">
+                <button type="button" onclick="closeManageLicenseModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
+                    Annulla
+                </button>
+                <button type="button" onclick="saveCompanyLicense()" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
+                    <span>💾</span> <span>Salva Licenza &amp; Regole</span>
                 </button>
             </div>
         </div>
@@ -4809,12 +4955,24 @@
                 const adminSec = document.getElementById('adminSection');
                 const driverSec = document.getElementById('driverSection');
                 const adminHeader = document.getElementById('adminHeader');
+                const lockSec = document.getElementById('licenseLockSection');
 
                 if (loginSec) loginSec.classList.add('hidden');
                 if (driverSelSec) driverSelSec.classList.add('hidden');
                 if (adminSec) adminSec.classList.add('hidden');
                 if (driverSec) driverSec.classList.add('hidden');
                 if (adminHeader) adminHeader.classList.add('hidden');
+                if (lockSec) lockSec.classList.add('hidden');
+
+                // Verifica Licenza & Abbonamento (SuperAdmin Giovanni PIN 8528 è sempre esente)
+                if ((sec === "admin" || sec === "driver" || sec === "driverSelection") && !isSuperAdmin) {
+                    const check = isCompanyLicenseValid(activeCompanyId);
+                    if (!check.valid) {
+                        showLicenseLockScreen(activeCompanyId, check.reason);
+                        scrollToTop();
+                        return;
+                    }
+                }
 
                 if (sec === "admin") {
                     if (adminSec) adminSec.classList.remove('hidden');
@@ -4847,6 +5005,8 @@
             if (superBadge) superBadge.classList.add('hidden');
             const switchBtn = document.getElementById('btnSwitchCompanyHeader');
             if (switchBtn) switchBtn.classList.add('hidden');
+            const lockSec = document.getElementById('licenseLockSection');
+            if (lockSec) lockSec.classList.add('hidden');
 
             showSection("login");
             showToast("Sessione terminata", "success");
@@ -5059,14 +5219,55 @@
                 const safePhone = escapeHtml(comp.phone);
                 const safeEmail = escapeHtml(comp.email);
 
+                // Calcolo Badge Piano con indicazione chiara del limite mezzi
+                const planVal = comp.plan || (code === 'AZ-MAIN' ? 'enterprise' : 'pro');
+                const maxVehiclesVal = comp.maxVehicles || (planVal === 'enterprise' ? 'Illimitati' : (planVal === 'free' ? 1 : 10));
+                let planBadge = '';
+                if (planVal === 'enterprise') {
+                    planBadge = '<span class="text-[9px] bg-amber-500/20 text-amber-300 font-extrabold px-1.5 py-0.5 rounded border border-amber-500/40">ENTERPRISE (Mezzi Illimitati)</span>';
+                } else if (planVal === 'pro') {
+                    planBadge = `<span class="text-[9px] bg-indigo-500/20 text-indigo-300 font-extrabold px-1.5 py-0.5 rounded border border-indigo-500/40">PRO FLOTTA (Fino a ${maxVehiclesVal} Mezzi)</span>`;
+                } else {
+                    planBadge = '<span class="text-[9px] bg-slate-800 text-slate-300 font-extrabold px-1.5 py-0.5 rounded border border-slate-700">FREE (1 Mezzo)</span>';
+                }
+
+                // Calcolo Stato Licenza e Scadenza Temporale (chiara distinzione tra durata e mezzi)
+                const licStatus = comp.licenseStatus || 'active';
+                const licExp = comp.licenseExpiresAt || '';
+                let statusBadge = '';
+                if (licStatus === 'suspended') {
+                    statusBadge = '<span class="text-[9px] bg-red-950/90 text-red-300 font-bold px-1.5 py-0.5 rounded border border-red-700">🔴 SOSPESA</span>';
+                } else {
+                    let isExpired = false;
+                    if (licExp) {
+                        const dExp = new Date(licExp + "T23:59:59");
+                        if (!isNaN(dExp.getTime()) && Date.now() > dExp.getTime()) isExpired = true;
+                    }
+                    if (isExpired) {
+                        statusBadge = `<span class="text-[9px] bg-red-950/90 text-red-300 font-bold px-1.5 py-0.5 rounded border border-red-700">🔴 SCADUTA il ${licExp}</span>`;
+                    } else if (licStatus === 'trial') {
+                        statusBadge = `<span class="text-[9px] bg-amber-950/80 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-700">🟡 IN PROVA (Scad: ${licExp || 'N.D.'})</span>`;
+                    } else if (licExp) {
+                        if (licExp.startsWith('2099')) {
+                            statusBadge = '<span class="text-[9px] bg-emerald-950/80 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-700">🟢 ATTIVA (Senza scadenza temporale)</span>';
+                        } else {
+                            statusBadge = `<span class="text-[9px] bg-emerald-950/80 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-700">🟢 ATTIVA (Scadenza: ${licExp})</span>`;
+                        }
+                    } else {
+                        statusBadge = '<span class="text-[9px] bg-emerald-950/80 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-700">🟢 ATTIVA (Scadenza non impostata)</span>';
+                    }
+                }
+
                 const item = document.createElement('div');
                 item.className = `p-4 rounded-2xl border transition flex flex-col md:flex-row md:items-center justify-between gap-3 ${isCurrent ? 'bg-indigo-950/70 border-indigo-500 shadow-md ring-1 ring-indigo-500/50' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'}`;
                 item.innerHTML = `
                     <div class="space-y-1">
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center space-x-2 flex-wrap gap-y-1">
                             <span class="font-mono font-bold text-xs text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-800/60">${safeCode}</span>
                             <h4 class="font-bold text-white text-xs">${safeName}</h4>
                             ${isCurrent ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/30">FLOTTA ATTIVA</span>' : ''}
+                            ${planBadge}
+                            ${statusBadge}
                         </div>
                         <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-slate-400">
                             ${comp.adminName ? `<span>Admin: <strong class="text-slate-200 font-semibold">${safeAdminName}</strong></span>` : ''}
@@ -5076,9 +5277,15 @@
                             <span>PIN Admin: <strong class="text-amber-300 font-mono font-bold">${safeAdminPin}</strong></span>
                             ${comp.phone ? `<span>Tel: <strong class="text-slate-300">${safePhone}</strong></span>` : ''}
                             ${comp.email ? `<span>Email: <strong class="text-slate-300">${safeEmail}</strong></span>` : ''}
+                            ${comp.maxVehicles ? `<span>Max Mezzi: <strong class="text-indigo-300 font-bold">${comp.maxVehicles}</strong></span>` : ''}
+                            ${comp.maxDrivers ? `<span>Max Autisti: <strong class="text-indigo-300 font-bold">${comp.maxDrivers}</strong></span>` : ''}
                         </div>
                     </div>
-                    <div class="flex items-center space-x-1.5 self-end md:self-auto">
+                    <div class="flex items-center space-x-1.5 self-end md:self-auto flex-wrap gap-y-1">
+                        <button onclick="openManageLicenseModal('${code}')" title="Gestisci Licenza, Piani & Scadenze" class="bg-purple-900/30 hover:bg-purple-800/50 text-purple-300 border border-purple-500/40 font-bold px-2.5 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1">
+                            <span>🛡️</span>
+                            <span>Licenza</span>
+                        </button>
                         <button onclick="sendCompanyWhatsAppDirect('${code}')" title="Invia Credenziali su WhatsApp" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold px-2 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1">
                             <span>📲</span>
                             <span>WA</span>
@@ -5262,6 +5469,267 @@
             }
         }
 
+        // =================== GESTIONE LICENZE, PIANI & BLOCCO SERVIZIO (SUPER ADMIN GIOVANNI) ===================
+        function onLicensePlanRadioChange(val) {
+            const vInput = document.getElementById('licenseMaxVehiclesInput');
+            const dInput = document.getElementById('licenseMaxDriversInput');
+            if (val === 'free') {
+                if (vInput) vInput.value = 1;
+                if (dInput) dInput.value = 1;
+            } else if (val === 'pro') {
+                if (vInput) vInput.value = 10;
+                if (dInput) dInput.value = 10;
+            } else if (val === 'enterprise') {
+                if (vInput) vInput.value = 999;
+                if (dInput) dInput.value = 999;
+            }
+        }
+
+        function openManageLicenseModal(code) {
+            const comp = companiesRegistry[code];
+            if (!comp) return;
+
+            document.getElementById('licenseCompanyCodeHidden').value = code;
+            const subTitleEl = document.getElementById('licenseModalSubtitle');
+            if (subTitleEl) {
+                subTitleEl.innerText = `Codice: ${code} • ${comp.name || 'Azienda'}`;
+            }
+
+            // Piano selezionato
+            const currentPlan = comp.plan || (code === 'AZ-MAIN' ? 'enterprise' : 'pro');
+            const radios = document.getElementsByName('licensePlanRadio');
+            for (let r of radios) {
+                r.checked = (r.value === currentPlan);
+            }
+
+            // Stato Attivazione
+            const statusSelect = document.getElementById('licenseStatusSelect');
+            if (statusSelect) {
+                statusSelect.value = comp.licenseStatus || 'active';
+            }
+
+            // Data Scadenza (default 1 anno da oggi o 2099 per main)
+            const expInput = document.getElementById('licenseExpiresAtInput');
+            if (expInput) {
+                if (comp.licenseExpiresAt) {
+                    expInput.value = comp.licenseExpiresAt;
+                } else if (code === 'AZ-MAIN') {
+                    expInput.value = '2099-12-31';
+                } else {
+                    const oneYear = new Date();
+                    oneYear.setDate(oneYear.getDate() + 365);
+                    expInput.value = oneYear.toISOString().split('T')[0];
+                }
+                updateLicenseCountdownDisplay();
+                expInput.oninput = updateLicenseCountdownDisplay;
+            }
+
+            // Limiti Flotta
+            const maxVehiclesInput = document.getElementById('licenseMaxVehiclesInput');
+            if (maxVehiclesInput) {
+                maxVehiclesInput.value = comp.maxVehicles || (currentPlan === 'enterprise' ? 999 : (currentPlan === 'free' ? 1 : 10));
+            }
+            const maxDriversInput = document.getElementById('licenseMaxDriversInput');
+            if (maxDriversInput) {
+                maxDriversInput.value = comp.maxDrivers || (currentPlan === 'enterprise' ? 999 : (currentPlan === 'free' ? 1 : 10));
+            }
+
+            // Note
+            const notesInput = document.getElementById('licenseNotesInput');
+            if (notesInput) {
+                notesInput.value = comp.licenseNotes || '';
+            }
+
+            document.getElementById('manageLicenseModal').classList.remove('hidden');
+        }
+
+        function closeManageLicenseModal() {
+            document.getElementById('manageLicenseModal').classList.add('hidden');
+        }
+
+        function setQuickLicenseDuration(days) {
+            const expInput = document.getElementById('licenseExpiresAtInput');
+            if (!expInput) return;
+
+            if (days === 0) {
+                expInput.value = '2099-12-31';
+            } else {
+                const target = new Date();
+                target.setDate(target.getDate() + days);
+                expInput.value = target.toISOString().split('T')[0];
+            }
+            updateLicenseCountdownDisplay();
+        }
+
+        function updateLicenseCountdownDisplay() {
+            const expInput = document.getElementById('licenseExpiresAtInput');
+            const countdownEl = document.getElementById('licenseExpiresCountdown');
+            if (!expInput || !countdownEl) return;
+
+            const val = expInput.value;
+            if (!val) {
+                countdownEl.innerText = "Nessuna data impostata";
+                countdownEl.className = "text-[10px] font-mono text-slate-400";
+                return;
+            }
+
+            const expDate = new Date(val + "T23:59:59");
+            const now = new Date();
+            const diffTime = expDate.getTime() - now.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                countdownEl.innerText = `🔴 Scaduta da ${Math.abs(diffDays)} gg`;
+                countdownEl.className = "text-[10px] font-mono font-bold text-red-400";
+            } else if (diffDays === 0) {
+                countdownEl.innerText = `⚠️ Scade oggi!`;
+                countdownEl.className = "text-[10px] font-mono font-bold text-amber-400";
+            } else if (diffDays > 10000) {
+                countdownEl.innerText = `♾️ Licenza a Vita`;
+                countdownEl.className = "text-[10px] font-mono font-bold text-emerald-400";
+            } else {
+                countdownEl.innerText = `Restano ${diffDays} giorni`;
+                countdownEl.className = "text-[10px] font-mono font-bold text-purple-300";
+            }
+        }
+
+        function saveCompanyLicense() {
+            const code = document.getElementById('licenseCompanyCodeHidden').value;
+            if (!code) return;
+
+            let selectedPlan = 'pro';
+            const radios = document.getElementsByName('licensePlanRadio');
+            for (let r of radios) {
+                if (r.checked) {
+                    selectedPlan = r.value;
+                    break;
+                }
+            }
+
+            const status = document.getElementById('licenseStatusSelect')?.value || 'active';
+            const expiresAt = document.getElementById('licenseExpiresAtInput')?.value || '';
+            const maxVehicles = parseInt(document.getElementById('licenseMaxVehiclesInput')?.value, 10) || 10;
+            const maxDrivers = parseInt(document.getElementById('licenseMaxDriversInput')?.value, 10) || 10;
+            const notes = (document.getElementById('licenseNotesInput')?.value || '').trim();
+
+            const licenseData = {
+                plan: selectedPlan,
+                licenseStatus: status,
+                licenseExpiresAt: expiresAt,
+                maxVehicles: maxVehicles,
+                maxDrivers: maxDrivers,
+                licenseNotes: notes
+            };
+
+            // Salva nel registry globale
+            db.ref('aziende_registry/' + code).update(licenseData, (err) => {
+                if (!err) {
+                    // Aggiorna anche il config specifico dell'azienda
+                    db.ref('aziende/' + code + '/config/licenza').set(licenseData);
+
+                    // Aggiornamento ottimistico in locale
+                    if (companiesRegistry[code]) {
+                        Object.assign(companiesRegistry[code], licenseData);
+                    }
+
+                    showToast(`🛡️ Licenza per ${code} salvata con successo!`, "success");
+                    closeManageLicenseModal();
+                    renderSuperAdminCompaniesList();
+                } else {
+                    showToast("Errore durante il salvataggio della licenza: " + err.message, "error");
+                }
+            });
+        }
+
+        function isCompanyLicenseValid(code) {
+            // L'azienda master o l'accesso supervisore non vengono mai bloccati
+            if (!code || code === 'AZ-MAIN' || isSuperAdmin) {
+                return { valid: true };
+            }
+
+            const comp = companiesRegistry[code];
+            if (!comp) {
+                return { valid: true };
+            }
+
+            // 1. Controllo Sospensione Manuale
+            if (comp.licenseStatus === 'suspended') {
+                return {
+                    valid: false,
+                    reason: "Licenza d'uso sospesa per mancato pagamento del rinnovo o per disposizione amministrativa."
+                };
+            }
+
+            // 2. Controllo Scadenza Temporale
+            if (comp.licenseExpiresAt) {
+                const expDate = new Date(comp.licenseExpiresAt + "T23:59:59");
+                if (!isNaN(expDate.getTime()) && Date.now() > expDate.getTime()) {
+                    return {
+                        valid: false,
+                        reason: `Abbonamento scaduto in data ${comp.licenseExpiresAt}. Effettua il rinnovo per continuare ad operare.`
+                    };
+                }
+            }
+
+            return { valid: true };
+        }
+
+        function showLicenseLockScreen(code, reason) {
+            const comp = companiesRegistry[code] || {};
+            const compName = comp.name || 'Azienda';
+
+            const badgeEl = document.getElementById('lockCompanyCodeBadge');
+            if (badgeEl) badgeEl.innerText = code || 'AZ-CODE';
+
+            const nameEl = document.getElementById('lockCompanyNameText');
+            if (nameEl) nameEl.innerText = compName;
+
+            const reasonEl = document.getElementById('lockReasonText');
+            if (reasonEl) reasonEl.innerText = reason || "Abbonamento TachoApp Pro Scaduto o Sospeso";
+
+            // Nascondi tutte le altre sezioni e mostra il blocco
+            const loginSec = document.getElementById('loginSection');
+            const driverSelSec = document.getElementById('driverSelectionSection');
+            const adminSec = document.getElementById('adminSection');
+            const driverSec = document.getElementById('driverSection');
+            const adminHeader = document.getElementById('adminHeader');
+            const lockSec = document.getElementById('licenseLockSection');
+
+            if (loginSec) loginSec.classList.add('hidden');
+            if (driverSelSec) driverSelSec.classList.add('hidden');
+            if (adminSec) adminSec.classList.add('hidden');
+            if (driverSec) driverSec.classList.add('hidden');
+            if (adminHeader) adminHeader.classList.add('hidden');
+
+            if (lockSec) lockSec.classList.remove('hidden');
+        }
+
+        function logoutFromLockScreen() {
+            const lockSec = document.getElementById('licenseLockSection');
+            if (lockSec) lockSec.classList.add('hidden');
+            logout();
+        }
+
+        function handleSupervisorUnlockFromLockScreen() {
+            const pin = prompt("👑 Inserisci il PIN Master Supervisore (Giovanni) per sbloccare l'accesso di emergenza:");
+            if (pin === ADMIN_PIN) {
+                isSuperAdmin = true;
+                localStorage.setItem('userRole', 'admin');
+                const superBadge = document.getElementById('superAdminBadge');
+                if (superBadge) superBadge.classList.remove('hidden');
+                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+                if (switchBtn) switchBtn.classList.remove('hidden');
+
+                const lockSec = document.getElementById('licenseLockSection');
+                if (lockSec) lockSec.classList.add('hidden');
+
+                showSection("admin");
+                showToast("👑 Sblocco di Emergenza Supervisore Eseguito!", "success");
+            } else if (pin !== null) {
+                alert("PIN Supervisore errato.");
+            }
+        }
+
         // --- GESTIONE CAMBIO AZIENDA CONDUCENTE ---
         function openSwitchDriverCompanyModal() {
             document.getElementById('driverCustomCompanyInput').value = activeCompanyId;
@@ -5290,6 +5758,16 @@
         // --- GESTIONE CONDUCENTI ---
         function saveDriver() {
             const editId = document.getElementById('editDriverId').value;
+            // Controllo Limite Conducenti Piano Licenza
+            if (!editId && !isSuperAdmin && activeCompanyId && activeCompanyId !== 'AZ-MAIN') {
+                const comp = companiesRegistry[activeCompanyId];
+                const maxDrivers = comp?.maxDrivers || 10;
+                const currentDriversCount = Object.keys(driversMap || {}).length;
+                if (currentDriversCount >= maxDrivers) {
+                    showToast(`⚠️ Limite piano raggiunto (${maxDrivers} conducenti). Aggiorna il piano su gccodelab.it`, "error");
+                    return;
+                }
+            }
             const name = document.getElementById('addName').value.trim();
             const surname = document.getElementById('addSurname').value.trim();
             const card = document.getElementById('addCard').value.trim();
@@ -5896,6 +6374,16 @@
         // --- GESTIONE VEICOLI / MEZZI (90GG) ---
         function saveVehicle() {
             const editId = document.getElementById('editVehicleId').value;
+            // Controllo Limite Veicoli Piano Licenza
+            if (!editId && !isSuperAdmin && activeCompanyId && activeCompanyId !== 'AZ-MAIN') {
+                const comp = companiesRegistry[activeCompanyId];
+                const maxVehicles = comp?.maxVehicles || 10;
+                const currentVehiclesCount = Object.keys(vehiclesMap || {}).length;
+                if (currentVehiclesCount >= maxVehicles) {
+                    showToast(`⚠️ Limite piano raggiunto (${maxVehicles} veicoli). Aggiorna il piano su gccodelab.it`, "error");
+                    return;
+                }
+            }
             const plate = document.getElementById('addVehPlate').value.trim().toUpperCase();
             const model = document.getElementById('addVehModel').value.trim();
             const cantiere = document.getElementById('addVehCantiere').value.trim() || "Generale";
