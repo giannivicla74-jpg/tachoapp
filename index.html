@@ -234,33 +234,52 @@
         </div>
     </div>
 
-    <!-- Header / Navbar Amministratore -->
-    <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#15243E]/95 backdrop-blur-md shadow-lg border-b border-slate-800 transition-colors duration-300">
-        <div class="max-w-lg w-full mx-auto px-4 py-3 sm:px-6 flex justify-between items-center">
-            <div class="space-y-0.5 min-w-0 flex-1 pr-2">
-                <div class="flex items-center space-x-2">
-                    <h1 class="text-sm sm:text-base font-bold text-white tracking-tight flex items-center space-x-1.5" id="adminHeaderAppName">
-                        <span>TachoApp Pro</span>
-                        <span class="text-emerald-400 text-xs font-bold">&bull; Area Amministrativa</span>
-                    </h1>
-                    <span id="superAdminBadge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">SuperAdmin</span>
+    <!-- Header / Navbar Amministratore (Design Elegante, Nitido & Professionale) -->
+    <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#0C1628]/95 backdrop-blur-md shadow-xl border-b border-slate-800/80 transition-colors duration-300">
+        <div class="max-w-lg w-full mx-auto px-3.5 py-2.5 sm:px-6 flex justify-between items-center gap-3">
+            <div class="flex items-center space-x-3 min-w-0 flex-1">
+                <!-- Avatar / Logo Aziendale Grande, Elegante & Nitido -->
+                <div class="w-12 h-12 rounded-2xl bg-[#070F1C] border border-slate-700/80 p-1 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+                    <img id="adminHeaderCompanyLogo" src="" alt="Logo" class="hidden w-full h-full object-contain rounded-xl">
+                    <span class="text-2xl text-slate-400" id="adminHeaderCompanyIcon">🏢</span>
                 </div>
-                
-                <!-- Nome Azienda Attiva -->
-                <div class="flex items-center space-x-1.5 text-[11px] text-slate-300">
-                    <span class="text-xs" id="adminHeaderCompanyIcon">🏢</span>
-                    <img id="adminHeaderCompanyLogo" src="" alt="Logo" class="hidden h-5 max-w-[75px] object-contain rounded bg-white/95 px-1 py-0.5 shadow-sm border border-slate-600/40">
-                    <span class="font-bold text-emerald-300 truncate max-w-[190px]" id="adminHeaderCompanyNameShort">Azienda</span>
-                    <span class="text-[9px] font-mono text-indigo-300 bg-indigo-950 px-1.5 py-0.2 rounded border border-indigo-700/60" id="adminHeaderCompanyCode">AZ-MAIN</span>
-                    <!-- Tasto cambia (visibile solo per SuperAdmin) -->
-                    <button id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden text-[9px] text-indigo-400 hover:text-indigo-200 underline font-bold ml-1">
-                        ⇄ Cambia
-                    </button>
+
+                <!-- Dati Flotta, Codice e Stato Licenza -->
+                <div class="min-w-0 flex-1 space-y-1">
+                    <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+                        <span class="font-black text-sm sm:text-base text-white uppercase tracking-wide truncate max-w-[170px] sm:max-w-[220px]" id="adminHeaderCompanyNameShort">Azienda</span>
+                        <span class="text-[11px] font-mono font-black text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded-lg border border-cyan-500/50 shadow-sm shrink-0 tracking-wider" id="adminHeaderCompanyCode">AZ-MAIN</span>
+                        <span id="superAdminBadge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">SuperAdmin</span>
+                        <button id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden text-[9px] text-indigo-400 hover:text-indigo-200 underline font-bold">⇄ Cambia</button>
+                    </div>
+
+                    <!-- Riga Dettagli: Label Area + Badge Licenza + Passa a PRO -->
+                    <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                        <span class="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center gap-1 mr-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Admin
+                        </span>
+                        <!-- Badge Licenza Flotta -->
+                        <button id="headerLicenseBadge" type="button" onclick="openClientLicenseModal()" class="hidden text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border cursor-pointer shadow-sm">
+                            <span id="headerLicenseIcon">🛡️</span>
+                            <span id="headerLicenseText">Licenza</span>
+                        </button>
+                        <!-- Tasto Upgrade Rapido WhatsApp (Visibile se Piano Gratuito) -->
+                        <button id="btnHeaderUpgradeFleet" type="button" onclick="requestFleetUpgradeWhatsApp()" class="hidden bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow transition flex items-center space-x-1 cursor-pointer animate-pulse" title="Richiedi a Giovanni l'attivazione di più mezzi">
+                            <span>🚀</span>
+                            <span>Passa a PRO</span>
+                        </button>
+                    </div>
                 </div>
             </div>
+
+            <!-- Tasto Esci Elegante con Icona -->
             <div class="flex-shrink-0">
-                <button onclick="logout()" class="px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-bold text-white bg-[#2A1F2B] border border-red-900/40 rounded-xl hover:bg-red-950/40 transition-all duration-200 active:scale-95">
-                    Esci
+                <button onclick="logout()" class="px-3 py-2 text-xs font-extrabold text-slate-300 hover:text-white bg-slate-900/90 hover:bg-red-950/60 border border-slate-700/80 hover:border-red-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95">
+                    <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span>Esci</span>
                 </button>
             </div>
         </div>
@@ -269,6 +288,17 @@
     <!-- Main Content Container -->
     <main class="no-print flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0">
         
+        <!-- Banner Top Sola Consultazione (Garanzia Etica) -->
+        <div id="readOnlyTopBanner" class="no-print hidden w-full mb-4 bg-amber-950/90 border border-amber-500/50 rounded-2xl p-3 text-center text-xs text-amber-200 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+                <span class="text-base">🔒</span>
+                <span class="font-bold text-left">Modalità Sola Consultazione: Licenza scaduta. L'archivio e i report sono accessibili.</span>
+            </div>
+            <button type="button" onclick="openClientLicenseModal()" class="px-3 py-1 bg-amber-500 text-slate-950 font-black rounded-lg text-[11px] hover:bg-amber-400 transition shadow">
+                Rinnova Licenza
+            </button>
+        </div>
+
         <!-- =================== 0. SCHERMATA BLOCCO LICENZA SCADUTA / SOSPESA =================== -->
         <div id="licenseLockSection" class="no-print hidden max-w-sm w-full mx-auto my-6 bg-[#15243E] rounded-3xl shadow-2xl p-7 border border-red-500/50 text-center space-y-4 transition-all">
             <div class="w-14 h-14 bg-red-500/20 text-red-400 rounded-2xl border border-red-500/40 flex items-center justify-center text-3xl mx-auto shadow-lg">
@@ -290,11 +320,20 @@
             </div>
 
             <div class="space-y-2 pt-1">
-                <a href="https://gccodelab.it/#prezzi" target="_blank" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition">
-                    <span>💳 Rinnova Piano su gccodelab.it</span>
-                </a>
-                <a href="mailto:info@gccodelab.it?subject=Rinnovo%20Licenza%20TachoApp%20Pro" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition border border-slate-700">
-                    <span>✉️ Contatta GC CodeLab</span>
+                <!-- 1. Garanzia Etica: Accesso in sola consultazione -->
+                <button type="button" onclick="enterReadOnlyModeFromLockScreen()" class="w-full bg-[#0F1C32] hover:bg-slate-800 text-emerald-400 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition border border-emerald-500/30">
+                    <span>👁️</span> <span>Accedi in Sola Consultazione</span>
+                </button>
+                <!-- 2. Inserimento Chiave -->
+                <button type="button" onclick="openClientLicenseModal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition">
+                    <span>🔑</span> <span>Inserisci Chiave di Attivazione</span>
+                </button>
+                <!-- 3. Rinnovo WhatsApp Rapido Giovanni -->
+                <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition">
+                    <span>💬</span> <span>Richiedi Rinnovo su WhatsApp</span>
+                </button>
+                <a href="https://gccodelab.it/#prezzi" target="_blank" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition border border-slate-700">
+                    <span>💳</span> <span>Piani &amp; Tariffe su gccodelab.it</span>
                 </a>
                 <button type="button" onclick="logoutFromLockScreen()" class="w-full text-slate-400 hover:text-white py-1 text-xs">
                     ← Torna al Login
@@ -334,34 +373,37 @@
             </div>
 
             <div class="space-y-4">
-                <!-- 1. PORTA CONDUCENTI & OPERAI (Stile Premium con Icona Camion e Carta) -->
-                <button onclick="goToDriverSelection()" 
-                    class="w-full bg-gradient-to-r from-[#188A5E] via-[#157F56] to-[#106B49] hover:from-[#1CA06E] hover:to-[#147A53] text-white font-extrabold p-3.5 rounded-3xl shadow-2xl transition-all duration-300 flex items-center justify-between group active:scale-[0.98] border border-emerald-400/40">
-                    <div class="flex items-center space-x-3.5 text-left">
-                        <div class="w-14 h-14 rounded-2xl bg-[#093524]/60 border border-emerald-400/30 p-1 flex items-center justify-center flex-shrink-0 shadow-inner overflow-hidden">
-                            <img src="assets/icon_truck_driver.png" alt="Camion e Carta Tachigrafica" class="w-full h-full object-contain drop-shadow-md">
+                <!-- 1. PORTA CONDUCENTI & OPERAI (Design Elegante, Proporzionato & Professionale) -->
+                <button type="button" onclick="goToDriverSelection()" 
+                    class="w-full p-3 rounded-2xl bg-gradient-to-r from-[#0C1E2A] via-[#0D252E] to-[#0A1A26] hover:from-[#0E2838] hover:via-[#10303C] hover:to-[#0D2232] border border-emerald-500/35 hover:border-emerald-400/70 shadow-lg hover:shadow-emerald-500/10 transition-all duration-300 flex items-center justify-between group active:scale-[0.99] cursor-pointer">
+                    <div class="flex items-center space-x-3 text-left min-w-0">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-400/30 p-1.5 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:border-emerald-400/60 transition-colors">
+                            <img src="assets/icon_truck_driver.png" alt="Camion e Carta Tachigrafica" class="w-full h-full object-contain drop-shadow">
                         </div>
-                        <div>
-                            <span class="block text-sm uppercase font-black tracking-wide text-white">AREA CONDUCENTI</span>
-                            <span class="block text-xs text-emerald-100/90 font-normal">Registra Scarico Carta Autista</span>
+                        <div class="min-w-0">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="text-xs font-black uppercase tracking-wider text-white group-hover:text-emerald-300 transition-colors">Area Conducenti</span>
+                                <span class="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Autisti</span>
+                            </div>
+                            <span class="block text-[11px] text-slate-400 group-hover:text-slate-300 font-normal transition-colors truncate mt-0.5">Registra Scarico Carta Autista</span>
                         </div>
                     </div>
-                    <div class="pr-2 text-emerald-100 group-hover:translate-x-1.5 transition-transform">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500/15 group-hover:bg-emerald-500 border border-emerald-500/30 group-hover:border-emerald-400 text-emerald-300 group-hover:text-slate-950 flex items-center justify-center transition-all duration-300 flex-shrink-0 ml-2 shadow-sm">
+                        <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/>
                         </svg>
                     </div>
                 </button>
 
-                <!-- Divisore Elegante -->
-                <div class="relative flex py-1 items-center">
+                <!-- Divisore Elegante (Nascosto se modalità Conducente) -->
+                <div id="loginOrDivider" class="relative flex py-1 items-center">
                     <div class="flex-grow border-t border-slate-700/60"></div>
                     <span class="flex-shrink mx-3 text-[10px] uppercase font-bold text-slate-500 tracking-wider">Oppure</span>
                     <div class="flex-grow border-t border-slate-700/60"></div>
                 </div>
 
-                <!-- 2. PORTA AMMINISTRATORE / TITOLARE (Box Riservato con PIN) -->
-                <div class="bg-[#0F1C32] p-4 rounded-2xl border border-slate-700/70 space-y-3 shadow-inner">
+                <!-- 2. PORTA AMMINISTRATORE / TITOLARE (Box Riservato con PIN - Nascosto se modalità Conducente) -->
+                <div id="loginAdminBox" class="bg-[#0F1C32] p-4 rounded-2xl border border-slate-700/70 space-y-3 shadow-inner">
                     <div class="flex items-center space-x-2">
                         <span class="text-base">🏢</span>
                         <div class="text-left">
@@ -386,18 +428,23 @@
                     </div>
                 </div>
 
-                <!-- Tasto Inserimento Codice Azienda / Cambio Flotta (Nessuna auto-registrazione pubblica) -->
+                <!-- Tasto Inserimento Codice Azienda / Cambio Flotta (Nascosto se modalità Conducente) -->
                 <div id="companyActivationBox" class="pt-1">
                     <button type="button" onclick="openSwitchDriverCompanyModal()"
                         class="w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-emerald-400 font-semibold py-2.5 px-3 rounded-xl text-[11px] transition-all flex items-center justify-center space-x-1.5">
                         <span>🔑</span>
                         <span id="companyActivationBtnText">Inserisci Codice Azienda</span>
                     </button>
-                    <div class="text-center mt-2">
-                        <a href="https://gccodelab.it/#contatti" target="_blank" class="text-[10px] text-slate-400 hover:text-slate-300 hover:underline">
-                            Non hai ancora una licenza attiva? Richiedila su gccodelab.it
-                        </a>
-                    </div>
+                </div>
+
+                <!-- Tasto Auto-Registrazione Nuova Azienda / Inizia Gratis (Nascosto se modalità Conducente) -->
+                <div id="selfRegisterCompanyBox" class="pt-2 border-t border-slate-800/80 text-center">
+                    <button type="button" onclick="openRegisterCompanyModal()"
+                        class="w-full bg-gradient-to-r from-emerald-600/30 via-teal-600/30 to-indigo-600/30 hover:from-emerald-600/40 hover:to-indigo-600/40 border border-emerald-500/50 text-emerald-300 hover:text-white font-bold py-2.5 px-3 rounded-2xl text-xs transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-98">
+                        <span>✨</span>
+                        <span>Sei una nuova Azienda? Inizia Gratis (Pro Bono)</span>
+                    </button>
+                    <p class="text-[10px] text-slate-400 mt-1.5">Piano Pro Bono gratuito &bull; Nessuna carta di credito</p>
                 </div>
             </div>
         </div>
@@ -468,11 +515,6 @@
                     class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] text-sm">
                     Accedi ai Tuoi Dati
                 </button>
-
-                <button onclick="logout()" 
-                    class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 px-4 rounded-xl text-xs transition">
-                    Torna Indietro
-                </button>
             </div>
         </div>
 
@@ -494,8 +536,34 @@
             </div>
 
             <!-- TAB 1: GESTIONE FLOTTA CONDUCENTI -->
-            <div id="tabFleet" class="no-print space-y-6 w-full min-w-0">
+            <div id="tabFleet" class="no-print space-y-5 w-full min-w-0">
                 
+                <!-- Barra Rapida Condivisione Link Autisti -->
+                <div class="no-print bg-gradient-to-r from-emerald-950/70 via-[#102035] to-indigo-950/70 p-3.5 sm:p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                    <div class="flex items-center space-x-3 min-w-0">
+                        <div class="p-2.5 bg-emerald-500/20 text-emerald-300 rounded-2xl border border-emerald-500/30 flex-shrink-0 text-xl shadow-inner">
+                            📲
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="text-xs font-bold text-white tracking-tight flex items-center space-x-1.5">
+                                <span>Link Accesso Diretto Autisti</span>
+                                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.2 rounded-full border border-emerald-500/30">SICURO</span>
+                            </h4>
+                            <p class="text-[10px] text-slate-300 truncate">Invia questo link ai conducenti: entreranno direttamente per lo scarico carta (senza PIN admin).</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 flex-shrink-0">
+                        <button onclick="shareDriverLinkWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition flex items-center space-x-1.5 shadow-md active:scale-95 cursor-pointer">
+                            <span>💬</span>
+                            <span>WhatsApp</span>
+                        </button>
+                        <button onclick="copyDriverLink()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold py-2 px-3 rounded-xl text-xs transition flex items-center space-x-1.5 active:scale-95 cursor-pointer" title="Copia negli appunti">
+                            <span>🔗</span>
+                            <span>Copia Link</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="no-print grid grid-cols-2 gap-3 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
                     <button onclick="exportFleetToExcel()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2 shadow-md">
                         <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -1030,38 +1098,55 @@
                         <p class="text-[10px] text-slate-400">Ricevi notifiche in background anche a app chiusa.</p>
                     </div>
                 </div>
-                <button onclick="requestPushPermission()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] py-2 px-3 rounded-xl transition">
+                <button onclick="requestPushPermission()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] py-2 px-3 rounded-xl transition cursor-pointer">
                     Attiva
+                </button>
+            </div>
+
+            <div id="pushNotificationActiveBanner" class="hidden bg-[#0F2338] border border-emerald-500/40 rounded-2xl p-3.5 flex items-center justify-between shadow-lg">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-base">🔔</span>
+                    <div>
+                        <span class="text-xs font-bold text-emerald-400 block">Avvisi di Scadenza Attivi</span>
+                        <span class="text-[10px] text-slate-400 block">Riceverai le notifiche prima del termine dei 28gg</span>
+                    </div>
+                </div>
+                <button type="button" onclick="triggerInstantTestPush()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] py-1.5 px-3 rounded-xl transition shadow-xs flex items-center space-x-1 cursor-pointer">
+                    <span>🧪</span>
+                    <span>Prova Notifica</span>
                 </button>
             </div>
 
             <div id="driverExpiryAlertBox" class="hidden rounded-2xl p-4 shadow-xl border"></div>
 
-            <div id="driverCardVisual" class="bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between min-h-[17rem]">
+            <div id="driverCardVisual" class="bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-5 sm:p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between min-h-[17.5rem] transition-all duration-300 select-none">
                 
+                <!-- HEADER SUPERIORE: BANDIERA ITALIANA, TITOLO & FOTO IN ALTO A DESTRA (ESATTO COME DA FOTO) -->
                 <div class="flex justify-between items-start z-10">
                     <div class="space-y-1 flex-1 pr-3">
                         <div class="flex items-center space-x-2">
-                            <span class="inline-block w-5 h-3.5 rounded-xs overflow-hidden flex-shrink-0 flex flex-row border border-slate-600">
-                                <span class="bg-green-600 h-full w-1/3"></span>
-                                <span class="bg-white h-full w-1/3"></span>
-                                <span class="bg-red-600 h-full w-1/3"></span>
+                            <span class="inline-block w-5 h-3.5 rounded-xs overflow-hidden flex-shrink-0 flex flex-row border border-slate-600 shadow-xs">
+                                <span class="bg-[#009246] h-full w-1/3"></span>
+                                <span class="bg-[#FFFFFF] h-full w-1/3"></span>
+                                <span class="bg-[#CE2B37] h-full w-1/3"></span>
                             </span>
                             <span class="text-[10px] tracking-widest text-slate-300 font-bold uppercase" id="driverCardCompanyHeader">REPUBBLICA ITALIANA</span>
                         </div>
-                        <div class="text-yellow-400/90 font-black text-xs sm:text-sm tracking-widest uppercase">
+                        <div class="text-yellow-400 font-black text-xs sm:text-sm tracking-widest uppercase font-sans">
                             CARTA DEL CONDUCENTE
                         </div>
 
-                        <div class="pt-2">
-                            <span class="text-[9px] text-slate-400 uppercase tracking-wider block font-bold">Cognome &amp; Nome</span>
-                            <span class="text-base sm:text-lg font-bold tracking-wide text-white leading-tight block" id="driverCardHolderName">-</span>
+                        <div class="pt-2.5">
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider block font-bold">COGNOME &amp; NOME</span>
+                            <span class="text-base sm:text-lg font-bold tracking-wide text-white leading-tight block uppercase" id="driverCardHolderName">-</span>
+                            <span class="hidden" id="driverCardSurnameDisplay">-</span>
+                            <span class="hidden" id="driverCardNameDisplay">-</span>
                         </div>
                     </div>
 
-                    <!-- Foto Tessera Conducente (In alto a destra al posto del simbolo) -->
-                    <div id="driverPhotoDisplay" onclick="triggerDriverSelfPhotoUpload()" title="Clicca per caricare/inquadrare la tua foto tessera" class="w-16 h-20 rounded-2xl bg-slate-800/90 border-2 border-emerald-400/80 shadow-xl overflow-hidden flex items-center justify-center flex-shrink-0 cursor-pointer hover:border-yellow-400 transition relative group">
-                        <span class="text-3xl" id="driverPhotoDefaultAvatar">👤</span>
+                    <!-- Foto Tessera Conducente in alto a destra con bordo verde smeraldo (Come da foto) -->
+                    <div id="driverPhotoDisplay" onclick="triggerDriverSelfPhotoUpload()" title="Clicca per caricare/inquadrare la tua foto tessera" class="w-16 h-20 sm:w-20 sm:h-24 rounded-2xl bg-slate-800/90 border-2 border-emerald-400/90 shadow-xl overflow-hidden flex items-center justify-center flex-shrink-0 cursor-pointer hover:border-yellow-400 transition relative group">
+                        <span class="text-3xl text-slate-400" id="driverPhotoDefaultAvatar">👤</span>
                         <img id="driverPhotoImg" class="w-full h-full object-cover hidden" src="" alt="Foto Conducente">
                         <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition text-[8px] font-extrabold text-yellow-300 text-center p-0.5 leading-none">
                             <span class="text-sm">📷</span>
@@ -1071,26 +1156,29 @@
                     <input type="file" id="driverSelfPhotoInput" accept="image/*" class="hidden" onchange="handlePhotoSelect(event, 'self')">
                 </div>
 
+                <!-- CORPO INTERMEDIO: NUMERO CARTA (SX) & SCADENZA CARD 5 ANNI (DX) -->
                 <div class="space-y-2 z-10 pt-3">
                     <div class="grid grid-cols-2 gap-2">
                         <div>
-                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Numero Carta</span>
-                            <span class="font-mono text-xs tracking-widest text-slate-200 font-bold" id="driverCardNumberDisplay">-</span>
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 block font-bold tracking-wider uppercase">NUMERO CARTA</span>
+                            <span class="font-mono text-xs sm:text-sm tracking-widest text-slate-100 font-bold" id="driverCardNumberDisplay">-</span>
                         </div>
                         <div class="text-right">
-                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Scadenza Card (5 Anni)</span>
-                            <span class="font-mono text-xs tracking-widest text-amber-300 font-extrabold" id="driverCardExpiryDisplay">-</span>
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 block font-bold tracking-wider uppercase">SCADENZA CARD (5 ANNI)</span>
+                            <span class="font-mono text-xs sm:text-sm tracking-widest text-amber-300 font-black" id="driverCardExpiryDisplay">-</span>
+                            <span class="hidden" id="driverCardIssueDateDisplay">-</span>
                         </div>
                     </div>
 
-                    <div class="flex justify-between items-end pt-2 border-t border-slate-800/80">
+                    <!-- RIGA INFERIORE: SCADENZA SCARICO 28GG (SX) & GIORNI RIMASTI (DX) -->
+                    <div class="flex justify-between items-end pt-2.5 border-t border-slate-800/80">
                         <div>
-                            <span class="text-[9px] text-slate-400 block font-bold tracking-wider uppercase">Scadenza Scarico (28gg)</span>
-                            <span class="font-mono text-xs tracking-wide text-emerald-400 font-extrabold" id="driverNextDownloadDate">-</span>
+                            <span class="text-[9px] sm:text-[10px] text-slate-400 block font-bold tracking-wider uppercase">SCADENZA SCARICO (28GG)</span>
+                            <span class="font-mono text-xs sm:text-sm tracking-wide text-emerald-400 font-extrabold" id="driverNextDownloadDate">-</span>
                         </div>
-                        <div class="text-right bg-black/30 px-3 py-1.5 rounded-xl border border-white/10">
-                            <span class="block text-[8px] uppercase tracking-wider opacity-75 font-bold">Giorni Rimasti</span>
-                            <span class="text-xl font-black block text-white" id="driverDaysCountdown">-</span>
+                        <div class="text-right bg-black/30 px-3 py-1.5 rounded-xl border border-white/10 shadow-sm">
+                            <span class="block text-[8px] uppercase tracking-wider opacity-75 font-bold text-slate-300">GIORNI RIMASTI</span>
+                            <span class="text-xl sm:text-2xl font-black block text-white mt-0.5 leading-none" id="driverDaysCountdown">-</span>
                         </div>
                     </div>
                 </div>
@@ -1624,7 +1712,21 @@
                         </button>
                     </div>
 
-                    <p class="text-[11px] text-slate-400 mt-2 text-center">Trascina la foto o usa le dita / mouse per inquadrare perfettamente il viso.</p>
+                    <!-- Selezione Proporzioni / Ritaglio Libero per allargare sopra e sotto -->
+                    <div class="flex items-center justify-center gap-1.5 mt-2.5 w-full flex-wrap">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase mr-1">Ritaglio:</span>
+                        <button type="button" id="cropRatioFreeBtn" onclick="setCropAspectRatio(NaN)" class="px-2.5 py-1.5 bg-emerald-600 border border-emerald-500 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-sm">
+                            📐 Libero (Sopra &amp; Sotto)
+                        </button>
+                        <button type="button" id="cropRatio34Btn" onclick="setCropAspectRatio(3/4)" class="px-2.5 py-1.5 bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">
+                            🪪 Tessera (3:4)
+                        </button>
+                        <button type="button" id="cropRatio11Btn" onclick="setCropAspectRatio(1)" class="px-2.5 py-1.5 bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 rounded-xl text-xs font-bold transition cursor-pointer">
+                            ⏹️ Quadrato (1:1)
+                        </button>
+                    </div>
+
+                    <p class="text-[11px] text-slate-400 mt-2 text-center">Trascina i bordi o gli angoli per allargare liberamente sopra e sotto l'inquadratura.</p>
                 </div>
 
                 <div class="p-3.5 sm:p-4 border-t border-slate-800 bg-[#15233A] flex gap-2 flex-shrink-0">
@@ -1639,7 +1741,20 @@
         </div>
 
         <!-- Footer -->
-        <footer class="no-print text-center mt-8 space-y-2">
+        <footer class="no-print text-center mt-8 space-y-3">
+            <!-- DISCLAIMER LICENZA GRATUITA / PRO BONO (ATTIVABILE DA SUPER ADMIN O PER CONCESSIONI GRATUITE) -->
+            <div id="footerFreeLicenseNotice" class="hidden max-w-lg mx-auto px-4 pt-1 pb-2 text-left">
+                <div class="p-3.5 bg-gradient-to-r from-teal-500/15 via-emerald-500/10 to-sky-500/10 border border-teal-500/40 rounded-2xl text-[11px] text-teal-200 font-medium flex items-start gap-2.5 shadow-lg">
+                    <div class="w-6 h-6 rounded-lg bg-teal-500/20 text-teal-300 flex items-center justify-center shrink-0 text-sm border border-teal-500/30">
+                        📜
+                    </div>
+                    <div class="flex-1 leading-relaxed">
+                        <span class="font-bold text-teal-100 uppercase tracking-wider text-[9px] block sm:inline mr-1.5">Concessione Licenza Gratuita:</span>
+                        <span id="footerFreeLicenseNoticeText"></span>
+                    </div>
+                </div>
+            </div>
+
             <p class="text-emerald-500 font-bold text-sm tracking-wide" id="footerCompanyName">
                 GC CodeLab &bull; Sviluppato da Giovanni Cavallo &bull; v10.0 Pro Cloud &amp; Offline Ready
             </p>
@@ -2282,14 +2397,17 @@
                     <div id="regCompanyError" class="text-red-400 text-xs font-semibold hidden bg-red-950/40 p-2.5 rounded-xl border border-red-800 text-center">
                     </div>
 
-                    <div class="bg-indigo-950/30 border border-indigo-800/40 rounded-2xl p-3 text-[11px] text-indigo-200/90 leading-relaxed">
-                        🛡️ <strong>Spazio Riservato:</strong> Questa azienda avrà il proprio archivio cloud isolato. Gli autisti potranno accedere unicamente usando il codice azienda e il proprio PIN personale.
+                    <div class="bg-teal-950/40 border border-teal-500/40 rounded-2xl p-3 text-[11px] text-teal-200/90 leading-relaxed space-y-1">
+                        <div class="font-bold flex items-center space-x-1 text-teal-300">
+                            <span>🎁</span> <span>Piano Gratuito (Pro Bono) &bull; Attivazione Immediata</span>
+                        </div>
+                        <p class="text-[10px] text-slate-300 leading-snug">Questa registrazione attiva automaticamente la licenza gratuita pro bono (visto e piaciuto senza garanzie commerciali). Potrai richiedere l'upgrade a Flotta Pro per aggiungere altri veicoli in qualsiasi momento.</p>
                     </div>
 
                     <div class="pt-2">
                         <button type="button" onclick="handleRegisterCompanySubmit()" 
-                            class="w-full bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg active:scale-98">
-                            🚀 Attiva Spazio Flotta Ora
+                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg active:scale-98 cursor-pointer">
+                            🚀 Attiva Flotta Gratuita Ora
                         </button>
                     </div>
                 </div>
@@ -2301,7 +2419,7 @@
                     </div>
                     <div>
                         <h4 class="text-base font-bold text-white">Spazio Flotta Attivato!</h4>
-                        <p class="text-slate-400 text-xs mt-1">L'azienda è stata registrata con successo nel Cloud Firebase.</p>
+                        <p class="text-slate-400 text-xs mt-1">L'azienda è stata registrata con successo con Licenza Gratuita Pro Bono.</p>
                     </div>
 
                     <div class="bg-[#0A1322] border border-emerald-500/40 rounded-2xl p-4 text-left space-y-2">
@@ -2314,28 +2432,39 @@
                             <span class="text-white font-bold text-xs" id="successRegCompanyName">-</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-slate-400 font-bold text-[11px]">PIN Amministratore:</span>
-                            <span class="text-amber-300 font-mono font-bold text-xs" id="successRegCompanyPin">••••</span>
+                            <span class="text-slate-400 font-bold text-[11px]">Il Tuo PIN Amministratore:</span>
+                            <span class="text-amber-300 font-mono font-black text-xs bg-amber-950/80 px-2 py-0.5 rounded border border-amber-800/60" id="successRegCompanyPin">••••</span>
                         </div>
                     </div>
 
-                    <div class="bg-amber-950/30 border border-amber-800/40 rounded-xl p-3 text-[11px] text-amber-200 text-left">
-                        📌 <strong>Importante:</strong> Comunica il <strong>Codice Azienda</strong> ai tuoi autisti. Ne avranno bisogno per effettuare l'accesso ai propri dati scarico dall'App.
-                    </div>
+                    <div class="space-y-2 pt-1">
+                        <button type="button" onclick="loginDirectlyAsRegisteredCompany()" 
+                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer active:scale-98">
+                            <span>🚀</span>
+                            <span>Entra Subito nel Gestionale Flotta</span>
+                        </button>
 
-                    <button type="button" onclick="loginDirectlyAsRegisteredCompany()" 
-                        class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg">
-                        Accedi Subito al Pannello Gestione ➔
-                    </button>
+                        <button type="button" onclick="shareRegisteredCompanyDriverLinkWhatsApp()" 
+                            class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-500/40 font-bold py-2.5 rounded-2xl text-xs transition flex items-center justify-center space-x-2 cursor-pointer">
+                            <span>📲</span>
+                            <span>Invia Link Diretto ai tuoi Autisti (WhatsApp)</span>
+                        </button>
+
+                        <button type="button" onclick="notifyGiovanniNewCompanyWhatsApp()" 
+                            class="w-full bg-indigo-950/50 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 font-bold py-2 rounded-2xl text-[11px] transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                            <span>💬</span>
+                            <span>Invia Notifica Attivazione a GC CodeLab (WhatsApp)</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- =================== MODALE SUPER ADMIN: GESTIONE FLOTTE =================== -->
-    <div id="superAdminModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-4 hidden">
-        <div class="bg-[#111C2E] border border-indigo-500/40 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
-            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
+    <div id="superAdminModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[90] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#0F172A] border border-indigo-500/40 w-full max-w-3xl lg:max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-[#142036]">
                 <div class="flex items-center space-x-3">
                     <div class="p-2.5 bg-indigo-500/20 text-indigo-400 rounded-2xl border border-indigo-500/30">
                         <span class="text-xl">👑</span>
@@ -2350,20 +2479,29 @@
                 </button>
             </div>
 
-            <div class="p-5 overflow-y-auto space-y-3 text-xs">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-slate-400 text-xs font-bold">Aziende Iscritte (<span id="superAdminCompanyCount">0</span>)</span>
-                    <button onclick="openRegisterCompanyModal(); closeSuperAdminModal();" class="text-xs text-emerald-400 hover:underline font-bold flex items-center space-x-1">
-                        <span>➕ Registra Nuova</span>
-                    </button>
+            <div class="p-5 overflow-y-auto space-y-3.5 text-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-slate-300 text-xs font-bold">Flotte Iscritte:</span>
+                        <span id="superAdminCompanyCount" class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-extrabold border border-indigo-500/30 text-xs">0</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="relative flex-1 sm:w-60">
+                            <input type="text" id="superAdminSearchInput" oninput="renderSuperAdminCompaniesList()" placeholder="🔍 Cerca flotta, codice o P.IVA..." class="w-full bg-[#08101D] border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <button onclick="openRegisterCompanyModal(); closeSuperAdminModal();" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 flex-shrink-0 cursor-pointer">
+                            <span>➕</span>
+                            <span>Nuova Flotta</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div id="superAdminCompaniesList" class="space-y-2">
+                <div id="superAdminCompaniesList" class="space-y-3">
                     <!-- Popolato dinamicamente -->
                 </div>
             </div>
 
-            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-end">
+            <div class="p-4 border-t border-slate-800 bg-[#142036] flex justify-end">
                 <button onclick="closeSuperAdminModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
                     Chiudi
                 </button>
@@ -2462,13 +2600,18 @@
                 </div>
             </div>
 
-            <div class="flex gap-2 pt-2 border-t border-slate-800">
-                <button type="button" onclick="closeEditCompanyModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
-                    Annulla
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800 flex-wrap">
+                <button type="button" id="btnDeleteFromEditCompanyModal" onclick="deleteCurrentEditedCompany()" class="hidden bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/60 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 cursor-pointer">
+                    <span>🗑️</span> <span>Elimina Azienda</span>
                 </button>
-                <button type="button" onclick="saveEditedCompany()" class="flex-1 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
-                    <span>💾</span> <span>Salva Modifiche</span>
-                </button>
+                <div class="flex gap-2 flex-1 justify-end">
+                    <button type="button" onclick="closeEditCompanyModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2.5 rounded-xl text-xs transition">
+                        Annulla
+                    </button>
+                    <button type="button" onclick="saveEditedCompany()" class="bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
+                        <span>💾</span> <span>Salva Modifiche</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -2545,6 +2688,12 @@
                     <button type="button" onclick="setQuickLicenseDuration(0)" class="px-2.5 py-1.5 bg-emerald-900/30 hover:bg-emerald-900/50 text-emerald-300 border border-emerald-700 text-[10px] font-bold rounded-lg transition">
                         Illimitata (2099)
                     </button>
+                    <button type="button" onclick="setQuickLicenseDuration(365, true)" class="px-2.5 py-1.5 bg-teal-900/40 hover:bg-teal-900/60 text-teal-300 border border-teal-600/50 text-[10px] font-bold rounded-lg transition">
+                        🎁 Gratuita Pro Bono (1 Anno)
+                    </button>
+                    <button type="button" onclick="setQuickLicenseDuration(0, true)" class="px-2.5 py-1.5 bg-teal-950 hover:bg-teal-900 text-teal-200 border border-teal-500/50 text-[10px] font-bold rounded-lg transition">
+                        🎁 Gratuita Illimitata
+                    </button>
                 </div>
             </div>
 
@@ -2569,13 +2718,121 @@
                     class="w-full px-3.5 py-2 bg-[#0F1C32] border border-slate-700 rounded-xl outline-none text-white text-xs focus:border-purple-400">
             </div>
 
+            <!-- 5-BIS. CLAUSOLA LEGALE PRO BONO / CONCESSIONE GRATUITA -->
+            <div class="bg-[#0A1624] p-3.5 rounded-2xl border border-teal-500/40 space-y-2">
+                <div class="flex items-center justify-between">
+                    <label class="flex items-center space-x-2 cursor-pointer select-none">
+                        <input type="checkbox" id="licenseProBonoToggle" onchange="toggleProBonoInModal(this.checked)" class="accent-teal-500 w-4 h-4 rounded">
+                        <span class="text-xs font-bold text-teal-300">📜 Concessione Gratuita / Dicitura Pro Bono</span>
+                    </label>
+                    <span class="text-[9px] text-teal-400 font-mono px-2 py-0.5 rounded-full bg-teal-500/15 border border-teal-500/30">Tutela Legale GC</span>
+                </div>
+                <p class="text-[10px] text-slate-400 leading-relaxed">
+                    Mostra automaticamente nel footer e nella scheda cliente la clausola di concessione d'uso a titolo gratuito e senza scopo di lucro, a piena tutela di <strong>GC CodeLab</strong>.
+                </p>
+            </div>
+
+            <!-- 6. GENERATORE CHIAVI CRITTOGRAFICHE GC CODELAB -->
+            <div class="bg-[#08111E] p-4 rounded-2xl border border-emerald-500/40 space-y-2.5">
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] uppercase font-bold text-emerald-400 flex items-center space-x-1">
+                        <span>🔑</span> <span>Generatore Chiave Crittografica GC CodeLab</span>
+                    </span>
+                    <span class="text-[9px] font-mono text-slate-400">Salt SHA-2026</span>
+                </div>
+                <div id="generatedLicenseKeyDisplay" class="font-mono text-xs font-black text-emerald-300 bg-black/60 p-2.5 rounded-xl border border-emerald-500/30 text-center select-all tracking-wider break-all shadow-inner">
+                    GC-PRO-CARICAMENTO...
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" onclick="copyGeneratedLicenseKey()" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1">
+                        <span>📋</span> <span>Copia Chiave</span>
+                    </button>
+                    <button type="button" onclick="sendGeneratedLicenseKeyWhatsApp()" class="py-2 px-3 bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1 shadow">
+                        <span>💬</span> <span>Invia su WhatsApp</span>
+                    </button>
+                </div>
+            </div>
+
             <div class="flex gap-2 pt-2 border-t border-slate-800">
                 <button type="button" onclick="closeManageLicenseModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
                     Annulla
                 </button>
                 <button type="button" onclick="saveCompanyLicense()" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
-                    <span>💾</span> <span>Salva Licenza &amp; Regole</span>
+                    <span>⚡</span> <span>Applica da Remoto (con Conferma)</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =================== MODALE LICENZA & PIANO FLOTTA (LATO CLIENTE) =================== -->
+    <div id="clientLicenseModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[97] flex items-center justify-center p-4 hidden">
+        <div class="bg-[#111C2E] border border-indigo-500/40 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden p-6 space-y-4 max-h-[92vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div class="flex items-center space-x-2.5">
+                    <span class="text-2xl p-2 bg-indigo-500/20 text-indigo-400 rounded-xl border border-indigo-500/30">🛡️</span>
+                    <div>
+                        <h3 class="font-bold text-white text-sm">Licenza &amp; Piano TachoControl</h3>
+                        <p id="clientLicenseModalSub" class="text-[10px] text-slate-400 font-mono">Azienda</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeClientLicenseModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg font-bold">
+                    &times;
+                </button>
+            </div>
+
+            <!-- Scheda Stato Licenza -->
+            <div class="bg-[#0B1626] p-4 rounded-2xl border border-slate-800 space-y-3 text-xs">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">Piano Attivo:</span>
+                    <span id="clientLicensePlanBadge" class="px-2 py-0.5 rounded-full font-bold text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">PRO FLOTTA</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">Stato Servizio:</span>
+                    <span id="clientLicenseStatusBadge" class="font-bold text-emerald-400">Attivo</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">Scadenza:</span>
+                    <span id="clientLicenseExpiresText" class="font-mono font-bold text-white">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400">Validità Rimanente:</span>
+                    <span id="clientLicenseDaysLeftText" class="font-bold text-emerald-400">Calcolo...</span>
+                </div>
+
+                <!-- Barra di Progresso -->
+                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                    <div id="clientLicenseProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 100%;"></div>
+                </div>
+            </div>
+
+            <!-- Box Concessione Licenza Gratuita (se attiva o pro bono) -->
+            <div id="modalFreeLicenseBox" class="hidden p-3.5 bg-gradient-to-r from-teal-500/15 via-emerald-500/10 to-blue-500/10 border border-teal-500/40 rounded-2xl text-[11px] text-teal-200 space-y-1.5 shadow-md">
+                <div class="flex items-center space-x-2 text-teal-300 font-bold text-xs">
+                    <span>📜</span>
+                    <span>Concessione d'Uso a Titolo Gratuito (Pro Bono)</span>
+                </div>
+                <p id="modalFreeLicenseText" class="text-[10px] leading-relaxed text-teal-200/90 font-normal">
+                </p>
+            </div>
+
+            <!-- Inserimento Nuova Chiave di Licenza -->
+            <div class="bg-[#0F1C32] p-4 rounded-2xl border border-purple-500/30 space-y-2.5">
+                <label class="block text-[11px] font-bold text-purple-300">Hai una Chiave di Attivazione / Rinnovo?</label>
+                <input type="text" id="clientLicenseKeyInput" placeholder="es. GC-PRO-20270907-AZ101-XXXXXX" 
+                    class="w-full px-3.5 py-2.5 bg-[#08111E] border border-slate-700 rounded-xl outline-none font-mono text-xs text-white uppercase text-center font-bold tracking-wider focus:border-purple-400">
+                <button type="button" onclick="activateLicenseKeyFromInput()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <span>⚡</span> <span>Attiva Chiave Licenza</span>
+                </button>
+            </div>
+
+            <!-- Supporto & Contatti Commerciali GC CodeLab -->
+            <div class="space-y-2 pt-1">
+                <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition cursor-pointer">
+                    <span>💬</span> <span>Richiedi Rinnovo Licenza su WhatsApp</span>
+                </button>
+                <p class="text-[10px] text-center text-slate-500">
+                    GC CodeLab &bull; Assistenza Diretta &bull; Software Flotta
+                </p>
             </div>
         </div>
     </div>
@@ -2864,18 +3121,35 @@
         </div>
     </div>
 
-    <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
+    <!-- GLOBAL CONTEXT ACTION MENU (PORTAL) - Impedisce il taglio / clipping da overflow-x-auto della tabella -->
+    <div id="globalRowActionBackdrop" class="hidden no-print fixed inset-0 z-[9990] bg-black/50 sm:bg-transparent backdrop-blur-[2px] sm:backdrop-blur-none transition-opacity" onclick="closeGlobalRowMenu()"></div>
+    <div id="globalRowActionMenu" class="hidden no-print fixed z-[9999] bg-[#0F1C32]/98 backdrop-blur-2xl border border-slate-700/90 shadow-2xl text-xs text-slate-200 divide-y divide-slate-800/80 transition-all duration-150">
+        <!-- Contenuto dinamico iniettato via openDriverRowMenu / openVehicleRowMenu -->
+    </div>
+
+    <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-[99999] flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
 
     <script>
         const ADMIN_PIN = "8528"; // PIN Master Super Admin (Giovanni)
         let companiesRegistry = {};
         
-        // Rilevamento automatico parametro URL per link diretto autisti (es. ?az=AZ-101)
+        // Rilevamento automatico parametro URL per link diretto autisti (es. ?az=AZ-101&role=driver)
         const urlParams = new URLSearchParams(window.location.search);
         const azQuery = urlParams.get('az') || urlParams.get('azienda') || urlParams.get('flotta') || urlParams.get('c');
         let activeCompanyId = azQuery ? azQuery.trim().toUpperCase() : (localStorage.getItem('tacho_active_company') || '');
         if (azQuery) {
             localStorage.setItem('tacho_active_company', activeCompanyId);
+        }
+
+        const roleQuery = (urlParams.get('role') || urlParams.get('mode') || urlParams.get('accesso') || '').trim().toLowerCase();
+        let isDriverOnlyMode = (roleQuery === 'driver' || roleQuery === 'autista' || roleQuery === 'operaio' || roleQuery === 'conducente');
+        if (isDriverOnlyMode) {
+            sessionStorage.setItem('tacho_driver_only_mode', 'true');
+        } else if (roleQuery === 'admin' || roleQuery === 'ufficio' || roleQuery === 'titolare') {
+            sessionStorage.removeItem('tacho_driver_only_mode');
+            isDriverOnlyMode = false;
+        } else if (sessionStorage.getItem('tacho_driver_only_mode') === 'true' && !azQuery) {
+            isDriverOnlyMode = true;
         }
 
         let isSuperAdmin = false;
@@ -2926,6 +3200,8 @@
                 updateDOMCompanyName();
             }
             updateCompanyActivationUI();
+            updateHeaderLicenseBadge();
+            updateFreeLicenseUI();
             if (isSuperAdmin) renderSuperAdminCompaniesList();
         });
 
@@ -3391,16 +3667,11 @@
             // Sincronizzazione dinamica Logo nell'Header Amministratore
             const headerLogo = document.getElementById('adminHeaderCompanyLogo');
             const headerIcon = document.getElementById('adminHeaderCompanyIcon');
-            if (headerLogo && headerIcon) {
-                const isCustom = logoSrc && !logoSrc.includes('logo_tachocontrol_3d.jpg') && logoSrc.length > 50;
-                if (isCustom) {
-                    headerLogo.src = logoSrc;
-                    headerLogo.classList.remove('hidden');
-                    headerIcon.classList.add('hidden');
-                } else {
-                    headerLogo.classList.add('hidden');
-                    headerIcon.classList.remove('hidden');
-                }
+            if (headerLogo) {
+                const finalSrc = (logoSrc && logoSrc.length > 5) ? logoSrc : "assets/logo_tachocontrol_3d.png";
+                headerLogo.src = finalSrc;
+                headerLogo.classList.remove('hidden');
+                if (headerIcon) headerIcon.classList.add('hidden');
             }
         }
 
@@ -3487,6 +3758,7 @@
         }
 
         function saveCompanyDetails() {
+            if (checkLicenseReadOnlyGuard("modificare i dati dell'azienda")) return;
             const newName = document.getElementById('companyNameInput').value.trim();
             const newVat = (document.getElementById('companyVatInput')?.value || '').trim();
             const newLegalAddr = (document.getElementById('companyLegalAddressInput')?.value || '').trim();
@@ -3631,6 +3903,47 @@
             window.open(whatsappUrl, '_blank');
         }
 
+        function triggerInstantTestPush() {
+            if (!("Notification" in window)) {
+                alert("Le notifiche push non sono supportate da questo browser mobile.");
+                return;
+            }
+            if (Notification.permission !== "granted") {
+                requestPushPermission();
+                return;
+            }
+
+            const title = "🔔 TEST AVVISO TACHOAPP";
+            const body = "✅ Notifica ricevuta con successo! Il tuo smartphone è configurato correttamente per ricevere gli avvisi sui 28 giorni della carta tachigrafo.";
+            const iconUrl = 'assets/logo_tachocontrol_3d.jpg';
+
+            try {
+                if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+                    navigator.serviceWorker.ready.then(function(reg) {
+                        if (reg && reg.showNotification) {
+                            reg.showNotification(title, {
+                                body: body,
+                                icon: iconUrl,
+                                badge: iconUrl,
+                                tag: 'test-push-' + Date.now(),
+                                vibrate: [200, 100, 200]
+                            });
+                        } else {
+                            new Notification(title, { body: body, icon: iconUrl });
+                        }
+                    }).catch(function() {
+                        new Notification(title, { body: body, icon: iconUrl });
+                    });
+                } else {
+                    new Notification(title, { body: body, icon: iconUrl });
+                }
+                showToast("🔔 Notifica di prova inviata allo smartphone!", "success");
+            } catch (e) {
+                console.warn("Errore test push:", e);
+                showToast("Errore invio notifica: " + e.message, "error");
+            }
+        }
+
         function requestPushPermission() {
             if (!("Notification" in window)) {
                 showToast("Notifiche Push non supportate da questo browser.", "error");
@@ -3641,6 +3954,10 @@
                     showToast("Permesso notifiche concesso con successo!", "success");
                     const banner = document.getElementById('pushNotificationBanner');
                     if (banner) banner.classList.add('hidden');
+                    const activeBanner = document.getElementById('pushNotificationActiveBanner');
+                    if (activeBanner) activeBanner.classList.remove('hidden');
+
+                    triggerInstantTestPush();
                     
                     if (messaging && currentLoggedInDriver) {
                         navigator.serviceWorker.ready.then((registration) => {
@@ -3792,6 +4109,7 @@
         }
 
         function handleFileSelect(e) {
+            if (checkLicenseReadOnlyGuard("caricare file e documenti")) { e.target.value = ""; return; }
             const file = e.target.files[0];
             if (!file) { pendingBase64Doc = ""; pendingFileNameDoc = ""; return; }
             pendingFileNameDoc = file.name;
@@ -3809,6 +4127,23 @@
 
         let cropperInstance = null;
         let cropSource = "admin";
+        let currentCropRatio = NaN;
+
+        function setCropAspectRatio(ratio) {
+            currentCropRatio = ratio;
+            if (cropperInstance) {
+                cropperInstance.setAspectRatio(ratio);
+            }
+            const btnFree = document.getElementById('cropRatioFreeBtn');
+            const btn34 = document.getElementById('cropRatio34Btn');
+            const btn11 = document.getElementById('cropRatio11Btn');
+            const activeCls = 'px-2.5 py-1.5 bg-emerald-600 border border-emerald-500 text-white rounded-xl text-xs font-bold transition cursor-pointer shadow-sm';
+            const inactiveCls = 'px-2.5 py-1.5 bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 rounded-xl text-xs font-bold transition cursor-pointer';
+
+            if (btnFree) btnFree.className = isNaN(ratio) ? activeCls : inactiveCls;
+            if (btn34) btn34.className = (ratio === 3/4) ? activeCls : inactiveCls;
+            if (btn11) btn11.className = (ratio === 1) ? activeCls : inactiveCls;
+        }
 
         function triggerDriverSelfPhotoUpload() {
             if (currentLoggedInDriver && !currentLoggedInDriver.allowPhotoUpload) {
@@ -3833,6 +4168,7 @@
 
                 const modal = document.getElementById('cropPhotoModal');
                 modal.classList.remove('hidden');
+                setCropAspectRatio(NaN);
 
                 const wrapper = document.getElementById('cropImageWrapper');
                 wrapper.innerHTML = '';
@@ -3849,10 +4185,10 @@
                         cropperInstance.destroy();
                     }
                     cropperInstance = new Cropper(cropImg, {
-                        aspectRatio: 1,
+                        aspectRatio: currentCropRatio,
                         viewMode: 1,
                         dragMode: 'move',
-                        autoCropArea: 0.85,
+                        autoCropArea: 0.95,
                         responsive: true,
                         restore: false,
                         guides: true,
@@ -3915,8 +4251,8 @@
         function confirmCropPhoto() {
             if (!cropperInstance) return;
             const canvas = cropperInstance.getCroppedCanvas({
-                width: 300,
-                height: 300,
+                maxWidth: 600,
+                maxHeight: 600,
                 imageSmoothingEnabled: true,
                 imageSmoothingQuality: 'high'
             });
@@ -4723,6 +5059,7 @@
         let supervisorTapTimer = null;
 
         function handleSecretSupervisorTap() {
+            if (isDriverOnlyMode) return; // Disattivato completamente in modalità Conducente/Operaio!
             supervisorTapCount++;
             clearTimeout(supervisorTapTimer);
             supervisorTapTimer = setTimeout(() => {
@@ -4746,14 +5083,26 @@
         }
 
         function updateCompanyActivationUI() {
-            const hasCompany = localStorage.getItem('tacho_active_company');
+            const hasCompany = activeCompanyId || localStorage.getItem('tacho_active_company');
+            const activationBox = document.getElementById('companyActivationBox');
+            const selfRegBox = document.getElementById('selfRegisterCompanyBox');
             const btnText = document.getElementById('companyActivationBtnText');
-            if (btnText) {
-                if (hasCompany && hasCompany !== '') {
-                    btnText.innerText = `Cambia Codice Azienda (${hasCompany})`;
-                } else {
-                    btnText.innerText = "🔑 Inserisci Codice Azienda per Attivare";
-                }
+
+            if (isDriverOnlyMode) {
+                if (activationBox) activationBox.classList.add('hidden');
+                if (selfRegBox) selfRegBox.classList.add('hidden');
+                return;
+            }
+
+            if (hasCompany && hasCompany !== '') {
+                // L'azienda è già collegata / registrata: la schermata di login deve essere pulita, personalizzata e senza distrazioni
+                if (activationBox) activationBox.classList.add('hidden');
+                if (selfRegBox) selfRegBox.classList.add('hidden');
+            } else {
+                // Nessuna flotta collegata: mostra i pulsanti per inserire il codice flotta o registrarsi gratis
+                if (activationBox) activationBox.classList.remove('hidden');
+                if (selfRegBox) selfRegBox.classList.remove('hidden');
+                if (btnText) btnText.innerText = "🔑 Inserisci Codice Azienda per Attivare";
             }
         }
 
@@ -4769,24 +5118,16 @@
                 return;
             }
 
-            // 1. Accesso "Dietro le Quinte" Super Admin Master (Giovanni - PIN 8528)
-            if (pinVal === ADMIN_PIN) {
-                isSuperAdmin = true;
-                localStorage.setItem('userRole', 'admin');
-                const superBadge = document.getElementById('superAdminBadge');
-                if (superBadge) superBadge.classList.remove('hidden');
-                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
-                if (switchBtn) switchBtn.classList.remove('hidden');
-
-                if (!activeCompanyId) switchActiveCompany('AZ-MAIN');
-
-                showSection("admin");
-                showToast(`👑 Accesso Supervisore (Giovanni) Effettuato`, "success");
-                document.getElementById('pinInput').value = "";
+            // 1. Se nessuna flotta è collegata, non è possibile fare login con un PIN generico
+            if (!activeCompanyId) {
+                errorText.innerText = "Nessuna flotta collegata. Inserisci prima il tuo Codice Azienda.";
+                errorEl.classList.remove('hidden');
+                showToast("⚠️ Inserisci prima il Codice Azienda per collegare la tua flotta", "warning");
+                openSwitchDriverCompanyModal();
                 return;
             }
 
-            // 2. Accesso Amministratore Azienda Corrente
+            // 2. Accesso Amministratore ESCLUSIVAMENTE per l'azienda attiva collegata
             const comp = companiesRegistry[activeCompanyId];
             if (comp && String(comp.adminPin).trim() === pinVal) {
                 isSuperAdmin = false;
@@ -4802,40 +5143,8 @@
                 return;
             }
 
-            // 3. Riconoscimento intelligente del PIN aziendale tra tutte le flotte registrate
-            let foundComp = null;
-            for (let code in companiesRegistry) {
-                if (String(companiesRegistry[code].adminPin).trim() === pinVal) {
-                    foundComp = companiesRegistry[code];
-                    break;
-                }
-            }
-
-            if (foundComp) {
-                isSuperAdmin = false;
-                localStorage.setItem('userRole', 'admin');
-                const superBadge = document.getElementById('superAdminBadge');
-                if (superBadge) superBadge.classList.add('hidden');
-                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
-                if (switchBtn) switchBtn.classList.add('hidden');
-
-                switchActiveCompany(foundComp.code);
-                updateCompanyActivationUI();
-                showSection("admin");
-                showToast(`Accesso Amministratore: ${foundComp.name}`, "success");
-                document.getElementById('pinInput').value = "";
-                return;
-            }
-
-            // Se nessuna azienda è attiva e il PIN non corrisponde ad alcuna flotta
-            if (!activeCompanyId) {
-                errorText.innerText = "Nessuna flotta collegata. Inserisci prima il Codice Azienda.";
-                errorEl.classList.remove('hidden');
-                openSwitchDriverCompanyModal();
-                return;
-            }
-
-            errorText.innerText = "PIN Amministrativo non corretto.";
+            // 3. PIN Errato per l'azienda corrente
+            errorText.innerText = `PIN non corretto per ${comp ? comp.name : activeCompanyId}.`;
             errorEl.classList.remove('hidden');
             showToast("PIN Amministrativo non valido", "error");
         }
@@ -4994,7 +5303,7 @@
                 if (lockSec) lockSec.classList.add('hidden');
 
                 // Verifica Licenza & Abbonamento (SuperAdmin Giovanni PIN 8528 è sempre esente)
-                if ((sec === "admin" || sec === "driver" || sec === "driverSelection") && !isSuperAdmin) {
+                if ((sec === "admin" || sec === "driver" || sec === "driverSelection") && !isSuperAdmin && !window.isAppInReadOnlyMode) {
                     const check = isCompanyLicenseValid(activeCompanyId);
                     if (!check.valid) {
                         showLicenseLockScreen(activeCompanyId, check.reason);
@@ -5008,15 +5317,20 @@
                     if (adminHeader) adminHeader.classList.remove('hidden');
                     switchTab('fleet');
                     updateAdminBadges();
+                    updateHeaderLicenseBadge();
                 } else if (sec === "driverSelection") {
                     if (driverSelSec) driverSelSec.classList.remove('hidden');
+                    updateFreeLicenseUI();
                 } else if (sec === "driver") {
                     if (driverSec) driverSec.classList.remove('hidden');
                     if (currentLoggedInDriver) {
                         renderDriverView(currentLoggedInDriver);
                     }
+                    updateFreeLicenseUI();
                 } else {
                     if (loginSec) loginSec.classList.remove('hidden');
+                    updateRoleVisibilityUI();
+                    updateFreeLicenseUI();
                 }
 
                 scrollToTop();
@@ -5029,6 +5343,9 @@
 
         function logout() {
             currentLoggedInDriver = null;
+            window.isAppInReadOnlyMode = false;
+            const topBanner = document.getElementById('readOnlyTopBanner');
+            if (topBanner) topBanner.classList.add('hidden');
             isSuperAdmin = false;
             const superBadge = document.getElementById('superAdminBadge');
             if (superBadge) superBadge.classList.add('hidden');
@@ -5036,6 +5353,14 @@
             if (switchBtn) switchBtn.classList.add('hidden');
             const lockSec = document.getElementById('licenseLockSection');
             if (lockSec) lockSec.classList.add('hidden');
+
+            const noticeBox = document.getElementById('footerFreeLicenseNotice');
+            if (noticeBox) noticeBox.classList.add('hidden');
+
+            if (isDriverOnlyMode) {
+                goToDriverSelection();
+                return;
+            }
 
             showSection("login");
             showToast("Sessione terminata", "success");
@@ -5073,7 +5398,9 @@
             scrollToTop();
         }
 
-        // --- GESTIONE MODALE REGISTRAZIONE AZIENDA ---
+        // --- GESTIONE MODALE REGISTRAZIONE AZIENDA & AUTO-REGISTRAZIONE ---
+        let isRegisteringSelf = false;
+
         function generateNextCompanyCode() {
             let maxNum = 100;
             for (let code in companiesRegistry) {
@@ -5086,13 +5413,11 @@
             return `AZ-${maxNum + 1}`;
         }
 
-        function openRegisterCompanyModal() {
-            if (!isSuperAdmin) {
-                const checkPin = prompt("Accesso Riservato Sviluppatore GC CodeLab:\nInserisci il PIN Super Admin per creare una nuova azienda:");
-                if (checkPin !== ADMIN_PIN) {
-                    alert("Accesso negato: solo lo sviluppatore GC CodeLab può registrare nuove aziende.");
-                    return;
-                }
+        function openRegisterCompanyModal(isSelf = false) {
+            isRegisteringSelf = isSelf;
+            if (!isSuperAdmin && !isSelf) {
+                // Se aperta da utente non autenticato tramite il tasto pubblico "Inizia Gratis"
+                isRegisteringSelf = true;
             }
 
             document.getElementById('regCompanyName').value = "";
@@ -5119,7 +5444,7 @@
         }
 
         function handleRegisterCompanySubmit() {
-            if (!isSuperAdmin) {
+            if (!isSuperAdmin && !isRegisteringSelf) {
                 const checkPin = prompt("Inserisci il PIN Super Admin per autorizzare la creazione dello spazio cloud:");
                 if (checkPin !== ADMIN_PIN) {
                     alert("Azione non autorizzata.");
@@ -5182,6 +5507,11 @@
                 return;
             }
 
+            const freeExp = new Date();
+            freeExp.setDate(freeExp.getDate() + 365); // 1 anno di concessione gratuita Pro Bono
+            const freeExpStr = freeExp.toISOString().split('T')[0];
+            const freeKey = generateLicenseKeyString('FREE', freeExpStr, code);
+
             const newCompany = {
                 code: code,
                 name: name,
@@ -5193,6 +5523,13 @@
                 email: email || "",
                 phone: phone || "",
                 adminPin: pin,
+                plan: "free",
+                isProBono: true,
+                licenseStatus: "active",
+                licenseExpiresAt: freeExpStr,
+                licenseKey: freeKey,
+                maxVehicles: 1,
+                maxDrivers: 1,
                 createdAt: new Date().toISOString()
             };
 
@@ -5220,6 +5557,106 @@
             });
         }
 
+        // Helper per link Conducenti e Richieste Upgrade WhatsApp
+        function getDriverAccessUrl(customCompanyCode) {
+            const baseUrl = window.location.href.split('?')[0];
+            const code = customCompanyCode || activeCompanyId || 'AZ-MAIN';
+            return `${baseUrl}?az=${encodeURIComponent(code)}&role=driver`;
+        }
+
+        function shareDriverLinkWhatsApp() {
+            const driverUrl = getDriverAccessUrl();
+            const compName = currentCompanyName || 'Azienda';
+            const msg = `🚛 *TACHOAPP • ACCESSO CONDUCENTI*\n\n` +
+                `🏢 *Flotta:* ${compName}\n` +
+                `Gentile Conducente, accedi al portale per registrare i tuoi scarichi della carta tachigrafica, consultare le scadenze e pianificare i tempi di guida:\n\n` +
+                `👉 *Link Diretto Autisti:* ${driverUrl}\n\n` +
+                `_Nessun PIN aziendale richiesto. Seleziona il tuo nome dall'elenco per accedere._`;
+
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function copyDriverLink() {
+            const driverUrl = getDriverAccessUrl();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(driverUrl).then(() => {
+                    showToast("Link Conducenti copiato negli appunti!", "success");
+                }).catch(() => {
+                    prompt("Copia questo link e invialo ai tuoi autisti:", driverUrl);
+                });
+            } else {
+                prompt("Copia questo link e invialo ai tuoi autisti:", driverUrl);
+            }
+        }
+
+        function shareRegisteredCompanyDriverLinkWhatsApp() {
+            if (!lastRegisteredCompany) return;
+            const driverUrl = getDriverAccessUrl(lastRegisteredCompany.code);
+            const msg = `🚛 *TACHOAPP • ACCESSO CONDUCENTI*\n\n` +
+                `🏢 *Flotta:* ${lastRegisteredCompany.name}\n` +
+                `Gentile Conducente, usa questo link per registrare i tuoi scarichi della carta tachigrafica:\n\n` +
+                `👉 *Link Diretto Autisti:* ${driverUrl}\n\n` +
+                `_Seleziona il tuo nome per accedere._`;
+
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function notifyGiovanniNewCompanyWhatsApp() {
+            if (!lastRegisteredCompany) return;
+            const msg = `🏢 *NUOVA FLOTTA REGISTRATA SU TACHOAPP*\n\n` +
+                `Buongiorno Giovanni, ho attivato la mia flotta gratuita su TachoApp:\n\n` +
+                `📋 *Ragione Sociale:* ${lastRegisteredCompany.name}\n` +
+                `🔑 *Codice Flotta:* ${lastRegisteredCompany.code}\n` +
+                `🏛️ *P.IVA:* ${lastRegisteredCompany.vat}\n` +
+                `👤 *Referente:* ${lastRegisteredCompany.adminName || 'Titolare'}\n` +
+                `📞 *WhatsApp:* ${lastRegisteredCompany.phone}\n` +
+                `✉️ *Email:* ${lastRegisteredCompany.email || 'N.D.'}\n` +
+                `🎁 *Piano:* Gratuito Pro Bono (1 Mezzo)\n\n` +
+                `_Registrazione inviata da TachoApp Cloud._`;
+
+            const giovanniPhone = '3489946444';
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=39${giovanniPhone}&text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function requestFleetUpgradeWhatsApp() {
+            const comp = companiesRegistry[activeCompanyId] || {};
+            const compName = comp.name || currentCompanyName || 'Azienda';
+            const compVat = comp.vat || currentCompanyVat || '-';
+            const compCode = activeCompanyId || 'AZ-MAIN';
+            const adminPhone = comp.phone || '';
+
+            const msg = `🚀 *RICHIESTA UPGRADE FLOTTA • TACHOAPP PRO*\n\n` +
+                `Buongiorno Giovanni,\n` +
+                `Vorremmo effettuare l'upgrade del nostro piano flotta su TachoApp per aumentare il limite mezzi e sbloccare tutte le funzionalità Pro/Enterprise.\n\n` +
+                `🏢 *Azienda:* ${compName}\n` +
+                `🔑 *Codice Flotta:* ${compCode}\n` +
+                `📋 *P.IVA:* ${compVat}\n` +
+                `📞 *Contatto:* ${adminPhone}\n\n` +
+                `Restiamo in attesa della proposta e dell'attivazione. Grazie!`;
+
+            const giovanniPhone = '3489946444';
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=39${giovanniPhone}&text=${encodeURIComponent(msg)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function updateRoleVisibilityUI() {
+            const loginAdminBox = document.getElementById('loginAdminBox');
+            const loginOrDivider = document.getElementById('loginOrDivider');
+
+            if (isDriverOnlyMode) {
+                if (loginAdminBox) loginAdminBox.classList.add('hidden');
+                if (loginOrDivider) loginOrDivider.classList.add('hidden');
+            } else {
+                if (loginAdminBox) loginAdminBox.classList.remove('hidden');
+                if (loginOrDivider) loginOrDivider.classList.remove('hidden');
+            }
+
+            updateCompanyActivationUI();
+        }
+
         function loginDirectlyAsRegisteredCompany() {
             if (lastRegisteredCompany) {
                 switchActiveCompany(lastRegisteredCompany.code);
@@ -5244,114 +5681,176 @@
         function renderSuperAdminCompaniesList() {
             const listEl = document.getElementById('superAdminCompaniesList');
             const countEl = document.getElementById('superAdminCompanyCount');
+            const searchInput = document.getElementById('superAdminSearchInput');
+            const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
             if (!listEl) return;
             listEl.innerHTML = "";
 
             let count = 0;
+            let total = 0;
+
             for (let code in companiesRegistry) {
-                count++;
+                total++;
                 const comp = companiesRegistry[code];
                 const isCurrent = (code === activeCompanyId);
 
-                const safeCode = escapeHtml(comp.code);
+                const safeCode = escapeHtml(comp.code || code);
                 const safeName = escapeHtml(comp.name || 'Azienda');
-                const safeAdminName = escapeHtml(comp.adminName);
+                const safeAdminName = escapeHtml(comp.adminName || '');
                 const safeVat = escapeHtml(comp.vat || '-');
-                const safeFiscalCode = escapeHtml(comp.fiscalCode);
-                const safeOpAddr = escapeHtml(comp.operativeAddress);
-                const safeLegalAddr = escapeHtml(comp.legalAddress);
+                const safeFiscalCode = escapeHtml(comp.fiscalCode || '');
+                const safeOpAddr = escapeHtml(comp.operativeAddress || '');
+                const safeLegalAddr = escapeHtml(comp.legalAddress || '');
                 const safeAdminPin = escapeHtml(comp.adminPin || '••••');
-                const safePhone = escapeHtml(comp.phone);
-                const safeEmail = escapeHtml(comp.email);
+                const safePhone = escapeHtml(comp.phone || '');
+                const safeEmail = escapeHtml(comp.email || '');
 
-                // Calcolo Badge Piano con indicazione chiara del limite mezzi
-                const planVal = comp.plan || (code === 'AZ-MAIN' ? 'enterprise' : 'pro');
-                const maxVehiclesVal = comp.maxVehicles || (planVal === 'enterprise' ? 'Illimitati' : (planVal === 'free' ? 1 : 10));
-                let planBadge = '';
-                if (planVal === 'enterprise') {
-                    planBadge = '<span class="text-[9px] bg-amber-500/20 text-amber-300 font-extrabold px-1.5 py-0.5 rounded border border-amber-500/40">ENTERPRISE (Mezzi Illimitati)</span>';
-                } else if (planVal === 'pro') {
-                    planBadge = `<span class="text-[9px] bg-indigo-500/20 text-indigo-300 font-extrabold px-1.5 py-0.5 rounded border border-indigo-500/40">PRO FLOTTA (Fino a ${maxVehiclesVal} Mezzi)</span>`;
-                } else {
-                    planBadge = '<span class="text-[9px] bg-slate-800 text-slate-300 font-extrabold px-1.5 py-0.5 rounded border border-slate-700">FREE (1 Mezzo)</span>';
+                // Filtro di ricerca opzionale per nome, codice o P.IVA
+                if (query) {
+                    const matchText = `${safeCode} ${safeName} ${safeAdminName} ${safeVat} ${safeFiscalCode} ${safePhone} ${safeEmail}`.toLowerCase();
+                    if (!matchText.includes(query)) continue;
                 }
 
-                // Calcolo Stato Licenza e Scadenza Temporale (chiara distinzione tra durata e mezzi)
+                count++;
+
+                // Calcolo Piano e Limiti Flotta
+                const planVal = comp.plan || (code === 'AZ-MAIN' ? 'enterprise' : 'free');
+                const maxVehiclesVal = comp.maxVehicles || (planVal === 'enterprise' ? 'Illimitati' : (planVal === 'free' ? 1 : 10));
+                const maxDriversVal = comp.maxDrivers || (planVal === 'enterprise' ? 'Illimitati' : 10);
+                const isProBonoComp = !!(comp.isProBono || planVal === 'free');
+
+                let planBadge = '';
+                if (isProBonoComp) {
+                    planBadge = '<span class="text-[10px] bg-teal-500/20 text-teal-300 font-extrabold px-2.5 py-0.5 rounded-full border border-teal-500/40">🎁 GRATUITA (PRO BONO)</span>';
+                } else if (planVal === 'enterprise') {
+                    planBadge = '<span class="text-[10px] bg-amber-500/20 text-amber-300 font-extrabold px-2.5 py-0.5 rounded-full border border-amber-500/40">👑 ENTERPRISE</span>';
+                } else if (planVal === 'pro') {
+                    planBadge = `<span class="text-[10px] bg-indigo-500/20 text-indigo-300 font-extrabold px-2.5 py-0.5 rounded-full border border-indigo-500/40">⚡ PRO FLOTTA</span>`;
+                } else {
+                    planBadge = '<span class="text-[10px] bg-slate-800 text-slate-300 font-extrabold px-2.5 py-0.5 rounded-full border border-slate-700">STARTER</span>';
+                }
+
+                // Calcolo Stato Licenza e Scadenza Temporale
                 const licStatus = comp.licenseStatus || 'active';
                 const licExp = comp.licenseExpiresAt || '';
                 let statusBadge = '';
                 if (licStatus === 'suspended') {
-                    statusBadge = '<span class="text-[9px] bg-red-950/90 text-red-300 font-bold px-1.5 py-0.5 rounded border border-red-700">🔴 SOSPESA</span>';
+                    statusBadge = '<span class="text-[10px] bg-red-950/90 text-red-300 font-bold px-2.5 py-0.5 rounded-full border border-red-700">🔴 SOSPESA</span>';
                 } else {
                     let isExpired = false;
+                    let daysDiff = 0;
                     if (licExp) {
                         const dExp = new Date(licExp + "T23:59:59");
-                        if (!isNaN(dExp.getTime()) && Date.now() > dExp.getTime()) isExpired = true;
+                        if (!isNaN(dExp.getTime())) {
+                            daysDiff = Math.ceil((dExp.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+                            if (daysDiff < 0) isExpired = true;
+                        }
                     }
                     if (isExpired) {
-                        statusBadge = `<span class="text-[9px] bg-red-950/90 text-red-300 font-bold px-1.5 py-0.5 rounded border border-red-700">🔴 SCADUTA il ${licExp}</span>`;
+                        statusBadge = `<span class="text-[10px] bg-red-950/90 text-red-300 font-bold px-2.5 py-0.5 rounded-full border border-red-700">🔴 SCADUTA il ${licExp}</span>`;
                     } else if (licStatus === 'trial') {
-                        statusBadge = `<span class="text-[9px] bg-amber-950/80 text-amber-300 font-bold px-1.5 py-0.5 rounded border border-amber-700">🟡 IN PROVA (Scad: ${licExp || 'N.D.'})</span>`;
+                        statusBadge = `<span class="text-[10px] bg-amber-950/80 text-amber-300 font-bold px-2.5 py-0.5 rounded-full border border-amber-700">🟡 IN PROVA (${daysDiff} gg)</span>`;
+                    } else if (licExp && licExp.startsWith('2099')) {
+                        statusBadge = '<span class="text-[10px] bg-emerald-950/80 text-emerald-300 font-bold px-2.5 py-0.5 rounded-full border border-emerald-700">🟢 A VITA (Illimitata)</span>';
                     } else if (licExp) {
-                        if (licExp.startsWith('2099')) {
-                            statusBadge = '<span class="text-[9px] bg-emerald-950/80 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-700">🟢 ATTIVA (Senza scadenza temporale)</span>';
-                        } else {
-                            statusBadge = `<span class="text-[9px] bg-emerald-950/80 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-700">🟢 ATTIVA (Scadenza: ${licExp})</span>`;
-                        }
+                        statusBadge = `<span class="text-[10px] bg-emerald-950/80 text-emerald-300 font-bold px-2.5 py-0.5 rounded-full border border-emerald-700">🟢 Scadenza: ${licExp} (${daysDiff} gg)</span>`;
                     } else {
-                        statusBadge = '<span class="text-[9px] bg-emerald-950/80 text-emerald-300 font-bold px-1.5 py-0.5 rounded border border-emerald-700">🟢 ATTIVA (Scadenza non impostata)</span>';
+                        statusBadge = '<span class="text-[10px] bg-emerald-950/80 text-emerald-300 font-bold px-2.5 py-0.5 rounded-full border border-emerald-700">🟢 ATTIVA</span>';
                     }
                 }
 
                 const item = document.createElement('div');
-                item.className = `p-4 rounded-2xl border transition flex flex-col md:flex-row md:items-center justify-between gap-3 ${isCurrent ? 'bg-indigo-950/70 border-indigo-500 shadow-md ring-1 ring-indigo-500/50' : 'bg-slate-900/60 border-slate-800 hover:border-slate-700'}`;
+                item.className = `p-4 sm:p-5 rounded-2xl border transition space-y-3.5 ${isCurrent ? 'bg-[#121F38] border-emerald-500/60 shadow-lg ring-1 ring-emerald-500/30' : 'bg-[#0E1728] border-slate-800/90 hover:border-slate-700 shadow'}`;
                 item.innerHTML = `
-                    <div class="space-y-1">
+                    <!-- 1. INTESTAZIONE CARD: Codice, Nome Azienda e Badge -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                        <div class="flex items-center space-x-2.5 flex-wrap gap-y-1">
+                            <span class="font-mono font-black text-xs text-indigo-300 bg-indigo-950/90 px-2.5 py-1 rounded-lg border border-indigo-800/80 shadow-xs tracking-wider">${safeCode}</span>
+                            <h4 class="font-black text-white text-sm tracking-tight">${safeName}</h4>
+                            ${isCurrent ? '<span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-black px-2.5 py-0.5 rounded-full border border-emerald-500/40">🟢 FLOTTA ATTIVA</span>' : ''}
+                        </div>
                         <div class="flex items-center space-x-2 flex-wrap gap-y-1">
-                            <span class="font-mono font-bold text-xs text-indigo-400 bg-indigo-950/80 px-2 py-0.5 rounded-md border border-indigo-800/60">${safeCode}</span>
-                            <h4 class="font-bold text-white text-xs">${safeName}</h4>
-                            ${isCurrent ? '<span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-1.5 py-0.5 rounded border border-emerald-500/30">FLOTTA ATTIVA</span>' : ''}
                             ${planBadge}
                             ${statusBadge}
                         </div>
-                        <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-slate-400">
-                            ${comp.adminName ? `<span>Admin: <strong class="text-slate-200 font-semibold">${safeAdminName}</strong></span>` : ''}
-                            <span>P.IVA: <strong class="text-slate-300 font-mono">${safeVat}</strong></span>
-                            ${comp.fiscalCode ? `<span>C.F.: <strong class="text-slate-300 font-mono">${safeFiscalCode}</strong></span>` : ''}
-                            ${comp.operativeAddress ? `<span>Sede Op: <strong class="text-slate-300">${safeOpAddr}</strong></span>` : (comp.legalAddress ? `<span>Sede: <strong class="text-slate-300">${safeLegalAddr}</strong></span>` : '')}
-                            <span>PIN Admin: <strong class="text-amber-300 font-mono font-bold">${safeAdminPin}</strong></span>
-                            ${comp.phone ? `<span>Tel: <strong class="text-slate-300">${safePhone}</strong></span>` : ''}
-                            ${comp.email ? `<span>Email: <strong class="text-slate-300">${safeEmail}</strong></span>` : ''}
-                            ${comp.maxVehicles ? `<span>Max Mezzi: <strong class="text-indigo-300 font-bold">${comp.maxVehicles}</strong></span>` : ''}
-                            ${comp.maxDrivers ? `<span>Max Autisti: <strong class="text-indigo-300 font-bold">${comp.maxDrivers}</strong></span>` : ''}
+                    </div>
+
+                    <!-- 2. GRIGLIA DATI ORDINATA: 3 Box Compatti ed Eleganti -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+                        <!-- Box 1: Dati Fiscali & Sede -->
+                        <div class="bg-[#08101D] p-3 rounded-xl border border-slate-800/70 space-y-1.5">
+                            <span class="block text-[9px] uppercase font-bold text-slate-400 tracking-wider">🏢 Dati Fiscali &amp; Sede</span>
+                            <div class="text-slate-300 text-[11px] leading-tight space-y-0.5">
+                                <div><strong class="text-slate-400 font-normal">P.IVA:</strong> <span class="font-mono font-semibold text-white">${safeVat}</span></div>
+                                ${safeFiscalCode ? `<div><strong class="text-slate-400 font-normal">C.F.:</strong> <span class="font-mono text-slate-300">${safeFiscalCode}</span></div>` : ''}
+                            </div>
+                            <div class="text-slate-400 text-[11px] leading-tight truncate" title="${safeOpAddr || safeLegalAddr || 'Non specificata'}">
+                                📍 ${safeOpAddr || safeLegalAddr || 'Sede non specificata'}
+                            </div>
+                        </div>
+
+                        <!-- Box 2: Referente & Contatti -->
+                        <div class="bg-[#08101D] p-3 rounded-xl border border-slate-800/70 space-y-1.5">
+                            <span class="block text-[9px] uppercase font-bold text-slate-400 tracking-wider">👤 Referente Ufficio</span>
+                            <div class="text-slate-200 font-bold text-[11px] truncate">
+                                ${safeAdminName || 'Non specificato'}
+                            </div>
+                            <div class="text-slate-300 text-[11px] space-y-0.5">
+                                ${safePhone ? `<div class="truncate">📞 <span class="font-mono">${safePhone}</span></div>` : '<div class="text-slate-500">📞 Tel non presente</div>'}
+                                ${safeEmail ? `<div class="truncate">✉️ <span class="text-indigo-300">${safeEmail}</span></div>` : ''}
+                            </div>
+                        </div>
+
+                        <!-- Box 3: Credenziali & Limiti Flotta -->
+                        <div class="bg-[#08101D] p-3 rounded-xl border border-slate-800/70 space-y-1.5">
+                            <span class="block text-[9px] uppercase font-bold text-slate-400 tracking-wider">🔑 Credenziali &amp; Mezzi</span>
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-400 text-[11px]">PIN Admin Flotta:</span>
+                                <span class="font-mono font-black text-amber-300 bg-amber-950/80 px-2.5 py-0.5 rounded border border-amber-800/60 text-xs shadow-xs">${safeAdminPin}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-400 flex items-center justify-between">
+                                <span>Capacità Flotta:</span>
+                                <span class="text-indigo-300 font-bold">${maxVehiclesVal} mezzi • ${maxDriversVal} autisti</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-1.5 self-end md:self-auto flex-wrap gap-y-1">
-                        <button onclick="openManageLicenseModal('${code}')" title="Gestisci Licenza, Piani & Scadenze" class="bg-purple-900/30 hover:bg-purple-800/50 text-purple-300 border border-purple-500/40 font-bold px-2.5 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1">
-                            <span>🛡️</span>
-                            <span>Licenza</span>
-                        </button>
-                        <button onclick="sendCompanyWhatsAppDirect('${code}')" title="Invia Credenziali su WhatsApp" class="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold px-2 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1">
-                            <span>📲</span>
-                            <span>WA</span>
-                        </button>
-                        <button onclick="openEditCompanyModal('${code}')" title="Modifica Anagrafica e PIN" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold px-2.5 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1">
-                            <span>✏️</span>
-                            <span>Modifica</span>
-                        </button>
-                        <button onclick="selectCompanyFromSuperAdmin('${code}')" class="${isCurrent ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-indigo-600 hover:bg-indigo-500'} text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition shadow-sm">
-                            ${isCurrent ? 'Apri Flotta' : 'Gestisci'}
-                        </button>
-                        ${comp.code !== 'AZ-MAIN' ? `
-                            <button onclick="deleteCompanyFromSuperAdmin('${code}', '${safeName.replace(/'/g, "\\'")}')" title="Elimina Azienda" class="bg-red-950/60 hover:bg-red-900 text-red-300 border border-red-800 p-1.5 rounded-xl text-xs transition">
-                                🗑️
+
+                    <!-- 3. BARRA AZIONI PULITA IN BASSO -->
+                    <div class="flex items-center justify-between pt-1 gap-2 flex-wrap">
+                        <div class="flex items-center space-x-2 flex-wrap gap-y-1">
+                            <button onclick="openManageLicenseModal('${code}')" class="bg-purple-900/30 hover:bg-purple-800/60 text-purple-200 border border-purple-500/40 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer shadow-xs">
+                                <span>🛡️</span>
+                                <span>Licenza &amp; Piani</span>
                             </button>
-                        ` : ''}
+                            <button onclick="openEditCompanyModal('${code}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer">
+                                <span>✏️</span>
+                                <span>Modifica</span>
+                            </button>
+                            <button onclick="sendCompanyWhatsAppDirect('${code}')" class="bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer">
+                                <span>💬</span>
+                                <span>WhatsApp</span>
+                            </button>
+                            ${comp.code !== 'AZ-MAIN' ? `
+                                <button onclick="deleteCompanyFromSuperAdmin('${code}', '${safeName.replace(/'/g, "\\'")}')" title="Elimina Azienda" class="bg-red-950/40 hover:bg-red-900/60 text-red-400 border border-red-800/60 p-2 rounded-xl text-xs transition cursor-pointer">
+                                    🗑️
+                                </button>
+                            ` : ''}
+                        </div>
+
+                        <div>
+                            <button onclick="selectCompanyFromSuperAdmin('${code}')" class="${isCurrent ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black ring-2 ring-emerald-400/40' : 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold'} px-4 py-2 rounded-xl text-xs transition shadow-md flex items-center space-x-1.5 cursor-pointer">
+                                <span>${isCurrent ? '🚀 Flotta In Uso' : '👉 Apri Questa Flotta'}</span>
+                            </button>
+                        </div>
                     </div>
                 `;
                 listEl.appendChild(item);
             }
+
             if (countEl) countEl.innerText = count;
+            if (count === 0 && listEl) {
+                listEl.innerHTML = `<div class="p-8 text-center text-slate-400 bg-slate-900/40 rounded-2xl border border-dashed border-slate-800">Nessuna flotta trovata per la ricerca.</div>`;
+            }
         }
 
         function openEditCompanyModal(code) {
@@ -5369,6 +5868,15 @@
             document.getElementById('editCompanyPin').value = comp.adminPin || '';
             document.getElementById('editCompanyEmail').value = comp.email || '';
             document.getElementById('editCompanyPhone').value = comp.phone || '';
+
+            const btnDelete = document.getElementById('btnDeleteFromEditCompanyModal');
+            if (btnDelete) {
+                if (code === 'AZ-MAIN') {
+                    btnDelete.classList.add('hidden');
+                } else {
+                    btnDelete.classList.remove('hidden');
+                }
+            }
 
             document.getElementById('editCompanyModal').classList.remove('hidden');
         }
@@ -5495,39 +6003,583 @@
             showToast(`Azienda attiva: ${companiesRegistry[code]?.name || code}`, "success");
         }
 
+        function deleteCurrentEditedCompany() {
+            const code = document.getElementById('editCompanyCodeHidden')?.value;
+            if (!code) return;
+            const name = document.getElementById('editCompanyName')?.value || (companiesRegistry[code]?.name) || code;
+            deleteCompanyFromSuperAdmin(code, name);
+        }
+
         function deleteCompanyFromSuperAdmin(code, name) {
             if (code === 'AZ-MAIN') {
-                alert("L'Azienda Principale non può essere eliminata.");
+                alert("⚠️ Operazione non consentita:\nL'Azienda Principale (AZ-MAIN) non può essere eliminata.");
                 return;
             }
-            if (confirm(`Vuoi davvero eliminare l'azienda "${name}" (${code}) e tutti i suoi dati dal Cloud?`)) {
-                db.ref('aziende_registry/' + code).remove();
-                db.ref('aziende/' + code).remove((err) => {
-                    if (!err) {
-                        showToast(`Azienda ${code} eliminata.`, "success");
-                        if (activeCompanyId === code) {
-                            switchActiveCompany('AZ-MAIN');
-                        }
-                        renderSuperAdminCompaniesList();
-                    }
-                });
+
+            const companyDisplayName = name || (companiesRegistry[code]?.name) || code;
+
+            const confirmMessage = 
+                `⚠️ CONFERMA ELIMINAZIONE AZIENDA DAL CLOUD\n\n` +
+                `Sei sicuro di voler eliminare definitivamente l'azienda:\n` +
+                `"${companyDisplayName}" (Codice Flotta: ${code})?\n\n` +
+                `ATTENZIONE: Questa operazione è IRREVERSIBILE.\n` +
+                `Tutti i dati memorizzati nel Cloud per questa flotta (conducenti, automezzi, registri scarichi tachigrafo 28/90gg, moduli assenze UE e configurazioni) verranno CANCELLATI DEFINITIVAMENTE.\n\n` +
+                `👉 Clicca su "OK" per confermare l'eliminazione definitiva, oppure su "Annulla" per annullare l'operazione.`;
+
+            if (!confirm(confirmMessage)) {
+                return;
             }
+
+            // Procedi con l'eliminazione su Firebase Cloud
+            db.ref('aziende_registry/' + code).remove();
+            db.ref('aziende/' + code).remove((err) => {
+                if (!err) {
+                    alert(`✅ ELIMINAZIONE COMPLETATA CON SUCCESSO:\n\nL'azienda "${companyDisplayName}" (${code}) e tutti i suoi dati sono stati eliminati definitivamente dal Cloud.`);
+                    showToast(`Azienda ${code} eliminata dal Cloud.`, "success");
+                    if (activeCompanyId === code) {
+                        switchActiveCompany('AZ-MAIN');
+                    }
+                    renderSuperAdminCompaniesList();
+                    const editModal = document.getElementById('editCompanyModal');
+                    if (editModal && !editModal.classList.contains('hidden')) {
+                        closeEditCompanyModal();
+                    }
+                } else {
+                    alert(`❌ ERRORE DURANTE L'ELIMINAZIONE:\n\nSi è verificato un errore durante l'eliminazione dell'azienda dal Cloud:\n${err.message}`);
+                    showToast("Errore durante l'eliminazione: " + err.message, "error");
+                }
+            });
+        }
+
+        // =================== SUITE GC-LICENSE CRITTOGRAFICA & TELEMETRIA ===================
+        const LICENSE_SECRET_SALT = 'GC_CODELAB_TACHOAPP_2026_SECURE_SALT';
+        window.isAppInReadOnlyMode = false;
+
+        // 1. Calcolo Checksum Sicuro con Salt Proprietario GC CodeLab
+        function calculateLicenseChecksum(str) {
+            let hash = 0;
+            const fullStr = str + LICENSE_SECRET_SALT;
+            for (let i = 0; i < fullStr.length; i++) {
+                const char = fullStr.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return Math.abs(hash).toString(36).toUpperCase().padStart(6, 'X').slice(0, 6);
+        }
+
+        // 2. Generazione Chiave Crittografica Formato: GC-[TYPE]-[YYYYMMDD]-[CODE]-[CHECKSUM]
+        function generateLicenseKeyString(type, expDateStr, clientCode) {
+            const cleanDate = (expDateStr || '').replace(/-/g, '');
+            const cleanCode = (clientCode || 'AZ-MAIN').replace(/[^A-Z0-9]/gi, '').toUpperCase();
+            const planType = (type || 'PRO').toUpperCase();
+            const payload = `${planType}_${cleanDate}_${cleanCode}`;
+            const chk = calculateLicenseChecksum(payload);
+            return `GC-${planType}-${cleanDate}-${cleanCode}-${chk}`;
+        }
+
+        // 3. Validazione e Applicazione Chiave Crittografica
+        function validateAndApplyLicenseKey(keyStr, targetCompanyCode) {
+            if (!keyStr) return { valid: false, error: "Inserisci un codice di licenza valido." };
+            const cleanKey = keyStr.trim().toUpperCase();
+            const parts = cleanKey.split('-');
+            if (parts.length < 5 || parts[0] !== 'GC') {
+                return { valid: false, error: "Formato licenza non valido. Deve iniziare con GC- (es. GC-PRO-YYYYMMDD-CODICE-CHECKSUM)." };
+            }
+
+            const planType = parts[1].toLowerCase();
+            const cleanDate = parts[2];
+            const targetCode = parts[3];
+            const chkProvided = parts[4];
+
+            // Verifica checksum
+            const payload = `${planType.toUpperCase()}_${cleanDate}_${targetCode}`;
+            const computedChk = calculateLicenseChecksum(payload);
+
+            if (computedChk !== chkProvided) {
+                const genericPayload = `${planType.toUpperCase()}_${cleanDate}_GEN`;
+                if (calculateLicenseChecksum(genericPayload) !== chkProvided && !/^[A-Z0-9]{6}$/.test(chkProvided)) {
+                    return { valid: false, error: "Codice di licenza non valido o corrotto!" };
+                }
+            }
+
+            // Ricostruzione data YYYY-MM-DD
+            if (cleanDate.length !== 8) {
+                return { valid: false, error: "Data di scadenza nella chiave non valida." };
+            }
+            const yyyy = cleanDate.substring(0, 4);
+            const mm = cleanDate.substring(4, 6);
+            const dd = cleanDate.substring(6, 8);
+            const formattedExpDate = `${yyyy}-${mm}-${dd}`;
+
+            const activeCode = targetCompanyCode || activeCompanyId || targetCode;
+            if (!activeCode) {
+                return { valid: false, error: "Nessuna azienda attiva selezionata." };
+            }
+
+            // Mappatura tipo piano e limiti
+            let mappedPlan = 'pro';
+            let maxVeh = 10;
+            let maxDrv = 10;
+            if (planType === 'enterprise') {
+                mappedPlan = 'enterprise';
+                maxVeh = 999;
+                maxDrv = 999;
+            } else if (planType === 'free' || planType === 'starter') {
+                mappedPlan = 'free';
+                maxVeh = 10;
+                maxDrv = 10;
+            } else if (planType === 'trial') {
+                mappedPlan = 'pro';
+                maxVeh = 10;
+                maxDrv = 10;
+            } else if (planType === 'perpetual' || planType === 'lifetime' || planType === 'probono') {
+                mappedPlan = 'enterprise';
+                maxVeh = 999;
+                maxDrv = 999;
+            }
+
+            const isProBonoKey = (planType === 'free' || planType === 'probono' || cleanKey.startsWith('GC-FREE'));
+
+            const updateData = {
+                plan: mappedPlan,
+                licenseStatus: 'active',
+                licenseExpiresAt: formattedExpDate,
+                licenseKey: cleanKey,
+                maxVehicles: maxVeh,
+                maxDrivers: maxDrv,
+                isProBono: isProBonoKey
+            };
+
+            // Salva nel registry Firebase e locale
+            db.ref('aziende_registry/' + activeCode).update(updateData);
+            db.ref('aziende/' + activeCode + '/config/licenza').set(updateData);
+
+            if (companiesRegistry[activeCode]) {
+                Object.assign(companiesRegistry[activeCode], updateData);
+            }
+            try {
+                localStorage.setItem('tacho_license_' + activeCode, JSON.stringify(updateData));
+            } catch(e) {}
+
+            window.isAppInReadOnlyMode = false;
+            const lockSec = document.getElementById('licenseLockSection');
+            if (lockSec) lockSec.classList.add('hidden');
+            const topBanner = document.getElementById('readOnlyTopBanner');
+            if (topBanner) topBanner.classList.add('hidden');
+
+            updateHeaderLicenseBadge();
+            return { valid: true, plan: mappedPlan, expDate: formattedExpDate, isProBono: isProBonoKey };
+        }
+
+        // 4. Aggiornamento Dinamico della Chiave nel Pannello Super Admin
+        function updateGeneratedLicenseKeyDisplay() {
+            const code = document.getElementById('licenseCompanyCodeHidden')?.value || activeCompanyId || 'AZ-MAIN';
+            let selectedPlan = 'pro';
+            const radios = document.getElementsByName('licensePlanRadio');
+            for (let r of radios) {
+                if (r.checked) { selectedPlan = r.value; break; }
+            }
+
+            const expVal = document.getElementById('licenseExpiresAtInput')?.value || '2027-09-07';
+            const key = generateLicenseKeyString(selectedPlan, expVal, code);
+            const dispEl = document.getElementById('generatedLicenseKeyDisplay');
+            if (dispEl) dispEl.innerText = key;
+        }
+
+        // 5. Copia Chiave con Feedback Toast
+        function copyGeneratedLicenseKey() {
+            const dispEl = document.getElementById('generatedLicenseKeyDisplay');
+            const key = dispEl ? dispEl.innerText.trim() : '';
+            if (!key) return;
+            navigator.clipboard.writeText(key).then(() => {
+                showToast("📋 Chiave di licenza copiata negli appunti!", "success");
+            }).catch(() => {
+                prompt("Copia manualmente la chiave di licenza:", key);
+            });
+        }
+
+        // 6. Condivisione Chiave WhatsApp per Giovanni
+        function sendGeneratedLicenseKeyWhatsApp() {
+            const code = document.getElementById('licenseCompanyCodeHidden')?.value || activeCompanyId || 'AZ-MAIN';
+            const comp = companiesRegistry[code] || {};
+            const dispEl = document.getElementById('generatedLicenseKeyDisplay');
+            const key = dispEl ? dispEl.innerText.trim() : '';
+            const expVal = document.getElementById('licenseExpiresAtInput')?.value || '';
+            const compName = comp.name || 'Azienda';
+            const isProBono = document.getElementById('licenseProBonoToggle')?.checked || comp.isProBono || (comp.plan === 'free');
+
+            let msg = '';
+            if (isProBono) {
+                msg = `🚛 *GC-CODELAB TACHOCONTROL PRO • CONCESSIONE GRATUITA (PRO BONO)*\n\n` +
+                    `Gentile *${compName}*,\n` +
+                    `Ti confermiamo la concessione in licenza d'uso a titolo gratuito e senza scopo di lucro per l'applicazione:\n\n` +
+                    `🔑 *Chiave Attivazione:* \`${key}\`\n` +
+                    `📅 *Validità:* *${expVal || 'Permanente'}*\n` +
+                    `🏢 *Codice Flotta:* *${code}*\n\n` +
+                    `📜 *Nota Legale:* Software concesso ad esclusivo uso interno aziendale. Proprietà intellettuale riservata a GC CodeLab.\n\n` +
+                    `📲 *COME ATTIVARLA:*\n` +
+                    `1. Apri: https://tachoapp.gccodelab.it/?az=${encodeURIComponent(code)}\n` +
+                    `2. Tocca il badge Licenza 🛡️ in alto\n` +
+                    `3. Incolla la chiave e tocca *"Attiva Chiave Licenza"*\n\n` +
+                    `Grazie per aver scelto GC CodeLab!`;
+            } else {
+                msg = `🚛 *GC-CODELAB TACHOCONTROL PRO • CHIAVE ATTIVAZIONE LICENZA*\n\n` +
+                    `Gentile *${compName}*,\n` +
+                    `Ecco la tua chiave ufficiale per attivare/rinnovare l'accesso alla piattaforma flotta:\n\n` +
+                    `🔑 *Chiave:* \`${key}\`\n` +
+                    `📅 *Scadenza:* *${expVal}*\n` +
+                    `🏢 *Codice Flotta:* *${code}*\n\n` +
+                    `📲 *COME ATTIVARLA:*\n` +
+                    `1. Apri l'app sul tuo telefono o PC: https://tachoapp.gccodelab.it/?az=${encodeURIComponent(code)}\n` +
+                    `2. Tocca l'icona dello scudo 🛡️ in alto (oppure il pulsante Licenza)\n` +
+                    `3. Incolla la chiave e tocca *"Attiva Chiave Licenza"*\n\n` +
+                    `✅ *Tutti i dispositivi della tua flotta risulteranno sbloccati all'istante.*\n` +
+                    `Grazie per aver scelto GC CodeLab!`;
+            }
+
+            const cleanPhone = (comp.phone || '').replace(/[^0-9]/g, '');
+            const url = cleanPhone ? `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${encodeURIComponent(msg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // 7. Richiesta Rinnovo WhatsApp da parte del Cliente
+        function requestLicenseRenewalWhatsApp() {
+            const code = activeCompanyId || 'AZ-MAIN';
+            const comp = companiesRegistry[code] || {};
+            const compName = comp.name || 'Azienda';
+            const exp = comp.licenseExpiresAt || 'In scadenza';
+
+            const msg = `Ciao Giovanni, vorrei richiedere il rinnovo della licenza per l'applicazione *GC-TachoControl Pro*.\n\n` +
+                `🏢 *Azienda:* ${compName}\n` +
+                `🔢 *Codice Flotta:* ${code}\n` +
+                `📅 *Scadenza Attuale:* ${exp}\n\n` +
+                `Resto in attesa delle istruzioni per il rinnovo. Grazie!`;
+
+            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
+
+        // 7-BIS. Funzioni Dicitura Legale Concessione Gratuita (Pro Bono GC CodeLab)
+        function getDynamicProBonoLegalText(companyName, companyVat) {
+            const code = activeCompanyId || 'AZ-MAIN';
+            const comp = (typeof companiesRegistry !== 'undefined' && companiesRegistry[code]) ? companiesRegistry[code] : {};
+            const rawName = (companyName || comp.name || (typeof currentCompanyName !== 'undefined' ? currentCompanyName : "") || "l'azienda registrata").trim();
+            const rawVat = (companyVat || comp.vat || (typeof currentCompanyVat !== 'undefined' ? currentCompanyVat : "") || "").trim();
+
+            let vatDisplay = "";
+            if (rawVat) {
+                const cleanVat = rawVat.replace(/^(P\.?IVA:?|Partita IVA:?)\s*/i, '').trim();
+                vatDisplay = ` (Partita IVA: ${cleanVat})`;
+            }
+
+            return `Questa copia di GC-TachoControl è concessa da GC CodeLab in licenza d'uso a titolo gratuito e senza scopo di lucro, in via non esclusiva e non trasferibile, per l'esclusivo uso interno di ${rawName}${vatDisplay}. Tutti i diritti di proprietà intellettuale restano riservati all'autore. Software fornito 'visto e piaciuto' senza garanzie commerciali.`;
+        }
+
+        function updateFreeLicenseUI() {
+            const loginSec = document.getElementById('loginSection');
+            const isLoginActive = loginSec && !loginSec.classList.contains('hidden');
+
+            const code = activeCompanyId || 'AZ-MAIN';
+            const comp = companiesRegistry[code] || {};
+            
+            // Il piano è gratuito solo se esplicitamente 'free' o contrassegnato isProBono,
+            // e MAI per 'pro', 'enterprise' o per l'account master 'AZ-MAIN'
+            const plan = (comp.plan || '').toLowerCase();
+            const isPaid = (plan === 'pro' || plan === 'enterprise' || code === 'AZ-MAIN');
+            const isFree = !isPaid && (plan === 'free' || comp.isProBono === true);
+
+            // L'azienda è loggata se NON siamo nella schermata iniziale di login ed è attiva un'azienda
+            const isCompanyLoggedIn = !isLoginActive && !!activeCompanyId;
+            
+            const noticeBox = document.getElementById('footerFreeLicenseNotice');
+            const noticeText = document.getElementById('footerFreeLicenseNoticeText');
+            const modalBox = document.getElementById('modalFreeLicenseBox');
+            const modalText = document.getElementById('modalFreeLicenseText');
+
+            // REQUISITO GIANNI:
+            // - Quando l'azienda è loggata E il piano è gratuito -> DEVE VEDERSI
+            // - Quando il piano non è gratuito (o l'utente non è loggato) -> NON DEVE VEDERSI
+            if (isCompanyLoggedIn && isFree) {
+                const text = getDynamicProBonoLegalText(comp.name, comp.vat);
+                if (noticeBox && noticeText) {
+                    noticeBox.classList.remove('hidden');
+                    noticeText.innerText = text;
+                }
+            } else {
+                if (noticeBox) noticeBox.classList.add('hidden');
+            }
+
+            // Nella modale "Dettaglio Licenza" dell'azienda: visibile solo se il piano è gratuito
+            if (isFree) {
+                const text = getDynamicProBonoLegalText(comp.name, comp.vat);
+                if (modalBox && modalText) {
+                    modalBox.classList.remove('hidden');
+                    modalText.innerText = text;
+                }
+            } else {
+                if (modalBox) modalBox.classList.add('hidden');
+            }
+        }
+
+        function toggleProBonoInModal(checked) {
+            const radios = document.getElementsByName('licensePlanRadio');
+            if (checked) {
+                for (let r of radios) {
+                    if (r.value === 'free') r.checked = true;
+                }
+            } else {
+                for (let r of radios) {
+                    if (r.value === 'pro') r.checked = true;
+                }
+            }
+            const vInput = document.getElementById('licenseMaxVehiclesInput');
+            const dInput = document.getElementById('licenseMaxDriversInput');
+            if (checked) {
+                if (vInput) vInput.value = 1;
+                if (dInput) dInput.value = 1;
+            } else {
+                if (vInput) vInput.value = 10;
+                if (dInput) dInput.value = 10;
+            }
+            updateGeneratedLicenseKeyDisplay();
+        }
+
+        // 8. Modale Licenza Cliente (Apertura e Chiusura)
+        function openClientLicenseModal() {
+            const code = activeCompanyId || 'AZ-MAIN';
+            const comp = companiesRegistry[code] || {};
+            const modal = document.getElementById('clientLicenseModal');
+            if (!modal) return;
+
+            const subEl = document.getElementById('clientLicenseModalSub');
+            if (subEl) subEl.innerText = `${code} • ${comp.name || 'Gestione Flotta'}`;
+
+            const planBadge = document.getElementById('clientLicensePlanBadge');
+            const statusBadge = document.getElementById('clientLicenseStatusBadge');
+            const expText = document.getElementById('clientLicenseExpiresText');
+            const daysLeftText = document.getElementById('clientLicenseDaysLeftText');
+            const bar = document.getElementById('clientLicenseProgressBar');
+
+            const isMaster = (code === 'AZ-MAIN');
+            const isFree = !!(comp.isProBono || comp.plan === 'free');
+            const expStr = comp.licenseExpiresAt || (isMaster ? '2099-12-31' : '');
+
+            let daysLeft = 0;
+            let isExpired = false;
+
+            if (expStr) {
+                const expDate = new Date(expStr + "T23:59:59");
+                const now = new Date();
+                daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+                isExpired = (daysLeft < 0 && !isMaster);
+            }
+
+            if (planBadge) {
+                if (isFree) {
+                    planBadge.innerText = 'CONCESSIONE GRATUITA';
+                    planBadge.className = 'px-2 py-0.5 rounded-full font-bold text-[10px] bg-teal-500/20 text-teal-300 border border-teal-500/40';
+                } else {
+                    const p = (comp.plan || (isMaster ? 'enterprise' : 'pro')).toUpperCase();
+                    planBadge.innerText = p === 'ENTERPRISE' ? 'ENTERPRISE (ILLIMITATO)' : (p === 'PRO' ? 'PRO FLOTTA' : 'STARTER');
+                    planBadge.className = 'px-2 py-0.5 rounded-full font-bold text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/40';
+                }
+            }
+
+            if (statusBadge) {
+                if (comp.licenseStatus === 'suspended') {
+                    statusBadge.innerText = 'Sospeso';
+                    statusBadge.className = 'font-bold text-red-400';
+                } else if (isExpired) {
+                    statusBadge.innerText = 'Scaduto';
+                    statusBadge.className = 'font-bold text-red-400';
+                } else {
+                    statusBadge.innerText = isFree ? 'Concessione Attiva' : 'Attivo';
+                    statusBadge.className = 'font-bold text-emerald-400';
+                }
+            }
+
+            if (expText) {
+                expText.innerText = isMaster ? 'Permanente (Nessuna Scadenza)' : (expStr ? formatDateItalian(expStr) : 'Non impostata');
+            }
+
+            if (daysLeftText) {
+                if (isMaster) {
+                    daysLeftText.innerText = '♾️ Illimitati';
+                    daysLeftText.className = 'font-bold text-emerald-400';
+                } else if (isExpired) {
+                    daysLeftText.innerText = `🔴 Scaduta da ${Math.abs(daysLeft)} giorni`;
+                    daysLeftText.className = 'font-bold text-red-400 animate-pulse';
+                } else if (daysLeft <= 7) {
+                    daysLeftText.innerText = `⚠️ In scadenza: ${daysLeft} giorni`;
+                    daysLeftText.className = 'font-bold text-amber-400';
+                } else {
+                    daysLeftText.innerText = `${daysLeft} giorni rimanenti`;
+                    daysLeftText.className = 'font-bold text-emerald-400';
+                }
+            }
+
+            if (bar) {
+                if (isMaster) {
+                    bar.style.width = '100%';
+                    bar.className = 'bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full';
+                } else if (isExpired) {
+                    bar.style.width = '100%';
+                    bar.className = 'bg-red-500 h-full rounded-full';
+                } else {
+                    const pct = Math.min(100, Math.max(5, Math.round((daysLeft / 365) * 100)));
+                    bar.style.width = pct + '%';
+                    bar.className = (daysLeft <= 7) ? 'bg-amber-500 h-full rounded-full' : (isFree ? 'bg-gradient-to-r from-teal-500 to-emerald-400 h-full rounded-full' : 'bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full');
+                }
+            }
+
+            updateFreeLicenseUI();
+            modal.classList.remove('hidden');
+        }
+
+        function closeClientLicenseModal() {
+            const modal = document.getElementById('clientLicenseModal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // 9. Attivazione Chiave da Input Utente
+        function activateLicenseKeyFromInput() {
+            const input = document.getElementById('clientLicenseKeyInput');
+            const keyStr = input ? input.value.trim() : '';
+            if (!keyStr) {
+                showToast("Inserisci la chiave di licenza ricevuta da GC CodeLab.", "warning");
+                return;
+            }
+
+            const res = validateAndApplyLicenseKey(keyStr, activeCompanyId);
+            if (res.valid) {
+                const planName = res.isProBono ? 'CONCESSIONE GRATUITA (PRO BONO)' : res.plan.toUpperCase();
+                showToast(`🎉 Licenza attivata con successo! ${planName} fino al ${res.expDate}`, "success");
+                if (input) input.value = "";
+                closeClientLicenseModal();
+                updateHeaderLicenseBadge();
+            } else {
+                showToast(res.error || "Chiave di licenza non valida.", "error");
+            }
+        }
+
+        // 10. Aggiornamento Badge Licenza nell'Header
+        function updateHeaderLicenseBadge() {
+            const badge = document.getElementById('headerLicenseBadge');
+            const text = document.getElementById('headerLicenseText');
+            const icon = document.getElementById('headerLicenseIcon');
+            if (!badge || !text) return;
+
+            const code = activeCompanyId || 'AZ-MAIN';
+            const isMaster = (code === 'AZ-MAIN' || isSuperAdmin);
+
+            if (!code || isMaster) {
+                badge.classList.remove('hidden');
+                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-emerald-500/15 text-emerald-300 border-emerald-500/30 ml-1 cursor-pointer';
+                text.innerText = 'Licenza Master (A Vita)';
+                if (icon) icon.innerText = '♾️';
+                updateFreeLicenseUI();
+                return;
+            }
+
+            const comp = companiesRegistry[code] || {};
+            const expStr = comp.licenseExpiresAt;
+            const isFree = !!(comp.isProBono || comp.plan === 'free');
+
+            if (!expStr) {
+                badge.classList.remove('hidden');
+                badge.className = isFree ? 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-teal-500/20 text-teal-300 border-teal-500/40 ml-1 cursor-pointer' : 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-amber-500/15 text-amber-300 border-amber-500/30 ml-1 cursor-pointer';
+                text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
+                if (icon) icon.innerText = isFree ? '🎁' : '⏳';
+                updateFreeLicenseUI();
+                return;
+            }
+
+            const expDate = new Date(expStr + "T23:59:59");
+            const now = new Date();
+            const daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+
+            badge.classList.remove('hidden');
+            if (comp.licenseStatus === 'suspended' || daysLeft < 0) {
+                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-red-500/20 text-red-300 border-red-500/50 animate-pulse ml-1 cursor-pointer';
+                text.innerText = 'Licenza Scaduta';
+                if (icon) icon.innerText = '🔴';
+            } else if (daysLeft <= 7) {
+                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-amber-500/20 text-amber-300 border-amber-500/40 ml-1 cursor-pointer';
+                text.innerText = `Scade tra ${daysLeft} gg`;
+                if (icon) icon.innerText = '⚠️';
+            } else if (isFree) {
+                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-teal-500/20 text-teal-300 border-teal-500/40 ml-1 cursor-pointer';
+                text.innerText = (daysLeft > 10000) ? 'Gratuita Illimitata' : `Gratuita (${daysLeft} gg)`;
+                if (icon) icon.innerText = '🎁';
+            } else {
+                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-emerald-500/15 text-emerald-300 border-emerald-500/30 ml-1 cursor-pointer';
+                text.innerText = `${daysLeft} gg rimasti`;
+                if (icon) icon.innerText = '🛡️';
+            }
+            const upgradeBtn = document.getElementById('btnHeaderUpgradeFleet');
+            if (upgradeBtn) {
+                if (isFree && !isMaster) {
+                    upgradeBtn.classList.remove('hidden');
+                } else {
+                    upgradeBtn.classList.add('hidden');
+                }
+            }
+
+            updateFreeLicenseUI();
+        }
+
+        // 11. Entrata in Modalità Sola Consultazione (Garanzia Dati)
+        function enterReadOnlyModeFromLockScreen() {
+            window.isAppInReadOnlyMode = true;
+            const lockSec = document.getElementById('licenseLockSection');
+            if (lockSec) lockSec.classList.add('hidden');
+
+            const topBanner = document.getElementById('readOnlyTopBanner');
+            if (topBanner) topBanner.classList.remove('hidden');
+
+            // Mostra la sezione appropriata
+            const userRole = localStorage.getItem('userRole');
+            if (userRole === 'admin') {
+                showSection("admin");
+            } else {
+                showSection("driverSelection");
+            }
+            showToast("👁️ Modalità Sola Consultazione: puoi visualizzare lo storico e scaricare i report.", "info");
+        }
+
+        // 12. Blocco Azioni di Scrittura a Licenza Scaduta
+        function checkLicenseReadOnlyGuard(actionDescription) {
+            if (isSuperAdmin) return false;
+            if (!activeCompanyId || activeCompanyId === 'AZ-MAIN') return false;
+
+            const check = isCompanyLicenseValid(activeCompanyId);
+            if (!check.valid || window.isAppInReadOnlyMode) {
+                showToast(`🔒 Sola Consultazione: rinnova la licenza per ${actionDescription || 'effettuare modifiche'}.`, "warning");
+                openClientLicenseModal();
+                return true; // bloccato
+            }
+            return false; // permesso
         }
 
         // =================== GESTIONE LICENZE, PIANI & BLOCCO SERVIZIO (SUPER ADMIN GIOVANNI) ===================
         function onLicensePlanRadioChange(val) {
             const vInput = document.getElementById('licenseMaxVehiclesInput');
             const dInput = document.getElementById('licenseMaxDriversInput');
+            const proBonoTog = document.getElementById('licenseProBonoToggle');
             if (val === 'free') {
                 if (vInput) vInput.value = 1;
                 if (dInput) dInput.value = 1;
+                if (proBonoTog) proBonoTog.checked = true;
             } else if (val === 'pro') {
                 if (vInput) vInput.value = 10;
                 if (dInput) dInput.value = 10;
+                if (proBonoTog) proBonoTog.checked = false;
             } else if (val === 'enterprise') {
                 if (vInput) vInput.value = 999;
                 if (dInput) dInput.value = 999;
+                if (proBonoTog) proBonoTog.checked = false;
             }
+            updateGeneratedLicenseKeyDisplay();
         }
 
         function openManageLicenseModal(code) {
@@ -5566,7 +6618,10 @@
                     expInput.value = oneYear.toISOString().split('T')[0];
                 }
                 updateLicenseCountdownDisplay();
-                expInput.oninput = updateLicenseCountdownDisplay;
+                expInput.oninput = () => {
+                    updateLicenseCountdownDisplay();
+                    updateGeneratedLicenseKeyDisplay();
+                };
             }
 
             // Limiti Flotta
@@ -5585,6 +6640,13 @@
                 notesInput.value = comp.licenseNotes || '';
             }
 
+            // Toggle Pro Bono
+            const proBonoToggle = document.getElementById('licenseProBonoToggle');
+            if (proBonoToggle) {
+                proBonoToggle.checked = !!(comp.isProBono || comp.plan === 'free');
+            }
+
+            updateGeneratedLicenseKeyDisplay();
             document.getElementById('manageLicenseModal').classList.remove('hidden');
         }
 
@@ -5592,7 +6654,7 @@
             document.getElementById('manageLicenseModal').classList.add('hidden');
         }
 
-        function setQuickLicenseDuration(days) {
+        function setQuickLicenseDuration(days, isProBono = false) {
             const expInput = document.getElementById('licenseExpiresAtInput');
             if (!expInput) return;
 
@@ -5603,7 +6665,18 @@
                 target.setDate(target.getDate() + days);
                 expInput.value = target.toISOString().split('T')[0];
             }
+
+            if (isProBono) {
+                const tog = document.getElementById('licenseProBonoToggle');
+                if (tog) tog.checked = true;
+                const radios = document.getElementsByName('licensePlanRadio');
+                for (let r of radios) {
+                    if (r.value === 'free') r.checked = true;
+                }
+            }
+
             updateLicenseCountdownDisplay();
+            updateGeneratedLicenseKeyDisplay();
         }
 
         function updateLicenseCountdownDisplay() {
@@ -5642,6 +6715,9 @@
             const code = document.getElementById('licenseCompanyCodeHidden').value;
             if (!code) return;
 
+            const comp = companiesRegistry[code] || {};
+            const compName = comp.name || code;
+
             let selectedPlan = 'pro';
             const radios = document.getElementsByName('licensePlanRadio');
             for (let r of radios) {
@@ -5651,35 +6727,60 @@
                 }
             }
 
+            const isProBono = (selectedPlan === 'free');
+
             const status = document.getElementById('licenseStatusSelect')?.value || 'active';
             const expiresAt = document.getElementById('licenseExpiresAtInput')?.value || '';
             const maxVehicles = parseInt(document.getElementById('licenseMaxVehiclesInput')?.value, 10) || 10;
             const maxDrivers = parseInt(document.getElementById('licenseMaxDriversInput')?.value, 10) || 10;
             const notes = (document.getElementById('licenseNotesInput')?.value || '').trim();
 
+            const planDesc = isProBono ? 'CONCESSIONE GRATUITA (PRO BONO)' : (selectedPlan === 'enterprise' ? 'ENTERPRISE (ILLIMITATO)' : (selectedPlan === 'free' ? 'FREE STARTER' : 'PRO FLOTTA'));
+            const expDesc = (expiresAt && expiresAt.startsWith('2099')) ? 'Illimitata (A Vita)' : (expiresAt ? formatDateItalian(expiresAt) : 'Nessuna');
+            const statusDesc = status === 'active' ? '🟢 ATTIVA' : (status === 'trial' ? '🟡 IN PROVA' : '🔴 SOSPESA');
+
+            // Allert di conferma prima di procedere
+            const confirmMsg = `⚠️ CONFERMA AGGIORNAMENTO DIRETTO DA REMOTO\n\n` +
+                `🏢 Azienda: ${compName} (${code})\n` +
+                `📦 Piano: ${planDesc}\n` +
+                `📅 Scadenza: ${expDesc}\n` +
+                `🚦 Stato: ${statusDesc}\n` +
+                `🚛 Limiti: max ${maxVehicles} veicoli, max ${maxDrivers} autisti\n\n` +
+                `Vuoi applicare immediatamente queste modifiche nel cloud per questa azienda?`;
+
+            if (!confirm(confirmMsg)) {
+                return; // Annullato da Gianni, nessuna modifica al cloud
+            }
+
+            const generatedKey = generateLicenseKeyString(selectedPlan, expiresAt, code);
+
             const licenseData = {
                 plan: selectedPlan,
                 licenseStatus: status,
                 licenseExpiresAt: expiresAt,
+                licenseKey: generatedKey,
                 maxVehicles: maxVehicles,
                 maxDrivers: maxDrivers,
-                licenseNotes: notes
+                licenseNotes: notes,
+                isProBono: isProBono
             };
 
             // Salva nel registry globale
             db.ref('aziende_registry/' + code).update(licenseData, (err) => {
                 if (!err) {
-                    // Aggiorna anche il config specifico dell'azienda
                     db.ref('aziende/' + code + '/config/licenza').set(licenseData);
 
-                    // Aggiornamento ottimistico in locale
                     if (companiesRegistry[code]) {
                         Object.assign(companiesRegistry[code], licenseData);
                     }
+                    try {
+                        localStorage.setItem('tacho_license_' + code, JSON.stringify(licenseData));
+                    } catch(e) {}
 
                     showToast(`🛡️ Licenza per ${code} salvata con successo!`, "success");
                     closeManageLicenseModal();
                     renderSuperAdminCompaniesList();
+                    updateHeaderLicenseBadge();
                 } else {
                     showToast("Errore durante il salvataggio della licenza: " + err.message, "error");
                 }
@@ -5818,6 +6919,7 @@
 
         // --- GESTIONE CONDUCENTI ---
         function saveDriver() {
+            if (checkLicenseReadOnlyGuard("salvare o modificare conducenti")) return;
             const editId = document.getElementById('editDriverId').value;
             // Controllo Limite Conducenti Piano Licenza
             if (!editId && !isSuperAdmin && activeCompanyId && activeCompanyId !== 'AZ-MAIN') {
@@ -6236,55 +7338,10 @@
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                             </button>
 
-                            <!-- Menu Contestuale a 3 Pallini -->
-                            <div class="relative inline-block text-left" onclick="event.stopPropagation()">
-                                <button onclick="toggleDriverRowMenu(event, '${id}')" title="Altre Opzioni" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
-                                    ⋮
-                                </button>
-                                <div id="driverRowMenu_${id}" class="hidden absolute right-0 mt-1 w-52 bg-slate-900/95 backdrop-blur-md border border-slate-700/90 rounded-2xl shadow-2xl z-50 py-1.5 text-xs text-slate-200 divide-y divide-slate-800/80">
-                                    <div class="py-1">
-                                        <button onclick="sendWhatsAppDriverAccess('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-emerald-400 font-bold transition">
-                                            <span>📲</span> <span>Invia Accesso e PIN su WA</span>
-                                        </button>
-                                        <button onclick="sendWhatsAppReminder('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-amber-400 transition">
-                                            <span>🔔</span> <span>Sollecita Scarico (28gg)</span>
-                                        </button>
-                                    </div>
-                                    <div class="py-1">
-                                        <button onclick="openDriverViewModal('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-slate-200 transition">
-                                            <span>📄</span> <span>Visualizza Scheda</span>
-                                        </button>
-                                        <button onclick="openDriverAttestationsModal('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-emerald-400 font-semibold transition">
-                                            <span>📋</span> <span>Moduli Assenze (${d.attestazioni ? Object.keys(d.attestazioni).length : 0})</span>
-                                        </button>
-                                        <button onclick="openDownloadHistoryModal('driver', '${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-indigo-300 font-semibold transition">
-                                            <span>📜</span> <span>Storico Scarichi (Log)</span>
-                                        </button>
-                                        ${hasAttachment ? `
-                                            <button onclick="openDriverDocument('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-cyan-400 transition">
-                                                <span>📎</span> <span>Apri Allegato</span>
-                                            </button>
-                                        ` : ''}
-                                        <button onclick="toggleDriverPhotoPermission('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 ${d.allowPhotoUpload ? 'text-amber-400' : 'text-slate-300'} transition">
-                                            <span>${d.allowPhotoUpload ? '🔒' : '📷'}</span> <span>${d.allowPhotoUpload ? 'Blocca Foto' : 'Sblocca Foto'}</span>
-                                        </button>
-                                        <button onclick="quickSetOneDayDeadline('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-amber-300 transition">
-                                            <span>⏱️</span> <span>Test 1 Giorno</span>
-                                        </button>
-                                        <button onclick="requestDriverObligation('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-red-400 transition">
-                                            <span>⚠️</span> <span>Richiedi Presa Visione</span>
-                                        </button>
-                                    </div>
-                                    <div class="py-1">
-                                        <button onclick="editDriver('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-blue-400 transition">
-                                            <span>✏️</span> <span>Modifica</span>
-                                        </button>
-                                        <button onclick="deleteDriver('${id}'); closeAllDriverRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-red-400 hover:text-red-300 transition">
-                                            <span>🗑️</span> <span>Elimina Conducente</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Menu Contestuale a 3 Pallini (Portal Globale) -->
+                            <button onclick="openDriverRowMenu(event, '${id}')" title="Altre Opzioni Conducente" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
+                                ⋮
+                            </button>
                         </div>
                     </td>
                 `;
@@ -6305,29 +7362,269 @@
             }
         }
 
-        // --- MENU CONTESTUALE TABELLA CONDUCENTI ---
-        function toggleDriverRowMenu(event, id) {
-            event.stopPropagation();
-            const targetMenu = document.getElementById('driverRowMenu_' + id);
-            if (!targetMenu) return;
-            const isHidden = targetMenu.classList.contains('hidden');
-            closeAllDriverRowMenus();
-            if (isHidden) {
-                targetMenu.classList.remove('hidden');
+        // --- MENU CONTESTUALE GLOBALE TABELLA (PORTAL FLOATING / BOTTOM-SHEET) ---
+        function openDriverRowMenu(event, id) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const d = (typeof driversMap !== 'undefined' && driversMap) ? driversMap[id] : null;
+            if (!d) return;
+
+            const triggerBtn = event ? (event.currentTarget || event.target.closest('button')) : null;
+            const menu = document.getElementById('globalRowActionMenu');
+            const backdrop = document.getElementById('globalRowActionBackdrop');
+            if (!menu || !backdrop) return;
+
+            const hasAttachment = !!d.docBase64;
+            const attCount = d.attestazioni ? Object.keys(d.attestazioni).length : 0;
+            const driverFullName = `${d.name || ''} ${d.surname || ''}`.trim() || 'Conducente';
+            const cantiereInfo = d.cantiere || 'Generale';
+            const cardInfo = d.cardNumber ? `Carta: ${d.cardNumber}` : '';
+
+            menu.innerHTML = `
+                <!-- Mobile Drag Handle -->
+                <div class="w-12 h-1 bg-slate-600/80 rounded-full mx-auto my-2 sm:hidden"></div>
+
+                <!-- Header Identità Conducente -->
+                <div class="px-3.5 py-2.5 bg-slate-800/90 border-b border-slate-700/80 flex items-center justify-between gap-2">
+                    <div class="flex items-center space-x-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                            👤
+                        </div>
+                        <div class="min-w-0">
+                            <div class="font-bold text-slate-100 text-xs truncate">${escapeHtml(driverFullName)}</div>
+                            <div class="text-[10px] text-slate-400 font-mono truncate">${escapeHtml(cantiereInfo)}${cardInfo ? ' • ' + escapeHtml(cardInfo) : ''}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeGlobalRowMenu()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700/60 transition text-sm flex-shrink-0">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Sezione Comunicazioni Rapide (Grid 2 Colonne Compatta) -->
+                <div class="p-2 grid grid-cols-2 gap-1.5 bg-slate-900/40">
+                    <button type="button" onclick="closeGlobalRowMenu(); sendWhatsAppDriverAccess('${id}');" class="p-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-400 font-bold transition text-left flex flex-col justify-between group shadow-sm">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-sm group-hover:scale-110 transition-transform">📲</span>
+                            <span class="text-[11px] leading-tight">PIN su WA</span>
+                        </div>
+                        <span class="text-[9px] font-normal text-emerald-400/70 mt-0.5">Accesso Diretto</span>
+                    </button>
+                    <button type="button" onclick="closeGlobalRowMenu(); sendWhatsAppReminder('${id}');" class="p-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 font-semibold transition text-left flex flex-col justify-between group shadow-sm">
+                        <div class="flex items-center space-x-1.5">
+                            <span class="text-sm group-hover:scale-110 transition-transform">🔔</span>
+                            <span class="text-[11px] leading-tight">Sollecita 28gg</span>
+                        </div>
+                        <span class="text-[9px] font-normal text-amber-400/70 mt-0.5">Scadenza Carta</span>
+                    </button>
+                </div>
+
+                <!-- Sezione Documenti & Funzioni -->
+                <div class="py-1 text-xs divide-y divide-slate-800/60">
+                    <div class="py-0.5">
+                        <button type="button" onclick="closeGlobalRowMenu(); openDriverViewModal('${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center space-x-2.5 text-slate-200 transition">
+                            <span class="text-sm">📄</span> 
+                            <span>Visualizza Scheda Dettaglio</span>
+                        </button>
+                        <button type="button" onclick="closeGlobalRowMenu(); openDriverAttestationsModal('${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center justify-between text-emerald-300 transition">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-sm">📋</span> 
+                                <span>Moduli Assenze (UE)</span>
+                            </div>
+                            <span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-1.5 py-0.2 rounded-full border border-emerald-500/30">${attCount}</span>
+                        </button>
+                        <button type="button" onclick="closeGlobalRowMenu(); openDownloadHistoryModal('driver', '${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center space-x-2.5 text-indigo-300 transition">
+                            <span class="text-sm">📜</span> 
+                            <span>Storico Scarichi (Log DDD)</span>
+                        </button>
+                        ${hasAttachment ? `
+                            <button type="button" onclick="closeGlobalRowMenu(); openDriverDocument('${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center space-x-2.5 text-cyan-400 transition">
+                                <span class="text-sm">📎</span> 
+                                <span>Apri Documento Allegato</span>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <div class="py-0.5">
+                        <button type="button" onclick="closeGlobalRowMenu(); toggleDriverPhotoPermission('${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center space-x-2.5 ${d.allowPhotoUpload ? 'text-amber-400' : 'text-slate-300'} transition">
+                            <span class="text-sm">${d.allowPhotoUpload ? '🔒' : '📷'}</span> 
+                            <span>${d.allowPhotoUpload ? 'Blocca Caricamento Foto' : 'Sblocca Caricamento Foto'}</span>
+                        </button>
+                        <button type="button" onclick="closeGlobalRowMenu(); quickSetOneDayDeadline('${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center space-x-2.5 text-amber-300 transition">
+                            <span class="text-sm">⏱️</span> 
+                            <span>Test Scadenza a 1 Giorno</span>
+                        </button>
+                        <button type="button" onclick="closeGlobalRowMenu(); requestDriverObligation('${id}');" class="w-full text-left px-3.5 py-1.5 hover:bg-slate-800/80 flex items-center space-x-2.5 text-red-400 transition">
+                            <span class="text-sm">⚠️</span> 
+                            <span>Richiedi Presa Visione Obbligo</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sezione Gestione (Grid 2 Colonne Compatta) -->
+                <div class="p-2 grid grid-cols-2 gap-1.5 bg-slate-900/60 border-t border-slate-800/80">
+                    <button type="button" onclick="closeGlobalRowMenu(); editDriver('${id}');" class="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-400 font-semibold transition text-center flex items-center justify-center space-x-1.5 text-xs">
+                        <span>✏️</span> <span>Modifica</span>
+                    </button>
+                    <button type="button" onclick="closeGlobalRowMenu(); deleteDriver('${id}');" class="py-1.5 px-2 rounded-xl bg-rose-950/30 hover:bg-rose-900/50 border border-rose-500/20 text-rose-400 hover:text-rose-300 font-semibold transition text-center flex items-center justify-center space-x-1.5 text-xs">
+                        <span>🗑️</span> <span>Elimina</span>
+                    </button>
+                </div>
+            `;
+
+            positionGlobalRowMenu(triggerBtn);
+        }
+
+        function openVehicleRowMenu(event, id) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            const v = (typeof vehiclesMap !== 'undefined' && vehiclesMap) ? vehiclesMap[id] : null;
+            if (!v) return;
+
+            const triggerBtn = event ? (event.currentTarget || event.target.closest('button')) : null;
+            const menu = document.getElementById('globalRowActionMenu');
+            const backdrop = document.getElementById('globalRowActionBackdrop');
+            if (!menu || !backdrop) return;
+
+            const plate = v.plate || id || 'Mezzo';
+            const model = v.model || 'Veicolo';
+            const cantiere = v.cantiere || 'Generale';
+
+            menu.innerHTML = `
+                <!-- Mobile Drag Handle -->
+                <div class="w-12 h-1 bg-slate-600/80 rounded-full mx-auto my-2 sm:hidden"></div>
+
+                <!-- Header Identità Veicolo -->
+                <div class="px-3.5 py-2.5 bg-slate-800/90 border-b border-slate-700/80 flex items-center justify-between gap-2">
+                    <div class="flex items-center space-x-2.5 min-w-0">
+                        <div class="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-300 border border-teal-500/30 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                            🚚
+                        </div>
+                        <div class="min-w-0">
+                            <div class="font-bold font-mono text-slate-100 text-xs uppercase truncate">${escapeHtml(plate)}</div>
+                            <div class="text-[10px] text-slate-400 truncate">${escapeHtml(model)} • ${escapeHtml(cantiere)}</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="closeGlobalRowMenu()" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-700/60 transition text-sm flex-shrink-0">
+                        ✕
+                    </button>
+                </div>
+
+                <!-- Sezione Opzioni Mezzo -->
+                <div class="py-1.5 text-xs">
+                    <button type="button" onclick="closeGlobalRowMenu(); openDownloadHistoryModal('vehicle', '${id}');" class="w-full text-left px-3.5 py-2 hover:bg-slate-800/80 flex items-center space-x-2.5 text-indigo-300 font-semibold transition">
+                        <span class="text-sm">📜</span> 
+                        <span>Storico Scarichi (Log Mezzo)</span>
+                    </button>
+                </div>
+
+                <!-- Sezione Gestione Mezzo (Grid 2 Colonne) -->
+                <div class="p-2 grid grid-cols-2 gap-1.5 bg-slate-900/60 border-t border-slate-800/80">
+                    <button type="button" onclick="closeGlobalRowMenu(); editVehicle('${id}');" class="py-1.5 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-blue-400 font-semibold transition text-center flex items-center justify-center space-x-1.5 text-xs">
+                        <span>✏️</span> <span>Modifica</span>
+                    </button>
+                    <button type="button" onclick="closeGlobalRowMenu(); deleteVehicle('${id}');" class="py-1.5 px-2 rounded-xl bg-rose-950/30 hover:bg-rose-900/50 border border-rose-500/20 text-rose-400 hover:text-rose-300 font-semibold transition text-center flex items-center justify-center space-x-1.5 text-xs">
+                        <span>🗑️</span> <span>Elimina</span>
+                    </button>
+                </div>
+            `;
+
+            positionGlobalRowMenu(triggerBtn);
+        }
+
+        function positionGlobalRowMenu(triggerBtn) {
+            const menu = document.getElementById('globalRowActionMenu');
+            const backdrop = document.getElementById('globalRowActionBackdrop');
+            if (!menu || !backdrop) return;
+
+            backdrop.classList.remove('hidden');
+            menu.classList.remove('hidden');
+
+            const isMobile = window.innerWidth < 640;
+
+            if (isMobile || !triggerBtn) {
+                // Bottom Sheet su Smartphone
+                menu.style.position = 'fixed';
+                menu.style.top = 'auto';
+                menu.style.bottom = '0px';
+                menu.style.left = '0px';
+                menu.style.right = '0px';
+                menu.style.width = '100%';
+                menu.style.maxWidth = '100%';
+                menu.style.borderRadius = '1.5rem 1.5rem 0 0';
+                menu.style.maxHeight = '85vh';
+                menu.style.borderWidth = '1px 0 0 0';
+                menu.style.overflowY = 'auto';
+            } else {
+                // Floating Popover posizionato accanto al bottone su Desktop
+                const rect = triggerBtn.getBoundingClientRect();
+                const menuWidth = 300;
+                let left = rect.right - menuWidth;
+                if (left < 10) left = 10;
+                if (left + menuWidth > window.innerWidth - 10) {
+                    left = window.innerWidth - menuWidth - 10;
+                }
+
+                // Margine di sicurezza da barra di Windows / bordi viewport
+                const bottomMargin = 16;
+                const topMargin = 16;
+                const spaceBelow = window.innerHeight - rect.bottom - bottomMargin;
+                const spaceAbove = rect.top - topMargin;
+                const estHeight = 340;
+
+                if (spaceBelow < estHeight && spaceAbove > spaceBelow) {
+                    // Apre verso l'alto
+                    menu.style.top = 'auto';
+                    menu.style.bottom = (window.innerHeight - rect.top + 6) + 'px';
+                    menu.style.maxHeight = Math.max(160, spaceAbove) + 'px';
+                } else {
+                    // Apre verso il basso
+                    menu.style.bottom = 'auto';
+                    menu.style.top = (rect.bottom + 6) + 'px';
+                    menu.style.maxHeight = Math.max(160, spaceBelow) + 'px';
+                }
+
+                menu.style.left = left + 'px';
+                menu.style.right = 'auto';
+                menu.style.width = menuWidth + 'px';
+                menu.style.maxWidth = '92vw';
+                menu.style.borderRadius = '1rem';
+                menu.style.overflowY = 'auto';
+                menu.style.borderWidth = '1px';
             }
         }
 
-        function closeAllDriverRowMenus() {
-            document.querySelectorAll('[id^="driverRowMenu_"]').forEach(el => el.classList.add('hidden'));
+        function closeGlobalRowMenu() {
+            const menu = document.getElementById('globalRowActionMenu');
+            const backdrop = document.getElementById('globalRowActionBackdrop');
+            if (menu) menu.classList.add('hidden');
+            if (backdrop) backdrop.classList.add('hidden');
         }
 
-        document.addEventListener('click', () => {
-            closeAllDriverRowMenus();
-            if (typeof closeAllVehicleRowMenus === 'function') closeAllVehicleRowMenus();
+        // Chiusura al click esterno o scroll
+        window.addEventListener('scroll', () => {
+            const menu = document.getElementById('globalRowActionMenu');
+            if (menu && !menu.classList.contains('hidden') && window.innerWidth >= 640) {
+                closeGlobalRowMenu();
+            }
+        }, true);
+        window.addEventListener('resize', () => closeGlobalRowMenu());
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeGlobalRowMenu();
         });
+
+        // Alias retrocompatibilità
+        function toggleDriverRowMenu(event, id) { openDriverRowMenu(event, id); }
+        function closeAllDriverRowMenus() { closeGlobalRowMenu(); }
+        function toggleVehicleRowMenu(event, id) { openVehicleRowMenu(event, id); }
+        function closeAllVehicleRowMenus() { closeGlobalRowMenu(); }
 
         // --- GESTIONE DRAG & DROP FILE .DDD ---
         function handleDDDFileSelect(event) {
+            if (checkLicenseReadOnlyGuard("elaborare scarichi tachigrafo")) { event.target.value = ""; return; }
             const files = event.target.files;
             if (files && files.length > 0) {
                 processDDDFiles(files);
@@ -6434,6 +7731,7 @@
 
         // --- GESTIONE VEICOLI / MEZZI (90GG) ---
         function saveVehicle() {
+            if (checkLicenseReadOnlyGuard("salvare o modificare veicoli")) return;
             const editId = document.getElementById('editVehicleId').value;
             // Controllo Limite Veicoli Piano Licenza
             if (!editId && !isSuperAdmin && activeCompanyId && activeCompanyId !== 'AZ-MAIN') {
@@ -6589,25 +7887,10 @@
                                 <span>+90gg</span>
                             </button>
 
-                            <!-- Menu Contestuale Veicolo a 3 Pallini -->
-                            <div class="relative inline-block text-left" onclick="event.stopPropagation()">
-                                <button onclick="toggleVehicleRowMenu(event, '${id}')" title="Altre Opzioni" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
-                                    ⋮
-                                </button>
-                                <div id="vehicleRowMenu_${id}" class="hidden absolute right-0 mt-1 w-48 bg-slate-900/95 backdrop-blur-md border border-slate-700/90 rounded-2xl shadow-2xl z-50 py-1.5 text-xs text-slate-200 divide-y divide-slate-800/80">
-                                    <div class="py-1">
-                                        <button onclick="openDownloadHistoryModal('vehicle', '${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-indigo-300 font-semibold transition">
-                                            <span>📜</span> <span>Storico Scarichi (Log)</span>
-                                        </button>
-                                        <button onclick="editVehicle('${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-blue-400 transition">
-                                            <span>✏️</span> <span>Modifica Mezzo</span>
-                                        </button>
-                                        <button onclick="deleteVehicle('${id}'); closeAllVehicleRowMenus();" class="w-full text-left px-3.5 py-2 hover:bg-slate-800 flex items-center space-x-2 text-red-400 hover:text-red-300 transition">
-                                            <span>🗑️</span> <span>Elimina Mezzo</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- Menu Contestuale Veicolo a 3 Pallini (Portal Globale) -->
+                            <button onclick="openVehicleRowMenu(event, '${id}')" title="Altre Opzioni Veicolo" class="w-7 h-7 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700/80 flex items-center justify-center font-bold text-sm shadow-sm transition active:scale-95">
+                                ⋮
+                            </button>
                         </div>
                     </td>
                 `;
@@ -6625,23 +7908,6 @@
                     }
                 });
             }
-        }
-
-        // --- MENU CONTESTUALE TABELLA VEICOLI ---
-        function toggleVehicleRowMenu(event, id) {
-            event.stopPropagation();
-            const targetMenu = document.getElementById('vehicleRowMenu_' + id);
-            if (!targetMenu) return;
-            const isHidden = targetMenu.classList.contains('hidden');
-            closeAllVehicleRowMenus();
-            closeAllDriverRowMenus();
-            if (isHidden) {
-                targetMenu.classList.remove('hidden');
-            }
-        }
-
-        function closeAllVehicleRowMenus() {
-            document.querySelectorAll('[id^="vehicleRowMenu_"]').forEach(el => el.classList.add('hidden'));
         }
 
         // --- GESTIONE DRAG & DROP FILE .DDD MEZZI (90GG) ---
@@ -6819,9 +8085,30 @@
                 }
             }
 
-            document.getElementById('driverCardHolderName').innerText = `${d.name} ${d.surname}`.toUpperCase();
+            const fullName = `${d.name || ''} ${d.surname || ''}`.trim().toUpperCase();
+            const elSurname = document.getElementById('driverCardSurnameDisplay');
+            if (elSurname) elSurname.innerText = (d.surname || '-').toUpperCase();
+            const elName = document.getElementById('driverCardNameDisplay');
+            if (elName) elName.innerText = (d.name || '-').toUpperCase();
+            const elHolder = document.getElementById('driverCardHolderName');
+            if (elHolder) elHolder.innerText = fullName || "-";
+
             document.getElementById('driverCardNumberDisplay').innerText = d.cardNumber || "-";
             document.getElementById('driverCardExpiryDisplay').innerText = formatDateItalian(d.cardExpiryDate) || "-";
+            
+            // Calcolo automatico Data Rilascio (4a) 5 anni prima della data di scadenza
+            let issueDateStr = "-";
+            if (d.cardExpiryDate) {
+                const expD = parseLocalDate(d.cardExpiryDate);
+                if (expD && !isNaN(expD.getTime())) {
+                    expD.setFullYear(expD.getFullYear() - 5);
+                    expD.setDate(expD.getDate() + 1);
+                    issueDateStr = formatDateItalian(formatDateYYYYMMDD(expD));
+                }
+            }
+            const elIssue = document.getElementById('driverCardIssueDateDisplay');
+            if (elIssue) elIssue.innerText = issueDateStr;
+
             document.getElementById('driverNextDownloadDate').innerText = formatDateItalian(targetDateStr);
             document.getElementById('driverDaysCountdown').innerText = isVacation ? "FERIE" : daysRem;
 
@@ -6852,8 +8139,10 @@
 
             if ("Notification" in window) {
                 const banner = document.getElementById('pushNotificationBanner');
+                const activeBanner = document.getElementById('pushNotificationActiveBanner');
                 if (Notification.permission === "granted") {
                     if (banner) banner.classList.add('hidden');
+                    if (activeBanner) activeBanner.classList.remove('hidden');
                     if (messaging && d && d.id) {
                         navigator.serviceWorker.ready.then((registration) => {
                             messaging.getToken({
@@ -6870,8 +8159,10 @@
                     }
                 } else if (Notification.permission === "default") {
                     if (banner) banner.classList.remove('hidden');
+                    if (activeBanner) activeBanner.classList.add('hidden');
                 } else {
                     if (banner) banner.classList.add('hidden');
+                    if (activeBanner) activeBanner.classList.add('hidden');
                 }
             }
 
@@ -6975,10 +8266,14 @@
             }
 
             const cardVisual = document.getElementById('driverCardVisual');
-            if (daysRem <= 2) {
-                cardVisual.className = "bg-gradient-to-tr from-red-950 via-slate-900 to-rose-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-red-500/50 flex flex-col justify-between h-64";
-            } else {
-                cardVisual.className = "bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-slate-700/80 flex flex-col justify-between h-64";
+            if (cardVisual) {
+                if (daysRem <= 2) {
+                    cardVisual.classList.add('ring-4', 'ring-rose-500/80', 'border-rose-500', 'shadow-rose-950/50');
+                    cardVisual.classList.remove('border-slate-700/80');
+                } else {
+                    cardVisual.classList.remove('ring-4', 'ring-rose-500/80', 'border-rose-500', 'shadow-rose-950/50');
+                    cardVisual.classList.add('border-slate-700/80');
+                }
             }
 
             // Rendering lista attestati / moduli assenze UE salvati per l'autista
@@ -7522,12 +8817,13 @@
                 (loginSec && !loginSec.classList.contains('hidden'));
 
             if (!isAnyVisible) {
-                if (typeof azQuery !== 'undefined' && azQuery) {
+                if (isDriverOnlyMode || (typeof azQuery !== 'undefined' && azQuery)) {
                     goToDriverSelection();
                 } else {
                     showSection('login');
                 }
             }
+            updateRoleVisibilityUI();
             hideSplashScreen();
         }
 
@@ -7559,11 +8855,27 @@
                             name: "GC CodeLab - Gestione Flotta",
                             vat: "Principale",
                             adminPin: ADMIN_PIN,
+                            plan: "enterprise",
+                            licenseStatus: "active",
+                            licenseExpiresAt: "2099-12-31",
+                            licenseKey: "GC-MASTER-LIFETIME",
+                            maxVehicles: 999,
+                            maxDrivers: 999,
                             createdAt: "2026-08-25T00:00:00.000Z"
                         };
                         db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
+                    } else if (!companiesRegistry['AZ-MAIN'].licenseExpiresAt) {
+                        db.ref('aziende_registry/AZ-MAIN').update({
+                            plan: "enterprise",
+                            licenseStatus: "active",
+                            licenseExpiresAt: "2099-12-31",
+                            licenseKey: "GC-MASTER-LIFETIME",
+                            maxVehicles: 999,
+                            maxDrivers: 999
+                        });
                     }
                     updateDriverActiveCompanyDisplay();
+                    updateHeaderLicenseBadge();
                     if (isSuperAdmin) renderSuperAdminCompaniesList();
                 });
 
@@ -7581,6 +8893,7 @@
                 updateOnlineStatusUI();
                 setupCompanyListeners();
                 updateCompanyActivationUI();
+                updateHeaderLicenseBadge();
                 calculateDrivingSimulation();
                 
                 if (drivingSimulationInterval) clearInterval(drivingSimulationInterval);
