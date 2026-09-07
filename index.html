@@ -163,6 +163,21 @@
             animation: floatLogoGlow 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
+        /* Effetto Aurora Glow Fluorescente GC CodeLab (GC-SPLASH) */
+        @keyframes auroraShift {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.45;
+            }
+            50% {
+                transform: translate(25px, -15px) scale(1.12);
+                opacity: 0.8;
+            }
+        }
+        .animate-aurora {
+            animation: auroraShift 8s ease-in-out infinite alternate;
+        }
+
         /* Animazione Radar Tachografico & Bagliore Neon Conducenti (Opzione 1) */
         @keyframes radarRipple {
             0% {
@@ -206,30 +221,67 @@
         <span id="offlineStatusText">Modalità Offline • Dati Locali Consultabili</span>
     </div>
 
-    <!-- =================== SPLASH SCREEN DI AVVIO =================== -->
-    <div id="appSplashScreen" class="fixed inset-0 z-[999] bg-[#0B1626] flex flex-col items-center justify-center transition-all duration-500 ease-out">
-        <div class="relative flex flex-col items-center text-center p-6 select-none pointer-events-none">
-            <!-- Alone luminoso al neon pulsante -->
-            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-sky-500/35 blur-3xl rounded-full w-48 h-48 animate-pulse"></div>
-            <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-emerald-500/20 blur-2xl rounded-full w-36 h-36 animate-pulse"></div>
+    <!-- =================== SPLASH SCREEN AURORA WIDESCREEN GC CODELAB (GC-SPLASH) =================== -->
+    <div id="appSplashScreen" class="fixed inset-0 z-[999] bg-[#070D18] flex items-center justify-center p-4 transition-all duration-700 ease-out select-none">
+        <!-- Multi-layer Glowing Aurora Neon Background -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[580px] h-[360px] bg-gradient-to-tr from-cyan-500/25 via-sky-500/20 to-indigo-600/25 blur-3xl rounded-full animate-aurora"></div>
+            <div class="absolute bottom-1/4 left-1/3 -translate-x-1/2 w-[420px] h-[300px] bg-gradient-to-br from-emerald-500/20 via-teal-500/15 to-blue-600/20 blur-3xl rounded-full animate-pulse"></div>
+            <div class="absolute top-1/3 right-1/4 w-[360px] h-[260px] bg-purple-600/15 blur-3xl rounded-full animate-aurora" style="animation-delay: -4s;"></div>
+            <!-- Pattern a griglia tecnologica ultra-sottile -->
+            <div class="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] opacity-25"></div>
+        </div>
+
+        <!-- 16:9 Widescreen Luxury Glassmorphism Container -->
+        <div class="relative z-10 w-full max-w-xl sm:max-w-2xl bg-slate-900/80 border border-slate-700/70 backdrop-blur-2xl rounded-3xl p-6 sm:p-9 shadow-2xl shadow-cyan-950/70 flex flex-col items-center justify-between text-center overflow-hidden transition-all duration-500">
+            <!-- Linea superiore Neon Aurora Glow Accent -->
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 via-emerald-400 to-transparent opacity-85"></div>
             
-            <!-- Stemma 3D Tacho Control con Animazione Fluttuante Continua (Quadrato) -->
-            <div class="relative z-10 animate-logo-float mb-6">
-                <img src="assets/logo_tachocontrol_3d.jpg?v=12.0" alt="Tacho Control Logo" class="w-32 h-32 object-cover rounded-2xl shadow-2xl border border-slate-700/80">
+            <!-- Badge Superiore Ufficiale -->
+            <div class="flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-950/90 border border-slate-800 text-[10px] font-extrabold text-slate-300 tracking-wider uppercase mb-5 shadow-inner">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>GC CodeLab &bull; Aurora Widescreen HD</span>
             </div>
 
-            <h1 class="text-2xl font-black tracking-tight text-white mb-1">
-                GC-TachoControl <span class="text-emerald-400 font-mono text-sm">v10.0</span>
-            </h1>
-            <p class="text-xs text-slate-400 font-medium mb-6">Cloud &bull; PWA Offline &bull; Reg. CE 561/2006</p>
+            <!-- Sezione Centrale: Logo 3D HD Fluttuante e Titoli -->
+            <div class="flex flex-col items-center my-auto">
+                <div class="relative animate-logo-float mb-4">
+                    <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-b from-slate-800 to-slate-950 p-1 border-2 border-cyan-400/40 shadow-2xl shadow-cyan-500/20 overflow-hidden flex items-center justify-center">
+                        <img src="assets/logo_tachocontrol_3d.png" onerror="this.onerror=null; this.src='assets/logo_tachocontrol_3d.jpg?v=12.0';" alt="TachoControl Logo" class="w-full h-full object-cover rounded-2xl">
+                    </div>
+                    <!-- Alone soffuso sotto lo stemma -->
+                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-cyan-400/30 blur-md rounded-full"></div>
+                </div>
 
-            <!-- Spinner / Indicatore di Caricamento -->
-            <div class="flex items-center space-x-2 bg-slate-900/80 px-4 py-2 rounded-full border border-slate-800 shadow-lg">
-                <svg class="animate-spin h-3.5 w-3.5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span id="splashScreenText" class="text-[11px] font-semibold text-slate-300">Caricamento Cloud in corso...</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white mb-1.5 drop-shadow-sm">
+                    GC-TachoControl <span class="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent font-mono text-xs sm:text-sm font-black ml-1 px-2.5 py-0.5 rounded-lg bg-emerald-950/60 border border-emerald-500/40">v12.5 Pro</span>
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-300 font-medium max-w-md leading-relaxed">
+                    Suite Avanzata Gestione Tachigrafo &amp; Conducenti &bull; Conforme Reg. CE 561/2006
+                </p>
+            </div>
+
+            <!-- Barra di Caricamento Fluida al Neon (Progress Bar) -->
+            <div class="w-full max-w-sm sm:max-w-md mt-6 sm:mt-7 space-y-2">
+                <div class="flex justify-between items-center text-[11px] px-1">
+                    <span id="splashScreenText" class="text-slate-300 font-semibold flex items-center gap-1.5">
+                        <svg class="animate-spin h-3.5 w-3.5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span id="splashStatusMessage">Inizializzazione Cloud in corso...</span>
+                    </span>
+                    <span id="splashPercentText" class="font-mono font-bold text-cyan-300">18%</span>
+                </div>
+                <!-- Track & Bar -->
+                <div class="w-full h-2.5 sm:h-3 bg-slate-950/95 rounded-full border border-slate-700/80 p-0.5 overflow-hidden shadow-inner">
+                    <div id="splashProgressBar" class="h-full rounded-full bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 transition-all duration-300 shadow-[0_0_12px_rgba(56,189,248,0.7)]" style="width: 18%;"></div>
+                </div>
+            </div>
+
+            <!-- Firma Copyright Ufficiale GC CodeLab -->
+            <div class="mt-6 pt-3.5 border-t border-slate-800/90 w-full flex items-center justify-center text-[10px] sm:text-[11px] text-slate-400 font-medium">
+                <span>&copy; 2026 GC CodeLab &bull; Sviluppato da <strong class="text-slate-200 font-bold">Giovanni Cavallo</strong> &bull; Tutti i diritti riservati.</span>
             </div>
         </div>
     </div>
@@ -8771,17 +8823,57 @@
         }
 
         let splashScreenDismissed = false;
+        let splashProgress = 18;
+        let splashProgressInterval = null;
+
+        function updateSplashProgress(val, msg) {
+            splashProgress = Math.min(100, Math.max(splashProgress, val));
+            const bar = document.getElementById('splashProgressBar');
+            const percent = document.getElementById('splashPercentText');
+            const statusMsg = document.getElementById('splashStatusMessage');
+            if (bar) bar.style.width = splashProgress + '%';
+            if (percent) percent.innerText = Math.round(splashProgress) + '%';
+            if (msg && statusMsg) statusMsg.innerText = msg;
+        }
+
+        // Animazione fluida realistica di avanzamento all'avvio (GC-SPLASH)
+        try {
+            splashProgressInterval = setInterval(() => {
+                if (splashScreenDismissed) {
+                    if (splashProgressInterval) clearInterval(splashProgressInterval);
+                    return;
+                }
+                if (splashProgress < 45) {
+                    updateSplashProgress(splashProgress + 9, "Connessione Cloud Firebase...");
+                } else if (splashProgress < 75) {
+                    updateSplashProgress(splashProgress + 6, "Sincronizzazione dati flotta...");
+                } else if (splashProgress < 92) {
+                    updateSplashProgress(splashProgress + 2, "Verifica sessione e permessi...");
+                }
+            }, 110);
+        } catch(e) {}
+
         function hideSplashScreen() {
             if (splashScreenDismissed) return;
             splashScreenDismissed = true;
-            const splash = document.getElementById('appSplashScreen');
-            if (splash) {
-                splash.style.opacity = '0';
-                splash.style.pointerEvents = 'none';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 500);
-            }
+            if (splashProgressInterval) clearInterval(splashProgressInterval);
+
+            // Completa la barra al 100% prima della dissolvenza
+            updateSplashProgress(100, "Pronto!");
+            const bar = document.getElementById('splashProgressBar');
+            if (bar) bar.style.width = '100%';
+
+            setTimeout(() => {
+                const splash = document.getElementById('appSplashScreen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    splash.style.transform = 'scale(1.02)';
+                    splash.style.pointerEvents = 'none';
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                    }, 700);
+                }
+            }, 350);
         }
 
         function updateOnlineStatusUI() {
