@@ -8823,7 +8823,10 @@
         }
 
         let splashScreenDismissed = false;
-        let splashProgress = 18;
+        let splashProgress = 15;
+        let splashStartTime = Date.now();
+        const SPLASH_MIN_DURATION = 2100; // ~2.1 secondi per godersi l'effetto Aurora Widescreen e l'animazione della barra
+        let splashPendingHide = false;
         let splashProgressInterval = null;
 
         function updateSplashProgress(val, msg) {
@@ -8836,44 +8839,59 @@
             if (msg && statusMsg) statusMsg.innerText = msg;
         }
 
-        // Animazione fluida realistica di avanzamento all'avvio (GC-SPLASH)
+        // Avanzamento progressivo e ritmato all'avvio (GC-SPLASH)
         try {
             splashProgressInterval = setInterval(() => {
                 if (splashScreenDismissed) {
                     if (splashProgressInterval) clearInterval(splashProgressInterval);
                     return;
                 }
-                if (splashProgress < 45) {
-                    updateSplashProgress(splashProgress + 9, "Connessione Cloud Firebase...");
-                } else if (splashProgress < 75) {
-                    updateSplashProgress(splashProgress + 6, "Sincronizzazione dati flotta...");
-                } else if (splashProgress < 92) {
+                if (splashProgress < 42) {
+                    updateSplashProgress(splashProgress + 5, "Connessione Cloud Firebase...");
+                } else if (splashProgress < 76) {
+                    updateSplashProgress(splashProgress + 4, "Sincronizzazione dati flotta...");
+                } else if (splashProgress < 94) {
                     updateSplashProgress(splashProgress + 2, "Verifica sessione e permessi...");
+                } else if (splashPendingHide) {
+                    if (splashProgressInterval) clearInterval(splashProgressInterval);
+                    performHideSplashScreen();
                 }
-            }, 110);
+            }, 120);
         } catch(e) {}
 
         function hideSplashScreen() {
             if (splashScreenDismissed) return;
+            splashPendingHide = true;
+            const elapsed = Date.now() - splashStartTime;
+            const remaining = Math.max(0, SPLASH_MIN_DURATION - elapsed);
+
+            setTimeout(() => {
+                performHideSplashScreen();
+            }, remaining);
+        }
+
+        function performHideSplashScreen() {
+            if (splashScreenDismissed) return;
             splashScreenDismissed = true;
             if (splashProgressInterval) clearInterval(splashProgressInterval);
 
-            // Completa la barra al 100% prima della dissolvenza
+            // Raggiunge il 100% con conferma e icona verde
             updateSplashProgress(100, "Pronto!");
             const bar = document.getElementById('splashProgressBar');
             if (bar) bar.style.width = '100%';
 
+            // Piccolo istante a barra piena per dare soddisfazione visiva
             setTimeout(() => {
                 const splash = document.getElementById('appSplashScreen');
                 if (splash) {
                     splash.style.opacity = '0';
-                    splash.style.transform = 'scale(1.02)';
+                    splash.style.transform = 'scale(1.03)';
                     splash.style.pointerEvents = 'none';
                     setTimeout(() => {
                         splash.style.display = 'none';
-                    }, 700);
+                    }, 800);
                 }
-            }, 350);
+            }, 450);
         }
 
         function updateOnlineStatusUI() {
