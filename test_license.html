@@ -325,8 +325,12 @@
                 </div>
             </div>
 
-            <!-- Tasto Esci Elegante con Icona -->
-            <div class="flex-shrink-0">
+            <!-- Gruppo Tasti Azione Header (Installa PWA ed Esci) -->
+            <div class="flex-shrink-0 flex items-center space-x-1.5">
+                <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden px-2.5 py-2 text-xs font-bold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1 cursor-pointer active:scale-95" title="Installa l'applicazione sul tuo dispositivo">
+                    <span>📲</span>
+                    <span class="hidden sm:inline">Installa</span>
+                </button>
                 <button onclick="logout()" class="px-3 py-2 text-xs font-extrabold text-slate-300 hover:text-white bg-slate-900/90 hover:bg-red-950/60 border border-slate-700/80 hover:border-red-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95">
                     <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -1133,10 +1137,16 @@
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span class="text-xs font-bold text-slate-200">Area Personale Conducente</span>
                     </div>
-                    <button onclick="logoutDriver()" class="text-xs text-red-300 hover:text-red-200 bg-red-950/60 hover:bg-red-900 border border-red-800/80 px-3 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 active:scale-95 shadow-sm">
-                        <span>🚪</span>
-                        <span>Esci / Cambia</span>
-                    </button>
+                    <div class="flex items-center space-x-1.5">
+                        <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden text-xs text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 shadow-sm active:scale-95 cursor-pointer" title="Installa l'App sul tuo telefono">
+                            <span>📲</span>
+                            <span>Installa</span>
+                        </button>
+                        <button onclick="logoutDriver()" class="text-xs text-red-300 hover:text-red-200 bg-red-950/60 hover:bg-red-900 border border-red-800/80 px-3 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 active:scale-95 shadow-sm">
+                            <span>🚪</span>
+                            <span>Esci / Cambia</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -3244,6 +3254,31 @@
             try {
                 localStorage.setItem('cached_companiesRegistry', JSON.stringify(companiesRegistry));
             } catch(e) {}
+            if (!companiesRegistry['AZ-MAIN']) {
+                const mainCompany = {
+                    code: "AZ-MAIN",
+                    name: "GC CodeLab - Gestione Flotta",
+                    vat: "Principale",
+                    adminPin: ADMIN_PIN,
+                    plan: "enterprise",
+                    licenseStatus: "active",
+                    licenseExpiresAt: "2099-12-31",
+                    licenseKey: "GC-MASTER-LIFETIME",
+                    maxVehicles: 999,
+                    maxDrivers: 999,
+                    createdAt: "2026-08-25T00:00:00.000Z"
+                };
+                db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
+            } else if (!companiesRegistry['AZ-MAIN'].licenseExpiresAt) {
+                db.ref('aziende_registry/AZ-MAIN').update({
+                    plan: "enterprise",
+                    licenseStatus: "active",
+                    licenseExpiresAt: "2099-12-31",
+                    licenseKey: "GC-MASTER-LIFETIME",
+                    maxVehicles: 999,
+                    maxDrivers: 999
+                });
+            }
             if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                 currentCompanyName = companiesRegistry[activeCompanyId].name;
                 currentCompanyVat = companiesRegistry[activeCompanyId].vat || "";
@@ -3251,6 +3286,7 @@
                 currentCompanyOperativeAddress = companiesRegistry[activeCompanyId].operativeAddress || "";
                 updateDOMCompanyName();
             }
+            updateDriverActiveCompanyDisplay();
             updateCompanyActivationUI();
             updateHeaderLicenseBadge();
             updateFreeLicenseUI();
@@ -3666,9 +3702,6 @@
                 }
             }
             
-            const adminComp = document.getElementById('adminHeaderCompanyName');
-            if (adminComp) adminComp.innerText = `${currentCompanyName || 'Gestione Flotta'} • v10.0 Pro`;
-
             const headerCode = document.getElementById('adminHeaderCompanyCode');
             if (headerCode) headerCode.innerText = activeCompanyId || 'NON ASSEGNATA';
 
@@ -4993,13 +5026,13 @@
 
                 driversRowsHtml += `
                     <tr style="border-bottom: 1px solid #e2e8f0; font-size: 10px;">
-                        <td style="padding: 6px 8px; font-weight: bold;">${d.name} ${d.surname}</td>
-                        <td style="padding: 6px 8px; font-family: monospace;">${d.cardNumber || '-'}</td>
-                        <td style="padding: 6px 8px;">${d.cantiere || 'Generale'}</td>
+                        <td style="padding: 6px 8px; font-weight: bold;">${escapeHtml(d.name)} ${escapeHtml(d.surname)}</td>
+                        <td style="padding: 6px 8px; font-family: monospace;">${escapeHtml(d.cardNumber || '-')}</td>
+                        <td style="padding: 6px 8px;">${escapeHtml(d.cantiere || 'Generale')}</td>
                         <td style="padding: 6px 8px; font-weight: bold;">${formatDateItalian(targetDate)}</td>
                         <td style="padding: 6px 8px; font-weight: bold;">${daysRem} gg</td>
                         <td style="padding: 6px 8px;">${statusBadge}</td>
-                        <td style="padding: 6px 8px; font-size: 9px; color: #475569;">${ferieInfo}</td>
+                        <td style="padding: 6px 8px; font-size: 9px; color: #475569;">${escapeHtml(ferieInfo)}</td>
                     </tr>
                 `;
             }
@@ -5018,9 +5051,9 @@
 
                 vehiclesRowsHtml += `
                     <tr style="border-bottom: 1px solid #e2e8f0; font-size: 10px;">
-                        <td style="padding: 6px 8px; font-weight: bold; font-family: monospace;">${v.plate}</td>
-                        <td style="padding: 6px 8px;">${v.model || 'Mezzo flotta'}</td>
-                        <td style="padding: 6px 8px;">${v.cantiere || 'Generale'}</td>
+                        <td style="padding: 6px 8px; font-weight: bold; font-family: monospace;">${escapeHtml(v.plate)}</td>
+                        <td style="padding: 6px 8px;">${escapeHtml(v.model || 'Mezzo flotta')}</td>
+                        <td style="padding: 6px 8px;">${escapeHtml(v.cantiere || 'Generale')}</td>
                         <td style="padding: 6px 8px; font-weight: bold;">${formatDateItalian(targetDate)}</td>
                         <td style="padding: 6px 8px; font-weight: bold;">${daysRem} gg</td>
                         <td style="padding: 6px 8px;">${statusBadge}</td>
@@ -7320,7 +7353,7 @@
             if (!tbody) return;
             tbody.innerHTML = "";
             
-            const searchInput = document.getElementById('adminSearchTableInput') || document.getElementById('adminSearchInput');
+            const searchInput = document.getElementById('adminSearchTableInput');
             const filterTerm = searchInput ? searchInput.value.trim().toLowerCase() : "";
             let count = 0;
 
@@ -8956,47 +8989,24 @@
                 if (savedLinks) { try { customLinks = JSON.parse(savedLinks); } catch(e) {} }
                 updateDOMCustomLinks();
 
-                // Ascolto Registro Aziende su Firebase
-                db.ref('aziende_registry').on('value', snapshot => {
-                    companiesRegistry = snapshot.val() || {};
-                    if (!companiesRegistry['AZ-MAIN']) {
-                        const mainCompany = {
-                            code: "AZ-MAIN",
-                            name: "GC CodeLab - Gestione Flotta",
-                            vat: "Principale",
-                            adminPin: ADMIN_PIN,
-                            plan: "enterprise",
-                            licenseStatus: "active",
-                            licenseExpiresAt: "2099-12-31",
-                            licenseKey: "GC-MASTER-LIFETIME",
-                            maxVehicles: 999,
-                            maxDrivers: 999,
-                            createdAt: "2026-08-25T00:00:00.000Z"
-                        };
-                        db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
-                    } else if (!companiesRegistry['AZ-MAIN'].licenseExpiresAt) {
-                        db.ref('aziende_registry/AZ-MAIN').update({
-                            plan: "enterprise",
-                            licenseStatus: "active",
-                            licenseExpiresAt: "2099-12-31",
-                            licenseKey: "GC-MASTER-LIFETIME",
-                            maxVehicles: 999,
-                            maxDrivers: 999
-                        });
-                    }
-                    updateDriverActiveCompanyDisplay();
-                    updateHeaderLicenseBadge();
-                    if (isSuperAdmin) renderSuperAdminCompaniesList();
-                });
-
-                // Registrazione Service Worker per Push & Offline
+                // Registrazione Service Worker per Push & Offline con gestione ciclo di vita
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.register('firebase-messaging-sw.js')
                     .then((registration) => {
-                        console.log('Service Worker registrato con successo:', registration);
+                        console.log('[PWA] Service Worker registrato con successo:', registration);
                         registration.update();
                     }).catch((err) => {
-                        console.log('Registrazione Service Worker fallita:', err);
+                        console.warn('[PWA] Registrazione Service Worker non riuscita:', err);
+                    });
+
+                    // Ricaricamento pulito solo quando un nuovo SW aggiornato subentra alla versione precedente
+                    let refreshing = false;
+                    navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        if (!refreshing) {
+                            refreshing = true;
+                            console.log('[PWA] Nuovo Service Worker attivo: aggiornamento interfaccia in corso.');
+                            window.location.reload();
+                        }
                     });
                 }
 
@@ -9023,6 +9033,36 @@
             } catch(err) {
                 console.error("Errore durante initApp:", err);
                 ensureInitialSection();
+            }
+        }
+
+        // --- GESTIONE INSTALLABILITÀ PWA & PROMPT NATIVO ---
+        let deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredInstallPrompt = e;
+            const installBtns = document.querySelectorAll('.pwa-install-btn');
+            installBtns.forEach(btn => btn.classList.remove('hidden'));
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredInstallPrompt = null;
+            const installBtns = document.querySelectorAll('.pwa-install-btn');
+            installBtns.forEach(btn => btn.classList.add('hidden'));
+            showToast("App installata con successo sulla schermata iniziale!", "success");
+        });
+
+        function triggerPWAInstall() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt();
+                deferredInstallPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult && choiceResult.outcome === 'accepted') {
+                        console.log('[PWA] Installazione accettata dall\'utente');
+                    }
+                    deferredInstallPrompt = null;
+                });
+            } else {
+                showToast("Per installare l'app: apri il menu del browser (3 puntini o Condividi) e seleziona 'Aggiungi a schermata Home / Installa App'", "info");
             }
         }
 

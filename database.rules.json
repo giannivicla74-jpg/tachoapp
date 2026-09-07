@@ -2,14 +2,24 @@
   "rules": {
     ".read": true,
     ".write": true,
-    "operai": {
-      ".indexOn": ["pin", "cardNumber"]
-    },
-    "veicoli": {
-      ".indexOn": ["plate"]
+    "aziende_registry": {
+      ".indexOn": ["code", "adminPin", "licenseStatus"]
     },
     "aziende": {
-      ".indexOn": ["code", "adminPin"]
+      "$companyId": {
+        "operai": {
+          ".indexOn": ["pin", "cardNumber", "cantiere"]
+        },
+        "veicoli": {
+          ".indexOn": ["plate", "cantiere"]
+        }
+      }
+    },
+    "operai": {
+      ".indexOn": ["pin", "cardNumber", "cantiere"]
+    },
+    "veicoli": {
+      ".indexOn": ["plate", "cantiere"]
     }
   }
 }

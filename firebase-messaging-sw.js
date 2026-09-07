@@ -2,7 +2,7 @@
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v13.3';
+const CACHE_NAME = 'tachocontrol-offline-v13.4';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -32,11 +32,11 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW v12.7] Memorizzazione risorse offline in corso...');
+            console.log('[SW v13.4] Memorizzazione risorse offline in corso...');
             return Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
                     return cache.add(url).catch((err) => {
-                        console.warn('[SW v12.7] File non pre-caricato:', url, err);
+                        console.warn('[SW v13.4] File non pre-caricato:', url, err);
                     });
                 })
             );
@@ -51,7 +51,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
-                        console.log('[SW v12.7] Rimozione vecchia cache:', key);
+                        console.log('[SW v13.4] Rimozione vecchia cache:', key);
                         return caches.delete(key);
                     }
                 })
@@ -73,6 +73,9 @@ self.addEventListener('fetch', (event) => {
 
     const requestUrl = event.request.url;
     const isStaticAsset = ASSETS_TO_CACHE.some(url => {
+        if (url === './' || url === 'index.html') {
+            return requestUrl.endsWith('/') || requestUrl.endsWith('/index.html') || requestUrl === self.location.origin + '/';
+        }
         const cleanUrl = url.replace('./', '');
         return cleanUrl && requestUrl.includes(cleanUrl);
     });
@@ -124,7 +127,7 @@ self.addEventListener('fetch', (event) => {
                         return cachedResponse;
                     }
                     if (event.request.mode === 'navigate') {
-                        return caches.match('./') || caches.match('index.html');
+                        return caches.match('./').then((res) => res || caches.match('index.html'));
                     }
                     return new Response('Offline', { status: 503, statusText: 'Offline' });
                 });
@@ -146,21 +149,19 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-    console.log('[SW v9.6] Ricevuto messaggio in background ', payload);
-    const notificationTitle = payload.notification.title || '🔔 Avviso TachoControl';
+    console.log('[SW v13.4] Ricevuto messaggio in background ', payload);
+    const notificationTitle = (payload && payload.notification && payload.notification.title) ? payload.notification.title : '🔔 Avviso TachoControl';
     const notificationOptions = {
-        body: payload.notification.body || "Promemoria scarico tachigrafo",
+        body: (payload && payload.notification && payload.notification.body) ? payload.notification.body : "Promemoria scarico tachigrafo",
         icon: 'https://tachoapp.gccodelab.it/logo.jpg',
         badge: 'https://tachoapp.gccodelab.it/logo.jpg',
         data: {
             dateOfArrival: Date.now(),
-            url: payload.data && payload.data.url ? payload.data.url : 'https://tachoapp.gccodelab.it/'
+            url: payload && payload.data && payload.data.url ? payload.data.url : 'https://tachoapp.gccodelab.it/'
         }
     };
 
-    event.waitUntil(
-        self.registration.showNotification(notificationTitle, notificationOptions)
-    );
+    return self.registration.showNotification(notificationTitle, notificationOptions);
 });
 
 // Listener per il click sulla notifica

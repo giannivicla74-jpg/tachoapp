@@ -52,5 +52,15 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "screenshots": [
+    {
+      "src": "preview_gc_action_button.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Dashboard TachoControl Pro"
+    }
+  ],
+  "prefer_related_applications": false
 }
