@@ -721,16 +721,20 @@
                             <circle cx="12" cy="13" r="1.5" fill="#34d399" class="stroke-none"></circle>
                         </svg>
                     </div>
-                    <div class="min-w-0">
-                        <div class="flex items-center space-x-2">
-                            <h4 class="font-extrabold text-white text-sm group-hover:text-emerald-300 transition truncate" id="driverSimBtnTitle">Pianifica Turno &amp; Guida</h4>
-                            <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">CE 561/2006</span>
-                            <span id="driverSimActiveBadge" class="hidden bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm animate-pulse flex-shrink-0">LIVE</span>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <h4 class="font-extrabold text-white text-sm group-hover:text-emerald-300 transition" id="driverSimBtnTitle">Pianifica Turno &amp; Guida</h4>
+                            <div class="flex items-center gap-1">
+                                <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">CE 561/2006</span>
+                                <span id="driverSimActiveBadge" class="hidden bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm animate-pulse flex-shrink-0">LIVE</span>
+                            </div>
                         </div>
-                        <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="driverSimBtnSubtitle">Tabella di marcia &amp; calcolo pause (45m).</p>
+                        <div id="driverSimBtnSubtitle" class="mt-1 text-xs text-slate-300 leading-snug">
+                            Tabella di marcia &amp; calcolo pause (45m).
+                        </div>
                     </div>
                 </div>
-                <div class="p-2 text-emerald-400 font-bold group-hover:translate-x-1 transition text-sm flex-shrink-0">
+                <div class="p-2 text-emerald-400 font-bold group-hover:translate-x-1 transition text-sm flex-shrink-0 self-center">
                     ➔
                 </div>
             </button>
@@ -4588,25 +4592,25 @@
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
                 if (!isSimActive) {
-                    elBtnSubtitle.innerHTML = 'Tabella di marcia &amp; calcolo pause (45m).';
+                    elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
                 } else {
                     if (currentMinutes < startMinutes) {
                         const diffMin = startMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `⏳ <strong>Partenza programmata:</strong> Inizio turno tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-amber-200 bg-amber-950/60 border border-amber-500/40 p-2 rounded-xl shadow-sm"><span class="text-base">⏳</span> <span><strong class="text-amber-300 uppercase font-black text-xs">Partenza programmata:</strong> inizio tra <strong class="text-white font-black text-xs sm:text-sm bg-amber-500/40 px-2 py-0.5 rounded-lg border border-amber-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-amber-200 font-bold">(ore ${formatMinutesToTimeString(startMinutes).timeStr})</span></span></div>`;
                     } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
                         const diffMin = firstBreakMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `🟢 <strong>1° Blocco Guida:</strong> Pausa obbligatoria (45m) tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${firstBreakFormatted.timeStr})`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-amber-100 bg-amber-950/70 border border-amber-400/60 p-2 rounded-xl shadow-md"><span class="text-base animate-pulse">🛑</span> <span><strong class="text-amber-300 uppercase font-black tracking-wide text-xs">Pausa Obbligatoria (45m)</strong> tra <strong class="text-white font-black text-xs sm:text-sm bg-amber-500/40 px-2 py-0.5 rounded-lg border border-amber-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-amber-200 font-bold">(ore ${firstBreakFormatted.timeStr})</span></span></div>`;
                     } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
                         const diffMin = resumeDriveMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `🛑 <strong>In Pausa (45m):</strong> Ripartenza tra <strong class="text-emerald-300">${formatDurationHM(diffMin)}</strong> (ore ${resumeDriveFormatted.timeStr})`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-emerald-100 bg-emerald-950/70 border border-emerald-400/60 p-2 rounded-xl shadow-md"><span class="text-base animate-pulse">🛑</span> <span><strong class="text-emerald-300 uppercase font-black tracking-wide text-xs">In Pausa (45m):</strong> Ripartenza tra <strong class="text-white font-black text-xs sm:text-sm bg-emerald-500/40 px-2 py-0.5 rounded-lg border border-emerald-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-emerald-200 font-bold">(ore ${resumeDriveFormatted.timeStr})</span></span></div>`;
                     } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
                         const diffMin = endTurnMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `🟢 <strong>2° Blocco Guida:</strong> Fine turno tra <strong class="text-indigo-300">${formatDurationHM(diffMin)}</strong> (ore ${endTurnFormatted.timeStr})`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-indigo-100 bg-indigo-950/70 border border-indigo-400/60 p-2 rounded-xl shadow-md"><span class="text-base">🟢</span> <span><strong class="text-indigo-300 uppercase font-black tracking-wide text-xs">2° Blocco Guida:</strong> Fine turno tra <strong class="text-white font-black text-xs sm:text-sm bg-indigo-500/40 px-2 py-0.5 rounded-lg border border-indigo-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-indigo-200 font-bold">(ore ${endTurnFormatted.timeStr})</span></span></div>`;
                     } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
                         const diffMin = nextStartMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `🛏️ <strong>In Riposo (${restHours}h):</strong> Ripartenza consentita alle ore <strong class="text-emerald-300">${nextStartFormatted.timeStr}</strong>`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-blue-100 bg-blue-950/70 border border-blue-400/60 p-2 rounded-xl shadow-md"><span class="text-base">🛏️</span> <span><strong class="text-blue-300 uppercase font-black tracking-wide text-xs">In Riposo (${restHours}h):</strong> Ripartenza alle ore <strong class="text-white font-black text-xs sm:text-sm bg-blue-500/40 px-2 py-0.5 rounded-lg border border-blue-300 shadow-sm">${nextStartFormatted.timeStr}</strong></span></div>`;
                     } else {
-                        elBtnSubtitle.innerHTML = `✅ <strong>Turno &amp; Riposo Ultimati:</strong> Pronto per un nuovo servizio.`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 inline-flex items-center gap-1.5 text-xs text-emerald-300 bg-emerald-950/50 border border-emerald-500/40 px-2.5 py-1 rounded-xl"><span>✅</span> <span><strong>Turno &amp; Riposo Ultimati:</strong> Pronto per un nuovo servizio.</span></div>`;
                     }
                 }
             }
