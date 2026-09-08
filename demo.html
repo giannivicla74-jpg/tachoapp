@@ -2424,6 +2424,9 @@
         }
 
         function showSection(sec) {
+            if (sec !== 'driver') {
+                stopSpeakingVoice();
+            }
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('driverSelectionSection').classList.add('hidden');
             document.getElementById('adminSection').classList.add('hidden');
@@ -2446,6 +2449,8 @@
         }
 
         function logout() {
+            stopSpeakingVoice();
+            if (typeof lastAutoAnnouncedStageId !== 'undefined') lastAutoAnnouncedStageId = null;
             currentLoggedInDriver = null;
             isSuperAdmin = false;
             const superBadge = document.getElementById('superAdminBadge');
@@ -3982,11 +3987,22 @@
         }
 
         function speakTextWithVoice(text, onStartCb, onEndCb) {
+            // Protezione assoluta: l'assistente vocale può parlare SOLO se c'è un conducente autenticato nell'area di guida!
+            const driverSec = document.getElementById('driverSection');
+            const isDriverSecVisible = driverSec && !driverSec.classList.contains('hidden');
+            if (!currentLoggedInDriver || !isDriverSecVisible) {
+                console.log("[Co-Pilot] Output vocale bloccato: nessuna sessione conducente attiva.");
+                if ('speechSynthesis' in window) {
+                    try { window.speechSynthesis.cancel(); } catch(e) {}
+                }
+                return;
+            }
+
             if (!('speechSynthesis' in window)) {
                 alert("La sintesi vocale non è supportata da questo browser.");
                 return;
             }
-            window.speechSynthesis.cancel();
+            try { window.speechSynthesis.cancel(); } catch(e) {}
             const utt = new SpeechSynthesisUtterance(text);
             utt.lang = 'it-IT';
             utt.rate = 0.98;
@@ -4012,7 +4028,9 @@
 
         function stopSpeakingVoice() {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
+                try {
+                    window.speechSynthesis.cancel();
+                } catch(e) {}
                 currentSpeakingUtterance = null;
             }
             resetBriefingButtonUI();
@@ -4554,9 +4572,17 @@
             };
 
             // Notifica di Sistema & Annuncio vocale automatico al cambio di fase
+            // Eseguire SOLO ed ESCLUSIVAMENTE se l'autista è autenticato ed è attiva l'area conducente!
             const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
-            if (isSimActive && activeStageId) {
-                if (lastAutoAnnouncedStageId !== activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes) {
+            const driverSec = document.getElementById('driverSection');
+            const isDriverSecVisible = driverSec && !driverSec.classList.contains('hidden');
+            const isDriverActive = !!(currentLoggedInDriver && isDriverSecVisible);
+
+            if (isSimActive && activeStageId && isDriverActive) {
+                // Primo avvio/calcolo: memorizza la tappa iniziale attiva senza sparare annunci all'apertura o al refresh/swipe dell'app
+                if (lastAutoAnnouncedStageId === null) {
+                    lastAutoAnnouncedStageId = activeStageId;
+                } else if (lastAutoAnnouncedStageId !== activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes) {
                     lastAutoAnnouncedStageId = activeStageId;
 
                     // 1. Notifica Push di Sistema con Vibrazione tattile & Suono (anche a schermo bloccato o con Google Maps/Waze)
