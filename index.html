@@ -288,50 +288,58 @@
 
     <!-- Header / Navbar Amministratore (Design Elegante, Nitido & Professionale) -->
     <header id="adminHeader" class="hidden no-print sticky top-0 z-40 bg-[#0C1628]/95 backdrop-blur-md shadow-xl border-b border-slate-800/80 transition-colors duration-300">
-        <div class="max-w-lg w-full mx-auto px-3.5 py-2.5 sm:px-6 flex justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 min-w-0 flex-1">
+        <div class="max-w-6xl w-full mx-auto px-3.5 py-2.5 sm:px-6 flex flex-wrap md:flex-nowrap justify-between items-center gap-3">
+            
+            <!-- Identità Aziendale: Logo, Nome, Codice e Ruolo -->
+            <div class="flex items-center space-x-3 min-w-0">
                 <!-- Avatar / Logo Aziendale Grande, Elegante & Nitido -->
-                <div class="w-12 h-12 rounded-2xl bg-[#070F1C] border border-slate-700/80 p-1 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#070F1C] border border-slate-700/80 p-1 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
                     <img id="adminHeaderCompanyLogo" src="" alt="Logo" class="hidden w-full h-full object-contain rounded-xl">
                     <span class="text-2xl text-slate-400" id="adminHeaderCompanyIcon">🏢</span>
                 </div>
 
                 <!-- Dati Flotta, Codice e Stato Licenza -->
-                <div class="min-w-0 flex-1 space-y-1">
+                <div class="min-w-0">
                     <div class="flex items-center space-x-2 flex-wrap gap-y-1">
-                        <span class="font-black text-sm sm:text-base text-white uppercase tracking-wide truncate max-w-[170px] sm:max-w-[220px]" id="adminHeaderCompanyNameShort">Azienda</span>
-                        <span class="text-[11px] font-mono font-black text-cyan-300 bg-cyan-950/80 px-2.5 py-0.5 rounded-lg border border-cyan-500/50 shadow-sm shrink-0 tracking-wider" id="adminHeaderCompanyCode">AZ-MAIN</span>
+                        <span class="font-black text-sm sm:text-base text-white uppercase tracking-wide truncate max-w-[200px] sm:max-w-xs" id="adminHeaderCompanyNameShort">Azienda</span>
+                        <span class="text-[10px] sm:text-[11px] font-mono font-black text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded-lg border border-cyan-500/50 shadow-sm shrink-0 tracking-wider" id="adminHeaderCompanyCode">AZ-MAIN</span>
                         <span id="superAdminBadge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">SuperAdmin</span>
                         <button id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden text-[9px] text-indigo-400 hover:text-indigo-200 underline font-bold">⇄ Cambia</button>
                     </div>
 
-                    <!-- Riga Dettagli: Label Area + Badge Licenza + Passa a PRO -->
-                    <div class="flex items-center space-x-1.5 flex-wrap gap-y-1">
-                        <span class="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center gap-1 mr-1">
+                    <div class="flex items-center space-x-2 mt-0.5">
+                        <span class="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                             Admin
                         </span>
-                        <!-- Badge Licenza Flotta -->
-                        <button id="headerLicenseBadge" type="button" onclick="openClientLicenseModal()" class="hidden text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border cursor-pointer shadow-sm">
-                            <span id="headerLicenseIcon">🛡️</span>
-                            <span id="headerLicenseText">Licenza</span>
-                        </button>
-                        <!-- Tasto Upgrade Rapido WhatsApp (Visibile se Piano Gratuito) -->
-                        <button id="btnHeaderUpgradeFleet" type="button" onclick="requestFleetUpgradeWhatsApp()" class="hidden bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-[10px] px-2.5 py-0.5 rounded-full shadow transition flex items-center space-x-1 cursor-pointer animate-pulse" title="Richiedi a Giovanni l'attivazione di più mezzi">
-                            <span>🚀</span>
-                            <span>Passa a PRO</span>
-                        </button>
+                        <span class="text-slate-600 text-[10px]">&bull;</span>
+                        <span class="text-[10px] text-slate-400 font-medium">Gestione Flotta</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Gruppo Tasti Azione Header (Installa PWA ed Esci) -->
-            <div class="flex-shrink-0 flex items-center space-x-1.5">
-                <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden px-2.5 py-2 text-xs font-bold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1 cursor-pointer active:scale-95" title="Installa l'applicazione sul tuo dispositivo">
+            <!-- Gruppo Tasti Azione Header Ordinati e Allineati (Licenza, Passa a PRO, Installa, Esci) -->
+            <div class="flex-shrink-0 flex items-center flex-wrap gap-1.5 sm:gap-2">
+                <!-- 1. Badge / Tasto Licenza Flotta -->
+                <button id="headerLicenseBadge" type="button" onclick="openClientLicenseModal()" class="hidden h-8 text-[10px] sm:text-xs px-2.5 sm:px-3 rounded-xl font-bold transition flex items-center space-x-1.5 border cursor-pointer shadow-sm active:scale-95 whitespace-nowrap">
+                    <span id="headerLicenseIcon">🛡️</span>
+                    <span id="headerLicenseText">Licenza</span>
+                </button>
+
+                <!-- 2. Tasto Upgrade Rapido WhatsApp (Visibile se Piano Gratuito) -->
+                <button id="btnHeaderUpgradeFleet" type="button" onclick="requestFleetUpgradeWhatsApp()" class="hidden h-8 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[10px] sm:text-xs px-2.5 sm:px-3 rounded-xl shadow-md transition flex items-center space-x-1 cursor-pointer active:scale-95 animate-pulse whitespace-nowrap" title="Richiedi a Giovanni l'attivazione di più mezzi">
+                    <span>🚀</span>
+                    <span>Passa a PRO</span>
+                </button>
+
+                <!-- 3. Tasto Installa PWA -->
+                <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden h-8 px-2.5 sm:px-3 text-[10px] sm:text-xs font-bold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95 whitespace-nowrap" title="Installa l'applicazione sul tuo dispositivo">
                     <span>📲</span>
                     <span class="hidden sm:inline">Installa</span>
                 </button>
-                <button onclick="logout()" class="px-3 py-2 text-xs font-extrabold text-slate-300 hover:text-white bg-slate-900/90 hover:bg-red-950/60 border border-slate-700/80 hover:border-red-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95">
+
+                <!-- 4. Tasto Esci -->
+                <button onclick="logout()" class="h-8 px-3 text-[10px] sm:text-xs font-extrabold text-slate-300 hover:text-white bg-slate-900/90 hover:bg-red-950/60 border border-slate-700/80 hover:border-red-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95 whitespace-nowrap">
                     <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
@@ -6756,10 +6764,11 @@
 
             const code = activeCompanyId || 'AZ-MAIN';
             const isMaster = (code === 'AZ-MAIN' || isSuperAdmin);
+            const baseBtnCls = 'h-8 text-[10px] sm:text-xs px-2.5 sm:px-3 rounded-xl font-bold transition flex items-center space-x-1.5 border cursor-pointer shadow-sm active:scale-95 whitespace-nowrap';
 
             if (!code || isMaster) {
                 badge.classList.remove('hidden');
-                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-emerald-500/15 text-emerald-300 border-emerald-500/30 ml-1 cursor-pointer';
+                badge.className = `${baseBtnCls} bg-emerald-500/15 text-emerald-300 border-emerald-500/30`;
                 text.innerText = 'Licenza Master (A Vita)';
                 if (icon) icon.innerText = '♾️';
                 updateFreeLicenseUI();
@@ -6772,7 +6781,7 @@
 
             if (!expStr) {
                 badge.classList.remove('hidden');
-                badge.className = isFree ? 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-teal-500/20 text-teal-300 border-teal-500/40 ml-1 cursor-pointer' : 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-amber-500/15 text-amber-300 border-amber-500/30 ml-1 cursor-pointer';
+                badge.className = isFree ? `${baseBtnCls} bg-teal-500/20 text-teal-300 border-teal-500/40` : `${baseBtnCls} bg-amber-500/15 text-amber-300 border-amber-500/30`;
                 text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
                 if (icon) icon.innerText = isFree ? '🎁' : '⏳';
                 updateFreeLicenseUI();
@@ -6785,19 +6794,19 @@
 
             badge.classList.remove('hidden');
             if (comp.licenseStatus === 'suspended' || daysLeft < 0) {
-                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-red-500/20 text-red-300 border-red-500/50 animate-pulse ml-1 cursor-pointer';
+                badge.className = `${baseBtnCls} bg-red-500/20 text-red-300 border-red-500/50 animate-pulse`;
                 text.innerText = 'Licenza Scaduta';
                 if (icon) icon.innerText = '🔴';
             } else if (daysLeft <= 7) {
-                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-amber-500/20 text-amber-300 border-amber-500/40 ml-1 cursor-pointer';
+                badge.className = `${baseBtnCls} bg-amber-500/20 text-amber-300 border-amber-500/40`;
                 text.innerText = `Scade tra ${daysLeft} gg`;
                 if (icon) icon.innerText = '⚠️';
             } else if (isFree) {
-                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-teal-500/20 text-teal-300 border-teal-500/40 ml-1 cursor-pointer';
+                badge.className = `${baseBtnCls} bg-teal-500/20 text-teal-300 border-teal-500/40`;
                 text.innerText = (daysLeft > 10000) ? 'Gratuita Illimitata' : `Gratuita (${daysLeft} gg)`;
                 if (icon) icon.innerText = '🎁';
             } else {
-                badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full font-bold transition flex items-center space-x-1 border bg-emerald-500/15 text-emerald-300 border-emerald-500/30 ml-1 cursor-pointer';
+                badge.className = `${baseBtnCls} bg-emerald-500/15 text-emerald-300 border-emerald-500/30`;
                 text.innerText = `${daysLeft} gg rimasti`;
                 if (icon) icon.innerText = '🛡️';
             }
