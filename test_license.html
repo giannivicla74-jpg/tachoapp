@@ -1250,16 +1250,24 @@
             <!-- Pulsante Simulatore Tempi di Guida & Normativa CE 561/2006 per Autista -->
             <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-950/90 via-slate-900 to-indigo-950/90 hover:from-emerald-900 hover:to-indigo-900 border border-emerald-500/50 hover:border-emerald-400 p-4 rounded-3xl shadow-xl flex items-center justify-between text-left transition-all active:scale-[0.98] group">
                 <div class="flex items-center space-x-3.5 min-w-0">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-2xl group-hover:scale-110 transition flex-shrink-0 shadow-inner">
-                        ⏱️
+                    <div id="driverSimIconWrapper" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-900/60 to-slate-900/80 border border-emerald-500/40 flex items-center justify-center relative flex-shrink-0 shadow-inner group-hover:scale-105 transition duration-200">
+                        <div id="driverSimIconGlow" class="hidden absolute inset-0 rounded-2xl bg-emerald-400/20 animate-ping pointer-events-none"></div>
+                        <svg class="w-6 h-6 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="13" r="8" class="stroke-emerald-400/50" fill="rgba(16, 185, 129, 0.05)"></circle>
+                            <path d="M12 9v4l2.5 1.5" class="stroke-emerald-300" stroke-width="2.2"></path>
+                            <path d="M12 2v3" class="stroke-emerald-400"></path>
+                            <path d="M18.5 5.5l-1.5 1.5" class="stroke-emerald-400/60"></path>
+                            <path d="M5.5 5.5l1.5 1.5" class="stroke-emerald-400/60"></path>
+                            <circle cx="12" cy="13" r="1.5" fill="#34d399" class="stroke-none"></circle>
+                        </svg>
                     </div>
                     <div class="min-w-0">
                         <div class="flex items-center space-x-2">
-                            <h4 class="font-extrabold text-white text-sm group-hover:text-emerald-300 transition truncate" id="driverSimBtnTitle">Simulatore Tempi di Guida &amp; Riposo</h4>
+                            <h4 class="font-extrabold text-white text-sm group-hover:text-emerald-300 transition truncate" id="driverSimBtnTitle">Pianifica Turno &amp; Guida</h4>
                             <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">CE 561/2006</span>
                             <span id="driverSimActiveBadge" class="hidden bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm animate-pulse flex-shrink-0">LIVE</span>
                         </div>
-                        <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="driverSimBtnSubtitle">Tabella di marcia passo-passo &amp; calcolo pause (45m).</p>
+                        <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="driverSimBtnSubtitle">Tabella di marcia &amp; calcolo pause (45m).</p>
                     </div>
                 </div>
                 <div class="p-2 text-emerald-400 font-bold group-hover:translate-x-1 transition text-sm flex-shrink-0">
@@ -2940,15 +2948,22 @@
             <!-- Header Modale -->
             <div class="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
                 <div class="flex items-center space-x-3">
-                    <div class="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-xl shadow-inner">
-                        ⏱️
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-inner">
+                        <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="13" r="8" class="stroke-emerald-400/50" fill="rgba(16, 185, 129, 0.05)"></circle>
+                            <path d="M12 9v4l2.5 1.5" class="stroke-emerald-300" stroke-width="2.2"></path>
+                            <path d="M12 2v3" class="stroke-emerald-400"></path>
+                            <path d="M18.5 5.5l-1.5 1.5" class="stroke-emerald-400/60"></path>
+                            <path d="M5.5 5.5l1.5 1.5" class="stroke-emerald-400/60"></path>
+                            <circle cx="12" cy="13" r="1.5" fill="#34d399" class="stroke-none"></circle>
+                        </svg>
                     </div>
                     <div>
                         <div class="flex items-center space-x-2">
-                            <h3 class="font-extrabold text-sm sm:text-base text-white tracking-tight">Simulatore Tempi di Guida &amp; Riposo</h3>
+                            <h3 class="font-extrabold text-sm sm:text-base text-white tracking-tight">Assistente Tempi di Guida &amp; Riposo</h3>
                             <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">Reg. CE 561/2006</span>
                         </div>
-                        <p class="text-[10px] text-slate-400">Pianifica le pause, i turni e previeni le sanzioni del tachigrafo</p>
+                        <p class="text-[10px] text-slate-400">Pianifica le pause, monitora il turno e previeni le sanzioni del tachigrafo</p>
                     </div>
                 </div>
                 <button type="button" onclick="closeDrivingSimulatorModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-xl font-bold">
@@ -2956,10 +2971,10 @@
                 </button>
             </div>
 
-            <!-- Tab Switcher (Simulatore vs Regolamento) -->
+            <!-- Tab Switcher (Pianificatore vs Regolamento) -->
             <div class="px-5 pt-3 pb-2 bg-[#0E1726] border-b border-slate-800 flex gap-2">
                 <button id="btnSimTabCalc" onclick="switchSimulatorTab('calc')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5">
-                    <span>🎮</span> <span>Simulatore Interattivo</span>
+                    <span>⚡</span> <span>Pianificatore &amp; Monitoraggio</span>
                 </button>
                 <button id="btnSimTabGuide" onclick="switchSimulatorTab('guide')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5">
                     <span>📖</span> <span>Regolamento CE 561/2006</span>
@@ -8548,10 +8563,19 @@
             const btnStart = document.getElementById('btnStartSimulation');
             const btnStop = document.getElementById('btnStopSimulation');
             const driverBadge = document.getElementById('driverSimActiveBadge');
+            const driverGlow = document.getElementById('driverSimIconGlow');
+            const driverTitle = document.getElementById('driverSimBtnTitle');
 
             if (driverBadge) {
                 if (isSimActive) driverBadge.classList.remove('hidden');
                 else driverBadge.classList.add('hidden');
+            }
+            if (driverGlow) {
+                if (isSimActive) driverGlow.classList.remove('hidden');
+                else driverGlow.classList.add('hidden');
+            }
+            if (driverTitle) {
+                driverTitle.innerText = isSimActive ? "Monitoraggio Guida Attivo" : "Pianifica Turno & Guida";
             }
 
             if (stateBar && stateBadge) {
@@ -8603,9 +8627,11 @@
             localStorage.setItem('tacho_sim_active', 'false');
             calculateDrivingSimulation();
             updateSimulationStateUI();
+            const elBtnTitle = document.getElementById('driverSimBtnTitle');
+            if (elBtnTitle) elBtnTitle.innerText = "Pianifica Turno & Guida";
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
-                elBtnSubtitle.innerHTML = 'Tabella di marcia passo-passo &amp; calcolo pause (45m).';
+                elBtnSubtitle.innerHTML = 'Tabella di marcia &amp; calcolo pause (45m).';
             }
         }
 
@@ -8930,15 +8956,25 @@
             // Aggiornamento dinamico del pulsante sulla dashboard conducente (Monitor Live di tutte le fasi)
             const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
             const driverBadge = document.getElementById('driverSimActiveBadge');
+            const driverGlow = document.getElementById('driverSimIconGlow');
+            const elBtnTitle = document.getElementById('driverSimBtnTitle');
+
             if (driverBadge) {
                 if (isSimActive) driverBadge.classList.remove('hidden');
                 else driverBadge.classList.add('hidden');
+            }
+            if (driverGlow) {
+                if (isSimActive) driverGlow.classList.remove('hidden');
+                else driverGlow.classList.add('hidden');
+            }
+            if (elBtnTitle) {
+                elBtnTitle.innerText = isSimActive ? "Monitoraggio Guida Attivo" : "Pianifica Turno & Guida";
             }
 
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
                 if (!isSimActive) {
-                    elBtnSubtitle.innerHTML = 'Tabella di marcia passo-passo &amp; calcolo pause (45m).';
+                    elBtnSubtitle.innerHTML = 'Tabella di marcia &amp; calcolo pause (45m).';
                 } else {
                     if (currentMinutes < startMinutes) {
                         const diffMin = startMinutes - currentMinutes;
