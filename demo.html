@@ -1566,12 +1566,12 @@
                                         Il sistema seleziona in automatico la voce italiana femminile più calda e naturale del tuo dispositivo (Windows, Android o Apple), evitando le vecchie voci robotiche maschili.
                                     </p>
                                 </div>
-                                <div class="bg-blue-950/40 border border-blue-600/40 p-2.5 rounded-xl text-slate-300">
-                                    <span class="font-bold text-blue-300 flex items-center space-x-1 mb-0.5">
-                                        <span>📱</span> <span>Uso in Cabina &amp; Schermo Spento:</span>
+                                <div class="bg-emerald-950/40 border border-emerald-600/50 p-2.5 rounded-xl text-slate-300">
+                                    <span class="font-bold text-emerald-300 flex items-center space-x-1 mb-0.5">
+                                        <span>📲</span> <span>Notifiche Push &amp; Vibrazione (anche a Schermo Bloccato):</span>
                                     </span>
-                                    <p class="text-[10px] text-slate-300/90 leading-relaxed">
-                                        Finché l'app è aperta sul supporto (o in split-screen con Google Maps), la voce parla a ogni fase. A schermo spento i browser sospendono l'audio per risparmio batteria.
+                                    <p class="text-[10px] text-emerald-100/90 leading-relaxed">
+                                        A ogni cambio fase (es. arrivo pausa 45m o fine turno), il telefono vibra ed emette un segnale acustico mostrando in alto il banner: <strong>🛑 GC-TachoControl • Cambio Fase: Hai raggiunto le 4 ore e mezza di guida. Inizia la pausa obbligatoria di 45 minuti!</strong> Funziona anche con schermo spento in tasca o mentre usi Google Maps/Waze.
                                     </p>
                                 </div>
                             </div>
@@ -3913,6 +3913,9 @@
         }
 
         function startDrivingSimulation() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().catch(() => {});
+            }
             localStorage.setItem('tacho_sim_active', 'true');
             const savedParams = {
                 startTime: document.getElementById('simStartTime')?.value || "06:00",
@@ -4047,6 +4050,106 @@
             });
         }
 
+        function playNotificationBeepSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                const now = ctx.currentTime;
+                
+                // Tono 1 (880 Hz - Nota La5)
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(880, now);
+                gain1.gain.setValueAtTime(0.2, now);
+                gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.18);
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start(now);
+                osc1.stop(now + 0.18);
+
+                // Tono 2 (1175 Hz - Nota Re6)
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(1175, now + 0.12);
+                gain2.gain.setValueAtTime(0.25, now + 0.12);
+                gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(now + 0.12);
+                osc2.stop(now + 0.35);
+            } catch(e) {}
+        }
+
+        function sendSimulationStageNotification(stageId) {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            if (!lastSimulationData) return;
+
+            let title = "🧭 GC-TachoControl • Cambio Fase";
+            let body = "";
+
+            const firstBreakTime = (lastSimulationData.firstBreak && lastSimulationData.firstBreak.includes(' - ')) 
+                ? lastSimulationData.firstBreak.split(' - ')[0] 
+                : lastSimulationData.firstBreak;
+
+            switch(stageId) {
+                case 1:
+                    title = "🟢 GC-TachoControl • Inizio Guida & Partenza";
+                    body = `Inizio servizio ore ${lastSimulationData.startTime}. Carta inserita: hai a disposizione fino a 4 ore e mezza di guida prima della sosta.`;
+                    break;
+                case 2:
+                    title = "🛑 GC-TachoControl • Cambio Fase: Pausa 45m";
+                    body = `Hai raggiunto le 4 ore e mezza di guida. Inizia la pausa obbligatoria di 45 minuti (ore ${firstBreakTime})!`;
+                    break;
+                case 3:
+                    title = "🟢 GC-TachoControl • Ripresa Guida (2° Blocco)";
+                    body = `Pausa di 45 minuti ultimata. Ripartenza ore ${lastSimulationData.resumeTime} fino alla conclusione del turno.`;
+                    break;
+                case 4:
+                    title = "🏁 GC-TachoControl • Termine Guida & Inizio Riposo";
+                    body = `Guida giornaliera completata (${lastSimulationData.dailyDriveHours}h). Inizia adesso il riposo giornaliero di ${lastSimulationData.restHours} ore (ore ${lastSimulationData.endTime}).`;
+                    break;
+                case 5:
+                    title = "✨ GC-TachoControl • Riposo Ultimato";
+                    body = `Riposo di ${lastSimulationData.restHours} ore completato. Sei autorizzato a ripartire per un nuovo turno (ore ${lastSimulationData.nextStart})!`;
+                    break;
+                default:
+                    return;
+            }
+
+            // Segnale acustico tipo cabina
+            playNotificationBeepSound();
+
+            // Vibrazione a 5 impulsi distinta e prolungata: vibra 300ms, pausa 150ms, vibra 300ms, pausa 150ms, vibra 450ms
+            const vibPattern = [300, 150, 300, 150, 450];
+
+            if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+                navigator.serviceWorker.ready.then(function(reg) {
+                    if (reg && reg.showNotification) {
+                        reg.showNotification(title, {
+                            body: body,
+                            icon: 'https://tachoapp.gccodelab.it/logo.jpg',
+                            badge: 'https://tachoapp.gccodelab.it/logo.jpg',
+                            tag: 'sim_stage_' + stageId + '_' + Date.now(),
+                            renotify: true,
+                            vibrate: vibPattern,
+                            requireInteraction: true
+                        });
+                    }
+                }).catch(function() {
+                    try {
+                        new Notification(title, { body: body, icon: 'https://tachoapp.gccodelab.it/logo.jpg', tag: 'sim_stage_' + stageId });
+                    } catch(e) {}
+                });
+            } else {
+                try {
+                    new Notification(title, { body: body, icon: 'https://tachoapp.gccodelab.it/logo.jpg', tag: 'sim_stage_' + stageId });
+                } catch(e) {}
+            }
+        }
+
         function getStageSpeechText(stageId) {
             if (!lastSimulationData) return "";
             const firstBreakTime = (lastSimulationData.firstBreak && lastSimulationData.firstBreak.includes(' - ')) 
@@ -4109,6 +4212,7 @@
 
         function stopDrivingSimulation() {
             localStorage.setItem('tacho_sim_active', 'false');
+            lastAutoAnnouncedStageId = null;
             stopSpeakingVoice();
             calculateDrivingSimulation();
             updateSimulationStateUI();
@@ -4445,14 +4549,21 @@
                 restHours
             };
 
-            // Annuncio vocale automatico al cambio di fase (se abilitato dall'autista)
+            // Notifica di Sistema & Annuncio vocale automatico al cambio di fase
             const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
-            if (isSimActive && localStorage.getItem('tacho_voice_auto') === 'true') {
+            if (isSimActive && activeStageId) {
                 if (lastAutoAnnouncedStageId !== activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes) {
                     lastAutoAnnouncedStageId = activeStageId;
-                    const stageSpeech = getStageSpeechText(activeStageId);
-                    if (stageSpeech) {
-                        speakTextWithVoice(stageSpeech);
+
+                    // 1. Notifica Push di Sistema con Vibrazione tattile & Suono (anche a schermo bloccato o con Google Maps/Waze)
+                    sendSimulationStageNotification(activeStageId);
+
+                    // 2. Annuncio Vocale Parlato naturale (se abilitato dall'autista)
+                    if (localStorage.getItem('tacho_voice_auto') === 'true') {
+                        const stageSpeech = getStageSpeechText(activeStageId);
+                        if (stageSpeech) {
+                            speakTextWithVoice(stageSpeech);
+                        }
                     }
                 }
             }
