@@ -3113,6 +3113,32 @@
                                 <!-- Popolato dinamicamente da JS -->
                             </div>
 
+                            <!-- Barra Assistente Vocale & Briefing Audio Co-Pilot -->
+                            <div class="p-3.5 bg-gradient-to-r from-indigo-950/80 via-[#15233A] to-emerald-950/70 rounded-2xl border border-indigo-500/40 flex flex-wrap items-center justify-between gap-2.5 shadow-lg">
+                                <div class="flex items-center space-x-2.5 min-w-0">
+                                    <div class="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-base shadow-inner flex-shrink-0">
+                                        🎙️
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-bold text-white flex items-center space-x-1.5">
+                                            <span>Co-Pilot Vocale di Bordo</span>
+                                            <span class="text-[9px] font-mono font-bold text-indigo-300 bg-indigo-500/20 px-1.5 py-0.5 rounded border border-indigo-500/30">AUDIO HD</span>
+                                        </div>
+                                        <p class="text-[10px] text-slate-300 truncate">Ascolta le tappe e il piano di viaggio con voce naturale italiana.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                                    <button type="button" id="btnToggleVoiceAnnounce" onclick="toggleVoiceAnnouncements()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1" title="Attiva/disattiva annunci vocali automatici al cambio fase">
+                                        <span id="voiceToggleIcon">🔕</span>
+                                        <span id="voiceToggleText">Avvisi Auto: OFF</span>
+                                    </button>
+                                    <button type="button" id="btnPlayFullBriefing" onclick="speakFullTripBriefing()" class="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white text-xs font-black rounded-xl shadow-md transition flex items-center space-x-1.5 active:scale-95">
+                                        <span id="briefingPlayIcon">🔊</span>
+                                        <span id="briefingPlayText">Ascolta Briefing Turno</span>
+                                    </button>
+                                </div>
+                            </div>
+
                             <!-- Timeline Verticale delle 5 Tappe -->
                             <div id="simTimelineContainer" class="space-y-3 relative before:absolute before:left-[1.35rem] before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-700/80">
                                 <!-- Popolato dinamicamente da JS: Tappa 1, 2, 3, 4, 5 -->
@@ -8623,8 +8649,159 @@
             updateSimulationStateUI();
         }
 
+        let currentSpeakingUtterance = null;
+        let lastAutoAnnouncedStageId = null;
+
+        function getItalianSpeechVoice() {
+            if (!('speechSynthesis' in window)) return null;
+            const voices = window.speechSynthesis.getVoices();
+            return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('it') && (v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('cosimo') || v.name.toLowerCase().includes('elsa')))
+                || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('it'))
+                || null;
+        }
+
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                getItalianSpeechVoice();
+            };
+        }
+
+        function speakTextWithVoice(text, onStartCb, onEndCb) {
+            if (!('speechSynthesis' in window)) {
+                alert("La sintesi vocale non è supportata da questo browser.");
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const utt = new SpeechSynthesisUtterance(text);
+            utt.lang = 'it-IT';
+            utt.rate = 0.98;
+            utt.pitch = 1.0;
+            const voice = getItalianSpeechVoice();
+            if (voice) utt.voice = voice;
+
+            utt.onstart = () => {
+                currentSpeakingUtterance = utt;
+                if (typeof onStartCb === 'function') onStartCb();
+            };
+            utt.onend = () => {
+                currentSpeakingUtterance = null;
+                if (typeof onEndCb === 'function') onEndCb();
+            };
+            utt.onerror = () => {
+                currentSpeakingUtterance = null;
+                if (typeof onEndCb === 'function') onEndCb();
+            };
+
+            window.speechSynthesis.speak(utt);
+        }
+
+        function stopSpeakingVoice() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                currentSpeakingUtterance = null;
+            }
+            resetBriefingButtonUI();
+        }
+
+        function resetBriefingButtonUI() {
+            const btn = document.getElementById('btnPlayFullBriefing');
+            const icon = document.getElementById('briefingPlayIcon');
+            const text = document.getElementById('briefingPlayText');
+            if (icon) icon.innerText = "🔊";
+            if (text) text.innerText = "Ascolta Briefing Turno";
+            if (btn) btn.classList.remove('ring-4', 'ring-indigo-400/50', 'animate-pulse');
+        }
+
+        function speakFullTripBriefing() {
+            if (currentSpeakingUtterance) {
+                stopSpeakingVoice();
+                return;
+            }
+            if (!lastSimulationData) return;
+
+            const driverName = (currentLoggedInDriver && currentLoggedInDriver.name) ? currentLoggedInDriver.name : "Conducente";
+            const firstBreakTime = (lastSimulationData.firstBreak && lastSimulationData.firstBreak.includes(' - ')) 
+                ? lastSimulationData.firstBreak.split(' - ')[0] 
+                : lastSimulationData.firstBreak;
+
+            const text = `Ciao ${driverName}. Ecco il briefing per il tuo turno di lavoro conforme alla normativa C E 561. Partenza del servizio alle ore ${lastSimulationData.startTime}. Prima pausa obbligatoria di quarantacinque minuti alle ore ${firstBreakTime}. Conclusione della guida giornaliera di ${lastSimulationData.dailyDriveHours} ore alle ${lastSimulationData.endTime}. Ripartenza consentita dopo il riposo di ${lastSimulationData.restHours} ore alle ore ${lastSimulationData.nextStart}. Guida con prudenza e buon viaggio!`;
+
+            const btn = document.getElementById('btnPlayFullBriefing');
+            const icon = document.getElementById('briefingPlayIcon');
+            const btnText = document.getElementById('briefingPlayText');
+
+            speakTextWithVoice(text, () => {
+                if (icon) icon.innerText = "⏹️";
+                if (btnText) btnText.innerText = "Ferma Voce";
+                if (btn) btn.classList.add('ring-4', 'ring-indigo-400/50', 'animate-pulse');
+            }, () => {
+                resetBriefingButtonUI();
+            });
+        }
+
+        function getStageSpeechText(stageId) {
+            if (!lastSimulationData) return "";
+            const firstBreakTime = (lastSimulationData.firstBreak && lastSimulationData.firstBreak.includes(' - ')) 
+                ? lastSimulationData.firstBreak.split(' - ')[0] 
+                : lastSimulationData.firstBreak;
+
+            switch(stageId) {
+                case 1:
+                    return `Tappa uno: Inizio servizio e partenza alle ore ${lastSimulationData.startTime}. Inserisci la carta del conducente nel tachigrafo. Hai a disposizione fino a quattro ore e mezza di guida prima della prima sosta.`;
+                case 2:
+                    return `Tappa due: Sosta obbligatoria alle ore ${firstBreakTime}. Fermati tassativamente per almeno quarantacinque minuti di riposo per evitare sanzioni.`;
+                case 3:
+                    return `Tappa tre: Ripresa della guida alle ore ${lastSimulationData.resumeTime}. Inizia il secondo blocco di viaggio fino alla conclusione del turno.`;
+                case 4:
+                    return `Tappa quattro: Termine della guida alle ore ${lastSimulationData.endTime}, con ${lastSimulationData.dailyDriveHours} ore complessive al volante. Inizia adesso il riposo giornaliero di ${lastSimulationData.restHours} ore.`;
+                case 5:
+                    return `Tappa cinque: Riposo ultimato alle ore ${lastSimulationData.nextStart}. Sei autorizzato a ripartire per un nuovo turno di lavoro.`;
+                default:
+                    return "";
+            }
+        }
+
+        function speakStagePrompt(stageId) {
+            if (currentSpeakingUtterance) {
+                stopSpeakingVoice();
+                return;
+            }
+            const text = getStageSpeechText(stageId);
+            if (!text) return;
+            speakTextWithVoice(text);
+        }
+
+        function toggleVoiceAnnouncements() {
+            const isEnabled = localStorage.getItem('tacho_voice_auto') === 'true';
+            const nextState = !isEnabled;
+            localStorage.setItem('tacho_voice_auto', String(nextState));
+            updateVoiceAnnounceUI();
+            if (nextState) {
+                speakTextWithVoice("Assistente vocale di bordo attivato.");
+            }
+        }
+
+        function updateVoiceAnnounceUI() {
+            const isEnabled = localStorage.getItem('tacho_voice_auto') === 'true';
+            const icon = document.getElementById('voiceToggleIcon');
+            const text = document.getElementById('voiceToggleText');
+            const btn = document.getElementById('btnToggleVoiceAnnounce');
+            if (icon && text && btn) {
+                if (isEnabled) {
+                    icon.innerText = "🔔";
+                    text.innerText = "Avvisi Auto: ON";
+                    btn.className = "px-2.5 py-1.5 bg-emerald-600/30 text-emerald-300 border border-emerald-500/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm";
+                } else {
+                    icon.innerText = "🔕";
+                    text.innerText = "Avvisi Auto: OFF";
+                    btn.className = "px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1";
+                }
+            }
+        }
+
         function stopDrivingSimulation() {
             localStorage.setItem('tacho_sim_active', 'false');
+            stopSpeakingVoice();
             calculateDrivingSimulation();
             updateSimulationStateUI();
             const elBtnTitle = document.getElementById('driverSimBtnTitle');
@@ -8641,9 +8818,11 @@
             loadSavedSimulationParams();
             calculateDrivingSimulation();
             updateSimulationStateUI();
+            updateVoiceAnnounceUI();
         }
 
         function closeDrivingSimulatorModal() {
+            stopSpeakingVoice();
             document.getElementById('drivingSimulatorModal').classList.add('hidden');
         }
 
@@ -8934,7 +9113,12 @@
                                     </div>
                                 </div>
                                 <p class="text-[11px] text-slate-300 leading-snug">${st.desc}</p>
-                                <span class="text-[10px] text-slate-400 block mt-1">⏱️ ${st.duration}</span>
+                                <div class="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-800/80">
+                                    <span class="text-[10px] text-slate-400">⏱️ ${st.duration}</span>
+                                    <button type="button" onclick="speakStagePrompt(${st.id})" class="px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 rounded-lg text-[10px] font-bold flex items-center space-x-1 transition active:scale-95" title="Ascolta istruzione vocale per questa tappa">
+                                        <span>🔊</span> <span>Ascolta Tappa</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     `;
@@ -8952,6 +9136,18 @@
                 dailyDriveHours,
                 restHours
             };
+
+            // Annuncio vocale automatico al cambio di fase (se abilitato dall'autista)
+            const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+            if (isSimActive && localStorage.getItem('tacho_voice_auto') === 'true') {
+                if (lastAutoAnnouncedStageId !== activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes) {
+                    lastAutoAnnouncedStageId = activeStageId;
+                    const stageSpeech = getStageSpeechText(activeStageId);
+                    if (stageSpeech) {
+                        speakTextWithVoice(stageSpeech);
+                    }
+                }
+            }
 
             // Aggiornamento dinamico del pulsante sulla dashboard conducente (Monitor Live di tutte le fasi)
             const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
