@@ -2949,6 +2949,32 @@
                     <span id="clientLicenseDaysLeftText" class="font-bold text-emerald-400">Calcolo...</span>
                 </div>
 
+                <!-- Countdown Digitale Live ad Alta Precisione (Giorni, Ore, Minuti, Secondi) -->
+                <div id="clientLicenseCountdownWidget" class="pt-1.5 pb-1">
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Timer Validità Live:</span>
+                        <span class="text-[9px] text-cyan-300 font-mono">Scorrimento al Secondo</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-[#070F1C] border border-slate-700/90 rounded-2xl py-2 px-1 text-center shadow-inner">
+                            <span id="countdownDays" class="block font-mono font-black text-emerald-400 text-lg sm:text-xl tabular-nums">0</span>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Giorni</span>
+                        </div>
+                        <div class="bg-[#070F1C] border border-slate-700/90 rounded-2xl py-2 px-1 text-center shadow-inner">
+                            <span id="countdownHours" class="block font-mono font-black text-cyan-300 text-lg sm:text-xl tabular-nums">00</span>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Ore</span>
+                        </div>
+                        <div class="bg-[#070F1C] border border-slate-700/90 rounded-2xl py-2 px-1 text-center shadow-inner">
+                            <span id="countdownMinutes" class="block font-mono font-black text-sky-300 text-lg sm:text-xl tabular-nums">00</span>
+                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Minuti</span>
+                        </div>
+                        <div class="bg-teal-950/40 border border-teal-500/60 rounded-2xl py-2 px-1 text-center shadow-inner shadow-teal-500/10">
+                            <span id="countdownSeconds" class="block font-mono font-black text-teal-300 text-lg sm:text-xl tabular-nums animate-pulse">00</span>
+                            <span class="text-[9px] text-teal-300 font-bold uppercase tracking-wider">Secondi</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Barra di Progresso -->
                 <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                     <div id="clientLicenseProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 100%;"></div>
@@ -6726,6 +6752,7 @@
             }
 
             updateFreeLicenseUI();
+            updateLicenseLiveTick();
             modal.classList.remove('hidden');
         }
 
@@ -6750,8 +6777,100 @@
                 if (input) input.value = "";
                 closeClientLicenseModal();
                 updateHeaderLicenseBadge();
+                startLicenseLiveCountdown();
             } else {
                 showToast(res.error || "Chiave di licenza non valida.", "error");
+            }
+        }
+
+        let licenseLiveCountdownTimer = null;
+
+        function startLicenseLiveCountdown() {
+            if (licenseLiveCountdownTimer) clearInterval(licenseLiveCountdownTimer);
+            updateLicenseLiveTick();
+            licenseLiveCountdownTimer = setInterval(updateLicenseLiveTick, 1000);
+        }
+
+        function updateLicenseLiveTick() {
+            const code = activeCompanyId || 'AZ-MAIN';
+            const isMaster = (code === 'AZ-MAIN' || isSuperAdmin);
+            const text = document.getElementById('headerLicenseText');
+            const icon = document.getElementById('headerLicenseIcon');
+            const cdWidget = document.getElementById('clientLicenseCountdownWidget');
+            const cdDays = document.getElementById('countdownDays');
+            const cdHours = document.getElementById('countdownHours');
+            const cdMin = document.getElementById('countdownMinutes');
+            const cdSec = document.getElementById('countdownSeconds');
+            const daysLeftText = document.getElementById('clientLicenseDaysLeftText');
+
+            if (!code || isMaster) {
+                if (text) text.innerText = 'Licenza Master (A Vita)';
+                if (icon) icon.innerText = '♾️';
+                if (cdWidget) cdWidget.classList.add('hidden');
+                if (daysLeftText) daysLeftText.innerText = '♾️ Illimitati';
+                return;
+            }
+
+            const comp = companiesRegistry[code] || {};
+            const expStr = comp.licenseExpiresAt;
+            const isFree = !!(comp.isProBono || comp.plan === 'free');
+
+            if (!expStr) {
+                if (text) text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
+                if (icon) icon.innerText = isFree ? '🎁' : '⏳';
+                if (cdWidget) cdWidget.classList.add('hidden');
+                return;
+            }
+
+            const expDate = new Date(expStr + "T23:59:59");
+            const now = new Date();
+            const diffMs = expDate.getTime() - now.getTime();
+
+            if (comp.licenseStatus === 'suspended' || diffMs <= 0) {
+                if (text) text.innerText = 'Licenza Scaduta';
+                if (icon) icon.innerText = '🔴';
+                if (cdWidget) cdWidget.classList.remove('hidden');
+                if (cdDays) cdDays.innerText = '0';
+                if (cdHours) cdHours.innerText = '00';
+                if (cdMin) cdMin.innerText = '00';
+                if (cdSec) cdSec.innerText = '00';
+                if (daysLeftText) daysLeftText.innerText = '🔴 Abbonamento Scaduto';
+                return;
+            }
+
+            if (cdWidget) cdWidget.classList.remove('hidden');
+
+            const totalSecs = Math.max(0, Math.floor(diffMs / 1000));
+            const days = Math.floor(totalSecs / 86400);
+            const hours = Math.floor((totalSecs % 86400) / 3600);
+            const minutes = Math.floor((totalSecs % 3600) / 60);
+            const seconds = totalSecs % 60;
+
+            const sPad = String(seconds).padStart(2, '0');
+            const mPad = String(minutes).padStart(2, '0');
+            const hPad = String(hours).padStart(2, '0');
+
+            // Header Button Ticking Text (Secondi che scorrono dal vivo!)
+            if (text) {
+                if (days > 10000) {
+                    text.innerText = 'Gratuita Illimitata';
+                } else if (days > 0) {
+                    const label = isFree ? 'Gratuita' : (days <= 7 ? 'Scade' : 'Attiva');
+                    text.innerHTML = `${label} <span class="font-mono tabular-nums font-bold tracking-tight">${days}g ${hPad}:${mPad}:<span class="text-amber-300 font-black">${sPad}</span></span>`;
+                } else {
+                    text.innerHTML = `<span class="font-mono tabular-nums font-bold text-amber-300 tracking-tight">${hPad}h ${mPad}m <span class="text-amber-200">${sPad}s</span></span>`;
+                }
+            }
+
+            // Box Digitali del Modale
+            if (cdDays) cdDays.innerText = String(days);
+            if (cdHours) cdHours.innerText = hPad;
+            if (cdMin) cdMin.innerText = mPad;
+            if (cdSec) cdSec.innerText = sPad;
+
+            // Testo dettagliato con secondi
+            if (daysLeftText) {
+                daysLeftText.innerHTML = `<span class="font-mono tabular-nums text-emerald-400 font-bold">${days} giorni, ${hPad}h ${mPad}m <span class="text-amber-300 font-black">${sPad}s</span></span>`;
             }
         }
 
@@ -6772,6 +6891,7 @@
                 text.innerText = 'Licenza Master (A Vita)';
                 if (icon) icon.innerText = '♾️';
                 updateFreeLicenseUI();
+                startLicenseLiveCountdown();
                 return;
             }
 
@@ -6785,6 +6905,7 @@
                 text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
                 if (icon) icon.innerText = isFree ? '🎁' : '⏳';
                 updateFreeLicenseUI();
+                startLicenseLiveCountdown();
                 return;
             }
 
@@ -6820,6 +6941,7 @@
             }
 
             updateFreeLicenseUI();
+            startLicenseLiveCountdown();
         }
 
         // 11. Entrata in Modalità Sola Consultazione (Garanzia Dati)
