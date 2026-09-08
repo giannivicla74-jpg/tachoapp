@@ -3879,9 +3879,40 @@
         function getItalianSpeechVoice() {
             if (!('speechSynthesis' in window)) return null;
             const voices = window.speechSynthesis.getVoices();
-            return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('it') && (v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('google') || v.name.toLowerCase().includes('cosimo') || v.name.toLowerCase().includes('elsa')))
-                || voices.find(v => v.lang && v.lang.toLowerCase().startsWith('it'))
-                || null;
+            if (!voices || voices.length === 0) return null;
+
+            // Filtra solo le voci in lingua italiana
+            const itVoices = voices.filter(v => v.lang && v.lang.toLowerCase().replace('_', '-').startsWith('it'));
+            if (itVoices.length === 0) return null;
+
+            // Nomi di voci femminili e naturali (Elsa, Isabella, Alice, Federica, Google italiano, ecc.)
+            const femaleKeywords = ['elsa', 'isabella', 'alice', 'federica', 'chiara', 'paola', 'female', 'femmina', 'google'];
+            const maleKeywords = ['cosimo', 'diego', 'giuseppe', 'lorenzo', 'male', 'maschio'];
+
+            // 1. Cerca prima voci Naturali / Online Femminili (es. Microsoft Elsa/Isabella Online Natural o Google)
+            const naturalFemale = itVoices.find(v => {
+                const name = v.name.toLowerCase();
+                const isFemale = femaleKeywords.some(kw => name.includes(kw)) || (!maleKeywords.some(kw => name.includes(kw)));
+                return isFemale && (name.includes('natural') || name.includes('online') || name.includes('google'));
+            });
+            if (naturalFemale) return naturalFemale;
+
+            // 2. Cerca qualsiasi voce esplicitamente femminile
+            const explicitFemale = itVoices.find(v => {
+                const name = v.name.toLowerCase();
+                return femaleKeywords.some(kw => name.includes(kw));
+            });
+            if (explicitFemale) return explicitFemale;
+
+            // 3. Cerca qualsiasi voce italiana che NON sia maschile nota (esclude Cosimo, Diego, Lorenzo)
+            const nonMale = itVoices.find(v => {
+                const name = v.name.toLowerCase();
+                return !maleKeywords.some(kw => name.includes(kw));
+            });
+            if (nonMale) return nonMale;
+
+            // 4. Fallback: prima voce italiana se il dispositivo non ne ha altre
+            return itVoices[0];
         }
 
         if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -3899,7 +3930,7 @@
             const utt = new SpeechSynthesisUtterance(text);
             utt.lang = 'it-IT';
             utt.rate = 0.98;
-            utt.pitch = 1.0;
+            utt.pitch = 1.02;
             const voice = getItalianSpeechVoice();
             if (voice) utt.voice = voice;
 
