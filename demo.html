@@ -717,6 +717,7 @@
                         <div class="flex items-center space-x-2">
                             <h4 class="font-extrabold text-white text-sm group-hover:text-emerald-300 transition truncate" id="driverSimBtnTitle">Simulatore Tempi di Guida &amp; Riposo</h4>
                             <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">CE 561/2006</span>
+                            <span id="driverSimActiveBadge" class="hidden bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm animate-pulse flex-shrink-0">LIVE</span>
                         </div>
                         <p class="text-[11px] text-slate-300 mt-0.5 truncate" id="driverSimBtnSubtitle">Tabella di marcia passo-passo &amp; calcolo pause (45m).</p>
                     </div>
@@ -1261,6 +1262,28 @@
                 <!-- VISTA 1: SIMULATORE INTERATTIVO -->
                 <div id="simCalcView" class="space-y-4">
                     
+                    <!-- Barra Controllo Stato Simulatore (Avvia / Ferma) -->
+                    <div id="simControlStateBar" class="p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-slate-900/90 border-slate-800">
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <span id="simStateIcon" class="text-2xl">⚪</span>
+                            <div class="min-w-0">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs font-black text-white">Stato Monitoraggio Cruscotto:</span>
+                                    <span id="simStateBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">INATTIVO</span>
+                                </div>
+                                <p id="simStateDesc" class="text-[10px] text-slate-400 mt-0.5">Il cruscotto è neutro. Clicca su "Avvia Turno Live" per attivare il monitoraggio in tempo reale.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                            <button type="button" id="btnStartSimulation" onclick="startDrivingSimulation()" class="flex-1 sm:flex-none px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-1.5 active:scale-95">
+                                <span>▶️</span> <span>Avvia Turno Live</span>
+                            </button>
+                            <button type="button" id="btnStopSimulation" onclick="stopDrivingSimulation()" class="flex-1 sm:flex-none px-3.5 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 font-extrabold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95">
+                                <span>⏹️</span> <span>Ferma &amp; Resetta</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Parametri di Input -->
                     <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-3">
                         <h4 class="font-extrabold text-emerald-400 text-xs uppercase tracking-wider">1. Imposta i Parametri del Turno</h4>
@@ -1466,8 +1489,15 @@
             </div>
 
             <!-- Footer Modale -->
-            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
-                <span class="text-[10px] text-slate-400">GC CodeLab • TachoControl v10.0 Pro</span>
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="stopDrivingSimulation()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Ferma la simulazione e cancella lo stato dal cruscotto">
+                        <span>⏹️</span> <span>Ferma e Azzera</span>
+                    </button>
+                    <button type="button" onclick="startDrivingSimulation()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Avvia e mostra il monitoraggio in tempo reale sul cruscotto">
+                        <span>▶️</span> <span>Attiva Turno</span>
+                    </button>
+                </div>
                 <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
                     Chiudi
                 </button>
@@ -3719,10 +3749,96 @@
         // =================== LOGICA SIMULATORE TEMPI DI GUIDA (CE 561/2006) ===================
         let lastSimulationData = null;
 
+        function loadSavedSimulationParams() {
+            try {
+                const raw = localStorage.getItem('tacho_sim_params');
+                if (raw) {
+                    const p = JSON.parse(raw);
+                    if (p.startTime && document.getElementById('simStartTime')) document.getElementById('simStartTime').value = p.startTime;
+                    if (p.dailyDrive && document.getElementById('simDailyDrive')) document.getElementById('simDailyDrive').value = p.dailyDrive;
+                    if (p.pauseType && document.getElementById('simPauseType')) document.getElementById('simPauseType').value = p.pauseType;
+                    if (p.restType && document.getElementById('simRestType')) document.getElementById('simRestType').value = p.restType;
+                    if (p.otherWork && document.getElementById('simOtherWork')) document.getElementById('simOtherWork').value = p.otherWork;
+                }
+            } catch(e) {}
+        }
+
+        function updateSimulationStateUI() {
+            const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+            const stateBar = document.getElementById('simControlStateBar');
+            const stateIcon = document.getElementById('simStateIcon');
+            const stateBadge = document.getElementById('simStateBadge');
+            const stateDesc = document.getElementById('simStateDesc');
+            const btnStart = document.getElementById('btnStartSimulation');
+            const btnStop = document.getElementById('btnStopSimulation');
+            const driverBadge = document.getElementById('driverSimActiveBadge');
+
+            if (driverBadge) {
+                if (isSimActive) driverBadge.classList.remove('hidden');
+                else driverBadge.classList.add('hidden');
+            }
+
+            if (stateBar && stateBadge) {
+                if (isSimActive) {
+                    stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-emerald-950/70 border-emerald-500/50";
+                    if (stateIcon) stateIcon.innerText = "🟢";
+                    stateBadge.className = "text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 shadow-sm animate-pulse";
+                    stateBadge.innerText = "ATTIVO IN TEMPO REALE";
+                    if (stateDesc) stateDesc.innerHTML = `<span class="text-emerald-300 font-semibold">Il monitoraggio è attivo:</span> il cruscotto mostra la fase corrente in diretta.`;
+                    if (btnStart) {
+                        btnStart.classList.add('opacity-50', 'pointer-events-none');
+                        btnStart.title = "Monitoraggio già in corso";
+                    }
+                    if (btnStop) {
+                        btnStop.classList.remove('opacity-50', 'pointer-events-none');
+                    }
+                } else {
+                    stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-slate-900/90 border-slate-800";
+                    if (stateIcon) stateIcon.innerText = "⚪";
+                    stateBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
+                    stateBadge.innerText = "INATTIVO / FERMO";
+                    if (stateDesc) stateDesc.innerText = "Il cruscotto è neutro. Clicca su 'Avvia Turno Live' per attivare il monitoraggio in tempo reale.";
+                    if (btnStart) {
+                        btnStart.classList.remove('opacity-50', 'pointer-events-none');
+                        btnStart.title = "Attiva il monitoraggio sul cruscotto";
+                    }
+                    if (btnStop) {
+                        btnStop.classList.add('opacity-50', 'pointer-events-none');
+                    }
+                }
+            }
+        }
+
+        function startDrivingSimulation() {
+            localStorage.setItem('tacho_sim_active', 'true');
+            const savedParams = {
+                startTime: document.getElementById('simStartTime')?.value || "06:00",
+                dailyDrive: document.getElementById('simDailyDrive')?.value || "9",
+                pauseType: document.getElementById('simPauseType')?.value || "45",
+                restType: document.getElementById('simRestType')?.value || "11",
+                otherWork: document.getElementById('simOtherWork')?.value || "0"
+            };
+            localStorage.setItem('tacho_sim_params', JSON.stringify(savedParams));
+            calculateDrivingSimulation();
+            updateSimulationStateUI();
+        }
+
+        function stopDrivingSimulation() {
+            localStorage.setItem('tacho_sim_active', 'false');
+            calculateDrivingSimulation();
+            updateSimulationStateUI();
+            const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
+            if (elBtnSubtitle) {
+                elBtnSubtitle.innerHTML = 'Tabella di marcia passo-passo &amp; calcolo pause (45m).';
+            }
+        }
+
         function openDrivingSimulatorModal() {
             document.getElementById('drivingSimulatorModal').classList.remove('hidden');
             switchSimulatorTab('calc');
+            loadSavedSimulationParams();
             calculateDrivingSimulation();
+            updateSimulationStateUI();
         }
 
         function closeDrivingSimulatorModal() {
@@ -4036,25 +4152,36 @@
             };
 
             // Aggiornamento dinamico del pulsante sulla dashboard conducente (Monitor Live di tutte le fasi)
+            const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+            const driverBadge = document.getElementById('driverSimActiveBadge');
+            if (driverBadge) {
+                if (isSimActive) driverBadge.classList.remove('hidden');
+                else driverBadge.classList.add('hidden');
+            }
+
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
-                if (currentMinutes < startMinutes) {
-                    const diffMin = startMinutes - currentMinutes;
-                    elBtnSubtitle.innerHTML = `⏳ <strong>Partenza programmata:</strong> Inizio turno tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
-                } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
-                    const diffMin = firstBreakMinutes - currentMinutes;
-                    elBtnSubtitle.innerHTML = `🟢 <strong>1° Blocco Guida:</strong> Pausa obbligatoria (45m) tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${firstBreakFormatted.timeStr})`;
-                } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
-                    const diffMin = resumeDriveMinutes - currentMinutes;
-                    elBtnSubtitle.innerHTML = `🛑 <strong>In Pausa (45m):</strong> Ripartenza tra <strong class="text-emerald-300">${formatDurationHM(diffMin)}</strong> (ore ${resumeDriveFormatted.timeStr})`;
-                } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
-                    const diffMin = endTurnMinutes - currentMinutes;
-                    elBtnSubtitle.innerHTML = `🟢 <strong>2° Blocco Guida:</strong> Fine turno tra <strong class="text-indigo-300">${formatDurationHM(diffMin)}</strong> (ore ${endTurnFormatted.timeStr})`;
-                } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
-                    const diffMin = nextStartMinutes - currentMinutes;
-                    elBtnSubtitle.innerHTML = `🛏️ <strong>In Riposo (${restHours}h):</strong> Ripartenza consentita alle ore <strong class="text-emerald-300">${nextStartFormatted.timeStr}</strong>`;
+                if (!isSimActive) {
+                    elBtnSubtitle.innerHTML = 'Tabella di marcia passo-passo &amp; calcolo pause (45m).';
                 } else {
-                    elBtnSubtitle.innerHTML = `✅ <strong>Turno &amp; Riposo Ultimati:</strong> Pronto per un nuovo servizio.`;
+                    if (currentMinutes < startMinutes) {
+                        const diffMin = startMinutes - currentMinutes;
+                        elBtnSubtitle.innerHTML = `⏳ <strong>Partenza programmata:</strong> Inizio turno tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
+                    } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
+                        const diffMin = firstBreakMinutes - currentMinutes;
+                        elBtnSubtitle.innerHTML = `🟢 <strong>1° Blocco Guida:</strong> Pausa obbligatoria (45m) tra <strong class="text-amber-300">${formatDurationHM(diffMin)}</strong> (ore ${firstBreakFormatted.timeStr})`;
+                    } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
+                        const diffMin = resumeDriveMinutes - currentMinutes;
+                        elBtnSubtitle.innerHTML = `🛑 <strong>In Pausa (45m):</strong> Ripartenza tra <strong class="text-emerald-300">${formatDurationHM(diffMin)}</strong> (ore ${resumeDriveFormatted.timeStr})`;
+                    } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
+                        const diffMin = endTurnMinutes - currentMinutes;
+                        elBtnSubtitle.innerHTML = `🟢 <strong>2° Blocco Guida:</strong> Fine turno tra <strong class="text-indigo-300">${formatDurationHM(diffMin)}</strong> (ore ${endTurnFormatted.timeStr})`;
+                    } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
+                        const diffMin = nextStartMinutes - currentMinutes;
+                        elBtnSubtitle.innerHTML = `🛏️ <strong>In Riposo (${restHours}h):</strong> Ripartenza consentita alle ore <strong class="text-emerald-300">${nextStartFormatted.timeStr}</strong>`;
+                    } else {
+                        elBtnSubtitle.innerHTML = `✅ <strong>Turno &amp; Riposo Ultimati:</strong> Pronto per un nuovo servizio.`;
+                    }
                 }
             }
         }
@@ -4093,6 +4220,8 @@
 
                 setupCompanyListeners();
                 updateCompanyActivationUI();
+                loadSavedSimulationParams();
+                updateSimulationStateUI();
                 calculateDrivingSimulation();
                 setInterval(calculateDrivingSimulation, 30000);
             } catch(e) {
