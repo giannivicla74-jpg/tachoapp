@@ -2949,32 +2949,6 @@
                     <span id="clientLicenseDaysLeftText" class="font-bold text-emerald-400">Calcolo...</span>
                 </div>
 
-                <!-- Countdown Digitale Live ad Alta Precisione (Giorni, Ore, Minuti, Secondi) -->
-                <div id="clientLicenseCountdownWidget" class="pt-1.5 pb-1">
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-                        <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Timer Validità Live:</span>
-                        <span class="text-[9px] text-cyan-300 font-mono">Scorrimento al Secondo</span>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2">
-                        <div class="bg-[#070F1C] border border-slate-700/90 rounded-2xl py-2 px-1 text-center shadow-inner">
-                            <span id="countdownDays" class="block font-mono font-black text-emerald-400 text-lg sm:text-xl tabular-nums">0</span>
-                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Giorni</span>
-                        </div>
-                        <div class="bg-[#070F1C] border border-slate-700/90 rounded-2xl py-2 px-1 text-center shadow-inner">
-                            <span id="countdownHours" class="block font-mono font-black text-cyan-300 text-lg sm:text-xl tabular-nums">00</span>
-                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Ore</span>
-                        </div>
-                        <div class="bg-[#070F1C] border border-slate-700/90 rounded-2xl py-2 px-1 text-center shadow-inner">
-                            <span id="countdownMinutes" class="block font-mono font-black text-sky-300 text-lg sm:text-xl tabular-nums">00</span>
-                            <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Minuti</span>
-                        </div>
-                        <div class="bg-teal-950/40 border border-teal-500/60 rounded-2xl py-2 px-1 text-center shadow-inner shadow-teal-500/10">
-                            <span id="countdownSeconds" class="block font-mono font-black text-teal-300 text-lg sm:text-xl tabular-nums animate-pulse">00</span>
-                            <span class="text-[9px] text-teal-300 font-bold uppercase tracking-wider">Secondi</span>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Barra di Progresso -->
                 <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
                     <div id="clientLicenseProgressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width: 100%;"></div>
@@ -6752,7 +6726,6 @@
             }
 
             updateFreeLicenseUI();
-            updateLicenseLiveTick();
             modal.classList.remove('hidden');
         }
 
@@ -6777,100 +6750,8 @@
                 if (input) input.value = "";
                 closeClientLicenseModal();
                 updateHeaderLicenseBadge();
-                startLicenseLiveCountdown();
             } else {
                 showToast(res.error || "Chiave di licenza non valida.", "error");
-            }
-        }
-
-        let licenseLiveCountdownTimer = null;
-
-        function startLicenseLiveCountdown() {
-            if (licenseLiveCountdownTimer) clearInterval(licenseLiveCountdownTimer);
-            updateLicenseLiveTick();
-            licenseLiveCountdownTimer = setInterval(updateLicenseLiveTick, 1000);
-        }
-
-        function updateLicenseLiveTick() {
-            const code = activeCompanyId || 'AZ-MAIN';
-            const isMaster = (code === 'AZ-MAIN' || isSuperAdmin);
-            const text = document.getElementById('headerLicenseText');
-            const icon = document.getElementById('headerLicenseIcon');
-            const cdWidget = document.getElementById('clientLicenseCountdownWidget');
-            const cdDays = document.getElementById('countdownDays');
-            const cdHours = document.getElementById('countdownHours');
-            const cdMin = document.getElementById('countdownMinutes');
-            const cdSec = document.getElementById('countdownSeconds');
-            const daysLeftText = document.getElementById('clientLicenseDaysLeftText');
-
-            if (!code || isMaster) {
-                if (text) text.innerText = 'Licenza Master (A Vita)';
-                if (icon) icon.innerText = '♾️';
-                if (cdWidget) cdWidget.classList.add('hidden');
-                if (daysLeftText) daysLeftText.innerText = '♾️ Illimitati';
-                return;
-            }
-
-            const comp = companiesRegistry[code] || {};
-            const expStr = comp.licenseExpiresAt;
-            const isFree = !!(comp.isProBono || comp.plan === 'free');
-
-            if (!expStr) {
-                if (text) text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
-                if (icon) icon.innerText = isFree ? '🎁' : '⏳';
-                if (cdWidget) cdWidget.classList.add('hidden');
-                return;
-            }
-
-            const expDate = new Date(expStr + "T23:59:59");
-            const now = new Date();
-            const diffMs = expDate.getTime() - now.getTime();
-
-            if (comp.licenseStatus === 'suspended' || diffMs <= 0) {
-                if (text) text.innerText = 'Licenza Scaduta';
-                if (icon) icon.innerText = '🔴';
-                if (cdWidget) cdWidget.classList.remove('hidden');
-                if (cdDays) cdDays.innerText = '0';
-                if (cdHours) cdHours.innerText = '00';
-                if (cdMin) cdMin.innerText = '00';
-                if (cdSec) cdSec.innerText = '00';
-                if (daysLeftText) daysLeftText.innerText = '🔴 Abbonamento Scaduto';
-                return;
-            }
-
-            if (cdWidget) cdWidget.classList.remove('hidden');
-
-            const totalSecs = Math.max(0, Math.floor(diffMs / 1000));
-            const days = Math.floor(totalSecs / 86400);
-            const hours = Math.floor((totalSecs % 86400) / 3600);
-            const minutes = Math.floor((totalSecs % 3600) / 60);
-            const seconds = totalSecs % 60;
-
-            const sPad = String(seconds).padStart(2, '0');
-            const mPad = String(minutes).padStart(2, '0');
-            const hPad = String(hours).padStart(2, '0');
-
-            // Header Button Ticking Text (Secondi che scorrono dal vivo!)
-            if (text) {
-                if (days > 10000) {
-                    text.innerText = 'Gratuita Illimitata';
-                } else if (days > 0) {
-                    const label = isFree ? 'Gratuita' : (days <= 7 ? 'Scade' : 'Attiva');
-                    text.innerHTML = `${label} <span class="font-mono tabular-nums font-bold tracking-tight">${days}g ${hPad}:${mPad}:<span class="text-amber-300 font-black">${sPad}</span></span>`;
-                } else {
-                    text.innerHTML = `<span class="font-mono tabular-nums font-bold text-amber-300 tracking-tight">${hPad}h ${mPad}m <span class="text-amber-200">${sPad}s</span></span>`;
-                }
-            }
-
-            // Box Digitali del Modale
-            if (cdDays) cdDays.innerText = String(days);
-            if (cdHours) cdHours.innerText = hPad;
-            if (cdMin) cdMin.innerText = mPad;
-            if (cdSec) cdSec.innerText = sPad;
-
-            // Testo dettagliato con secondi
-            if (daysLeftText) {
-                daysLeftText.innerHTML = `<span class="font-mono tabular-nums text-emerald-400 font-bold">${days} giorni, ${hPad}h ${mPad}m <span class="text-amber-300 font-black">${sPad}s</span></span>`;
             }
         }
 
@@ -6891,7 +6772,6 @@
                 text.innerText = 'Licenza Master (A Vita)';
                 if (icon) icon.innerText = '♾️';
                 updateFreeLicenseUI();
-                startLicenseLiveCountdown();
                 return;
             }
 
@@ -6905,7 +6785,6 @@
                 text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
                 if (icon) icon.innerText = isFree ? '🎁' : '⏳';
                 updateFreeLicenseUI();
-                startLicenseLiveCountdown();
                 return;
             }
 
@@ -6941,7 +6820,6 @@
             }
 
             updateFreeLicenseUI();
-            startLicenseLiveCountdown();
         }
 
         // 11. Entrata in Modalità Sola Consultazione (Garanzia Dati)
@@ -9283,6 +9161,20 @@
             return `${m} minuti`;
         }
 
+        function formatDurationHMS(totalSec) {
+            if (totalSec <= 0) return "0s";
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
+            if (h > 0) {
+                return `${h}h ${m}m ${s}s`;
+            }
+            if (m > 0) {
+                return `${m}m ${s}s`;
+            }
+            return `${s}s`;
+        }
+
         function calculateDrivingSimulation() {
             const timeInput = (document.getElementById('simStartTime') && document.getElementById('simStartTime').value) ? document.getElementById('simStartTime').value : "06:00";
             const [hStr, mStr] = timeInput.split(':');
@@ -9376,6 +9268,12 @@
             // =================== COSTRUZIONE TABELLA DI MARCIA PASSO-PASSO ===================
             const now = new Date();
             const currentMinutes = (now.getHours() * 60) + now.getMinutes();
+            const currentSeconds = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
+            const startSeconds = startMinutes * 60;
+            const firstBreakSeconds = firstBreakMinutes * 60;
+            const resumeDriveSeconds = resumeDriveMinutes * 60;
+            const endTurnSeconds = endTurnMinutes * 60;
+            const nextStartSeconds = nextStartMinutes * 60;
 
             // Definizione delle 5 Tappe
             const stages = [
@@ -9436,31 +9334,31 @@
             let radarText = "";
             let radarSubText = "";
 
-            if (currentMinutes < startMinutes) {
+            if (currentSeconds < startSeconds) {
                 activeStageId = 1;
-                const diffMin = startMinutes - currentMinutes;
+                const diffSec = Math.max(0, startSeconds - currentSeconds);
                 radarText = `⏳ Turno in Programmazione (Inizio alle ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
-                radarSubText = `La partenza è programmata tra <strong>${formatDurationHM(diffMin)}</strong>.`;
-            } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
+                radarSubText = `La partenza è programmata tra <strong>${formatDurationHMS(diffSec)}</strong>.`;
+            } else if (currentSeconds >= startSeconds && currentSeconds < firstBreakSeconds) {
                 activeStageId = 1;
-                const diffMin = firstBreakMinutes - currentMinutes;
+                const diffSec = Math.max(0, firstBreakSeconds - currentSeconds);
                 radarText = `🟢 IN CORSO: 1° Periodo di Guida`;
-                radarSubText = `Ti mancano <strong class="text-amber-300 font-bold">${formatDurationHM(diffMin)}</strong> prima della sosta obbligatoria delle ore <strong>${firstBreakFormatted.timeStr}</strong>.`;
-            } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
+                radarSubText = `Ti mancano <strong class="text-amber-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> prima della sosta obbligatoria delle ore <strong>${firstBreakFormatted.timeStr}</strong>.`;
+            } else if (currentSeconds >= firstBreakSeconds && currentSeconds < resumeDriveSeconds) {
                 activeStageId = 2;
-                const diffMin = resumeDriveMinutes - currentMinutes;
+                const diffSec = Math.max(0, resumeDriveSeconds - currentSeconds);
                 radarText = `🛑 IN CORSO: Pausa Obbligatoria (45 Minuti)`;
-                radarSubText = `Resta fermo in sosta. Potrai ripartire tra <strong class="text-emerald-300 font-bold">${formatDurationHM(diffMin)}</strong> (ore <strong>${resumeDriveFormatted.timeStr}</strong>).`;
-            } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
+                radarSubText = `Resta fermo in sosta. Potrai ripartire tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${resumeDriveFormatted.timeStr}</strong>).`;
+            } else if (currentSeconds >= resumeDriveSeconds && currentSeconds < endTurnSeconds) {
                 activeStageId = 3;
-                const diffMin = endTurnMinutes - currentMinutes;
+                const diffSec = Math.max(0, endTurnSeconds - currentSeconds);
                 radarText = `🟢 IN CORSO: 2° Periodo di Guida`;
-                radarSubText = `Fine turno di guida tra <strong class="text-indigo-300 font-bold">${formatDurationHM(diffMin)}</strong> (alle ore <strong>${endTurnFormatted.timeStr}</strong>).`;
-            } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
+                radarSubText = `Fine turno di guida tra <strong class="text-indigo-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (alle ore <strong>${endTurnFormatted.timeStr}</strong>).`;
+            } else if (currentSeconds >= endTurnSeconds && currentSeconds < nextStartSeconds) {
                 activeStageId = 5;
-                const diffMin = nextStartMinutes - currentMinutes;
+                const diffSec = Math.max(0, nextStartSeconds - currentSeconds);
                 radarText = `🛏️ IN CORSO: Periodo di Riposo Giornaliero (${restHours}h)`;
-                radarSubText = `Riposo in corso. Ripartenza legale tra <strong class="text-emerald-300 font-bold">${formatDurationHM(diffMin)}</strong> (ore <strong>${nextStartFormatted.timeStr}</strong>).`;
+                radarSubText = `Riposo in corso. Ripartenza legale tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${nextStartFormatted.timeStr}</strong>).`;
             } else {
                 activeStageId = 5;
                 radarText = `✅ Turno e Riposo Completati`;
@@ -9479,7 +9377,7 @@
                         </div>
                     </div>
                     <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold font-mono px-2 py-1 rounded-lg border border-emerald-500/30 flex-shrink-0">
-                        ORE ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}
+                        ORE ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}
                     </span>
                 `;
             }
@@ -9595,21 +9493,21 @@
                 if (!isSimActive) {
                     elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
                 } else {
-                    if (currentMinutes < startMinutes) {
-                        const diffMin = startMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-amber-200 bg-amber-950/60 border border-amber-500/40 p-2 rounded-xl shadow-sm"><span class="text-base">⏳</span> <span><strong class="text-amber-300 uppercase font-black text-xs">Partenza programmata:</strong> inizio tra <strong class="text-white font-black text-xs sm:text-sm bg-amber-500/40 px-2 py-0.5 rounded-lg border border-amber-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-amber-200 font-bold">(ore ${formatMinutesToTimeString(startMinutes).timeStr})</span></span></div>`;
-                    } else if (currentMinutes >= startMinutes && currentMinutes < firstBreakMinutes) {
-                        const diffMin = firstBreakMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-amber-100 bg-amber-950/70 border border-amber-400/60 p-2 rounded-xl shadow-md"><span class="text-base animate-pulse">🛑</span> <span><strong class="text-amber-300 uppercase font-black tracking-wide text-xs">Pausa Obbligatoria (45m)</strong> tra <strong class="text-white font-black text-xs sm:text-sm bg-amber-500/40 px-2 py-0.5 rounded-lg border border-amber-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-amber-200 font-bold">(ore ${firstBreakFormatted.timeStr})</span></span></div>`;
-                    } else if (currentMinutes >= firstBreakMinutes && currentMinutes < resumeDriveMinutes) {
-                        const diffMin = resumeDriveMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-emerald-100 bg-emerald-950/70 border border-emerald-400/60 p-2 rounded-xl shadow-md"><span class="text-base animate-pulse">🛑</span> <span><strong class="text-emerald-300 uppercase font-black tracking-wide text-xs">In Pausa (45m):</strong> Ripartenza tra <strong class="text-white font-black text-xs sm:text-sm bg-emerald-500/40 px-2 py-0.5 rounded-lg border border-emerald-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-emerald-200 font-bold">(ore ${resumeDriveFormatted.timeStr})</span></span></div>`;
-                    } else if (currentMinutes >= resumeDriveMinutes && currentMinutes < endTurnMinutes) {
-                        const diffMin = endTurnMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-indigo-100 bg-indigo-950/70 border border-indigo-400/60 p-2 rounded-xl shadow-md"><span class="text-base">🟢</span> <span><strong class="text-indigo-300 uppercase font-black tracking-wide text-xs">2° Blocco Guida:</strong> Fine turno tra <strong class="text-white font-black text-xs sm:text-sm bg-indigo-500/40 px-2 py-0.5 rounded-lg border border-indigo-300 shadow-sm">${formatDurationHM(diffMin)}</strong> <span class="text-indigo-200 font-bold">(ore ${endTurnFormatted.timeStr})</span></span></div>`;
-                    } else if (currentMinutes >= endTurnMinutes && currentMinutes < nextStartMinutes) {
-                        const diffMin = nextStartMinutes - currentMinutes;
-                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-blue-100 bg-blue-950/70 border border-blue-400/60 p-2 rounded-xl shadow-md"><span class="text-base">🛏️</span> <span><strong class="text-blue-300 uppercase font-black tracking-wide text-xs">In Riposo (${restHours}h):</strong> Ripartenza alle ore <strong class="text-white font-black text-xs sm:text-sm bg-blue-500/40 px-2 py-0.5 rounded-lg border border-blue-300 shadow-sm">${nextStartFormatted.timeStr}</strong></span></div>`;
+                    if (currentSeconds < startSeconds) {
+                        const diffSec = Math.max(0, startSeconds - currentSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-amber-200 bg-amber-950/60 border border-amber-500/40 p-2 rounded-xl shadow-sm"><span class="text-base">⏳</span> <span><strong class="text-amber-300 uppercase font-black text-xs">Partenza programmata:</strong> inizio tra <strong class="text-white font-black text-xs sm:text-sm bg-amber-500/40 px-2 py-0.5 rounded-lg border border-amber-300 shadow-sm font-mono tabular-nums">${formatDurationHMS(diffSec)}</strong> <span class="text-amber-200 font-bold">(ore ${formatMinutesToTimeString(startMinutes).timeStr})</span></span></div>`;
+                    } else if (currentSeconds >= startSeconds && currentSeconds < firstBreakSeconds) {
+                        const diffSec = Math.max(0, firstBreakSeconds - currentSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-amber-100 bg-amber-950/70 border border-amber-400/60 p-2 rounded-xl shadow-md"><span class="text-base animate-pulse">🛑</span> <span><strong class="text-amber-300 uppercase font-black tracking-wide text-xs">Pausa Obbligatoria (45m)</strong> tra <strong class="text-white font-black text-xs sm:text-sm bg-amber-500/40 px-2 py-0.5 rounded-lg border border-amber-300 shadow-sm font-mono tabular-nums">${formatDurationHMS(diffSec)}</strong> <span class="text-amber-200 font-bold">(ore ${firstBreakFormatted.timeStr})</span></span></div>`;
+                    } else if (currentSeconds >= firstBreakSeconds && currentSeconds < resumeDriveSeconds) {
+                        const diffSec = Math.max(0, resumeDriveSeconds - currentSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-emerald-100 bg-emerald-950/70 border border-emerald-400/60 p-2 rounded-xl shadow-md"><span class="text-base animate-pulse">🛑</span> <span><strong class="text-emerald-300 uppercase font-black tracking-wide text-xs">In Pausa (45m):</strong> Ripartenza tra <strong class="text-white font-black text-xs sm:text-sm bg-emerald-500/40 px-2 py-0.5 rounded-lg border border-emerald-300 shadow-sm font-mono tabular-nums">${formatDurationHMS(diffSec)}</strong> <span class="text-emerald-200 font-bold">(ore ${resumeDriveFormatted.timeStr})</span></span></div>`;
+                    } else if (currentSeconds >= resumeDriveSeconds && currentSeconds < endTurnSeconds) {
+                        const diffSec = Math.max(0, endTurnSeconds - currentSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-indigo-100 bg-indigo-950/70 border border-indigo-400/60 p-2 rounded-xl shadow-md"><span class="text-base">🟢</span> <span><strong class="text-indigo-300 uppercase font-black tracking-wide text-xs">2° Blocco Guida:</strong> Fine turno tra <strong class="text-white font-black text-xs sm:text-sm bg-indigo-500/40 px-2 py-0.5 rounded-lg border border-indigo-300 shadow-sm font-mono tabular-nums">${formatDurationHMS(diffSec)}</strong> <span class="text-indigo-200 font-bold">(ore ${endTurnFormatted.timeStr})</span></span></div>`;
+                    } else if (currentSeconds >= endTurnSeconds && currentSeconds < nextStartSeconds) {
+                        const diffSec = Math.max(0, nextStartSeconds - currentSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-blue-100 bg-blue-950/70 border border-blue-400/60 p-2 rounded-xl shadow-md"><span class="text-base">🛏️</span> <span><strong class="text-blue-300 uppercase font-black tracking-wide text-xs">In Riposo (${restHours}h):</strong> Ripartenza alle ore <strong class="text-white font-black text-xs sm:text-sm bg-blue-500/40 px-2 py-0.5 rounded-lg border border-blue-300 shadow-sm">${nextStartFormatted.timeStr}</strong> <span class="text-blue-200 font-bold">(tra <strong class="text-white font-mono tabular-nums">${formatDurationHMS(diffSec)}</strong>)</span></span></div>`;
                     } else {
                         elBtnSubtitle.innerHTML = `<div class="mt-1 inline-flex items-center gap-1.5 text-xs text-emerald-300 bg-emerald-950/50 border border-emerald-500/40 px-2.5 py-1 rounded-xl"><span>✅</span> <span><strong>Turno &amp; Riposo Ultimati:</strong> Pronto per un nuovo servizio.</span></div>`;
                     }
@@ -9805,7 +9703,7 @@
                 calculateDrivingSimulation();
                 
                 if (drivingSimulationInterval) clearInterval(drivingSimulationInterval);
-                drivingSimulationInterval = setInterval(calculateDrivingSimulation, 30000);
+                drivingSimulationInterval = setInterval(calculateDrivingSimulation, 1000);
 
                 // Controllo sessione autista salvata
                 const autoStatus = checkAutoLoginDriver();
