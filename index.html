@@ -222,7 +222,7 @@
     </div>
 
     <!-- =================== SPLASH SCREEN AURORA WIDESCREEN GC CODELAB (GC-SPLASH) =================== -->
-    <div id="appSplashScreen" class="fixed inset-0 z-[999] bg-[#070D18] flex items-center justify-center p-4 transition-all duration-700 ease-out select-none">
+    <div id="appSplashScreen" class="fixed inset-0 z-[999] bg-[#070D18] flex items-center justify-center p-4 transition-all duration-350 ease-out select-none">
         <!-- Multi-layer Glowing Aurora Neon Background -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none">
             <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[580px] h-[360px] bg-gradient-to-tr from-cyan-500/25 via-sky-500/20 to-indigo-600/25 blur-3xl rounded-full animate-aurora"></div>
@@ -9480,9 +9480,9 @@
         }
 
         let splashScreenDismissed = false;
-        let splashProgress = 15;
+        let splashProgress = 25;
         let splashStartTime = Date.now();
-        const SPLASH_MIN_DURATION = 2100; // ~2.1 secondi per godersi l'effetto Aurora Widescreen e l'animazione della barra
+        const SPLASH_MIN_DURATION = 900; // Ridotto a ~0.9s per un caricamento rapido, moderno e scattante
         let splashPendingHide = false;
         let splashProgressInterval = null;
 
@@ -9496,24 +9496,24 @@
             if (msg && statusMsg) statusMsg.innerText = msg;
         }
 
-        // Avanzamento progressivo e ritmato all'avvio (GC-SPLASH)
+        // Avanzamento rapido e fluido all'avvio (GC-SPLASH)
         try {
             splashProgressInterval = setInterval(() => {
                 if (splashScreenDismissed) {
                     if (splashProgressInterval) clearInterval(splashProgressInterval);
                     return;
                 }
-                if (splashProgress < 42) {
-                    updateSplashProgress(splashProgress + 5, "Connessione Cloud Firebase...");
-                } else if (splashProgress < 76) {
-                    updateSplashProgress(splashProgress + 4, "Sincronizzazione dati flotta...");
-                } else if (splashProgress < 94) {
-                    updateSplashProgress(splashProgress + 2, "Verifica sessione e permessi...");
+                if (splashProgress < 50) {
+                    updateSplashProgress(splashProgress + 10, "Connessione Cloud...");
+                } else if (splashProgress < 82) {
+                    updateSplashProgress(splashProgress + 8, "Sincronizzazione dati flotta...");
+                } else if (splashProgress < 96) {
+                    updateSplashProgress(splashProgress + 5, "Verifica sessione...");
                 } else if (splashPendingHide) {
                     if (splashProgressInterval) clearInterval(splashProgressInterval);
                     performHideSplashScreen();
                 }
-            }, 120);
+            }, 50);
         } catch(e) {}
 
         function hideSplashScreen() {
@@ -9532,23 +9532,23 @@
             splashScreenDismissed = true;
             if (splashProgressInterval) clearInterval(splashProgressInterval);
 
-            // Raggiunge il 100% con conferma e icona verde
+            // Raggiunge il 100% con conferma
             updateSplashProgress(100, "Pronto!");
             const bar = document.getElementById('splashProgressBar');
             if (bar) bar.style.width = '100%';
 
-            // Piccolo istante a barra piena per dare soddisfazione visiva
+            // Dissolvenza scattante e fluida
             setTimeout(() => {
                 const splash = document.getElementById('appSplashScreen');
                 if (splash) {
                     splash.style.opacity = '0';
-                    splash.style.transform = 'scale(1.03)';
+                    splash.style.transform = 'scale(1.02)';
                     splash.style.pointerEvents = 'none';
                     setTimeout(() => {
                         splash.style.display = 'none';
-                    }, 800);
+                    }, 350);
                 }
-            }, 450);
+            }, 150);
         }
 
         function updateOnlineStatusUI() {
