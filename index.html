@@ -1001,104 +1001,153 @@
                 </div>
 
                 <!-- Box Modulo Assenze UE (Attestato di Attività) -->
-                <div class="bg-gradient-to-r from-emerald-950/80 via-[#15243E] to-teal-950/80 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-2xl">
-                            📄
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-emerald-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h2"></path>
+                            </svg>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-sm text-white">Modulo di Controllo Assenze UE (Attestato di Attività)</h3>
-                            <p class="text-xs text-emerald-300/80">Compila a computer e stampa il modello ufficiale per Malattia, Ferie e Permessi (Decisione 2009/959/UE).</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-emerald-200 transition-colors leading-snug">Modulo di Controllo Assenze UE (Attestato di Attività)</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Compila a computer e stampa il modello ufficiale per Malattia, Ferie e Permessi (Decisione 2009/959/UE).</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openAttestationModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <span>🖨️</span>
-                        <span>Compila e Stampa Modulo Assenze Ufficiale UE</span>
+                    <button type="button" onclick="openAttestationModal()" class="w-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 hover:border-emerald-400/70 text-emerald-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                            </svg>
+                            <span class="tracking-wide">Compila e Stampa Modulo Assenze Ufficiale UE</span>
+                        </div>
+                        <svg class="w-4 h-4 text-emerald-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <!-- Box Guida Procedurale Malattia, Ferie & Mancato Scarico (28 gg) -->
-                <div class="bg-gradient-to-r from-blue-950/90 via-[#15243E] to-emerald-950/90 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-2xl">
-                            🩺
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-teal-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500/20 to-cyan-600/10 border border-teal-500/30 text-teal-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="3" y="4" width="18" height="17" rx="3" stroke-width="1.8"></rect>
+                                <path stroke-linecap="round" stroke-width="1.8" d="M8 2v4m8-2v4M3 9h18"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13v4m-2-2h4"></path>
+                            </svg>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-sm text-white">Procedura: Malattia, Ferie &amp; Mancato Scarico (28 gg)</h3>
-                            <p class="text-xs text-emerald-300/80">Guida per la tutela dell'azienda e degli autisti: forza maggiore, scarico preventivo e modulo assenze.</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-teal-200 transition-colors leading-snug">Procedura: Malattia, Ferie &amp; Mancato Scarico (28 gg)</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Guida per la tutela dell'azienda e degli autisti: forza maggiore, scarico preventivo e modulo assenze.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <span>📘</span>
-                        <span>Apri Guida Procedurale Malattia &amp; Ferie</span>
+                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/40 hover:border-teal-400/70 text-teal-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            <span class="tracking-wide">Apri Guida Procedurale Malattia &amp; Ferie</span>
+                        </div>
+                        <svg class="w-4 h-4 text-teal-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <!-- Box Manuale & Guida Normativa Integrata Ufficiale -->
-                <div class="bg-gradient-to-r from-blue-950/80 via-[#15243E] to-indigo-950/80 rounded-3xl p-6 border border-blue-500/40 shadow-xl space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-3 bg-blue-500/20 text-blue-400 rounded-2xl border border-blue-500/30 text-2xl">
-                            📖
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-indigo-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-blue-600/10 border border-indigo-500/30 text-indigo-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-sm text-white">Manuale d'Istruzioni &amp; Guida Normativa</h3>
-                            <p class="text-xs text-blue-300/80">Spiegazione del Piano Ferie, obbligo consegna carta, termini dei 28 giorni e sanzioni di legge.</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-indigo-200 transition-colors leading-snug">Manuale d'Istruzioni &amp; Guida Normativa</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Spiegazione del Piano Ferie, obbligo consegna carta, termini dei 28 giorni e sanzioni di legge.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openManualModal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <span>📘</span>
-                        <span>Consulta il Manuale d'Istruzioni Ufficiale</span>
+                    <button type="button" onclick="openManualModal()" class="w-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/40 hover:border-indigo-400/70 text-indigo-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                            <span class="tracking-wide">Consulta il Manuale d'Istruzioni Ufficiale</span>
+                        </div>
+                        <svg class="w-4 h-4 text-indigo-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <!-- Box Guida Operativa Display Tachigrafo VDO -->
-                <div class="bg-gradient-to-r from-cyan-950/90 via-[#15243E] to-blue-950/90 rounded-3xl p-6 border border-cyan-500/40 shadow-xl space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-3 bg-cyan-500/20 text-cyan-400 rounded-2xl border border-cyan-500/30 text-2xl">
-                            📟
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-cyan-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="2.5" y="4.5" width="19" height="15" rx="3" stroke-width="1.8"></rect>
+                                <path stroke-linecap="round" stroke-width="1.8" d="M6 9h12M6 14h6m3 0h3"></path>
+                                <circle cx="17" cy="14" r="1" fill="currentColor"></circle>
+                            </svg>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-sm text-white">Guida Operativa: Inserimento Carta su Tachigrafo VDO</h3>
-                            <p class="text-xs text-cyan-300/80">Istruzioni passo-passo sul display per gli autisti: manual entry, riposo letto 🛌, nazione IT e partenza.</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-cyan-200 transition-colors leading-snug">Guida Operativa: Inserimento Carta su Tachigrafo VDO</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Istruzioni passo-passo sul display per gli autisti: manual entry, riposo letto 🛌, nazione IT e partenza.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <span>📟</span>
-                        <span>Apri Guida Display VDO (Passo-Passo)</span>
+                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 hover:border-cyan-400/70 text-cyan-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2"></rect>
+                                <path stroke-linecap="round" stroke-width="2" d="M6 10h12M6 14h7"></path>
+                            </svg>
+                            <span class="tracking-wide">Apri Guida Display VDO (Passo-Passo)</span>
+                        </div>
+                        <svg class="w-4 h-4 text-cyan-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <!-- Box Simulatore e Guida Normativa CE 561/2006 (Admin) -->
-                <div class="bg-gradient-to-r from-emerald-950/70 via-[#15243E] to-indigo-950/70 rounded-3xl p-6 border border-emerald-500/40 shadow-xl space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-3 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30 text-2xl">
-                            ⏱️
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-violet-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-500/20 to-indigo-600/10 border border-violet-500/30 text-violet-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-width="2" d="M10 2h4m-2 0v2"></path>
+                            </svg>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-sm text-white">Simulatore Tempi di Guida &amp; Normativa CE 561/2006</h3>
-                            <p class="text-xs text-emerald-300/80">Pianifica i viaggi e verifica le pause obbligatorie (45m) e i riposi per evitare sanzioni.</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-violet-200 transition-colors leading-snug">Simulatore Tempi di Guida &amp; Normativa CE 561/2006</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Pianifica i viaggi e verifica le pause obbligatorie (45m) e i riposi per evitare sanzioni.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <span>🚀</span>
-                        <span>Apri Simulatore di Guida &amp; Norme CE 561/2006</span>
+                    <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/40 hover:border-violet-400/70 text-violet-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-violet-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                            <span class="tracking-wide">Apri Simulatore di Guida &amp; Norme CE 561/2006</span>
+                        </div>
+                        <svg class="w-4 h-4 text-violet-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <!-- Box Esportazione Registro Completo Excel (.csv) -->
-                <div class="bg-gradient-to-r from-teal-950/70 via-[#15243E] to-emerald-950/70 rounded-3xl p-6 border border-teal-500/40 shadow-xl space-y-3">
-                    <div class="flex items-center space-x-3">
-                        <div class="p-3 bg-teal-500/20 text-teal-400 rounded-2xl border border-teal-500/30 text-2xl">
-                            📊
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-emerald-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
                         </div>
-                        <div>
-                            <h3 class="font-extrabold text-sm text-white">Registro Scarichi Flotta Excel (.csv)</h3>
-                            <p class="text-xs text-teal-300/80">Genera ed esporta il file tabellare con tutti i conducenti, veicoli, scadenze e stati di conformità.</p>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-emerald-200 transition-colors leading-snug">Registro Scarichi Flotta Excel (.csv)</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Genera ed esporta il file tabellare con tutti i conducenti, veicoli, scadenze e stati di conformità.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-extrabold py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <span>📥</span>
-                        <span>Scarica Registro Ufficiale Excel (.csv)</span>
+                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 hover:border-emerald-400/70 text-emerald-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            <span class="tracking-wide">Scarica Registro Ufficiale Excel (.csv)</span>
+                        </div>
+                        <svg class="w-4 h-4 text-emerald-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
