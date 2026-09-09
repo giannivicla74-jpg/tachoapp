@@ -1731,7 +1731,8 @@
                                 <ul class="text-slate-300 space-y-1.5 pl-1">
                                     <li>&bull; <strong>Interrompi Voce:</strong> Mentre l'assistente sta parlando, il pulsante del briefing diventa rosso con icona (⏹️) <em>"Interrompi Voce"</em>: toccalo per bloccare immediatamente l'audio in qualsiasi istante.</li>
                                     <li>&bull; <strong>Spegnere gli Annunci Automatici:</strong> Clicca sul pulsante <em>"Avvisi Auto: ON"</em> per farlo passare a <em>"Avvisi Auto: OFF"</em> (🔕). In questo modo la voce parlerà solo se premi manualmente i tasti di ascolto.</li>
-                                    <li>&bull; <strong>Azzera e Ferma Turno:</strong> Clicca sul pulsante rosso <em>"⏹️ Ferma e Azzera"</em> per concludere il monitoraggio e rimuovere la sessione attiva dal cruscotto.</li>
+                                    <li>&bull; <strong>Sospendi dal Cruscotto (⏸️):</strong> Clicca su <em>"Sospendi"</em> per nascondere temporaneamente la visualizzazione live dal cruscotto (puoi riprenderla in qualsiasi momento cliccando su <em>"Riprendi Turno"</em>).</li>
+                                    <li>&bull; <strong>Interrompi del Tutto (🛑):</strong> Clicca sul tasto rosso <em>"Interrompi del Tutto"</em> per concludere, azzerare e cancellare definitivamente l'intero turno di guida.</li>
                                 </ul>
                             </div>
                         </div>
@@ -3076,12 +3077,15 @@
                                 <p id="simStateDesc" class="text-[10px] text-slate-400 mt-0.5">Il cruscotto è neutro. Clicca su "Avvia Turno Live" per attivare il monitoraggio in tempo reale.</p>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <div class="flex items-center space-x-2 w-full sm:w-auto justify-end flex-wrap gap-y-2">
                             <button type="button" id="btnStartSimulation" onclick="startDrivingSimulation()" class="flex-1 sm:flex-none px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                <span>▶️</span> <span>Avvia Turno Live</span>
+                                <span>▶️</span> <span id="btnStartSimulationText">Avvia Turno Live</span>
                             </button>
-                            <button type="button" id="btnStopSimulation" onclick="stopDrivingSimulation()" class="flex-1 sm:flex-none px-3.5 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 font-extrabold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                <span>⏹️</span> <span>Ferma &amp; Resetta</span>
+                            <button type="button" id="btnSuspendSimulation" onclick="stopDrivingSimulation()" class="flex-1 sm:flex-none px-3 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 font-extrabold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95" title="Sospendi temporaneamente la visualizzazione sul cruscotto">
+                                <span>⏸️</span> <span>Sospendi</span>
+                            </button>
+                            <button type="button" id="btnStopSimulation" onclick="resetDrivingSimulationComplete()" class="flex-1 sm:flex-none px-3 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 font-extrabold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95" title="Interrompi del tutto e azzera il turno">
+                                <span>🛑</span> <span>Interrompi del Tutto</span>
                             </button>
                         </div>
                     </div>
@@ -3339,7 +3343,8 @@
                                     <ul class="text-slate-300 space-y-1 mt-1 pl-1">
                                         <li>&bull; <strong>Interrompi Voce (⏹️):</strong> Mentre la voce parla, il pulsante diventa rosso <em>"Interrompi Voce"</em>: toccalo per interrompere subito la riproduzione.</li>
                                         <li>&bull; <strong>Disattivare Annunci Automatici (🔕):</strong> Clicca sul pulsante <em>"Avvisi Auto"</em> per passare su <strong>OFF</strong>.</li>
-                                        <li>&bull; <strong>Azzera Turno (⏹️):</strong> Clicca sul tasto rosso <em>"Ferma e Azzera"</em> per rimuovere il turno attivo dal cruscotto.</li>
+                                        <li>&bull; <strong>Sospendi dal Cruscotto (⏸️):</strong> Clicca su <em>"Sospendi"</em> per nascondere temporaneamente la visualizzazione live dal cruscotto (riprendibile in qualsiasi momento con <em>"Riprendi Turno"</em>).</li>
+                                        <li>&bull; <strong>Interrompi del Tutto (🛑):</strong> Clicca sul tasto rosso <em>"Interrompi del Tutto"</em> per concludere, azzerare e cancellare definitivamente l'intero turno di guida.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -3371,12 +3376,15 @@
 
             <!-- Footer Modale -->
             <div class="p-4 border-t border-slate-800 bg-[#15233A] flex flex-wrap justify-between items-center gap-2">
-                <div class="flex items-center space-x-2">
-                    <button type="button" onclick="stopDrivingSimulation()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Ferma la simulazione e cancella lo stato dal cruscotto">
-                        <span>⏹️</span> <span>Ferma e Azzera</span>
+                <div class="flex items-center space-x-2 flex-wrap gap-y-2">
+                    <button type="button" id="modalBtnSuspendSim" onclick="stopDrivingSimulation()" class="px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Sospendi temporaneamente il monitoraggio dal cruscotto">
+                        <span>⏸️</span> <span>Sospendi</span>
                     </button>
-                    <button type="button" onclick="startDrivingSimulation()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Avvia e mostra il monitoraggio in tempo reale sul cruscotto">
-                        <span>▶️</span> <span>Attiva Turno</span>
+                    <button type="button" id="modalBtnResetSim" onclick="resetDrivingSimulationComplete()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Interrompi del tutto e azzera il turno">
+                        <span>🛑</span> <span>Interrompi del Tutto</span>
+                    </button>
+                    <button type="button" id="modalBtnStartSim" onclick="startDrivingSimulation()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Avvia o riprendi il monitoraggio in tempo reale sul cruscotto">
+                        <span>▶️</span> <span id="modalBtnStartSimText">Attiva Turno</span>
                     </button>
                 </div>
                 <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
@@ -8721,12 +8729,21 @@
 
         function updateSimulationStateUI() {
             const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+            const hasSavedParams = !!localStorage.getItem('tacho_sim_params');
             const stateBar = document.getElementById('simControlStateBar');
             const stateIcon = document.getElementById('simStateIcon');
             const stateBadge = document.getElementById('simStateBadge');
             const stateDesc = document.getElementById('simStateDesc');
             const btnStart = document.getElementById('btnStartSimulation');
+            const btnStartText = document.getElementById('btnStartSimulationText');
+            const btnSuspend = document.getElementById('btnSuspendSimulation');
             const btnStop = document.getElementById('btnStopSimulation');
+
+            const modalBtnSuspend = document.getElementById('modalBtnSuspendSim');
+            const modalBtnReset = document.getElementById('modalBtnResetSim');
+            const modalBtnStart = document.getElementById('modalBtnStartSim');
+            const modalBtnStartText = document.getElementById('modalBtnStartSimText');
+
             const driverBadge = document.getElementById('driverSimActiveBadge');
             const driverGlow = document.getElementById('driverSimIconGlow');
             const driverTitle = document.getElementById('driverSimBtnTitle');
@@ -8745,30 +8762,67 @@
 
             if (stateBar && stateBadge) {
                 if (isSimActive) {
+                    // STATO 1: ATTIVO LIVE SUL CRUSCOTTO
                     stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-emerald-950/70 border-emerald-500/50";
                     if (stateIcon) stateIcon.innerText = "🟢";
                     stateBadge.className = "text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 shadow-sm animate-pulse";
                     stateBadge.innerText = "ATTIVO IN TEMPO REALE";
-                    if (stateDesc) stateDesc.innerHTML = `<span class="text-emerald-300 font-semibold">Il monitoraggio è attivo:</span> il cruscotto mostra la fase corrente in diretta.`;
+                    if (stateDesc) stateDesc.innerHTML = `<span class="text-emerald-300 font-semibold">Il monitoraggio è attivo:</span> il cruscotto mostra la fase corrente in diretta con countdown live.`;
+                    
                     if (btnStart) {
                         btnStart.classList.add('opacity-50', 'pointer-events-none');
-                        btnStart.title = "Monitoraggio già in corso";
+                        if (btnStartText) btnStartText.innerText = "Turno in Corso";
                     }
-                    if (btnStop) {
-                        btnStop.classList.remove('opacity-50', 'pointer-events-none');
+                    if (btnSuspend) btnSuspend.classList.remove('hidden', 'opacity-50', 'pointer-events-none');
+                    if (btnStop) btnStop.classList.remove('opacity-50', 'pointer-events-none');
+
+                    if (modalBtnSuspend) modalBtnSuspend.classList.remove('hidden');
+                    if (modalBtnReset) modalBtnReset.classList.remove('opacity-50', 'pointer-events-none');
+                    if (modalBtnStart) {
+                        modalBtnStart.classList.add('opacity-50', 'pointer-events-none');
+                        if (modalBtnStartText) modalBtnStartText.innerText = "Turno Attivo";
+                    }
+                } else if (hasSavedParams) {
+                    // STATO 2: SOSPESO DAL CRUSCOTTO (PARAMETRI IN MEMORIA)
+                    stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-amber-950/70 border-amber-500/50";
+                    if (stateIcon) stateIcon.innerText = "⏸️";
+                    stateBadge.className = "text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-sm";
+                    stateBadge.innerText = "SOSPESO DAL CRUSCOTTO";
+                    if (stateDesc) stateDesc.innerHTML = `<span class="text-amber-300 font-semibold">Turno momentaneamente sospeso:</span> clicca su <strong>"Riprendi Turno"</strong> per riattivarlo sul cruscotto oppure <strong>"Interrompi del Tutto"</strong> per cancellarlo.`;
+                    
+                    if (btnStart) {
+                        btnStart.classList.remove('opacity-50', 'pointer-events-none');
+                        if (btnStartText) btnStartText.innerText = "Riprendi Turno";
+                    }
+                    if (btnSuspend) btnSuspend.classList.add('hidden');
+                    if (btnStop) btnStop.classList.remove('opacity-50', 'pointer-events-none');
+
+                    if (modalBtnSuspend) modalBtnSuspend.classList.add('hidden');
+                    if (modalBtnReset) modalBtnReset.classList.remove('opacity-50', 'pointer-events-none');
+                    if (modalBtnStart) {
+                        modalBtnStart.classList.remove('opacity-50', 'pointer-events-none');
+                        if (modalBtnStartText) modalBtnStartText.innerText = "Riprendi Turno";
                     }
                 } else {
+                    // STATO 3: INATTIVO / AZZERATO DEL TUTTO
                     stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-slate-900/90 border-slate-800";
                     if (stateIcon) stateIcon.innerText = "⚪";
                     stateBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
-                    stateBadge.innerText = "INATTIVO / FERMO";
+                    stateBadge.innerText = "INATTIVO / AZZERATO";
                     if (stateDesc) stateDesc.innerText = "Il cruscotto è neutro. Clicca su 'Avvia Turno Live' per attivare il monitoraggio in tempo reale.";
+                    
                     if (btnStart) {
                         btnStart.classList.remove('opacity-50', 'pointer-events-none');
-                        btnStart.title = "Attiva il monitoraggio sul cruscotto";
+                        if (btnStartText) btnStartText.innerText = "Avvia Turno Live";
                     }
-                    if (btnStop) {
-                        btnStop.classList.add('opacity-50', 'pointer-events-none');
+                    if (btnSuspend) btnSuspend.classList.add('hidden');
+                    if (btnStop) btnStop.classList.add('opacity-50', 'pointer-events-none');
+
+                    if (modalBtnSuspend) modalBtnSuspend.classList.add('hidden');
+                    if (modalBtnReset) modalBtnReset.classList.add('opacity-50', 'pointer-events-none');
+                    if (modalBtnStart) {
+                        modalBtnStart.classList.remove('opacity-50', 'pointer-events-none');
+                        if (modalBtnStartText) modalBtnStartText.innerText = "Attiva Turno";
                     }
                 }
             }
@@ -8789,6 +8843,7 @@
             localStorage.setItem('tacho_sim_params', JSON.stringify(savedParams));
             calculateDrivingSimulation();
             updateSimulationStateUI();
+            showToast("🟢 Monitoraggio Guida attivato sul cruscotto!", "success");
         }
 
         let currentSpeakingUtterance = null;
@@ -9095,8 +9150,40 @@
             if (elBtnTitle) elBtnTitle.innerText = "Pianifica Turno & Guida";
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
-                elBtnSubtitle.innerHTML = 'Tabella di marcia &amp; calcolo pause (45m).';
+                elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
             }
+            showToast("⏸️ Monitoraggio sospeso dal cruscotto.", "info");
+        }
+
+        function resetDrivingSimulationComplete() {
+            if (!confirm("Vuoi interrompere del tutto il turno e azzerare tutti i dati del monitoraggio?")) {
+                return;
+            }
+            localStorage.setItem('tacho_sim_active', 'false');
+            localStorage.removeItem('tacho_sim_params');
+            lastAutoAnnouncedStageId = null;
+            stopSpeakingVoice();
+
+            // Resetta i campi di input a valori puliti
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            if (document.getElementById('simStartTime')) document.getElementById('simStartTime').value = `${hh}:${mm}`;
+            if (document.getElementById('simDailyDrive')) document.getElementById('simDailyDrive').value = "9";
+            if (document.getElementById('simPauseType')) document.getElementById('simPauseType').value = "45";
+            if (document.getElementById('simRestType')) document.getElementById('simRestType').value = "11";
+            if (document.getElementById('simOtherWork')) document.getElementById('simOtherWork').value = "0";
+
+            calculateDrivingSimulation();
+            updateSimulationStateUI();
+
+            const elBtnTitle = document.getElementById('driverSimBtnTitle');
+            if (elBtnTitle) elBtnTitle.innerText = "Pianifica Turno & Guida";
+            const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
+            if (elBtnSubtitle) {
+                elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
+            }
+            showToast("🛑 Turno interrotto ed eliminato del tutto!", "warning");
         }
 
         function openDrivingSimulatorModal() {
@@ -9368,15 +9455,34 @@
             // Popolamento del Live Radar Banner
             const elRadar = document.getElementById('simLiveRadarBanner');
             if (elRadar) {
+                const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+                const hasSavedParams = !!localStorage.getItem('tacho_sim_params');
+
+                let radarStatusTitle = radarText;
+                let radarStatusSub = radarSubText;
+                let dotClass = "bg-emerald-400 animate-ping";
+
+                if (!isSimActive) {
+                    if (hasSavedParams) {
+                        dotClass = "bg-amber-400";
+                        radarStatusTitle = "⏸️ Turno Sospeso dal Cruscotto";
+                        radarStatusSub = 'Monitoraggio live momentaneamente sospeso. Clicca su <strong>"Riprendi Turno"</strong> per riattivarlo sul cruscotto oppure <strong>"Interrompi del Tutto"</strong> per cancellarlo.';
+                    } else {
+                        dotClass = "bg-slate-500";
+                        radarStatusTitle = "⚪ Nessun Turno Attivo (Pianificatore Neutro)";
+                        radarStatusSub = 'Imposta l\'orario di partenza e clicca su <strong>"Avvia Turno Live"</strong> per attivare il monitoraggio in tempo reale.';
+                    }
+                }
+
                 elRadar.innerHTML = `
                     <div class="flex items-center space-x-3 min-w-0">
-                        <div class="w-3 h-3 rounded-full bg-emerald-400 animate-ping flex-shrink-0"></div>
+                        <div class="w-3 h-3 rounded-full ${dotClass} flex-shrink-0"></div>
                         <div class="min-w-0">
-                            <h5 class="text-xs font-black text-white truncate">${radarText}</h5>
-                            <p class="text-[11px] text-slate-300">${radarSubText}</p>
+                            <h5 class="text-xs font-black text-white truncate">${radarStatusTitle}</h5>
+                            <p class="text-[11px] text-slate-300">${radarStatusSub}</p>
                         </div>
                     </div>
-                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold font-mono px-2 py-1 rounded-lg border border-emerald-500/30 flex-shrink-0">
+                    <span class="text-[10px] ${isSimActive ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} font-bold font-mono px-2 py-1 rounded-lg border flex-shrink-0">
                         ORE ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}
                     </span>
                 `;
@@ -9385,10 +9491,11 @@
             // Popolamento delle 5 Tappe nella Timeline Verticale
             const elTimeline = document.getElementById('simTimelineContainer');
             if (elTimeline) {
+                const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
                 let timelineHtml = "";
                 stages.forEach((st) => {
-                    const isCurrent = (st.id === activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes);
-                    const isPassed = (currentMinutes > st.endMin && currentMinutes <= nextStartMinutes);
+                    const isCurrent = isSimActive && (st.id === activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes);
+                    const isPassed = isSimActive && (currentMinutes > st.endMin && currentMinutes <= nextStartMinutes);
 
                     let statusBadge = "";
                     let cardBorder = "bg-[#15243E]/80 border-slate-800 text-slate-300";
