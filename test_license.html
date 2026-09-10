@@ -9874,7 +9874,7 @@
 
                 // Registrazione Service Worker per Push & Offline con gestione ciclo di vita
                 if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('firebase-messaging-sw.js')
+                    navigator.serviceWorker.register('firebase-messaging-sw.js?v=13.6')
                     .then((registration) => {
                         console.log('[PWA] Service Worker registrato con successo:', registration);
                         registration.update();

@@ -1,8 +1,8 @@
-// Service Worker GC-TachoControl v12.5 Pro - Supporto Notifiche Push & Offline PWA Caching
+// Service Worker GC-TachoControl v13.6 Pro - Supporto Notifiche Push & Offline PWA Caching
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v13.5';
+const CACHE_NAME = 'tachocontrol-offline-v13.6';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -32,11 +32,11 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW v13.4] Memorizzazione risorse offline in corso...');
+            console.log('[SW v13.6] Memorizzazione risorse offline in corso...');
             return Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
                     return cache.add(url).catch((err) => {
-                        console.warn('[SW v13.4] File non pre-caricato:', url, err);
+                        console.warn('[SW v13.6] File non pre-caricato:', url, err);
                     });
                 })
             );
@@ -51,7 +51,7 @@ self.addEventListener('activate', (event) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
-                        console.log('[SW v13.4] Rimozione vecchia cache:', key);
+                        console.log('[SW v13.6] Rimozione vecchia cache:', key);
                         return caches.delete(key);
                     }
                 })
