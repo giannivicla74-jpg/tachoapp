@@ -1532,7 +1532,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-2">
                         <label class="flex items-center space-x-2 cursor-pointer select-none">
                             <input type="checkbox" id="gpsAutoStartTurnToggle" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-0">
-                            <span class="text-emerald-300 text-[11px] font-bold">🚀 Auto-avvia Turno Live se in movimento (&gt; 12 km/h)</span>
+                            <span class="text-emerald-300 text-[11px] font-bold">🚀 Auto-avvia Turno Live se in movimento (&gt; 15 km/h)</span>
                         </label>
                         <div class="flex items-center gap-2 flex-wrap">
                             <button type="button" onclick="GPSManager.exportTripReportPDF()" class="px-3 py-1.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 rounded-xl text-[11px] font-bold flex items-center space-x-1.5 transition active:scale-95 shadow-sm" title="Stampa o salva in PDF il Foglio di Viaggio">
@@ -10256,6 +10256,8 @@
             hasAutoStartedTurn: false,
             motionStartTime: null,
             motionInterval: null,
+            movingConsecutiveReadings: 0,
+            stoppedConsecutiveReadings: 0,
             lastAnnouncedState: 'stopped',
             geocodeTimeout: null,
             lastGeocodedCoords: null,
@@ -10287,6 +10289,9 @@
                     timeout: 15000
                 };
 
+                this.movingConsecutiveReadings = 0;
+                this.stoppedConsecutiveReadings = 0;
+
                 this.watchId = navigator.geolocation.watchPosition(
                     (position) => this.handlePositionUpdate(position),
                     (error) => this.handlePositionError(error),
@@ -10313,6 +10318,8 @@
                 }
                 this.isActive = false;
                 this.currentSpeedKmH = 0;
+                this.movingConsecutiveReadings = 0;
+                this.stoppedConsecutiveReadings = 0;
                 this.stopMotionTimer();
 
                 const btn = document.getElementById('btnToggleGps');
@@ -10347,13 +10354,46 @@
                     lat: coords.latitude,
                     lng: coords.longitude
                 };
-                this.accuracy = Math.round(coords.accuracy);
+                this.accuracy = Math.round(coords.accuracy || 0);
 
-                // Calcolo velocità reale in km/h
-                let rawSpeed = coords.speed; // in m/s
-                if (rawSpeed !== null && !isNaN(rawSpeed) && rawSpeed >= 0) {
-                    this.currentSpeedKmH = Math.round(rawSpeed * 3.6);
+                // --- FILTRO TACHIGRAFICO ANTIRIMBALZO (ANTI-JITTER & GPS DRIFT) ---
+                let rawSpeedKmH = 0;
+                if (coords.speed !== null && !isNaN(coords.speed) && coords.speed >= 0) {
+                    rawSpeedKmH = Math.round(coords.speed * 3.6);
+                }
+
+                // 1. Filtro Accuratezza: se il segnale è peggiore di 28 metri (tipico da interni/riflessioni),
+                // la velocità non è affidabile e viene soppressa per azzerare falsi positivi da fermo.
+                if (this.accuracy > 28) {
+                    rawSpeedKmH = 0;
+                }
+
+                // 2. Deadband: oscillazioni sotto i 5 km/h vengono ignorate e considerate sosta pura (0 km/h)
+                if (rawSpeedKmH < 5) {
+                    rawSpeedKmH = 0;
+                }
+
+                // 3. Filtro di persistenza su campionamenti consecutivi (Anti-Spike a veicolo fermo):
+                // Per considerare il veicolo in marcia stradale (> 15 km/h), la velocità deve persistere
+                // per almeno 2 campionamenti consecutivi (o essere già in guida accertata).
+                if (rawSpeedKmH >= 15) {
+                    this.movingConsecutiveReadings++;
+                    this.stoppedConsecutiveReadings = 0;
+                    if (this.movingConsecutiveReadings >= 2 || this.lastAnnouncedState === 'moving') {
+                        this.currentSpeedKmH = rawSpeedKmH;
+                    } else {
+                        // Primo sbalzo isolato: mantieni a 0 in attesa di conferma del secondo campionamento
+                        this.currentSpeedKmH = 0;
+                    }
+                } else if (rawSpeedKmH >= 5 && rawSpeedKmH < 15) {
+                    // Manovra / passo d'uomo
+                    this.movingConsecutiveReadings = 0;
+                    this.stoppedConsecutiveReadings = 0;
+                    this.currentSpeedKmH = rawSpeedKmH;
                 } else {
+                    // Veicolo fermo
+                    this.movingConsecutiveReadings = 0;
+                    this.stoppedConsecutiveReadings++;
                     this.currentSpeedKmH = 0;
                 }
 
@@ -10401,7 +10441,7 @@
                     ? currentLoggedInDriver.vehicle 
                     : 'Trattore Stradale';
 
-                const status = speed >= 12 ? 'driving' : (speed >= 3 ? 'maneuver' : 'stopped');
+                const status = speed >= 15 ? 'driving' : (speed >= 5 ? 'maneuver' : 'stopped');
 
                 try {
                     const payload = {
@@ -10437,8 +10477,8 @@
                 const statusInd = document.getElementById('gpsStatusIndicator');
                 if (!statusInd) return;
 
-                if (speed >= 12) {
-                    // IN MOVIMENTO / GUIDA EFFETTIVA
+                if (speed >= 15) {
+                    // IN MOVIMENTO / GUIDA EFFETTIVA (>= 15 km/h stabilizzati)
                     statusInd.innerText = `🟢 IN GUIDA (${speed} km/h)`;
                     statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-emerald-950 text-emerald-300 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] animate-pulse";
                     this.startMotionTimer();
@@ -10467,12 +10507,12 @@
                             this.speakGPS(`Rilevato movimento a ${speed} chilometri orari. Veicolo in guida.`);
                         }
                     }
-                } else if (speed >= 3 && speed < 12) {
-                    // MANOVRA / RALLENTAMENTO
+                } else if (speed >= 5 && speed < 15) {
+                    // MANOVRA / RALLENTAMENTO (5 - 14 km/h)
                     statusInd.innerText = `🟡 MANOVRA (${speed} km/h)`;
                     statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-amber-950 text-amber-300 border border-amber-500/60 shadow-sm";
                 } else {
-                    // FERMO
+                    // FERMO (< 5 km/h o oscillazione soppressa)
                     statusInd.innerText = `🅿️ Veicolo Fermo`;
                     statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-slate-800/80 text-slate-300 border border-slate-700/60 shadow-sm";
                     this.stopMotionTimer();
