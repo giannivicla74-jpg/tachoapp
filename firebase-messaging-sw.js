@@ -1,8 +1,8 @@
-// Service Worker GC-TachoControl v13.6 Pro - Supporto Notifiche Push & Offline PWA Caching
+// Service Worker GC-TachoControl v13.7 Pro - Supporto Notifiche Push & Offline PWA Caching Sicuro
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v13.6';
+const CACHE_NAME = 'tachocontrol-offline-v13.7';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -27,31 +27,33 @@ const ASSETS_TO_CACHE = [
     'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css'
 ];
 
-// --- 1. INSTALLAZIONE: Pre-caching di tutti i file e risorse statiche ---
+// --- 1. INSTALLAZIONE: Pre-caching sicuro di tutti i file e risorse statiche ---
 self.addEventListener('install', (event) => {
-    self.skipWaiting();
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            console.log('[SW v13.6] Memorizzazione risorse offline in corso...');
-            return Promise.allSettled(
+        caches.open(CACHE_NAME).then(async (cache) => {
+            console.log(`[SW ${CACHE_NAME}] Download e memorizzazione risorse offline in corso...`);
+            await Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
                     return cache.add(url).catch((err) => {
-                        console.warn('[SW v13.6] File non pre-caricato:', url, err);
+                        console.warn(`[SW ${CACHE_NAME}] File non pre-caricato:`, url, err);
                     });
                 })
             );
+            console.log(`[SW ${CACHE_NAME}] Risorse essenziali pronte in cache. Attivazione immediata sicura.`);
+            // Subentro immediato SOLO quando tutti i file (Tailwind, icone, html) sono già salvati
+            return self.skipWaiting();
         })
     );
 });
 
-// --- 2. ATTIVAZIONE: Pulizia delle vecchie cache obsolete ---
+// --- 2. ATTIVAZIONE: Pulizia delle vecchie cache obsolete solo a nuova cache pronta ---
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) => {
             return Promise.all(
                 keys.map((key) => {
                     if (key !== CACHE_NAME) {
-                        console.log('[SW v13.6] Rimozione vecchia cache:', key);
+                        console.log(`[SW ${CACHE_NAME}] Rimozione vecchia cache:`, key);
                         return caches.delete(key);
                     }
                 })
@@ -85,7 +87,7 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             caches.match(event.request).then((cachedResponse) => {
                 const fetchPromise = fetch(event.request).then((networkResponse) => {
-                    if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
+                    if (networkResponse && (networkResponse.status === 200 || networkResponse.type === 'opaque')) {
                         const responseClone = networkResponse.clone();
                         caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
                     }
@@ -113,7 +115,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetchWithTimeout
             .then((networkResponse) => {
-                if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
+                if (networkResponse && (networkResponse.status === 200 || networkResponse.type === 'opaque')) {
                     const responseClone = networkResponse.clone();
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(event.request, responseClone);

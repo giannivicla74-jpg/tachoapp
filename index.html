@@ -9872,24 +9872,31 @@
                 if (savedLinks) { try { customLinks = JSON.parse(savedLinks); } catch(e) {} }
                 updateDOMCustomLinks();
 
-                // Registrazione Service Worker per Push & Offline con gestione ciclo di vita
+                // Registrazione Service Worker per Push & Offline con gestione ciclo di vita protetta
                 if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('firebase-messaging-sw.js?v=13.6')
-                    .then((registration) => {
-                        console.log('[PWA] Service Worker registrato con successo:', registration);
-                        registration.update();
-                    }).catch((err) => {
-                        console.warn('[PWA] Registrazione Service Worker non riuscita:', err);
-                    });
-
-                    // Ricaricamento pulito solo quando un nuovo SW aggiornato subentra alla versione precedente
+                    let hadController = !!navigator.serviceWorker.controller;
                     let refreshing = false;
+
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
+                        // Se non c'era un controller al caricamento iniziale, si tratta di prima installazione o avvio pulito:
+                        // evitiamo di ricaricare forzatamente la pagina per non interrompere il rendering dell'interfaccia.
+                        if (!hadController) {
+                            hadController = true;
+                            return;
+                        }
                         if (!refreshing) {
                             refreshing = true;
                             console.log('[PWA] Nuovo Service Worker attivo: aggiornamento interfaccia in corso.');
                             window.location.reload();
                         }
+                    });
+
+                    navigator.serviceWorker.register('firebase-messaging-sw.js')
+                    .then((registration) => {
+                        console.log('[PWA] Service Worker registrato con successo:', registration);
+                        registration.update();
+                    }).catch((err) => {
+                        console.warn('[PWA] Registrazione Service Worker non riuscita:', err);
                     });
                 }
 
