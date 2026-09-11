@@ -1210,7 +1210,10 @@
                             <p class="text-xs text-slate-300">Posizione in tempo reale dei camion e dei conducenti in servizio.</p>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2 flex-shrink-0">
+                    <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+                        <button type="button" id="btnToggleTrails" onclick="FleetMapManager.toggleTrails()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95">
+                            <span>〰️</span> <span id="btnTrailsText">Traccia Percorsi (ON)</span>
+                        </button>
                         <button type="button" id="btnToggleDemoFleet" onclick="FleetMapManager.toggleDemoFleet()" class="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95">
                             <span id="btnDemoFleetIcon">🚛</span> <span id="btnDemoFleetText">Attiva Flotta Demo</span>
                         </button>
@@ -1531,9 +1534,14 @@
                             <input type="checkbox" id="gpsAutoStartTurnToggle" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-0">
                             <span class="text-emerald-300 text-[11px] font-bold">🚀 Auto-avvia Turno Live se in movimento (&gt; 12 km/h)</span>
                         </label>
-                        <button type="button" onclick="GPSManager.openLogsModal()" class="text-[11px] text-cyan-400 hover:underline font-bold flex items-center space-x-1">
-                            <span>📜</span> <span>Diario Punti GPS Registrati</span>
-                        </button>
+                        <div class="flex items-center space-x-2.5">
+                            <button type="button" onclick="GPSManager.exportTripReportPDF()" class="text-[11px] text-amber-300 hover:text-amber-200 hover:underline font-bold flex items-center space-x-1" title="Stampa o salva in PDF il Foglio di Viaggio">
+                                <span>📄</span> <span>Foglio di Viaggio PDF</span>
+                            </button>
+                            <button type="button" onclick="GPSManager.openLogsModal()" class="text-[11px] text-cyan-400 hover:underline font-bold flex items-center space-x-1">
+                                <span>📜</span> <span>Diario GPS</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
                         <label class="flex items-center space-x-2 cursor-pointer select-none">
@@ -3716,13 +3724,23 @@
                 <!-- Popolato da GPSManager.openLogsModal() -->
             </div>
 
-            <div class="p-3 bg-[#0A1220] border-t border-slate-800 flex items-center justify-between">
-                <button type="button" onclick="GPSManager.clearLogs()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition">
-                    🗑️ Svuota Registro
-                </button>
-                <button type="button" onclick="GPSManager.closeLogsModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition">
-                    Chiudi
-                </button>
+            <div class="p-3 bg-[#0A1220] border-t border-slate-800 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="GPSManager.exportTripReportPDF()" class="px-3.5 py-2 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white font-bold text-xs rounded-xl shadow transition flex items-center space-x-1.5 active:scale-95">
+                        <span>📄</span> <span>Stampa / PDF</span>
+                    </button>
+                    <button type="button" onclick="GPSManager.shareTripReportWhatsApp()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow transition flex items-center space-x-1.5 active:scale-95">
+                        <span>💬</span> <span>WhatsApp</span>
+                    </button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="GPSManager.clearLogs()" class="px-3 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition">
+                        🗑️ Svuota
+                    </button>
+                    <button type="button" onclick="GPSManager.closeLogsModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition">
+                        Chiudi
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -10717,6 +10735,185 @@
                     this.openLogsModal();
                     showToast("Diario azzerato.", "info");
                 }
+            },
+
+            exportTripReportPDF() {
+                let logs = [];
+                try {
+                    logs = JSON.parse(localStorage.getItem('tacho_gps_turn_logs') || '[]');
+                } catch(e) {}
+
+                if (logs.length === 0) {
+                    showToast("⚠️ Nessun punto GPS registrato da stampare.", "warning");
+                    return;
+                }
+
+                const driverName = (currentLoggedInDriver && currentLoggedInDriver.name) 
+                    ? `${currentLoggedInDriver.name} ${currentLoggedInDriver.surname || ''}`.trim()
+                    : (localStorage.getItem('savedDriverName') || 'Conducente');
+
+                const cardNumber = (currentLoggedInDriver && currentLoggedInDriver.cardNumber) 
+                    ? currentLoggedInDriver.cardNumber 
+                    : '-';
+
+                const vehiclePlate = (currentLoggedInDriver && currentLoggedInDriver.vehicle) 
+                    ? currentLoggedInDriver.vehicle 
+                    : 'Trattore Stradale';
+
+                const companyName = currentCompanyName || activeCompanyId || 'Azienda Autotrasporti';
+                const todayStr = new Date().toLocaleDateString('it-IT');
+
+                const tableRows = logs.map((item, idx) => `
+                    <tr>
+                        <td style="text-align: center; font-weight: bold; padding: 6px;">${idx + 1}</td>
+                        <td style="font-weight: bold; white-space: nowrap; padding: 6px;">${escapeHtml(item.date)} ${escapeHtml(item.time)}</td>
+                        <td style="padding: 6px;">${escapeHtml(item.address || 'Posizione stradale')}</td>
+                        <td style="font-family: monospace; font-size: 11px; white-space: nowrap; padding: 6px;">${Number(item.lat).toFixed(5)}, ${Number(item.lng).toFixed(5)}</td>
+                        <td style="text-align: center; font-weight: bold; color: #047857; padding: 6px;">${item.speed} km/h</td>
+                    </tr>
+                `).join('');
+
+                const printContent = `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Foglio di Viaggio GPS - ${escapeHtml(driverName)} - ${todayStr}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 25px; color: #0f172a; font-size: 12px; }
+        .header { border-bottom: 2px solid #047857; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .title { font-size: 17px; font-weight: 900; color: #047857; text-transform: uppercase; letter-spacing: 0.5px; }
+        .subtitle { font-size: 11px; color: #475569; margin-top: 3px; }
+        .meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; }
+        .meta-item strong { color: #475569; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .meta-item span { display: block; font-size: 13px; font-weight: bold; color: #0f172a; margin-top: 2px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
+        th { background-color: #f1f5f9; font-weight: 800; font-size: 10px; text-transform: uppercase; color: #1e293b; }
+        tr:nth-child(even) { background-color: #f8fafc; }
+        .signatures { margin-top: 40px; display: flex; justify-content: space-between; page-break-inside: avoid; }
+        .sig-box { width: 220px; border-top: 1px dashed #475569; padding-top: 8px; text-align: center; font-size: 11px; color: #475569; font-weight: bold; }
+        .footer-legal { margin-top: 25px; font-size: 10px; color: #94a3b8; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 8px; }
+        @media print {
+            body { margin: 10mm; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="title">🚛 Foglio di Viaggio & Diario Punti GPS</div>
+            <div class="subtitle">Registrazione Tappe & Soste conforme Regolamento CE 165/2014 & Regolamento CE 561/2006</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-weight: 900; font-size: 14px; color: #047857;">TachoApp GPS Cloud</div>
+            <div style="font-size: 11px; color: #64748b;">Data Stampa: ${todayStr}</div>
+        </div>
+    </div>
+
+    <div class="meta-grid">
+        <div class="meta-item">
+            <strong>Azienda / Trasportatore:</strong>
+            <span>${escapeHtml(companyName)}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Conducente:</strong>
+            <span>${escapeHtml(driverName)}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Numero Carta Conducente:</strong>
+            <span>${escapeHtml(cardNumber)}</span>
+        </div>
+        <div class="meta-item">
+            <strong>Veicolo / Targa:</strong>
+            <span>${escapeHtml(vehiclePlate)}</span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 30px; text-align: center;">#</th>
+                <th style="width: 130px;">Data & Ora</th>
+                <th>Località / Via Rilevata GPS</th>
+                <th style="width: 150px;">Coordinate Geografiche</th>
+                <th style="width: 90px; text-align: center;">Velocità</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${tableRows}
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <div class="sig-box">Firma Conducente</div>
+        <div class="sig-box">Timbro & Firma Azienda</div>
+    </div>
+
+    <div class="footer-legal">
+        Documento generato da TachoApp &bull; GC CodeLab &bull; Valido per i controlli stradali e archivio aziendale.
+    </div>
+
+    <script>
+        window.onload = function() {
+            window.print();
+        };
+    <\/script>
+</body>
+</html>`;
+
+                const win = window.open('', '_blank');
+                if (win) {
+                    win.document.open();
+                    win.document.write(printContent);
+                    win.document.close();
+                } else {
+                    showToast("⚠️ Consenti l'apertura dei popup per stampare il foglio di viaggio.", "warning");
+                }
+            },
+
+            shareTripReportWhatsApp() {
+                let logs = [];
+                try {
+                    logs = JSON.parse(localStorage.getItem('tacho_gps_turn_logs') || '[]');
+                } catch(e) {}
+
+                if (logs.length === 0) {
+                    showToast("⚠️ Nessun punto GPS registrato da condividere.", "warning");
+                    return;
+                }
+
+                const driverName = (currentLoggedInDriver && currentLoggedInDriver.name) 
+                    ? `${currentLoggedInDriver.name} ${currentLoggedInDriver.surname || ''}`.trim()
+                    : (localStorage.getItem('savedDriverName') || 'Conducente');
+
+                const vehiclePlate = (currentLoggedInDriver && currentLoggedInDriver.vehicle) 
+                    ? currentLoggedInDriver.vehicle 
+                    : 'Autocarro';
+
+                const companyName = currentCompanyName || activeCompanyId || 'Azienda';
+                const todayStr = new Date().toLocaleDateString('it-IT');
+
+                let msg = `🚛 *FOGLIO DI VIAGGIO & PUNTI GPS DEL TURNO*\n` +
+                          `👤 *Autista:* ${driverName}\n` +
+                          `🏢 *Azienda:* ${companyName}\n` +
+                          `🚚 *Mezzo:* ${vehiclePlate}\n` +
+                          `📅 *Data:* ${todayStr}\n\n` +
+                          `📍 *CRONOLOGIA TAPPE REGISTRATE:*\n`;
+
+                logs.slice(0, 15).forEach((item, idx) => {
+                    const icon = item.speed >= 12 ? '🟢 In Guida' : (item.speed >= 3 ? '🟡 Manovra' : '🛑 Sosta/Fermo');
+                    msg += `• *${item.time}* - ${icon} (${item.speed} km/h)\n  📍 ${item.address}\n  🗺️ https://www.google.com/maps?q=${item.lat},${item.lng}\n`;
+                });
+
+                if (logs.length > 15) {
+                    msg += `\n_...e altri ${logs.length - 15} punti registrati nel diario di bordo._\n`;
+                }
+
+                msg += `\n✅ _Certificato GPS conforme Reg. CE 165/2014 & CE 561/2006 (TachoApp)._`;
+
+                const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+                window.open(whatsappUrl, '_blank');
             }
         };
 
@@ -10726,11 +10923,14 @@
         const FleetMapManager = {
             map: null,
             markers: {},
+            polylines: {},
+            showTrails: true,
             demoInterval: null,
             demoEnabled: false,
             liveRef: null,
             cachedPositions: {},
             hasFitInitially: false,
+            vehicleTrails: {},
 
             demoVehicles: [
                 {
@@ -10742,6 +10942,13 @@
                     speed: 78,
                     status: 'driving',
                     address: 'A4 Milano-Brescia (Dir. Venezia)',
+                    trail: [
+                        [45.0703, 7.6869],
+                        [45.1800, 8.0500],
+                        [45.3200, 8.4200],
+                        [45.4200, 8.8500],
+                        [45.4642, 9.1900]
+                    ],
                     updatedAt: Date.now()
                 },
                 {
@@ -10753,6 +10960,13 @@
                     speed: 84,
                     status: 'driving',
                     address: 'A1 Autostrada del Sole (Bologna Sud)',
+                    trail: [
+                        [44.8015, 10.3279],
+                        [44.6982, 10.6312],
+                        [44.6471, 10.9252],
+                        [44.5200, 11.1500],
+                        [44.4949, 11.3426]
+                    ],
                     updatedAt: Date.now()
                 },
                 {
@@ -10764,6 +10978,12 @@
                     speed: 0,
                     status: 'stopped',
                     address: 'Area di Servizio A1 Roma Nord (In Pausa)',
+                    trail: [
+                        [42.2500, 12.6500],
+                        [42.0800, 12.6000],
+                        [41.9800, 12.5500],
+                        [41.8919, 12.5113]
+                    ],
                     updatedAt: Date.now()
                 }
             ],
@@ -10827,6 +11047,26 @@
                 showToast("🔄 Posizioni flotta aggiornate.", "info");
             },
 
+            toggleTrails() {
+                this.showTrails = !this.showTrails;
+                const textEl = document.getElementById('btnTrailsText');
+                const btn = document.getElementById('btnToggleTrails');
+                if (this.showTrails) {
+                    if (textEl) textEl.innerText = "Traccia Percorsi (ON)";
+                    if (btn) btn.className = "px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95";
+                    showToast("〰️ Traccia dei percorsi attivata sulla mappa.", "info");
+                } else {
+                    if (textEl) textEl.innerText = "Traccia Percorsi (OFF)";
+                    if (btn) btn.className = "px-3 py-2 bg-slate-900 text-slate-500 border border-slate-800 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95";
+                    for (let id in this.polylines) {
+                        if (this.map) this.map.removeLayer(this.polylines[id]);
+                    }
+                    this.polylines = {};
+                    showToast("Traccia percorsi nascosta.", "info");
+                }
+                this.renderFleetOnMap();
+            },
+
             toggleDemoFleet() {
                 this.demoEnabled = !this.demoEnabled;
                 const btnIcon = document.getElementById('btnDemoFleetIcon');
@@ -10860,6 +11100,9 @@
                             v.lng += 0.0035;
                             v.speed = Math.max(68, Math.min(88, v.speed + Math.floor(Math.random() * 5) - 2));
                             v.updatedAt = Date.now();
+                            if (!v.trail) v.trail = [];
+                            v.trail.push([v.lat, v.lng]);
+                            if (v.trail.length > 50) v.trail.shift();
                         }
                     });
                     this.renderFleetOnMap();
@@ -10892,6 +11135,7 @@
                             status: item.status || (item.speed >= 12 ? 'driving' : 'stopped'),
                             accuracy: item.accuracy || 10,
                             address: item.address || 'Posizione stradale',
+                            trail: item.trail || null,
                             updatedAt: item.updatedAt || Date.now(),
                             isDemo: false
                         });
@@ -10921,13 +11165,17 @@
                 if (countPauseEl) countPauseEl.innerText = pausedCount;
                 if (countTotalEl) countTotalEl.innerText = vehiclesList.length;
 
-                // Gestione Marker Mappa
+                // Gestione Marker Mappa e Polylines
                 const currentIds = new Set(vehiclesList.map(v => v.id));
 
                 for (let id in this.markers) {
                     if (!currentIds.has(id)) {
                         this.map.removeLayer(this.markers[id]);
                         delete this.markers[id];
+                        if (this.polylines[id]) {
+                            this.map.removeLayer(this.polylines[id]);
+                            delete this.polylines[id];
+                        }
                     }
                 }
 
@@ -10992,6 +11240,41 @@
                         const marker = L.marker([v.lat, v.lng], { icon: customIcon }).addTo(this.map);
                         marker.bindPopup(popupContent);
                         this.markers[v.id] = marker;
+                    }
+
+                    // Gestione Traccia Percorso (Polyline)
+                    let trailCoords = [];
+                    if (v.trail && Array.isArray(v.trail)) {
+                        trailCoords = v.trail;
+                    } else {
+                        if (!this.vehicleTrails[v.id]) this.vehicleTrails[v.id] = [];
+                        const tr = this.vehicleTrails[v.id];
+                        const lastP = tr[tr.length - 1];
+                        if (!lastP || Math.abs(lastP[0] - v.lat) > 0.0003 || Math.abs(lastP[1] - v.lng) > 0.0003) {
+                            tr.push([v.lat, v.lng]);
+                            if (tr.length > 80) tr.shift();
+                        }
+                        trailCoords = tr;
+                    }
+
+                    if (this.showTrails && trailCoords.length > 1) {
+                        const trailColor = isDriving ? '#10b981' : (isManeuver ? '#f59e0b' : '#38bdf8');
+                        if (this.polylines[v.id]) {
+                            this.polylines[v.id].setLatLngs(trailCoords);
+                            this.polylines[v.id].setStyle({ color: trailColor });
+                        } else {
+                            const polyline = L.polyline(trailCoords, {
+                                color: trailColor,
+                                weight: 4,
+                                opacity: 0.85,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            }).addTo(this.map);
+                            this.polylines[v.id] = polyline;
+                        }
+                    } else if (!this.showTrails && this.polylines[v.id]) {
+                        this.map.removeLayer(this.polylines[v.id]);
+                        delete this.polylines[v.id];
                     }
 
                     boundsGroup.push([v.lat, v.lng]);
@@ -11075,8 +11358,13 @@
 
             zoomToVehicle(id) {
                 const marker = this.markers[id];
+                const polyline = this.polylines[id];
                 if (marker && this.map) {
-                    this.map.setView(marker.getLatLng(), 15, { animate: true });
+                    if (polyline && polyline.getLatLngs().length > 1) {
+                        this.map.fitBounds(polyline.getBounds(), { padding: [50, 50], maxZoom: 15 });
+                    } else {
+                        this.map.setView(marker.getLatLng(), 15, { animate: true });
+                    }
                     marker.openPopup();
                     const container = document.getElementById('adminFleetMapContainer');
                     if (container) {
