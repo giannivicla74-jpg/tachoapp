@@ -364,7 +364,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="no-print flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0">
+    <main id="mainContainer" class="no-print flex-grow max-w-lg w-full mx-auto px-4 py-6 flex flex-col justify-center min-w-0 transition-all duration-300">
         
         <!-- Banner Top Sola Consultazione (Garanzia Etica) -->
         <div id="readOnlyTopBanner" class="no-print hidden w-full mb-4 bg-amber-950/90 border border-amber-500/50 rounded-2xl p-3 text-center text-xs text-amber-200 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-2">
@@ -600,21 +600,23 @@
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="no-print hidden space-y-6 w-full min-w-0">
             <div class="no-print grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
-                    Conducenti
+                <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                    <span>Conducenti</span>
                     <span id="badgeFleet" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
-                <button onclick="switchTab('vehicles')" id="btnVehicles" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
-                    Flotta Mezzi (90gg)
+                <button onclick="switchTab('vehicles')" id="btnVehicles" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                    <span>Mezzi</span>
+                    <span class="text-[10px] opacity-75 font-normal">(90g)</span>
                     <span id="badgeVehicles" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
-                <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
-                    Azienda &amp; Norme
+                <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                    <span>Azienda</span>
                     <span id="badgeCompany" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">!</span>
                 </button>
-                <button onclick="switchTab('livemap')" id="btnLiveMap" class="relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/50 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate flex items-center justify-center space-x-1">
-                    <span>🗺️</span> <span>Mappa Flotta</span>
-                    <span class="bg-cyan-500 text-slate-950 font-black text-[8px] px-1.5 py-0.2 rounded shadow-sm animate-pulse ml-1">LIVE</span>
+                <button onclick="switchTab('livemap')" id="btnLiveMap" class="relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/50 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1.5">
+                    <span>🗺️</span>
+                    <span>Mappa</span>
+                    <span class="bg-cyan-500 text-slate-950 font-black text-[8px] px-1 py-0.2 rounded shadow-sm animate-pulse">LIVE</span>
                 </button>
             </div>
 
@@ -5942,6 +5944,17 @@
                     }
                 }
 
+                const mainContainer = document.getElementById('mainContainer');
+                if (mainContainer) {
+                    if (sec === "admin") {
+                        mainContainer.classList.remove('max-w-lg');
+                        mainContainer.classList.add('max-w-5xl');
+                    } else {
+                        mainContainer.classList.add('max-w-lg');
+                        mainContainer.classList.remove('max-w-5xl');
+                    }
+                }
+
                 if (sec === "admin") {
                     if (adminSec) adminSec.classList.remove('hidden');
                     if (adminHeader) adminHeader.classList.remove('hidden');
@@ -5986,6 +5999,12 @@
             const lockSec = document.getElementById('licenseLockSection');
             if (lockSec) lockSec.classList.add('hidden');
 
+            const mainContainer = document.getElementById('mainContainer');
+            if (mainContainer) {
+                mainContainer.classList.add('max-w-lg');
+                mainContainer.classList.remove('max-w-5xl');
+            }
+
             const noticeBox = document.getElementById('footerFreeLicenseNotice');
             if (noticeBox) noticeBox.classList.add('hidden');
 
@@ -6009,31 +6028,33 @@
             const tabSanctions = document.getElementById('tabSanctions');
             const tabLiveMap = document.getElementById('tabLiveMap');
 
-            const inactiveBtnStyle = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+            const inactiveBtnStyle = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
             if (btnFleet) btnFleet.className = inactiveBtnStyle;
             if (btnVehicles) btnVehicles.className = inactiveBtnStyle;
             if (btnSanctions) btnSanctions.className = inactiveBtnStyle;
-            if (btnLiveMap) btnLiveMap.className = "relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/40 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate flex items-center justify-center space-x-1";
+            if (btnLiveMap) btnLiveMap.className = "relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/40 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1.5";
             
             if (tabFleet) tabFleet.classList.add('hidden');
             if (tabVehicles) tabVehicles.classList.add('hidden');
             if (tabSanctions) tabSanctions.classList.add('hidden');
             if (tabLiveMap) tabLiveMap.classList.add('hidden');
 
+            const activeBtnStyle = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
+
             if (tab === 'fleet') {
-                if (btnFleet) btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+                if (btnFleet) btnFleet.className = activeBtnStyle;
                 if (tabFleet) tabFleet.classList.remove('hidden');
                 renderFleetTable();
             } else if (tab === 'vehicles') {
-                if (btnVehicles) btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+                if (btnVehicles) btnVehicles.className = activeBtnStyle;
                 if (tabVehicles) tabVehicles.classList.remove('hidden');
                 renderVehicleTable();
             } else if (tab === 'livemap') {
-                if (btnLiveMap) btnLiveMap.className = "relative bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate flex items-center justify-center space-x-1";
+                if (btnLiveMap) btnLiveMap.className = "relative bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1.5 border border-cyan-400/60 shadow-cyan-900/30";
                 if (tabLiveMap) tabLiveMap.classList.remove('hidden');
                 if (typeof FleetMapManager !== 'undefined') FleetMapManager.initAdminFleetMap();
             } else {
-                if (btnSanctions) btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+                if (btnSanctions) btnSanctions.className = activeBtnStyle;
                 if (tabSanctions) tabSanctions.classList.remove('hidden');
             }
 
