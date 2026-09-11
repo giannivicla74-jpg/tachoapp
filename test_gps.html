@@ -599,7 +599,7 @@
 
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="no-print hidden space-y-6 w-full min-w-0">
-            <div class="no-print grid grid-cols-3 gap-2">
+            <div class="no-print grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
                     Conducenti
                     <span id="badgeFleet" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
@@ -611,6 +611,10 @@
                 <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate">
                     Azienda &amp; Norme
                     <span id="badgeCompany" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">!</span>
+                </button>
+                <button onclick="switchTab('livemap')" id="btnLiveMap" class="relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/50 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate flex items-center justify-center space-x-1">
+                    <span>🗺️</span> <span>Mappa Flotta</span>
+                    <span class="bg-cyan-500 text-slate-950 font-black text-[8px] px-1.5 py-0.2 rounded shadow-sm animate-pulse ml-1">LIVE</span>
                 </button>
             </div>
 
@@ -1188,6 +1192,61 @@
                 </div>
 
             </div>
+
+            <!-- TAB 4: MAPPA FLOTTA IN TEMPO REALE -->
+            <div id="tabLiveMap" class="no-print space-y-5 w-full min-w-0 hidden">
+                <div class="bg-gradient-to-r from-cyan-950/80 via-[#102035] to-indigo-950/80 p-4 sm:p-5 rounded-3xl border border-cyan-500/40 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center space-x-3.5 min-w-0">
+                        <div class="w-12 h-12 rounded-2xl bg-cyan-950/90 border border-cyan-500/40 p-2 flex items-center justify-center flex-shrink-0 text-2xl shadow-inner">
+                            🚛
+                        </div>
+                        <div class="min-w-0">
+                            <h3 class="text-sm sm:text-base font-black text-white tracking-tight flex items-center space-x-2">
+                                <span>Monitoraggio Flotta Satellitare</span>
+                                <span class="bg-emerald-500/20 text-emerald-300 font-extrabold text-[9px] px-2 py-0.5 rounded-full border border-emerald-500/30 animate-pulse">RADAR CLOUD</span>
+                            </h3>
+                            <p class="text-xs text-slate-300">Posizione in tempo reale dei camion e dei conducenti in servizio.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 flex-shrink-0">
+                        <button type="button" id="btnToggleDemoFleet" onclick="FleetMapManager.toggleDemoFleet()" class="px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95">
+                            <span id="btnDemoFleetIcon">🚛</span> <span id="btnDemoFleetText">Attiva Flotta Demo</span>
+                        </button>
+                        <button type="button" onclick="FleetMapManager.refreshFleetPositions()" class="px-3.5 py-2 bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95">
+                            <span>🔄</span> <span>Aggiorna Mappa</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contenitore Grande Mappa Flotta Leaflet -->
+                <div class="bg-[#0A1220] p-3.5 rounded-3xl border border-slate-800 shadow-2xl space-y-3">
+                    <div id="adminFleetMapContainer" class="h-96 sm:h-[460px] w-full rounded-2xl overflow-hidden border border-cyan-500/30 shadow-inner bg-slate-950 z-10"></div>
+
+                    <!-- Riepilogo Mezzi Connessi -->
+                    <div class="p-3 bg-[#0F1C32] rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center space-x-4">
+                            <span class="flex items-center space-x-1.5 text-slate-300 font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span>In Guida: <strong id="fleetCountDriving" class="text-emerald-300 font-mono">0</strong></span>
+                            </span>
+                            <span class="flex items-center space-x-1.5 text-slate-300 font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                                <span>In Pausa/Sosta: <strong id="fleetCountPaused" class="text-amber-300 font-mono">0</strong></span>
+                            </span>
+                            <span class="flex items-center space-x-1.5 text-slate-300 font-medium">
+                                <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+                                <span>Totale Tracciati: <strong id="fleetCountTotal" class="text-white font-mono">0</strong></span>
+                            </span>
+                        </div>
+                        <span class="text-[10px] text-cyan-400 font-mono">📡 Sincronizzato con Firebase Realtime</span>
+                    </div>
+
+                    <!-- Elenco Camion in Servizio -->
+                    <div id="fleetCardsList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-1">
+                        <!-- Popolato dinamicamente da FleetMapManager -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- =================== 3. DRIVER SECTION =================== -->
@@ -1464,14 +1523,26 @@
                 </div>
 
                 <!-- Impostazioni e Automazioni GPS -->
-                <div class="p-3 bg-[#0F1C32]/80 rounded-2xl border border-slate-800/90 flex flex-wrap items-center justify-between gap-2 text-xs">
-                    <label class="flex items-center space-x-2 cursor-pointer select-none">
-                        <input type="checkbox" id="gpsVoiceAlertToggle" checked onchange="GPSManager.toggleVoiceAlert(this.checked)" class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0">
-                        <span class="text-slate-300 text-[11px] font-bold">🔊 Avvisi Vocali Intelligenti (Voce Italiana al movimento e fermata)</span>
-                    </label>
-                    <button type="button" onclick="GPSManager.openLogsModal()" class="text-[11px] text-cyan-400 hover:underline font-bold flex items-center space-x-1">
-                        <span>📜</span> <span>Diario Punti GPS Registrati</span>
-                    </button>
+                <div class="p-3.5 bg-[#0F1C32]/80 rounded-2xl border border-slate-800/90 space-y-2 text-xs">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" id="gpsAutoStartTurnToggle" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-emerald-300 text-[11px] font-bold">🚀 Auto-avvia Turno Live se in movimento (&gt; 12 km/h)</span>
+                        </label>
+                        <button type="button" onclick="GPSManager.openLogsModal()" class="text-[11px] text-cyan-400 hover:underline font-bold flex items-center space-x-1">
+                            <span>📜</span> <span>Diario Punti GPS Registrati</span>
+                        </button>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+                        <label class="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" id="gpsVoiceAlertToggle" checked onchange="GPSManager.toggleVoiceAlert(this.checked)" class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-slate-300 text-[11px] font-bold">🔊 Avvisi Vocali Intelligenti (Voce al movimento e fermata)</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer select-none">
+                            <input type="checkbox" id="gpsCloudSyncToggle" checked class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0">
+                            <span class="text-slate-400 text-[10px] font-bold">📡 Invia posizione alla Mappa Flotta Aziendale</span>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -5931,29 +6002,39 @@
             const btnFleet = document.getElementById('btnFleet');
             const btnVehicles = document.getElementById('btnVehicles');
             const btnSanctions = document.getElementById('btnSanctions');
+            const btnLiveMap = document.getElementById('btnLiveMap');
+
             const tabFleet = document.getElementById('tabFleet');
             const tabVehicles = document.getElementById('tabVehicles');
             const tabSanctions = document.getElementById('tabSanctions');
+            const tabLiveMap = document.getElementById('tabLiveMap');
 
-            btnFleet.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            btnVehicles.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-            btnSanctions.className = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
+            const inactiveBtnStyle = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+            if (btnFleet) btnFleet.className = inactiveBtnStyle;
+            if (btnVehicles) btnVehicles.className = inactiveBtnStyle;
+            if (btnSanctions) btnSanctions.className = inactiveBtnStyle;
+            if (btnLiveMap) btnLiveMap.className = "relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/40 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate flex items-center justify-center space-x-1";
             
-            tabFleet.classList.add('hidden');
-            tabVehicles.classList.add('hidden');
-            tabSanctions.classList.add('hidden');
+            if (tabFleet) tabFleet.classList.add('hidden');
+            if (tabVehicles) tabVehicles.classList.add('hidden');
+            if (tabSanctions) tabSanctions.classList.add('hidden');
+            if (tabLiveMap) tabLiveMap.classList.add('hidden');
 
             if (tab === 'fleet') {
-                btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabFleet.classList.remove('hidden');
+                if (btnFleet) btnFleet.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+                if (tabFleet) tabFleet.classList.remove('hidden');
                 renderFleetTable();
             } else if (tab === 'vehicles') {
-                btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabVehicles.classList.remove('hidden');
+                if (btnVehicles) btnVehicles.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+                if (tabVehicles) tabVehicles.classList.remove('hidden');
                 renderVehicleTable();
+            } else if (tab === 'livemap') {
+                if (btnLiveMap) btnLiveMap.className = "relative bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate flex items-center justify-center space-x-1";
+                if (tabLiveMap) tabLiveMap.classList.remove('hidden');
+                if (typeof FleetMapManager !== 'undefined') FleetMapManager.initAdminFleetMap();
             } else {
-                btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-2 rounded-xl shadow-md text-xs transition text-center";
-                tabSanctions.classList.remove('hidden');
+                if (btnSanctions) btnSanctions.className = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-1.5 sm:py-3 sm:px-2 rounded-xl shadow-md text-[11px] sm:text-xs transition text-center truncate";
+                if (tabSanctions) tabSanctions.classList.remove('hidden');
             }
 
             scrollToTop();
@@ -9865,7 +9946,11 @@
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-amber-950/80 border border-amber-500/40 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span><span class="text-xs font-black text-amber-200 uppercase tracking-wide truncate">Partenza Programmata</span></div><span class="text-[11px] font-bold text-amber-300/90 flex-shrink-0 whitespace-nowrap">ore ${formatMinutesToTimeString(startMinutes).timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20"><span class="text-[11px] text-slate-300 font-medium">Inizio turno tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-amber-500/40 border border-amber-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
                     } else if (currentSeconds >= startSeconds && currentSeconds < firstBreakSeconds) {
                         const diffSec = Math.max(0, firstBreakSeconds - currentSeconds);
-                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-amber-950/80 border border-amber-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span><span class="text-xs font-black text-amber-200 uppercase tracking-wide truncate">1° Blocco Guida</span></div><span class="text-[11px] font-bold text-amber-300/90 flex-shrink-0 whitespace-nowrap">Pausa ore ${firstBreakFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20"><span class="text-[11px] text-slate-300 font-medium">Pausa (45m) tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-amber-500/40 border border-amber-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
+                        let sostaAlertBtn = '';
+                        if (diffSec <= 1800) {
+                            sostaAlertBtn = `<button type="button" onclick="event.stopPropagation(); GPSManager.openNearbyTruckStops();" class="w-full mt-2 py-1.5 px-3 bg-gradient-to-r from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 text-white font-extrabold text-[11px] rounded-xl shadow-lg transition flex items-center justify-center space-x-1.5 active:scale-95 animate-pulse"><span>🅿️</span> <span>Mancano meno di 30m: Trova Sosta Camion Vicina</span></button>`;
+                        }
+                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-amber-950/80 border border-amber-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span><span class="text-xs font-black text-amber-200 uppercase tracking-wide truncate">1° Blocco Guida</span></div><span class="text-[11px] font-bold text-amber-300/90 flex-shrink-0 whitespace-nowrap">Pausa ore ${firstBreakFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20"><span class="text-[11px] text-slate-300 font-medium">Pausa (45m) tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-amber-500/40 border border-amber-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div>${sostaAlertBtn}</div>`;
                     } else if (currentSeconds >= firstBreakSeconds && currentSeconds < resumeDriveSeconds) {
                         const diffSec = Math.max(0, resumeDriveSeconds - currentSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-emerald-950/80 border border-emerald-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-ping shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-emerald-200 uppercase tracking-wide truncate">In Pausa Obbligatoria (45m)</span></div><span class="text-[11px] font-bold text-emerald-300/90 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${resumeDriveFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-emerald-500/20"><span class="text-[11px] text-slate-300 font-medium">Ripartenza tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-emerald-500/40 border border-emerald-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
@@ -10127,6 +10212,7 @@
             mapAccuracyCircle: null,
             isMapVisible: false,
             voiceAlertEnabled: true,
+            hasAutoStartedTurn: false,
             motionStartTime: null,
             motionInterval: null,
             lastAnnouncedState: 'stopped',
@@ -10252,6 +10338,47 @@
 
                 // Aggiornamento Mappa se aperta
                 this.updateMapMarker(coords.latitude, coords.longitude, this.accuracy);
+
+                // Sincronizzazione posizione in tempo reale su Firebase (Radar Flotta)
+                this.syncPositionToFirebase(coords.latitude, coords.longitude, this.currentSpeedKmH);
+            },
+
+            syncPositionToFirebase(lat, lng, speed) {
+                const cloudSyncCheckbox = document.getElementById('gpsCloudSyncToggle');
+                if (cloudSyncCheckbox && !cloudSyncCheckbox.checked) return;
+                if (typeof dbCompanyRef !== 'function') return;
+
+                const driverId = (currentLoggedInDriver && currentLoggedInDriver.id) 
+                    ? currentLoggedInDriver.id 
+                    : (localStorage.getItem('savedDriverId') || 'autista_live');
+
+                const driverName = (currentLoggedInDriver && currentLoggedInDriver.name) 
+                    ? `${currentLoggedInDriver.name} ${currentLoggedInDriver.surname || ''}`.trim()
+                    : (localStorage.getItem('savedDriverName') || 'Conducente');
+
+                const vehicle = (currentLoggedInDriver && currentLoggedInDriver.vehicle) 
+                    ? currentLoggedInDriver.vehicle 
+                    : 'Trattore Stradale';
+
+                const status = speed >= 12 ? 'driving' : (speed >= 3 ? 'maneuver' : 'stopped');
+
+                try {
+                    const payload = {
+                        driverId: driverId,
+                        driverName: driverName,
+                        vehicle: vehicle,
+                        lat: lat,
+                        lng: lng,
+                        speed: speed,
+                        status: status,
+                        accuracy: this.accuracy || 10,
+                        address: this.currentAddress || 'In transito',
+                        updatedAt: Date.now()
+                    };
+                    dbCompanyRef('live_positions/' + driverId).set(payload);
+                } catch(e) {
+                    console.warn("[GPS] Firebase sync error:", e);
+                }
             },
 
             handlePositionError(err) {
@@ -10275,7 +10402,25 @@
                     statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-emerald-950 text-emerald-300 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] animate-pulse";
                     this.startMotionTimer();
 
-                    if (this.lastAnnouncedState !== 'moving') {
+                    // Auto-avvio Turno Live se abilitato e non ancora attivo
+                    const autoStartToggle = document.getElementById('gpsAutoStartTurnToggle');
+                    const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+                    if (autoStartToggle && autoStartToggle.checked && !isSimActive && !this.hasAutoStartedTurn) {
+                        this.hasAutoStartedTurn = true;
+                        const now = new Date();
+                        const hh = String(now.getHours()).padStart(2, '0');
+                        const mm = String(now.getMinutes()).padStart(2, '0');
+                        const simStartInput = document.getElementById('simStartTime');
+                        if (simStartInput) simStartInput.value = `${hh}:${mm}`;
+                        if (typeof startDrivingSimulation === 'function') {
+                            startDrivingSimulation();
+                            showToast(`🚀 Turno Live auto-avviato alle ${hh}:${mm} per inizio guida!`, "success");
+                        }
+                        this.logTurnPoint();
+                        if (this.voiceAlertEnabled) {
+                            this.speakGPS(`Rilevato movimento del veicolo. Turno di guida avviato automaticamente alle ore ${hh} e ${mm}.`);
+                        }
+                    } else if (this.lastAnnouncedState !== 'moving') {
                         this.lastAnnouncedState = 'moving';
                         if (this.voiceAlertEnabled) {
                             this.speakGPS(`Rilevato movimento a ${speed} chilometri orari. Veicolo in guida.`);
@@ -10550,6 +10695,374 @@
                     localStorage.removeItem('tacho_gps_turn_logs');
                     this.openLogsModal();
                     showToast("Diario azzerato.", "info");
+                }
+            }
+        };
+
+        // =========================================================================
+        // FLEET MAP MANAGER (RADAR CLOUD MAPPA FLOTTA ADMIN)
+        // =========================================================================
+        const FleetMapManager = {
+            map: null,
+            markers: {},
+            demoInterval: null,
+            demoEnabled: false,
+            liveRef: null,
+            cachedPositions: {},
+            hasFitInitially: false,
+
+            demoVehicles: [
+                {
+                    id: 'demo_truck_1',
+                    driverName: 'Marco Rossi',
+                    vehicle: 'Scania R500 (AA 100 BB)',
+                    lat: 45.4642,
+                    lng: 9.1900,
+                    speed: 78,
+                    status: 'driving',
+                    address: 'A4 Milano-Brescia (Dir. Venezia)',
+                    updatedAt: Date.now()
+                },
+                {
+                    id: 'demo_truck_2',
+                    driverName: 'Gianni V.',
+                    vehicle: 'Volvo FH 500 (EZ 456 TR)',
+                    lat: 44.4949,
+                    lng: 11.3426,
+                    speed: 84,
+                    status: 'driving',
+                    address: 'A1 Autostrada del Sole (Bologna Sud)',
+                    updatedAt: Date.now()
+                },
+                {
+                    id: 'demo_truck_3',
+                    driverName: 'Luca Bianchi',
+                    vehicle: 'Mercedes Actros (FS 789 KL)',
+                    lat: 41.8919,
+                    lng: 12.5113,
+                    speed: 0,
+                    status: 'stopped',
+                    address: 'Area di Servizio A1 Roma Nord (In Pausa)',
+                    updatedAt: Date.now()
+                }
+            ],
+
+            initAdminFleetMap() {
+                const container = document.getElementById('adminFleetMapContainer');
+                if (!container) return;
+
+                if (!this.map) {
+                    if (typeof L === 'undefined') {
+                        showToast("⚠️ Libreria mappa in caricamento...", "info");
+                        return;
+                    }
+
+                    this.map = L.map('adminFleetMapContainer', {
+                        zoomControl: true
+                    }).setView([42.8333, 12.8333], 6);
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '&copy; OpenStreetMap'
+                    }).addTo(this.map);
+                }
+
+                setTimeout(() => {
+                    if (this.map) this.map.invalidateSize();
+                }, 200);
+
+                this.startListening();
+            },
+
+            startListening() {
+                if (typeof dbCompanyRef !== 'function') {
+                    this.renderFleetOnMap();
+                    return;
+                }
+                
+                try {
+                    if (this.liveRef) {
+                        this.liveRef.off();
+                    }
+                    this.liveRef = dbCompanyRef('live_positions');
+                    this.liveRef.on('value', (snapshot) => {
+                        const val = snapshot.val() || {};
+                        this.cachedPositions = val;
+                        this.renderFleetOnMap();
+                    });
+                } catch(e) {
+                    console.warn("[FleetMap] Errore ascolto Firebase:", e);
+                }
+
+                // Render iniziale
+                this.renderFleetOnMap();
+            },
+
+            refreshFleetPositions() {
+                this.startListening();
+                if (this.map) {
+                    this.map.invalidateSize();
+                }
+                showToast("🔄 Posizioni flotta aggiornate.", "info");
+            },
+
+            toggleDemoFleet() {
+                this.demoEnabled = !this.demoEnabled;
+                const btnIcon = document.getElementById('btnDemoFleetIcon');
+                const btnText = document.getElementById('btnDemoFleetText');
+                const btn = document.getElementById('btnToggleDemoFleet');
+
+                if (this.demoEnabled) {
+                    if (btn) btn.className = "px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95 shadow-md";
+                    if (btnIcon) btnIcon.innerText = "⏹️";
+                    if (btnText) btnText.innerText = "Disattiva Demo";
+
+                    showToast("🚛 Flotta dimostrativa attivata con 3 camion in movimento!", "success");
+                    this.startDemoSimulation();
+                } else {
+                    if (btn) btn.className = "px-3 py-2 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95";
+                    if (btnIcon) btnIcon.innerText = "🚛";
+                    if (btnText) btnText.innerText = "Attiva Flotta Demo";
+
+                    this.stopDemoSimulation();
+                    showToast("Flotta demo disattivata.", "info");
+                }
+                this.renderFleetOnMap();
+            },
+
+            startDemoSimulation() {
+                if (this.demoInterval) clearInterval(this.demoInterval);
+                this.demoInterval = setInterval(() => {
+                    this.demoVehicles.forEach((v) => {
+                        if (v.speed > 0) {
+                            v.lat += (Math.random() - 0.48) * 0.003;
+                            v.lng += 0.0035;
+                            v.speed = Math.max(68, Math.min(88, v.speed + Math.floor(Math.random() * 5) - 2));
+                            v.updatedAt = Date.now();
+                        }
+                    });
+                    this.renderFleetOnMap();
+                }, 3000);
+            },
+
+            stopDemoSimulation() {
+                if (this.demoInterval) {
+                    clearInterval(this.demoInterval);
+                    this.demoInterval = null;
+                }
+            },
+
+            renderFleetOnMap() {
+                if (!this.map || typeof L === 'undefined') return;
+
+                const vehiclesList = [];
+
+                // 1. Veicoli reali dal Cloud
+                for (let k in this.cachedPositions) {
+                    const item = this.cachedPositions[k];
+                    if (item && item.lat && item.lng) {
+                        vehiclesList.push({
+                            id: k,
+                            driverName: item.driverName || 'Conducente',
+                            vehicle: item.vehicle || 'Autocarro',
+                            lat: item.lat,
+                            lng: item.lng,
+                            speed: item.speed || 0,
+                            status: item.status || (item.speed >= 12 ? 'driving' : 'stopped'),
+                            accuracy: item.accuracy || 10,
+                            address: item.address || 'Posizione stradale',
+                            updatedAt: item.updatedAt || Date.now(),
+                            isDemo: false
+                        });
+                    }
+                }
+
+                // 2. Aggiungi veicoli demo se abilitati
+                if (this.demoEnabled) {
+                    this.demoVehicles.forEach(dv => {
+                        vehiclesList.push({ ...dv, isDemo: true });
+                    });
+                }
+
+                // Contatori
+                let drivingCount = 0;
+                let pausedCount = 0;
+
+                vehiclesList.forEach(v => {
+                    if (v.speed >= 12) drivingCount++;
+                    else pausedCount++;
+                });
+
+                const countDriveEl = document.getElementById('fleetCountDriving');
+                const countPauseEl = document.getElementById('fleetCountPaused');
+                const countTotalEl = document.getElementById('fleetCountTotal');
+                if (countDriveEl) countDriveEl.innerText = drivingCount;
+                if (countPauseEl) countPauseEl.innerText = pausedCount;
+                if (countTotalEl) countTotalEl.innerText = vehiclesList.length;
+
+                // Gestione Marker Mappa
+                const currentIds = new Set(vehiclesList.map(v => v.id));
+
+                for (let id in this.markers) {
+                    if (!currentIds.has(id)) {
+                        this.map.removeLayer(this.markers[id]);
+                        delete this.markers[id];
+                    }
+                }
+
+                const boundsGroup = [];
+
+                vehiclesList.forEach(v => {
+                    const isDriving = v.speed >= 12;
+                    const isManeuver = v.speed >= 3 && v.speed < 12;
+                    
+                    let markerBg = isDriving ? '#10b981' : (isManeuver ? '#f59e0b' : '#0284c7');
+                    let markerIcon = isDriving ? '🚛' : (isManeuver ? '⚠️' : '🅿️');
+                    let pulseHtml = isDriving ? '<div style="position: absolute; inset: -4px; border-radius: 50%; background-color: rgba(16,185,129,0.35); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; pointer-events: none;"></div>' : '';
+
+                    const iconHtml = `
+                        <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px;">
+                            ${pulseHtml}
+                            <div style="background-color: ${markerBg}; width: 36px; height: 36px; border-radius: 50%; border: 3px solid #ffffff; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 14px ${markerBg}; z-index: 2;">
+                                ${markerIcon}
+                            </div>
+                        </div>
+                    `;
+
+                    const customIcon = L.divIcon({
+                        className: 'fleet-truck-marker',
+                        html: iconHtml,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 18],
+                        popupAnchor: [0, -18]
+                    });
+
+                    const popupContent = `
+                        <div style="font-family: inherit; min-width: 220px; color: #0f172a; padding: 4px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; gap: 6px;">
+                                <strong style="font-size: 14px; color: #0f172a;">${escapeHtml(v.driverName)}</strong>
+                                <span style="font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 6px; background-color: ${isDriving ? '#dcfce7' : '#e0f2fe'}; color: ${isDriving ? '#166534' : '#075985'}; whitespace-nowrap;">
+                                    ${isDriving ? 'IN GUIDA' : (isManeuver ? 'MANOVRA' : 'IN PAUSA')}
+                                </span>
+                            </div>
+                            <div style="font-size: 12px; color: #475569; margin-bottom: 4px;">
+                                🚚 <strong>Mezzo:</strong> ${escapeHtml(v.vehicle)}
+                            </div>
+                            <div style="font-size: 12px; color: #475569; margin-bottom: 4px;">
+                                ⚡ <strong>Velocità:</strong> <span style="font-weight: bold; color: ${isDriving ? '#16a34a' : '#0284c7'};">${v.speed} km/h</span>
+                            </div>
+                            <div style="font-size: 11px; color: #64748b; margin-bottom: 8px;">
+                                📍 ${escapeHtml(v.address)}
+                            </div>
+                            <div style="border-top: 1px solid #e2e8f0; padding-top: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 10px; color: #94a3b8;">${v.isDemo ? 'Veicolo Simulato' : 'Cloud Live'}</span>
+                                <a href="https://www.google.com/maps?q=${v.lat},${v.lng}" target="_blank" style="font-size: 11px; color: #0284c7; font-weight: bold; text-decoration: none;">
+                                    Naviga ➔
+                                </a>
+                            </div>
+                        </div>
+                    `;
+
+                    if (this.markers[v.id]) {
+                        this.markers[v.id].setLatLng([v.lat, v.lng]);
+                        this.markers[v.id].setIcon(customIcon);
+                        this.markers[v.id].setPopupContent(popupContent);
+                    } else {
+                        const marker = L.marker([v.lat, v.lng], { icon: customIcon }).addTo(this.map);
+                        marker.bindPopup(popupContent);
+                        this.markers[v.id] = marker;
+                    }
+
+                    boundsGroup.push([v.lat, v.lng]);
+                });
+
+                // Renderizza cards sotto la mappa
+                this.renderFleetCards(vehiclesList);
+
+                // Se primo inserimento con veicoli, inquadra la mappa
+                if (boundsGroup.length > 0 && !this.hasFitInitially) {
+                    this.hasFitInitially = true;
+                    try {
+                        this.map.fitBounds(boundsGroup, { padding: [50, 50], maxZoom: 12 });
+                    } catch(e) {}
+                }
+            },
+
+            renderFleetCards(vehiclesList) {
+                const listEl = document.getElementById('fleetCardsList');
+                if (!listEl) return;
+
+                if (vehiclesList.length === 0) {
+                    listEl.innerHTML = `
+                        <div class="col-span-full text-center py-8 bg-[#0F1C32] rounded-2xl border border-slate-800 p-4 space-y-2">
+                            <span class="text-3xl block">🛰️</span>
+                            <h4 class="font-bold text-white text-sm">Nessun veicolo in trasmissione al momento</h4>
+                            <p class="text-xs text-slate-400 max-w-md mx-auto">I conducenti con GPS attivato appariranno automaticamente qui e sulla mappa in tempo reale.</p>
+                            <div class="pt-2">
+                                <button type="button" onclick="FleetMapManager.toggleDemoFleet()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow transition">
+                                    Simula 3 Camion di Prova
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                listEl.innerHTML = vehiclesList.map((v) => {
+                    const isDriving = v.speed >= 12;
+                    const isManeuver = v.speed >= 3 && v.speed < 12;
+                    const badgeBg = isDriving ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40' : (isManeuver ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800 text-slate-300 border-slate-700');
+                    const badgeText = isDriving ? 'IN GUIDA' : (isManeuver ? 'MANOVRA' : 'IN PAUSA');
+
+                    return `
+                        <div class="p-3.5 bg-[#0F1C32] rounded-2xl border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-2.5 shadow-md">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center space-x-1.5">
+                                        <h5 class="font-bold text-white text-xs truncate">${escapeHtml(v.driverName)}</h5>
+                                        ${v.isDemo ? '<span class="bg-indigo-500/20 text-indigo-300 text-[8px] font-bold px-1.5 py-0.2 rounded border border-indigo-500/30">DEMO</span>' : ''}
+                                    </div>
+                                    <span class="text-[11px] text-slate-400 font-mono block">${escapeHtml(v.vehicle)}</span>
+                                </div>
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-black border uppercase tracking-wider flex-shrink-0 ${badgeBg}">
+                                    ${badgeText}
+                                </span>
+                            </div>
+
+                            <div class="p-2 bg-[#0A1220] rounded-xl border border-slate-800/80 flex items-center justify-between text-xs">
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-[10px] text-slate-400">Velocità:</span>
+                                    <strong class="font-mono ${isDriving ? 'text-emerald-400' : 'text-cyan-300'}">${v.speed} km/h</strong>
+                                </div>
+                                <div class="text-[10px] text-slate-400 truncate max-w-[130px]" title="${escapeHtml(v.address)}">
+                                    📍 ${escapeHtml(v.address)}
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-800/80">
+                                <button type="button" onclick="FleetMapManager.zoomToVehicle('${v.id}')" class="flex-1 py-1.5 bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-300 border border-cyan-500/30 rounded-xl text-[11px] font-bold transition flex items-center justify-center space-x-1">
+                                    <span>🎯</span> <span>Centra Mappa</span>
+                                </button>
+                                <a href="https://www.google.com/maps?q=${v.lat},${v.lng}" target="_blank" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-[11px] font-bold transition flex items-center justify-center" title="Apri in Google Maps">
+                                    🧭
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            },
+
+            zoomToVehicle(id) {
+                const marker = this.markers[id];
+                if (marker && this.map) {
+                    this.map.setView(marker.getLatLng(), 15, { animate: true });
+                    marker.openPopup();
+                    const container = document.getElementById('adminFleetMapContainer');
+                    if (container) {
+                        container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                } else {
+                    showToast("Veicolo non trovato sulla mappa.", "warning");
                 }
             }
         };
