@@ -10465,8 +10465,16 @@
             handlePositionError(err) {
                 console.warn("[GPS] Errore posizione:", err);
                 const addressEl = document.getElementById('gpsAddressText');
+                const statusInd = document.getElementById('gpsStatusIndicator');
                 let msg = "Segnale debole o non disponibile";
-                if (err.code === 1) msg = "Accesso posizione negato. Consenti il GPS dal browser.";
+                if (err.code === 1) {
+                    msg = "Accesso posizione negato. Clicca sul lucchetto 🔒 nella barra dell'indirizzo e imposta Posizione su Consenti.";
+                    if (statusInd) {
+                        statusInd.innerText = "🚫 Permesso GPS Negato";
+                        statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-rose-950 text-rose-300 border border-rose-500/60 shadow-sm";
+                    }
+                    this.stopGPS();
+                }
                 else if (err.code === 2) msg = "Segnale GPS non disponibile o satelliti oscurati.";
                 else if (err.code === 3) msg = "Timeout richiesta posizione GPS.";
                 if (addressEl) addressEl.innerText = msg;
