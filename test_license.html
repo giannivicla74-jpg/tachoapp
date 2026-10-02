@@ -100,6 +100,23 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        /* Icona Orologio e Calendario in Bianco Evidente per Tema Scuro */
+        input[type="time"], input[type="date"] {
+            color-scheme: dark !important;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: brightness(0) invert(1) !important;
+            cursor: pointer !important;
+            opacity: 1 !important;
+            transform: scale(1.15);
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        input[type="time"]::-webkit-calendar-picker-indicator:hover,
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            transform: scale(1.3);
+            filter: brightness(0) invert(1) drop-shadow(0 0 4px rgba(255,255,255,0.9)) !important;
+        }
         @media print {
             body { 
                 background-color: #ffffff !important; 
@@ -1324,6 +1341,10 @@
                             <div class="flex items-center gap-1">
                                 <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30 flex-shrink-0">CE 561/2006</span>
                                 <span id="driverSimActiveBadge" class="hidden bg-emerald-500 text-slate-950 text-[9px] font-black px-1.5 py-0.5 rounded shadow-sm animate-pulse flex-shrink-0">LIVE</span>
+                                <button type="button" id="cardBtnToggleWakeLock" onclick="event.stopPropagation(); toggleScreenWakeLock();" class="hidden px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[9px] font-bold rounded-lg transition flex items-center space-x-1 shadow-sm" title="Tocca per attivare/disattivare schermo sempre acceso">
+                                    <span id="cardWakeLockIcon">🔆</span>
+                                    <span id="cardWakeLockText">Schermo ON</span>
+                                </button>
                             </div>
                         </div>
                         <div id="driverSimBtnSubtitle" class="mt-1 text-xs text-slate-300 leading-snug">
@@ -3190,10 +3211,17 @@
                             <div>
                                 <div class="flex justify-between items-center mb-1">
                                     <label class="block text-[10px] uppercase font-bold text-slate-400">Ora Inizio Servizio / Guida *</label>
-                                    <button type="button" onclick="setSimTimeNow()" class="text-[9px] text-emerald-400 hover:underline font-bold">⏱️ Imposta Adesso</button>
+                                    <button type="button" onclick="setSimTimeNow()" class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 hover:text-white border border-emerald-500/40 rounded-lg text-[10px] font-bold transition shadow-xs">
+                                        <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="9"></circle>
+                                            <polyline points="12 7 12 12 15 15"></polyline>
+                                        </svg>
+                                        <span>Imposta Adesso</span>
+                                    </button>
                                 </div>
                                 <input type="time" id="simStartTime" value="06:00" oninput="calculateDrivingSimulation()" 
-                                    class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-white text-sm focus:border-emerald-400">
+                                    class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-white text-sm focus:border-emerald-400 cursor-pointer"
+                                    style="color-scheme: dark !important;">
                             </div>
 
                             <div>
@@ -3302,6 +3330,10 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                                    <button type="button" id="btnToggleWakeLock" onclick="toggleScreenWakeLock()" class="px-2.5 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-400/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm" title="Mantieni lo schermo sempre acceso durante il turno (Modalità Cabina)">
+                                        <span id="wakeLockIcon">🔆</span>
+                                        <span id="wakeLockText">Schermo Cabina: ON</span>
+                                    </button>
                                     <button type="button" id="btnToggleVoiceAnnounce" onclick="toggleVoiceAnnouncements()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1" title="Attiva/disattiva annunci vocali automatici al cambio fase">
                                         <span id="voiceToggleIcon">🔕</span>
                                         <span id="voiceToggleText">Avvisi Auto: OFF</span>
@@ -8918,6 +8950,7 @@
                     }
                 }
             }
+            updateWakeLockUI();
         }
 
         function startDrivingSimulation() {
@@ -8925,16 +8958,37 @@
                 Notification.requestPermission().catch(() => {});
             }
             localStorage.setItem('tacho_sim_active', 'true');
+            if (localStorage.getItem('tacho_voice_auto') === null) {
+                localStorage.setItem('tacho_voice_auto', 'true');
+            }
+            if (localStorage.getItem('tacho_wakelock_enabled') === null) {
+                localStorage.setItem('tacho_wakelock_enabled', 'true');
+            }
+            const timeVal = document.getElementById('simStartTime')?.value || "06:00";
+            const [sh, sm] = timeVal.split(':').map(Number);
+            const now = new Date();
+            const startD = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sh, sm, 0, 0);
+            
+            // Se l'orario di partenza è nel futuro di oltre 12 ore rispetto ad adesso, si riferisce a ieri sera
+            if (startD.getTime() > now.getTime() + 12 * 3600 * 1000) {
+                startD.setDate(startD.getDate() - 1);
+            }
+
             const savedParams = {
-                startTime: document.getElementById('simStartTime')?.value || "06:00",
+                startTime: timeVal,
                 dailyDrive: document.getElementById('simDailyDrive')?.value || "9",
                 pauseType: document.getElementById('simPauseType')?.value || "45",
                 restType: document.getElementById('simRestType')?.value || "11",
-                otherWork: document.getElementById('simOtherWork')?.value || "0"
+                otherWork: document.getElementById('simOtherWork')?.value || "0",
+                startEpoch: startD.getTime()
             };
             localStorage.setItem('tacho_sim_params', JSON.stringify(savedParams));
+            lastAutoAnnouncedStageId = null;
+            requestScreenWakeLock();
             calculateDrivingSimulation();
             updateSimulationStateUI();
+            updateVoiceAnnounceUI();
+            updateWakeLockUI();
             showToast("🟢 Monitoraggio Guida attivato sul cruscotto!", "success");
         }
 
@@ -9232,10 +9286,131 @@
             }
         }
 
+        // ================= GESTIONE SCHERMO SEMPRE ACCESO (SCREEN WAKE LOCK) =================
+        let screenWakeLockSentinel = null;
+
+        async function requestScreenWakeLock() {
+            if (!('wakeLock' in navigator)) {
+                console.log('[WakeLock] API non supportata da questo browser.');
+                updateWakeLockUI();
+                return false;
+            }
+            const isPrefEnabled = localStorage.getItem('tacho_wakelock_enabled') !== 'false'; // Default TRUE
+            const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+            if (!isPrefEnabled || !isSimActive) {
+                releaseScreenWakeLock();
+                return false;
+            }
+            try {
+                if (!screenWakeLockSentinel || screenWakeLockSentinel.released) {
+                    screenWakeLockSentinel = await navigator.wakeLock.request('screen');
+                    screenWakeLockSentinel.addEventListener('release', () => {
+                        screenWakeLockSentinel = null;
+                        updateWakeLockUI();
+                    });
+                    console.log('[WakeLock] Schermo cabina bloccato su sempre attivo.');
+                }
+                updateWakeLockUI();
+                return true;
+            } catch(err) {
+                console.warn('[WakeLock] Impossibile attivare WakeLock schermo:', err.message);
+                updateWakeLockUI();
+                return false;
+            }
+        }
+
+        function releaseScreenWakeLock() {
+            if (screenWakeLockSentinel) {
+                try {
+                    screenWakeLockSentinel.release();
+                } catch(e) {}
+                screenWakeLockSentinel = null;
+            }
+            updateWakeLockUI();
+        }
+
+        function toggleScreenWakeLock() {
+            const currentPref = localStorage.getItem('tacho_wakelock_enabled') !== 'false'; // Default TRUE
+            const nextPref = !currentPref;
+            localStorage.setItem('tacho_wakelock_enabled', String(nextPref));
+            if (nextPref) {
+                requestScreenWakeLock();
+                showToast("🔆 Schermo sempre acceso in cabina ATTIVATO", "success");
+            } else {
+                releaseScreenWakeLock();
+                showToast("🌙 Schermo libero: andrà in standby normalmente", "info");
+            }
+            updateWakeLockUI();
+        }
+
+        function updateWakeLockUI() {
+            const isPrefEnabled = localStorage.getItem('tacho_wakelock_enabled') !== 'false';
+            const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+
+            // 1. Pulsante nel Modal
+            const btn = document.getElementById('btnToggleWakeLock');
+            const icon = document.getElementById('wakeLockIcon');
+            const text = document.getElementById('wakeLockText');
+
+            if (btn && icon && text) {
+                if (isPrefEnabled) {
+                    icon.innerText = "🔆";
+                    text.innerText = isSimActive ? "Schermo Cabina: ON" : "Schermo: ON (Al via)";
+                    btn.className = "px-2.5 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-400/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm";
+                    btn.title = "Schermo sempre acceso abilitato: il display del telefono non si spegnerà durante il turno";
+                } else {
+                    icon.innerText = "🌙";
+                    text.innerText = "Schermo Cabina: OFF";
+                    btn.className = "px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1";
+                    btn.title = "Schermo sempre acceso disattivato: il telefono andrà in standby normalmente";
+                }
+            }
+
+            // 2. Pulsante rapido sulla Card del Cruscotto (visibile quando il monitoraggio è attivo)
+            const cardBtn = document.getElementById('cardBtnToggleWakeLock');
+            const cardIcon = document.getElementById('cardWakeLockIcon');
+            const cardText = document.getElementById('cardWakeLockText');
+
+            if (cardBtn && cardIcon && cardText) {
+                if (isSimActive) {
+                    cardBtn.classList.remove('hidden');
+                } else {
+                    cardBtn.classList.add('hidden');
+                }
+
+                if (isPrefEnabled) {
+                    cardIcon.innerText = "🔆";
+                    cardText.innerText = "Schermo ON";
+                    cardBtn.className = "px-2 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/40 text-[9px] font-bold rounded-lg transition flex items-center space-x-1 shadow-sm";
+                    cardBtn.title = "Schermo sempre acceso in cabina attivo (tocca per disattivare)";
+                } else {
+                    cardIcon.innerText = "🌙";
+                    cardText.innerText = "Schermo OFF";
+                    cardBtn.className = "px-2 py-0.5 bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[9px] font-bold rounded-lg transition flex items-center space-x-1";
+                    cardBtn.title = "Schermo in standby normale (tocca per mantenere sempre acceso)";
+                }
+            }
+        }
+
+        if (typeof document !== 'undefined') {
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
+                    if (isSimActive) {
+                        requestScreenWakeLock();
+                        if (typeof calculateDrivingSimulation === 'function') {
+                            calculateDrivingSimulation();
+                        }
+                    }
+                }
+            });
+        }
+
         function stopDrivingSimulation() {
             localStorage.setItem('tacho_sim_active', 'false');
             lastAutoAnnouncedStageId = null;
             stopSpeakingVoice();
+            releaseScreenWakeLock();
             calculateDrivingSimulation();
             updateSimulationStateUI();
             const elBtnTitle = document.getElementById('driverSimBtnTitle');
@@ -9255,6 +9430,7 @@
             localStorage.removeItem('tacho_sim_params');
             lastAutoAnnouncedStageId = null;
             stopSpeakingVoice();
+            releaseScreenWakeLock();
 
             // Resetta i campi di input a valori puliti
             const now = new Date();
@@ -9285,6 +9461,7 @@
             calculateDrivingSimulation();
             updateSimulationStateUI();
             updateVoiceAnnounceUI();
+            updateWakeLockUI();
         }
 
         function closeDrivingSimulatorModal() {
@@ -9445,14 +9622,33 @@
             }
 
             // =================== COSTRUZIONE TABELLA DI MARCIA PASSO-PASSO ===================
+            // Calcolo startEpoch reale per gestire con precisione orari e passaggi a cavallo della mezzanotte
+            let startEpoch = null;
+            try {
+                const rawParams = localStorage.getItem('tacho_sim_params');
+                if (rawParams) {
+                    const parsed = JSON.parse(rawParams);
+                    if (parsed && parsed.startEpoch) startEpoch = parsed.startEpoch;
+                }
+            } catch(e) {}
+
             const now = new Date();
-            const currentMinutes = (now.getHours() * 60) + now.getMinutes();
-            const currentSeconds = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds();
-            const startSeconds = startMinutes * 60;
-            const firstBreakSeconds = firstBreakMinutes * 60;
-            const resumeDriveSeconds = resumeDriveMinutes * 60;
-            const endTurnSeconds = endTurnMinutes * 60;
-            const nextStartSeconds = nextStartMinutes * 60;
+            if (!startEpoch) {
+                const [sh, sm] = timeInput.split(':').map(Number);
+                const d = new Date(now.getFullYear(), now.getMonth(), now.getDate(), sh, sm, 0, 0);
+                if (d.getTime() > now.getTime() + 12 * 3600 * 1000) {
+                    d.setDate(d.getDate() - 1);
+                }
+                startEpoch = d.getTime();
+            }
+
+            const elapsedSeconds = Math.floor((now.getTime() - startEpoch) / 1000);
+
+            // Calcolo offset in secondi delle varie tappe dallo start (0 secondi)
+            const firstBreakOffsetSec = firstDriveMinutes * 60 + (otherWorkMin > 0 ? Math.floor(otherWorkMin / 2) * 60 : 0);
+            const resumeDriveOffsetSec = firstBreakOffsetSec + (pauseDuration * 60);
+            const endTurnOffsetSec = (totalDriveMinutes + pauseDuration + otherWorkMin) * 60;
+            const nextStartOffsetSec = endTurnOffsetSec + (restHours * 3600);
 
             // Definizione delle 5 Tappe
             const stages = [
@@ -9463,8 +9659,8 @@
                     duration: "4h 30m di guida ininterrotta",
                     desc: "Inserisci la carta nel tachigrafo e avvia il 1° blocco di guida.",
                     icon: "🟢",
-                    startMin: startMinutes,
-                    endMin: firstBreakMinutes
+                    offsetSec: 0,
+                    endOffsetSec: firstBreakOffsetSec
                 },
                 {
                     id: 2,
@@ -9473,8 +9669,8 @@
                     duration: "45 minuti di sosta continuativa",
                     desc: (pauseType === '15_30') ? "Fermati ora! Completa i 30m di sosta (dopo i 15m preliminari)." : "FERMATI ORA! Metti il selettore tachigrafo su Pausa/Riposo.",
                     icon: "🛑",
-                    startMin: firstBreakMinutes,
-                    endMin: resumeDriveMinutes
+                    offsetSec: firstBreakOffsetSec,
+                    endOffsetSec: resumeDriveOffsetSec
                 },
                 {
                     id: 3,
@@ -9483,28 +9679,28 @@
                     duration: (dailyDriveHours === 10) ? "5h 30m di guida restante" : "4h 30m di guida restante",
                     desc: "Pausa ultimata. Puoi ripartire per completare la tratta giornaliera.",
                     icon: "🟢",
-                    startMin: resumeDriveMinutes,
-                    endMin: endTurnMinutes
+                    offsetSec: resumeDriveOffsetSec,
+                    endOffsetSec: endTurnOffsetSec
                 },
                 {
                     id: 4,
-                    title: "4. Fine Guida & Fine Turno Giornaliero",
+                    title: "4. Fine Guida & Riposo Giornaliero",
                     timeStr: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
-                    duration: `Totale ${dailyDriveHours} ore di guida raggiunte`,
-                    desc: "Arresto definitivo del veicolo. Inizia il periodo di riposo giornaliero.",
-                    icon: "🏁",
-                    startMin: endTurnMinutes,
-                    endMin: endTurnMinutes + 15
+                    duration: `Riposo obbligatorio di ${restHours} ore`,
+                    desc: "Arresto definitivo del veicolo. Inizia ed è in corso il periodo di riposo giornaliero.",
+                    icon: "🛏️",
+                    offsetSec: endTurnOffsetSec,
+                    endOffsetSec: nextStartOffsetSec
                 },
                 {
                     id: 5,
                     title: "5. Ripartenza Consentita (Nuovo Turno)",
                     timeStr: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' (Giorno dopo)' : ''}`,
-                    duration: `Dopo ${restHours} ore di riposo obbligatorio`,
-                    desc: `Riposo giornaliero (${restHours}h) completato legalmente. Sei pronto per ripartire!`,
-                    icon: "🛏️",
-                    startMin: endTurnMinutes,
-                    endMin: nextStartMinutes
+                    duration: `Riposo (${restHours}h) completato`,
+                    desc: `Riposo giornaliero completato legalmente. Sei pronto per iniziare un nuovo turno!`,
+                    icon: "✨",
+                    offsetSec: nextStartOffsetSec,
+                    endOffsetSec: nextStartOffsetSec + 7200
                 }
             ];
 
@@ -9513,35 +9709,35 @@
             let radarText = "";
             let radarSubText = "";
 
-            if (currentSeconds < startSeconds) {
+            if (elapsedSeconds < 0) {
                 activeStageId = 1;
-                const diffSec = Math.max(0, startSeconds - currentSeconds);
+                const diffSec = Math.max(0, -elapsedSeconds);
                 radarText = `⏳ Turno in Programmazione (Inizio alle ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
                 radarSubText = `La partenza è programmata tra <strong>${formatDurationHMS(diffSec)}</strong>.`;
-            } else if (currentSeconds >= startSeconds && currentSeconds < firstBreakSeconds) {
+            } else if (elapsedSeconds >= 0 && elapsedSeconds < firstBreakOffsetSec) {
                 activeStageId = 1;
-                const diffSec = Math.max(0, firstBreakSeconds - currentSeconds);
+                const diffSec = Math.max(0, firstBreakOffsetSec - elapsedSeconds);
                 radarText = `🟢 IN CORSO: 1° Periodo di Guida`;
                 radarSubText = `Ti mancano <strong class="text-amber-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> prima della sosta obbligatoria delle ore <strong>${firstBreakFormatted.timeStr}</strong>.`;
-            } else if (currentSeconds >= firstBreakSeconds && currentSeconds < resumeDriveSeconds) {
+            } else if (elapsedSeconds >= firstBreakOffsetSec && elapsedSeconds < resumeDriveOffsetSec) {
                 activeStageId = 2;
-                const diffSec = Math.max(0, resumeDriveSeconds - currentSeconds);
+                const diffSec = Math.max(0, resumeDriveOffsetSec - elapsedSeconds);
                 radarText = `🛑 IN CORSO: Pausa Obbligatoria (45 Minuti)`;
                 radarSubText = `Resta fermo in sosta. Potrai ripartire tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${resumeDriveFormatted.timeStr}</strong>).`;
-            } else if (currentSeconds >= resumeDriveSeconds && currentSeconds < endTurnSeconds) {
+            } else if (elapsedSeconds >= resumeDriveOffsetSec && elapsedSeconds < endTurnOffsetSec) {
                 activeStageId = 3;
-                const diffSec = Math.max(0, endTurnSeconds - currentSeconds);
+                const diffSec = Math.max(0, endTurnOffsetSec - elapsedSeconds);
                 radarText = `🟢 IN CORSO: 2° Periodo di Guida`;
                 radarSubText = `Fine turno di guida tra <strong class="text-indigo-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (alle ore <strong>${endTurnFormatted.timeStr}</strong>).`;
-            } else if (currentSeconds >= endTurnSeconds && currentSeconds < nextStartSeconds) {
-                activeStageId = 5;
-                const diffSec = Math.max(0, nextStartSeconds - currentSeconds);
+            } else if (elapsedSeconds >= endTurnOffsetSec && elapsedSeconds < nextStartOffsetSec) {
+                activeStageId = 4;
+                const diffSec = Math.max(0, nextStartOffsetSec - elapsedSeconds);
                 radarText = `🛏️ IN CORSO: Periodo di Riposo Giornaliero (${restHours}h)`;
-                radarSubText = `Riposo in corso. Ripartenza legale tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${nextStartFormatted.timeStr}</strong>).`;
+                radarSubText = `Riposo in corso. Ripartenza legale per nuovo turno tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${nextStartFormatted.timeStr}</strong>).`;
             } else {
                 activeStageId = 5;
-                radarText = `✅ Turno e Riposo Completati`;
-                radarSubText = `Hai completato il ciclo di guida e riposo. Puoi iniziare un nuovo turno!`;
+                radarText = `✨ Riposo Ultimato • Nuovo Turno Consentito`;
+                radarSubText = `Hai completato legalmente il riposo di <strong>${restHours} ore</strong>. Sei autorizzato a iniziare un nuovo turno!`;
             }
 
             // Popolamento del Live Radar Banner
@@ -9654,7 +9850,7 @@
                 // Primo avvio/calcolo: memorizza la tappa iniziale attiva senza sparare annunci all'apertura o al refresh/swipe dell'app
                 if (lastAutoAnnouncedStageId === null) {
                     lastAutoAnnouncedStageId = activeStageId;
-                } else if (lastAutoAnnouncedStageId !== activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes) {
+                } else if (lastAutoAnnouncedStageId !== activeStageId) {
                     lastAutoAnnouncedStageId = activeStageId;
 
                     // 1. Notifica Push di Sistema con Vibrazione tattile & Suono (anche a schermo bloccato o con Google Maps/Waze)
@@ -9692,23 +9888,23 @@
                 if (!isSimActive) {
                     elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
                 } else {
-                    if (currentSeconds < startSeconds) {
-                        const diffSec = Math.max(0, startSeconds - currentSeconds);
+                    if (elapsedSeconds < 0) {
+                        const diffSec = Math.max(0, -elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-amber-950/80 border border-amber-500/40 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span><span class="text-xs font-black text-amber-200 uppercase tracking-wide truncate">Partenza Programmata</span></div><span class="text-[11px] font-bold text-amber-300/90 flex-shrink-0 whitespace-nowrap">ore ${formatMinutesToTimeString(startMinutes).timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20"><span class="text-[11px] text-slate-300 font-medium">Inizio turno tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-amber-500/40 border border-amber-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
-                    } else if (currentSeconds >= startSeconds && currentSeconds < firstBreakSeconds) {
-                        const diffSec = Math.max(0, firstBreakSeconds - currentSeconds);
+                    } else if (elapsedSeconds >= 0 && elapsedSeconds < firstBreakOffsetSec) {
+                        const diffSec = Math.max(0, firstBreakOffsetSec - elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-amber-950/80 border border-amber-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(251,191,36,0.9)]"></span><span class="text-xs font-black text-amber-200 uppercase tracking-wide truncate">1° Blocco Guida</span></div><span class="text-[11px] font-bold text-amber-300/90 flex-shrink-0 whitespace-nowrap">Pausa ore ${firstBreakFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-amber-500/20"><span class="text-[11px] text-slate-300 font-medium">Pausa (45m) tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-amber-500/40 border border-amber-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
-                    } else if (currentSeconds >= firstBreakSeconds && currentSeconds < resumeDriveSeconds) {
-                        const diffSec = Math.max(0, resumeDriveSeconds - currentSeconds);
+                    } else if (elapsedSeconds >= firstBreakOffsetSec && elapsedSeconds < resumeDriveOffsetSec) {
+                        const diffSec = Math.max(0, resumeDriveOffsetSec - elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-emerald-950/80 border border-emerald-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-ping shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-emerald-200 uppercase tracking-wide truncate">In Pausa Obbligatoria (45m)</span></div><span class="text-[11px] font-bold text-emerald-300/90 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${resumeDriveFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-emerald-500/20"><span class="text-[11px] text-slate-300 font-medium">Ripartenza tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-emerald-500/40 border border-emerald-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
-                    } else if (currentSeconds >= resumeDriveSeconds && currentSeconds < endTurnSeconds) {
-                        const diffSec = Math.max(0, endTurnSeconds - currentSeconds);
+                    } else if (elapsedSeconds >= resumeDriveOffsetSec && elapsedSeconds < endTurnOffsetSec) {
+                        const diffSec = Math.max(0, endTurnOffsetSec - elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-indigo-950/80 border border-indigo-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-indigo-200 uppercase tracking-wide truncate">2° Blocco Guida</span></div><span class="text-[11px] font-bold text-indigo-300/90 flex-shrink-0 whitespace-nowrap">Fine turno ore ${endTurnFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-indigo-500/20"><span class="text-[11px] text-slate-300 font-medium">Fine turno tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-indigo-500/40 border border-indigo-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
-                    } else if (currentSeconds >= endTurnSeconds && currentSeconds < nextStartSeconds) {
-                        const diffSec = Math.max(0, nextStartSeconds - currentSeconds);
+                    } else if (elapsedSeconds >= endTurnOffsetSec && elapsedSeconds < nextStartOffsetSec) {
+                        const diffSec = Math.max(0, nextStartOffsetSec - elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-blue-950/80 border border-blue-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-blue-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.9)]"></span><span class="text-xs font-black text-blue-200 uppercase tracking-wide truncate">In Riposo (${restHours}h)</span></div><span class="text-[11px] font-bold text-blue-300/90 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${nextStartFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-blue-500/20"><span class="text-[11px] text-slate-300 font-medium">Fine riposo tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-blue-500/40 border border-blue-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
                     } else {
-                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 shadow-sm flex items-center justify-between gap-2 text-left"><div class="flex items-center space-x-2"><span class="text-sm">✅</span><span class="text-xs font-bold text-emerald-200">Turno &amp; Riposo Ultimati</span></div><span class="text-[11px] text-emerald-300/80 font-medium">Pronto per nuovo turno</span></div>`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-emerald-950/90 border border-emerald-400/60 shadow-lg space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-ping shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-emerald-200 uppercase tracking-wide truncate">Riposo Ultimato • Nuovo Turno</span></div><span class="text-[11px] font-bold text-emerald-300 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${nextStartFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-emerald-500/30"><span class="text-[11px] text-emerald-300/90 font-medium">Autorizzato a ripartire!</span><button type="button" onclick="event.stopPropagation(); openDrivingSimulatorModal();" class="text-[10px] font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-2.5 py-1 rounded-lg shadow transition active:scale-95">Inizia Nuovo Turno ➔</button></div></div>`;
                     }
                 }
             }
@@ -9908,6 +10104,10 @@
                 updateSimulationStateUI();
                 calculateDrivingSimulation();
                 
+                if (localStorage.getItem('tacho_sim_active') === 'true') {
+                    requestScreenWakeLock();
+                }
+
                 if (drivingSimulationInterval) clearInterval(drivingSimulationInterval);
                 drivingSimulationInterval = setInterval(calculateDrivingSimulation, 1000);
 
