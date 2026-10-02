@@ -1322,7 +1322,7 @@
             </div>
 
             <!-- Pulsante Simulatore Tempi di Guida & Normativa CE 561/2006 per Autista -->
-            <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-gradient-to-r from-emerald-950/90 via-slate-900 to-indigo-950/90 hover:from-emerald-900 hover:to-indigo-900 border border-emerald-500/50 hover:border-emerald-400 p-3.5 sm:p-4 rounded-3xl shadow-xl flex items-center justify-between text-left transition-all active:scale-[0.98] group">
+            <div onclick="openDrivingSimulatorModal()" role="button" tabindex="0" class="cursor-pointer w-full bg-gradient-to-r from-emerald-950/90 via-slate-900 to-indigo-950/90 hover:from-emerald-900 hover:to-indigo-900 border border-emerald-500/50 hover:border-emerald-400 p-3.5 sm:p-4 rounded-3xl shadow-xl flex items-center justify-between text-left transition-all active:scale-[0.98] group">
                 <div class="flex items-start sm:items-center space-x-3 sm:space-x-3.5 min-w-0 flex-1 mr-2">
                     <div id="driverSimIconWrapper" class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-900/60 to-slate-900/80 border border-emerald-500/40 flex items-center justify-center relative flex-shrink-0 shadow-inner group-hover:scale-105 transition duration-200 mt-0.5 sm:mt-0">
                         <div id="driverSimIconGlow" class="hidden absolute inset-0 rounded-2xl bg-emerald-400/20 animate-ping pointer-events-none"></div>
@@ -1355,7 +1355,7 @@
                 <div class="p-2 text-emerald-400 font-bold group-hover:translate-x-1 transition text-sm flex-shrink-0 self-center">
                     ➔
                 </div>
-            </button>
+            </div>
 
             <!-- Box Gestione Ferie Autista -->
             <div class="bg-[#15243E] border border-yellow-500/30 rounded-3xl p-5 shadow-xl space-y-4">
@@ -5760,6 +5760,14 @@
             } catch(err) {
                 console.error("Errore in showSection:", err);
                 const loginSec = document.getElementById('loginSection');
+                const driverSec = document.getElementById('driverSection');
+                const adminSec = document.getElementById('adminSection');
+                const driverSelSec = document.getElementById('driverSelectionSection');
+                const adminHeader = document.getElementById('adminHeader');
+                if (driverSec) driverSec.classList.add('hidden');
+                if (adminSec) adminSec.classList.add('hidden');
+                if (driverSelSec) driverSelSec.classList.add('hidden');
+                if (adminHeader) adminHeader.classList.add('hidden');
                 if (loginSec) loginSec.classList.remove('hidden');
             }
         }
