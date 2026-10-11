@@ -1567,7 +1567,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
                         <label class="flex items-center space-x-2 cursor-pointer select-none">
                             <input type="checkbox" id="gpsVoiceAlertToggle" checked onchange="GPSManager.toggleVoiceAlert(this.checked)" class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0">
-                            <span class="text-slate-300 text-[11px] font-bold">🔊 Avvisi Vocali Intelligenti (Voce al movimento e fermata)</span>
+                            <span class="text-slate-300 text-[11px] font-bold">🔊 Avvisi Vocali Intelligenti (Filtro semafori 3 min &amp; sosta prolungata)</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer select-none">
                             <input type="checkbox" id="gpsCloudSyncToggle" checked class="w-4 h-4 rounded text-cyan-500 bg-slate-900 border-slate-700 focus:ring-0">
@@ -10470,6 +10470,12 @@
             geocodeTimeout: null,
             lastGeocodedCoords: null,
 
+            // --- FILTRO SEMAFORI & SOSTA PROLUNGATA (3 MINUTI) ---
+            stopConfirmationTimeout: null,
+            stopStartTime: null,
+            stopDurationMs: 180000, // 3 minuti (180.000 ms) di fermo continuativo prima di confermare la sosta
+            isConfirmedStop: false,
+
             toggleGPS() {
                 if (this.isActive) {
                     this.stopGPS();
@@ -10524,6 +10530,12 @@
                     navigator.geolocation.clearWatch(this.watchId);
                     this.watchId = null;
                 }
+                if (this.stopConfirmationTimeout) {
+                    clearTimeout(this.stopConfirmationTimeout);
+                    this.stopConfirmationTimeout = null;
+                }
+                this.stopStartTime = null;
+                this.isConfirmedStop = false;
                 this.isActive = false;
                 this.currentSpeedKmH = 0;
                 this.movingConsecutiveReadings = 0;
@@ -10649,7 +10661,7 @@
                     ? currentLoggedInDriver.vehicle 
                     : 'Trattore Stradale';
 
-                const status = speed >= 15 ? 'driving' : (speed >= 5 ? 'maneuver' : 'stopped');
+                const status = speed >= 15 ? 'driving' : (speed >= 5 ? 'maneuver' : (this.isConfirmedStop ? 'stopped' : 'traffic_stop'));
 
                 try {
                     const payload = {
@@ -10695,11 +10707,23 @@
 
                 if (speed >= 15) {
                     // IN MOVIMENTO / GUIDA EFFETTIVA (>= 15 km/h stabilizzati)
+                    
+                    // Se c'era un timer di attesa sosta per fermata al semaforo o in coda, annullalo subito
+                    if (this.stopConfirmationTimeout) {
+                        clearTimeout(this.stopConfirmationTimeout);
+                        this.stopConfirmationTimeout = null;
+                    }
+
+                    const wasConfirmedStop = this.isConfirmedStop;
+                    const wasAlreadyMoving = (this.lastAnnouncedState === 'moving');
+                    this.stopStartTime = null;
+                    this.isConfirmedStop = false;
+
                     statusInd.innerText = `🟢 IN GUIDA (${speed} km/h)`;
                     statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-emerald-950 text-emerald-300 border border-emerald-500/60 shadow-[0_0_12px_rgba(16,185,129,0.4)] animate-pulse";
                     this.startMotionTimer();
 
-                    // Auto-avvio Turno Live se abilitato e non ancora attivo
+                    // Auto-avvio Turno Live se abilitato e non ancora attivo (al primo avvio)
                     const autoStartToggle = document.getElementById('gpsAutoStartTurnToggle');
                     const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
                     if (autoStartToggle && autoStartToggle.checked && !isSimActive && !this.hasAutoStartedTurn) {
@@ -10717,29 +10741,66 @@
                         if (this.voiceAlertEnabled) {
                             this.speakGPS(`Rilevato movimento del veicolo. Turno di guida avviato automaticamente alle ore ${hh} e ${mm}.`);
                         }
-                    } else if (this.lastAnnouncedState !== 'moving') {
                         this.lastAnnouncedState = 'moving';
-                        if (this.voiceAlertEnabled) {
-                            this.speakGPS(`Rilevato movimento a ${speed} chilometri orari. Veicolo in guida.`);
+                    } else if (!wasAlreadyMoving) {
+                        this.lastAnnouncedState = 'moving';
+                        // Annuncia la ripresa guida SOLO se si riparte da una vera sosta confermata (> 3 min)
+                        // Se era solo un semaforo, STOP o coda (< 3 min), NON parla (massimo comfort e silenzio)
+                        if (wasConfirmedStop && this.voiceAlertEnabled) {
+                            this.speakGPS(`Ripresa della guida. Velocità ${speed} chilometri orari. Buon viaggio.`);
                         }
                     }
                 } else if (speed >= 5 && speed < 15) {
-                    // MANOVRA / RALLENTAMENTO (5 - 14 km/h)
+                    // MANOVRA / RALLENTAMENTO / PASSO D'UOMO (5 - 14 km/h)
+                    // Nel traffico lento a passo d'uomo, azzera il conteggio della sosta ferma
+                    if (this.stopConfirmationTimeout) {
+                        clearTimeout(this.stopConfirmationTimeout);
+                        this.stopConfirmationTimeout = null;
+                    }
+                    this.stopStartTime = null;
+
                     statusInd.innerText = `🟡 MANOVRA (${speed} km/h)`;
                     statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-amber-950 text-amber-300 border border-amber-500/60 shadow-sm";
                 } else {
-                    // FERMO (< 5 km/h o oscillazione soppressa)
-                    statusInd.innerText = `🅿️ Veicolo Fermo`;
-                    statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-slate-800/80 text-slate-300 border border-slate-700/60 shadow-sm";
-                    this.stopMotionTimer();
+                    // FERMO A ZERO (< 5 km/h o oscillazione soppressa)
+                    if (!this.stopStartTime) {
+                        this.stopStartTime = Date.now();
+                    }
 
-                    if (this.lastAnnouncedState === 'moving') {
-                        this.lastAnnouncedState = 'stopped';
-                        if (this.voiceAlertEnabled) {
-                            this.speakGPS("Veicolo fermo. Ricordati di impostare la pausa o altro lavoro.");
+                    if (this.isConfirmedStop) {
+                        // Sosta prolungata già confermata (> 3 minuti)
+                        statusInd.innerText = `🅿️ Sosta Prolungata (> 3 min)`;
+                        statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-slate-800/80 text-slate-300 border border-slate-700/60 shadow-sm";
+                    } else {
+                        // Arresto temporaneo per traffico / semaforo / precedenza (< 3 minuti)
+                        // ZERO messaggi vocali e NESSUN popup di disturbo. Il timer di guida continua senza spezzarsi
+                        statusInd.innerText = `🛑 Fermo nel traffico / Semaforo (0 km/h)`;
+                        statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-amber-950/80 text-amber-200 border border-amber-500/50 shadow-sm";
+
+                        if (!this.stopConfirmationTimeout) {
+                            this.stopConfirmationTimeout = setTimeout(() => {
+                                this.confirmProlongedStop();
+                            }, this.stopDurationMs);
                         }
                     }
                 }
+            },
+
+            confirmProlongedStop() {
+                this.isConfirmedStop = true;
+                this.lastAnnouncedState = 'stopped';
+                this.stopMotionTimer(); // Ora che la sosta è confermata (> 3 min), arresta il timer di marcia
+
+                const statusInd = document.getElementById('gpsStatusIndicator');
+                if (statusInd) {
+                    statusInd.innerText = `🅿️ Sosta Prolungata (> 3 min)`;
+                    statusInd.className = "mt-2 px-3 py-1 rounded-full text-[11px] font-black tracking-wide bg-slate-800/80 text-slate-300 border border-slate-700/60 shadow-sm";
+                }
+
+                if (this.voiceAlertEnabled) {
+                    this.speakGPS("Veicolo fermo da oltre tre minuti. Ricordati di impostare la pausa o altro lavoro sul tachigrafo.");
+                }
+                showToast("🅿️ Sosta confermata (> 3 min): ricorda di impostare Pausa sul tachigrafo.", "info");
             },
 
             startMotionTimer() {
@@ -11412,7 +11473,7 @@
                 let pausedCount = 0;
 
                 vehiclesList.forEach(v => {
-                    if (v.speed >= 12) drivingCount++;
+                    if (v.speed >= 12 || v.status === 'traffic_stop') drivingCount++;
                     else pausedCount++;
                 });
 
@@ -11441,10 +11502,11 @@
 
                 vehiclesList.forEach(v => {
                     const isDriving = v.speed >= 12;
+                    const isTrafficStop = v.status === 'traffic_stop';
                     const isManeuver = v.speed >= 3 && v.speed < 12;
                     
-                    let markerBg = isDriving ? '#10b981' : (isManeuver ? '#f59e0b' : '#0284c7');
-                    let markerIcon = isDriving ? '🚛' : (isManeuver ? '⚠️' : '🅿️');
+                    let markerBg = isDriving ? '#10b981' : (isTrafficStop ? '#f59e0b' : (isManeuver ? '#f59e0b' : '#0284c7'));
+                    let markerIcon = isDriving ? '🚛' : (isTrafficStop ? '🛑' : (isManeuver ? '⚠️' : '🅿️'));
                     let pulseHtml = isDriving ? '<div style="position: absolute; inset: -4px; border-radius: 50%; background-color: rgba(16,185,129,0.35); animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite; pointer-events: none;"></div>' : '';
 
                     const iconHtml = `
