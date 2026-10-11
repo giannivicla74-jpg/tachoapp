@@ -1543,7 +1543,10 @@
                         <span class="font-bold text-cyan-300 flex items-center gap-1.5">
                             <span class="animate-pulse">🟢</span> <span>Mappa Stradale Live OpenStreetMap</span>
                         </span>
-                        <button type="button" onclick="GPSManager.centerMap()" class="text-[10px] text-cyan-400 hover:underline font-bold">🎯 Ricentra sul Camion</button>
+                        <button type="button" id="btnGpsRecenter" onclick="GPSManager.centerMap()" class="text-[11px] px-2.5 py-1 rounded-xl bg-emerald-950/80 text-emerald-300 border border-emerald-500/60 font-bold flex items-center space-x-1.5 shadow-sm transition active:scale-95" title="La mappa sta seguendo il veicolo in tempo reale (come Google Maps)">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                            <span>🟢 Inseguimento Live ON</span>
+                        </button>
                     </div>
                     <div id="gpsMapContainer" class="h-64 sm:h-72 w-full rounded-2xl overflow-hidden border border-cyan-500/40 shadow-inner bg-slate-950 z-10"></div>
                 </div>
@@ -10459,6 +10462,10 @@
             map: null,
             mapMarker: null,
             mapAccuracyCircle: null,
+            mapRouteTrail: null,
+            routeCoordinates: [],
+            autoFollow: true,
+            recenterInactivityTimeout: null,
             isMapVisible: false,
             voiceAlertEnabled: true,
             hasAutoStartedTurn: false,
@@ -10932,7 +10939,9 @@
                     this.isMapVisible = true;
                     if (btnText) btnText.innerText = "Nascondi Mappa";
                     this.initMapIfNeeded();
-                    if (this.currentCoords) this.centerMap();
+                    this.autoFollow = true;
+                    this.updateRecenterButtonUI();
+                    if (this.currentCoords) this.centerMap(true);
                 }
             },
 
@@ -10950,7 +10959,7 @@
                 const defaultLat = this.currentCoords ? this.currentCoords.lat : 45.4642;
                 const defaultLng = this.currentCoords ? this.currentCoords.lng : 9.1900;
 
-                this.map = L.map('gpsMapContainer').setView([defaultLat, defaultLng], 14);
+                this.map = L.map('gpsMapContainer').setView([defaultLat, defaultLng], 15);
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
@@ -10974,23 +10983,97 @@
                     weight: 1
                 }).addTo(this.map);
 
+                // Disegna traccia percorso del conducente
+                if (this.routeCoordinates && this.routeCoordinates.length > 0) {
+                    this.mapRouteTrail = L.polyline(this.routeCoordinates, {
+                        color: '#06b6d4',
+                        weight: 4,
+                        opacity: 0.8,
+                        smoothFactor: 1
+                    }).addTo(this.map);
+                }
+
+                // Quando l'autista trascina/sposta manualmente la mappa, sospendi l'inseguimento
+                this.map.on('dragstart', () => {
+                    this.autoFollow = false;
+                    this.updateRecenterButtonUI();
+
+                    // Ritorna a seguire automaticamente dopo 15 secondi di inattività (stile Google Maps)
+                    if (this.recenterInactivityTimeout) clearTimeout(this.recenterInactivityTimeout);
+                    this.recenterInactivityTimeout = setTimeout(() => {
+                        if (!this.autoFollow && this.isMapVisible && this.currentCoords) {
+                            this.centerMap(true);
+                        }
+                    }, 15000);
+                });
+
                 setTimeout(() => this.map.invalidateSize(), 300);
             },
 
             updateMapMarker(lat, lng, accuracy) {
                 if (!this.map || !this.mapMarker) return;
-                this.mapMarker.setLatLng([lat, lng]);
+                const newLatLng = [lat, lng];
+                this.mapMarker.setLatLng(newLatLng);
                 if (this.mapAccuracyCircle) {
-                    this.mapAccuracyCircle.setLatLng([lat, lng]);
+                    this.mapAccuracyCircle.setLatLng(newLatLng);
                     this.mapAccuracyCircle.setRadius(accuracy || 30);
+                }
+
+                // Traccia del percorso live del conducente
+                if (this.routeCoordinates) {
+                    const lastPt = this.routeCoordinates[this.routeCoordinates.length - 1];
+                    if (!lastPt || Math.abs(lastPt[0] - lat) > 0.00004 || Math.abs(lastPt[1] - lng) > 0.00004) {
+                        this.routeCoordinates.push(newLatLng);
+                        if (this.routeCoordinates.length > 300) this.routeCoordinates.shift();
+                        if (!this.mapRouteTrail) {
+                            this.mapRouteTrail = L.polyline(this.routeCoordinates, {
+                                color: '#06b6d4',
+                                weight: 4,
+                                opacity: 0.85,
+                                smoothFactor: 1
+                            }).addTo(this.map);
+                        } else {
+                            this.mapRouteTrail.setLatLngs(this.routeCoordinates);
+                        }
+                    }
+                }
+
+                // INSEGUIMENTO AUTOMATICO STILE GOOGLE MAPS:
+                if (this.autoFollow && this.isMapVisible) {
+                    this.map.panTo(newLatLng, { animate: true, duration: 0.8 });
                 }
             },
 
-            centerMap() {
+            centerMap(silent = false) {
+                this.autoFollow = true;
+                if (this.recenterInactivityTimeout) {
+                    clearTimeout(this.recenterInactivityTimeout);
+                    this.recenterInactivityTimeout = null;
+                }
+                this.updateRecenterButtonUI();
                 if (this.map && this.currentCoords) {
-                    this.map.setView([this.currentCoords.lat, this.currentCoords.lng], 15);
+                    const currentZoom = this.map.getZoom() || 15;
+                    const targetZoom = Math.max(15, currentZoom);
+                    this.map.setView([this.currentCoords.lat, this.currentCoords.lng], targetZoom, { animate: true });
+                    if (!silent) {
+                        showToast("🎯 Visuale agganciata al veicolo (Inseguimento attivo)", "success");
+                    }
                 } else {
-                    showToast("Posizione GPS non ancora rilevata.", "info");
+                    if (!silent) showToast("Posizione GPS non ancora rilevata.", "info");
+                }
+            },
+
+            updateRecenterButtonUI() {
+                const btn = document.getElementById('btnGpsRecenter');
+                if (!btn) return;
+                if (this.autoFollow) {
+                    btn.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span><span class="font-bold">🟢 Inseguimento Live ON</span>`;
+                    btn.className = "text-[11px] px-2.5 py-1 rounded-xl bg-emerald-950/80 text-emerald-300 border border-emerald-500/60 font-bold flex items-center space-x-1.5 shadow-sm transition active:scale-95";
+                    btn.title = "La mappa sta seguendo il veicolo in tempo reale (come Google Maps)";
+                } else {
+                    btn.innerHTML = `<span>🎯</span><span class="font-black">Ricentra sul Camion</span>`;
+                    btn.className = "text-[11px] px-2.5 py-1 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black flex items-center space-x-1.5 shadow-lg shadow-cyan-900/50 animate-pulse transition active:scale-95";
+                    btn.title = "Clicca per riagganciare la mappa al veicolo in movimento";
                 }
             },
 
