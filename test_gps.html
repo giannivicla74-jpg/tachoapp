@@ -525,9 +525,8 @@
                             class="w-full bg-slate-800 text-slate-500 font-bold py-3 px-4 rounded-xl shadow transition-all duration-300 transform text-xs cursor-not-allowed">
                             Accedi a Gestione Flotta
                         </button>
-                        <div class="flex items-center justify-between gap-2 pt-1 text-[10px] font-bold">
+                        <div class="flex items-center justify-center pt-1 text-[10px] font-bold">
                             <button type="button" onclick="forgotAdminPassword()" class="text-slate-400 hover:text-emerald-300 hover:underline transition">Password dimenticata?</button>
-                            <button type="button" onclick="TachoAuth.ui.openLegacyActivation(activeCompanyId)" class="text-amber-400 hover:text-amber-300 hover:underline transition">Prima volta? Attiva con il vecchio PIN</button>
                         </div>
                     </div>
                 </div>
@@ -5928,11 +5927,6 @@
             }).catch((err) => showToast(TachoAuth.errorMessage(err), "error"));
         }
 
-        // Chiamata da tacho-auth.js dopo l'attivazione con il vecchio PIN
-        window.onTachoAdminActivated = function () {
-            showSection('admin');
-            showToast("✅ Accesso sicuro attivato! Da ora entri con email e password.", "success");
-        };
 
         function goToDriverSelection() {
             if (!activeCompanyId) {

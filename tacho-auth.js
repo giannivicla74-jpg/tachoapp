@@ -325,47 +325,6 @@
         return uid;
     }
 
-    // Attivazione una-tantum: l'admin conferma il VECCHIO PIN e crea email + password.
-    // Funziona solo finche' il database non e' stato chiuso con le nuove regole.
-    async function activateLegacyAdmin(cid, oldPin, email, password) {
-        const companyId = String(cid || '').trim().toUpperCase();
-        if (!companyId) throw fail('tacho/no-company', 'Inserisci il Codice Azienda.');
-        let storedPin;
-        try {
-            const snap = await withTimeout(db.ref(`aziende_registry/${companyId}/adminPin`).once('value'), 10000);
-            storedPin = snap.val();
-        } catch (e) {
-            throw fail('tacho/legacy-closed', 'L\'attivazione con il vecchio PIN non e\' piu\' disponibile. Contatta GC CodeLab.');
-        }
-        if (!storedPin || String(storedPin).trim() !== String(oldPin).trim()) {
-            throw fail('tacho/wrong-pin', 'Codice Azienda o vecchio PIN non corretti.');
-        }
-        if (currentUser) await auth.signOut();
-        let cred;
-        try {
-            cred = await auth.createUserWithEmailAndPassword(String(email).trim(), password);
-        } catch (e) {
-            if (e.code !== 'auth/email-already-in-use') throw e;
-            cred = await auth.signInWithEmailAndPassword(String(email).trim(), password);
-        }
-        const uid = cred.user.uid;
-        const existing = await fetchProfile(uid);
-        const profile = existing && existing.role === 'superadmin'
-            ? existing
-            : { companyId, role: 'admin', createdAt: Date.now() };
-        const updates = {};
-        updates[`utenti/${uid}`] = profile;
-        updates[`aziende_registry/${companyId}/adminPin`] = null;
-        updates[`aziende_registry/${companyId}/ownerUid`] = uid;
-        if (!(await db.ref(`aziende_registry/${companyId}/email`).once('value')).val()) {
-            updates[`aziende_registry/${companyId}/email`] = String(email).trim();
-        }
-        await db.ref().update(updates);
-        setProfile(uid, profile);
-        notify();
-        return profile;
-    }
-
     // Dati pubblici minimi di un'azienda (visibili anche prima del login)
     async function publicCompanyInfo(cid) {
         const companyId = String(cid || '').trim().toUpperCase();
@@ -423,52 +382,6 @@
         document.body.appendChild(wrap);
         return { el: wrap, close: () => wrap.remove() };
     }
-    const inputCls = 'w-full px-4 py-3 bg-[#0A1322] border border-slate-700/80 rounded-xl outline-none text-sm text-white placeholder-slate-500 focus:border-emerald-500';
-
-    function openLegacyActivation(defaultCompany) {
-        const m = openModal(`
-            <h3 class="text-base font-black text-white">🔒 Attiva il nuovo accesso sicuro</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">Da ora l'Area Amministrativa si apre con <b>email e password</b>. Conferma il tuo vecchio PIN una sola volta e scegli le nuove credenziali.</p>
-            <div class="space-y-2">
-                <label class="block text-[10px] uppercase font-bold text-slate-400">Codice Azienda</label>
-                <input id="tacLegCompany" class="${inputCls} uppercase font-mono" value="${esc(defaultCompany || '')}" placeholder="es. AZ-101">
-                <label class="block text-[10px] uppercase font-bold text-slate-400">Vecchio PIN Amministratore</label>
-                <input id="tacLegPin" type="password" inputmode="numeric" class="${inputCls}" placeholder="••••">
-                <label class="block text-[10px] uppercase font-bold text-slate-400">La tua email</label>
-                <input id="tacLegEmail" type="email" autocomplete="username" class="${inputCls}" placeholder="nome@azienda.it">
-                <label class="block text-[10px] uppercase font-bold text-slate-400">Nuova password (minimo 8 caratteri)</label>
-                <input id="tacLegPw" type="password" autocomplete="new-password" class="${inputCls}">
-                <label class="block text-[10px] uppercase font-bold text-slate-400">Ripeti password</label>
-                <input id="tacLegPw2" type="password" autocomplete="new-password" class="${inputCls}">
-            </div>
-            <div id="tacLegErr" class="hidden text-red-400 text-xs font-semibold bg-red-950/40 p-2.5 rounded-xl border border-red-800"></div>
-            <div class="flex gap-2">
-                <button id="tacLegCancel" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 rounded-xl text-xs">Annulla</button>
-                <button id="tacLegOk" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs">Attiva accesso</button>
-            </div>`);
-        const $ = (id) => m.el.querySelector('#' + id);
-        $('tacLegCancel').onclick = m.close;
-        $('tacLegOk').onclick = async () => {
-            const err = $('tacLegErr');
-            err.classList.add('hidden');
-            const pw = $('tacLegPw').value;
-            if (pw.length < 8) { err.textContent = 'La password deve avere almeno 8 caratteri.'; err.classList.remove('hidden'); return; }
-            if (pw !== $('tacLegPw2').value) { err.textContent = 'Le due password non coincidono.'; err.classList.remove('hidden'); return; }
-            $('tacLegOk').disabled = true;
-            $('tacLegOk').textContent = 'Attivazione...';
-            try {
-                await activateLegacyAdmin($('tacLegCompany').value, $('tacLegPin').value, $('tacLegEmail').value, pw);
-                m.close();
-                if (typeof window.onTachoAdminActivated === 'function') window.onTachoAdminActivated();
-            } catch (e) {
-                err.textContent = errorMessage(e);
-                err.classList.remove('hidden');
-                $('tacLegOk').disabled = false;
-                $('tacLegOk').textContent = 'Attiva accesso';
-            }
-        };
-    }
-
     function driverAccessMessage(cid, companyName, name, pin) {
         const url = `https://tachoapp.gccodelab.it/?az=${encodeURIComponent(cid)}&role=driver`;
         return `🚛 *TACHOCONTROL • NUOVO ACCESSO SICURO*\n\n` +
@@ -549,8 +462,8 @@
         isSuperAdmin, isAdminOf, canAccess,
         loginAdmin, loginDriver, logout, sendPasswordReset, changePassword,
         createDriverAccount, removeDriverAccount, migrateDrivers, generatePin,
-        createCompanyWithAdmin, activateLegacyAdmin, publicCompanyInfo,
+        createCompanyWithAdmin, publicCompanyInfo,
         nameKey, companyPath, errorMessage,
-        ui: { openLegacyActivation, updateMigrationBanner, showMigrationResults }
+        ui: { updateMigrationBanner, showMigrationResults }
     };
 })();
