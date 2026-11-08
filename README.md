@@ -15,7 +15,7 @@
 
 ### 🌐 Link Ufficiali di Produzione
 * **Piattaforma Ufficiale:** `https://tachoapp.gccodelab.it/`
-* **Versione:** `v12.5 Pro Cloud & Offline Ready`
+* **Versione:** Pro Cloud & Offline Ready (numero aggiornato in `version.js`)
 * **Demo Pubblica:** `https://tachoapp.gccodelab.it/demo.html`
 * **Accesso:** PIN Amministratore Riservato e PIN Personale Conducenti.
 * **Funzionalità:** Gestione flotta reale, aggiunta autisti e mezzi, caricamento documenti e foto, scadenze quinquennali Carta Azienda CCIAA, backup cloud e registrazione automatica codice azienda.

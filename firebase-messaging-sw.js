@@ -1,13 +1,15 @@
-// Service Worker GC-TachoControl v14.0 Pro (accesso sicuro) - Supporto Notifiche Push & Offline PWA Caching Sicuro
+// Service Worker GC-TachoControl Pro (accesso sicuro) - Supporto Notifiche Push & Offline PWA Caching Sicuro
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
+importScripts('version.js'); // il numero di versione sta in version.js
 
-const CACHE_NAME = 'tachocontrol-offline-v14.9';
+const CACHE_NAME = 'tachocontrol-offline-v' + self.APP_VERSION;
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
     'manifest.json',
     'tacho-auth.js',
+    'version.js',
     'favicon.ico',
     'logo-192.png',
     'logo-512.png',
@@ -36,7 +38,8 @@ self.addEventListener('install', (event) => {
             console.log(`[SW ${CACHE_NAME}] Download e memorizzazione risorse offline in corso...`);
             await Promise.allSettled(
                 ASSETS_TO_CACHE.map((url) => {
-                    return cache.add(url).catch((err) => {
+                    // "reload": i file dell'app si prendono dal server, mai da una copia vecchia del browser
+                    return cache.add(url.startsWith('http') ? url : new Request(url, { cache: 'reload' })).catch((err) => {
                         console.warn(`[SW ${CACHE_NAME}] File non pre-caricato:`, url, err);
                     });
                 })
