@@ -1,6 +1,6 @@
 // Versione dell'app: a OGNI pubblicazione si aumenta questo numero (es. 15.0 -> 15.1).
 // Lo usano la scritta visibile nell'app e il service worker per riconoscere l'aggiornamento e mostrare la barra "Aggiorna".
-self.APP_VERSION = '16.7';
+self.APP_VERSION = '16.8';
 
 if (typeof document !== 'undefined') {
     document.addEventListener('DOMContentLoaded', () => {

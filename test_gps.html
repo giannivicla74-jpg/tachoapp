@@ -449,9 +449,9 @@
                 <button type="button" onclick="enterReadOnlyModeFromLockScreen()" class="w-full bg-[#0F1C32] hover:bg-slate-800 text-emerald-400 font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition border border-emerald-500/30">
                     <span>👁️</span> <span>Accedi in Sola Consultazione</span>
                 </button>
-                <!-- 2. Inserimento Chiave -->
+                <!-- 2. Stato licenza -->
                 <button type="button" onclick="openClientLicenseModal()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition">
-                    <span>Inserisci Chiave di Attivazione</span>
+                    <span>Vedi Stato della Licenza</span>
                 </button>
                 <!-- 3. Rinnovo WhatsApp Rapido Giovanni -->
                 <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition">
@@ -3741,27 +3741,6 @@
                 </p>
             </div>
 
-            <!-- 6. GENERATORE CHIAVI CRITTOGRAFICHE GC CODELAB -->
-            <div class="bg-[#08111E] p-4 rounded-2xl border border-emerald-500/40 space-y-2.5">
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] uppercase font-bold text-emerald-400 flex items-center space-x-1">
-                        <span>🔑</span> <span>Generatore Chiave Crittografica GC CodeLab</span>
-                    </span>
-                    <span class="text-[9px] font-mono text-slate-400">Salt SHA-2026</span>
-                </div>
-                <div id="generatedLicenseKeyDisplay" class="font-mono text-xs font-black text-emerald-300 bg-black/60 p-2.5 rounded-xl border border-emerald-500/30 text-center select-all tracking-wider break-all shadow-inner">
-                    GC-PRO-CARICAMENTO...
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                    <button type="button" onclick="copyGeneratedLicenseKey()" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1">
-                        <span>📋</span> <span>Copia Chiave</span>
-                    </button>
-                    <button type="button" onclick="sendGeneratedLicenseKeyWhatsApp()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 py-2 px-3 font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1 shadow">
-                        <span>Invia su WhatsApp</span>
-                    </button>
-                </div>
-            </div>
-
             <div class="flex gap-2 pt-2 border-t border-slate-800">
                 <button type="button" onclick="closeManageLicenseModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
                     Annulla
@@ -3824,17 +3803,12 @@
                 </p>
             </div>
 
-            <!-- Inserimento Nuova Chiave di Licenza -->
-            <div class="bg-[#0F1C32] p-4 rounded-2xl border border-purple-500/30 space-y-2.5">
-                <label class="block text-[11px] font-bold text-purple-300">Hai una Chiave di Attivazione / Rinnovo?</label>
-                <input type="text" id="clientLicenseKeyInput" placeholder="es. GC-PRO-20270907-AZ101-XXXXXX" 
-                    class="w-full px-3.5 py-2.5 bg-[#08111E] border border-slate-700 rounded-xl outline-none font-mono text-xs text-white uppercase text-center font-bold tracking-wider focus:border-purple-400">
-                <button type="button" onclick="activateLicenseKeyFromInput()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 cursor-pointer">
-                    <span>Attiva Chiave Licenza</span>
-                </button>
-            </div>
+            <!-- Attivazione e rinnovo a cura di GC CodeLab -->
+                <div class="bg-[#0F1C32] p-4 rounded-2xl border border-slate-700/60">
+                    <p class="text-xs text-slate-300 leading-relaxed">L'attivazione e il rinnovo della licenza vengono eseguiti da <strong class="text-white">GC CodeLab</strong>. Richiedili con il pulsante qui sotto.</p>
+                </div>
 
-            <!-- Supporto & Contatti Commerciali GC CodeLab -->
+                <!-- Supporto & Contatti Commerciali GC CodeLab -->
             <div class="space-y-2 pt-1">
                 <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition cursor-pointer">
                     <span>Richiedi Rinnovo Licenza su WhatsApp</span>
@@ -7729,7 +7703,7 @@
                 `📅 *Scadenza Attuale:* ${exp}\n\n` +
                 `Resto in attesa delle istruzioni per il rinnovo. Grazie!`;
 
-            const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
+            const url = `https://api.whatsapp.com/send?phone=393489946444&text=${encodeURIComponent(msg)}`;
             window.open(url, '_blank');
         }
 
