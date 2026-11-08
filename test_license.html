@@ -10223,6 +10223,17 @@
             hideSplashScreen();
         }
 
+        function showAppUpdateBar() {
+            if (document.getElementById('appUpdateBar')) return;
+            const bar = document.createElement('div');
+            bar.id = 'appUpdateBar';
+            bar.className = 'no-print fixed left-3 right-3 z-[99980] mx-auto max-w-lg flex items-center justify-between gap-3 px-4 py-3 rounded-2xl bg-[#15243E] border border-emerald-500/50 shadow-2xl';
+            bar.style.bottom = 'max(12px, env(safe-area-inset-bottom))';
+            bar.innerHTML = '<span class="text-xs font-bold text-white">🚀 È disponibile una nuova versione dell&rsquo;app.</span><button type="button" class="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl active:scale-95 transition">Aggiorna</button>';
+            bar.querySelector('button').onclick = () => window.location.reload();
+            document.body.appendChild(bar);
+        }
+
         let isAppInitialized = false;
         let drivingSimulationInterval = null;
 
@@ -10247,27 +10258,21 @@
 
                 // Registrazione Service Worker per Push & Offline con gestione ciclo di vita protetta
                 if ('serviceWorker' in navigator) {
-                    let hadController = !!navigator.serviceWorker.controller;
-                    let refreshing = false;
+                    const hadController = !!navigator.serviceWorker.controller; // false alla primissima installazione
 
+                    // Versione nuova pronta: compare la barra "Aggiorna", niente ricarica automatica per non interrompere chi sta usando l'app
                     navigator.serviceWorker.addEventListener('controllerchange', () => {
-                        // Se non c'era un controller al caricamento iniziale, si tratta di prima installazione o avvio pulito:
-                        // evitiamo di ricaricare forzatamente la pagina per non interrompere il rendering dell'interfaccia.
-                        if (!hadController) {
-                            hadController = true;
-                            return;
-                        }
-                        if (!refreshing) {
-                            refreshing = true;
-                            console.log('[PWA] Nuovo Service Worker attivo: aggiornamento interfaccia in corso.');
-                            window.location.reload();
-                        }
+                        if (hadController) showAppUpdateBar();
                     });
 
-                    navigator.serviceWorker.register('firebase-messaging-sw.js')
+                    navigator.serviceWorker.register('firebase-messaging-sw.js', { updateViaCache: 'none' })
                     .then((registration) => {
                         console.log('[PWA] Service Worker registrato con successo:', registration);
-                        registration.update();
+                        // Controllo all'apertura, quando l'app torna in primo piano (sul telefono spesso non si chiude davvero) e ogni 30 minuti
+                        const checkForAppUpdate = () => registration.update().catch(() => {});
+                        checkForAppUpdate();
+                        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') checkForAppUpdate(); });
+                        setInterval(checkForAppUpdate, 30 * 60 * 1000);
                     }).catch((err) => {
                         console.warn('[PWA] Registrazione Service Worker non riuscita:', err);
                     });
