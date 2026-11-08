@@ -403,6 +403,11 @@
         };
         if (map[code]) return map[code];
         const msg = (err && err.message) || String(err || 'Errore sconosciuto');
+        // Firebase 8 a volte restituisce il codice del server dentro il testo (es. INVALID_LOGIN_CREDENTIALS)
+        if (/INVALID_LOGIN_CREDENTIALS|INVALID_PASSWORD|EMAIL_NOT_FOUND/.test(msg)) return 'Email o password non corretti.';
+        if (/TOO_MANY_ATTEMPTS/.test(msg)) return map['auth/too-many-requests'];
+        if (/USER_DISABLED/.test(msg)) return 'Questo account e\' stato disattivato.';
+        if (/^\s*\{/.test(msg)) return 'Accesso non riuscito. Controlla i dati e riprova.';
         if (/PERMISSION_DENIED|permission_denied/i.test(msg)) return map.PERMISSION_DENIED;
         return msg;
     }
