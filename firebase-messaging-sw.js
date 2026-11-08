@@ -10,6 +10,8 @@ const ASSETS_TO_CACHE = [
     'manifest.json',
     'tacho-auth.js',
     'version.js',
+    'theme.js',
+    'theme-light.css',
     'favicon.ico',
     'logo-192.png',
     'logo-512.png',
