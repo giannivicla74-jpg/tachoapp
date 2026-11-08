@@ -5897,7 +5897,8 @@
             TachoAuth.loginAdmin(email, password).then((profile) => {
                 isSuperAdmin = profile.role === 'superadmin';
                 localStorage.setItem('userRole', 'admin');
-                if (profile.companyId && activeCompanyId !== profile.companyId && (!isSuperAdmin || !activeCompanyId)) {
+                // All'accesso si parte sempre dalla propria azienda (il Supervisore cambia azienda con "⇄ Cambia")
+                if (profile.companyId && activeCompanyId !== profile.companyId) {
                     switchActiveCompany(profile.companyId);
                 }
                 showSection("admin");
@@ -6124,6 +6125,9 @@
         }
 
         function logout() {
+            // Il Supervisore, uscendo, torna sulla propria azienda (la schermata di login non resta intestata al cliente)
+            const ownCompany = TachoAuth.profile && TachoAuth.profile.companyId;
+            if (isSuperAdmin && ownCompany && activeCompanyId !== ownCompany) switchActiveCompany(ownCompany);
             TachoAuth.logout();
             localStorage.removeItem('userRole');
             localStorage.removeItem('savedDriverId');
