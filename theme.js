@@ -13,13 +13,13 @@
         return document.documentElement.getAttribute('data-theme') === 'light';
     }
     function updateButton() {
-        const btn = document.getElementById('themeToggle');
-        if (!btn) return;
         const light = isLight();
-        btn.innerHTML = light ? MOON : SUN;
         const label = light ? 'Passa al tema notte' : 'Passa al tema giorno';
-        btn.title = label;
-        btn.setAttribute('aria-label', label);
+        document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+            btn.innerHTML = light ? MOON : SUN;
+            btn.title = label;
+            btn.setAttribute('aria-label', label);
+        });
     }
     function apply(theme) {
         if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
@@ -32,16 +32,23 @@
     apply(savedTheme()); // subito, per evitare il lampo di colore all'apertura
 
     document.addEventListener('DOMContentLoaded', () => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.id = 'themeToggle';
-        btn.className = 'theme-toggle no-print';
-        btn.onclick = () => {
-            const next = isLight() ? 'dark' : 'light';
-            try { localStorage.setItem(KEY, next); } catch (e) {}
-            apply(next);
+        const makeButton = (id, cls) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.id = id;
+            btn.className = cls + ' no-print';
+            btn.setAttribute('data-theme-toggle', '');
+            btn.onclick = () => {
+                const next = isLight() ? 'dark' : 'light';
+                try { localStorage.setItem(KEY, next); } catch (e) {}
+                apply(next);
+            };
+            return btn;
         };
-        document.body.appendChild(btn);
+        // Nell'area amministratore sta nell'intestazione; nelle altre schermate resta in basso a destra
+        const headerActions = document.querySelector('#adminHeader .flex-shrink-0.flex.items-center.flex-wrap');
+        if (headerActions) headerActions.insertBefore(makeButton('themeToggleHeader', 'theme-toggle-header'), headerActions.firstChild);
+        document.body.appendChild(makeButton('themeToggle', 'theme-toggle'));
         apply(savedTheme());
     });
 })();
