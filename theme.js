@@ -71,7 +71,11 @@
         style.textContent = 'input::-ms-reveal,input::-ms-clear{display:none}';
         document.head.appendChild(style);
 
-        document.querySelectorAll('input[type="password"]').forEach((input) => {
+        // Il PIN del conducente e' un campo di testo con i pallini: cosi' il browser non lo salva come password.
+        const canMask = !!(window.CSS && CSS.supports('-webkit-text-security', 'disc'));
+        document.querySelectorAll('input[type="password"], input[data-pin-mask]').forEach((input) => {
+            const useMask = input.hasAttribute('data-pin-mask') && canMask;
+            if (input.hasAttribute('data-pin-mask') && !canMask) input.type = 'password';
             const small = input.classList.contains('text-xs');
             const room = small ? '1.75rem' : '2.75rem';
             input.style.paddingRight = room;
@@ -85,8 +89,10 @@
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'absolute inset-y-0 right-0 flex items-center text-slate-400 hover:text-white no-print ' + (small ? 'px-1.5' : 'px-3');
+            const isHidden = () => (useMask ? input.style.webkitTextSecurity !== 'none' : input.type === 'password');
             const show = (visible) => {
-                input.type = visible ? 'text' : 'password';
+                if (useMask) input.style.webkitTextSecurity = visible ? 'none' : 'disc';
+                else input.type = visible ? 'text' : 'password';
                 btn.innerHTML = visible ? EYE_OFF : EYE;
                 const label = visible ? 'Nascondi' : 'Mostra';
                 btn.title = label;
@@ -94,7 +100,7 @@
             };
             // Il tocco sull'occhio non deve togliere il cursore dal campo
             btn.addEventListener('mousedown', (e) => e.preventDefault());
-            btn.addEventListener('click', () => show(input.type === 'password'));
+            btn.addEventListener('click', () => show(isHidden()));
             show(false);
             wrap.appendChild(btn);
 
