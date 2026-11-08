@@ -7907,6 +7907,14 @@
             document.getElementById('addVacationEnd').value = d.vacationEndDate || "";
             document.getElementById('addAllowPhotoUpload').checked = d.allowPhotoUpload || false;
 
+            // Si parte sempre da 'nessuna modifica' a foto e allegato: altrimenti un salvataggio
+            // precedente lasciava attivo 'cancella foto/allegato' e la foto del conducente veniva persa
+            pendingBase64Photo = '';
+            clearExistingPhoto = false;
+            pendingBase64Doc = '';
+            pendingFileNameDoc = '';
+            clearExistingFile = false;
+
             if (d.photoBase64 && d.photoBase64.length > 50) {
                 document.getElementById('photoPreviewImg').src = d.photoBase64;
                 document.getElementById('photoPreviewImg').classList.remove('hidden');
