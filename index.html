@@ -1255,6 +1255,23 @@
                     </button>
                 </div>
 
+                <!-- Box Cosa fare sul tachigrafo prima di partire -->
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-emerald-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Cosa fare sul tachigrafo prima di partire</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Tre casi con esempi per i conducenti: ferie, lavoro a terra, settimane senza guida. VDO e Stoneridge.</p>
+                        </div>
+                    </div>
+                    <button type="button" onclick="openGuidaCasiModal()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <span class="tracking-wide">Apri la guida con gli esempi</span>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
                 <!-- Box Guida Operativa Display Tachigrafo VDO -->
                 <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-cyan-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
                     <div class="flex items-center space-x-3.5">
@@ -1563,13 +1580,25 @@
                         <span>🏥</span> <span>Sei in rientro da Malattia o Assenza Imprevista?</span>
                     </p>
                     <p class="text-slate-300 leading-snug">
-                        <strong>Prima di salire sul camion:</strong> consegna la carta in ufficio per lo scarico immediato, ritira il Modulo Assenze UE firmato da tenere a bordo ed effettua l'inserimento manuale a tachigrafo.
+                        <strong>Prima di salire sul camion:</strong> consegna la carta in ufficio per lo scarico immediato, ritira il Modulo Assenze UE se previsto dall'ufficio ed effettua l'inserimento manuale a tachigrafo.
                     </p>
                 </div>
 
                 <div>
                     <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">Guide pratiche</h4>
                     <div class="grid grid-cols-1 gap-3">
+                    <!-- 0. Cosa fare prima di partire -->
+                    <button type="button" onclick="openGuidaCasiModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#0e2622] border border-emerald-500/40 hover:border-emerald-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h5 class="text-xs font-black text-white group-hover:text-slate-200 transition-colors leading-snug">Cosa fare sul tachigrafo prima di partire</h5>
+                            <p class="text-[10px] text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-snug">Tre casi con esempi: ferie, lavoro a terra, settimane senza guida</p>
+                        </div>
+                        <svg class="w-4 h-4 text-slate-500 group-hover:text-emerald-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+
                     <!-- 1. Guida Display Tachigrafo VDO -->
                     <button type="button" onclick="openVdoManualModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#14233D] border border-slate-500/30 hover:border-slate-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
                         <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-500/20 to-blue-600/10 border border-slate-500/30 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
@@ -2019,7 +2048,7 @@
                                 <div class="bg-slate-900/90 p-2.5 rounded-xl border border-emerald-500/50">
                                     <span class="font-bold text-emerald-300">PASSO 3 • Firma e Ritiro Modulo Assenze UE:</span>
                                     <p class="text-slate-300 mt-0.5 leading-normal">
-                                        L'ufficio ti consegnerà l'<strong>Attestato di Attività UE (Modulo Assenze)</strong> compilato al computer con barrata la voce <em>"14. Malattia"</em>. Firmalo in originale nello spazio 22 e <strong>riponilo a bordo del camion</strong>: dovrai tenerlo con te per tutti i <strong>56 giorni successivi</strong> per esibirlo nei controlli di Polizia.
+                                        Se l'ufficio ti consegna l'<strong>Attestato di Attività UE (Modulo Assenze)</strong> con barrata la voce <em>"14. Malattia"</em>, firmalo in originale nello spazio 22 e tienilo con te: è un documento di supporto da mostrare ai controlli, se richiesto. In ogni caso devi registrare il periodo sulla carta con <strong>l'inserimento manuale</strong>.
                                     </p>
                                 </div>
 
@@ -2266,6 +2295,207 @@
     </main>
 
     <!-- =================== MODALE GUIDA OPERATIVA VDO (INSERIMENTO CARTA & MANUAL ENTRY) =================== -->
+    <div id="guidaCasiModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[97] flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-[#111C2E] border border-emerald-500/50 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+            <div class="p-5 border-b border-slate-800 flex justify-between items-center gap-3 bg-[#15233A]">
+                <div class="min-w-0">
+                    <h3 class="font-extrabold text-base text-white tracking-tight">Cosa fare sul tachigrafo prima di partire</h3>
+                    <p class="text-[11px] text-emerald-300 font-semibold">Tre casi con esempi &bull; VDO e Stoneridge</p>
+                </div>
+                <button type="button" onclick="closeGuidaCasiModal()" aria-label="Chiudi" class="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-5">
+
+                <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-4 space-y-2">
+                    <h4 class="font-extrabold text-amber-400 text-sm">Prima di tutto</h4>
+                    <ul class="space-y-2">
+                        <li class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Non saltare l'inserimento manuale.</strong> Se lo salti, per quel periodo il tachigrafo registra un'attività sconosciuta (?).</li>
+                        <li class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Attenzione su Stoneridge:</strong> rispondi No a "Riposo fino ad ora?" solo se prima di guidare hai lavorato (Caso 2). Subito dopo scegli Sì a "Agg. inser. man.?".</li>
+                        <li class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Non muovere il mezzo durante la procedura:</strong> se parti, l'inserimento viene interrotto.</li>
+                        <li class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Hai tempo, ma non restare fermo.</strong> VDO: dopo 30 secondi senza tasti chiede di continuare; se per 10 minuti non fai nulla espelle la carta ed elimina i dati non confermati. Stoneridge: la procedura si chiude dopo 1 o 20 minuti, secondo le impostazioni.</li>
+                        <li class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Hai sbagliato?</strong> Prima della conferma finale puoi tornare indietro e correggere.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">I simboli da conoscere</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div class="flex items-center space-x-3 bg-[#15243E] border border-slate-700/60 rounded-xl p-3">
+                            <span class="w-8 text-lg text-center text-white flex-shrink-0">🛏️</span>
+                            <span class="min-w-0 text-xs text-slate-300 leading-snug"><strong class="text-white">Lettino:</strong> interruzioni, riposi, ferie e malattia</span>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-[#15243E] border border-slate-700/60 rounded-xl p-3">
+                            <span class="w-8 text-lg text-center text-white flex-shrink-0">⚒️</span>
+                            <span class="min-w-0 text-xs text-slate-300 leading-snug"><strong class="text-white">Martelletti:</strong> altre mansioni: cantiere, officina, magazzino, carico e scarico</span>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-[#15243E] border border-slate-700/60 rounded-xl p-3">
+                            <span class="w-8 text-lg text-center text-white flex-shrink-0"><svg class="w-5 h-5 inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18"></rect><path d="M3 21L21 3"></path></svg></span>
+                            <span class="min-w-0 text-xs text-slate-300 leading-snug"><strong class="text-white">Quadrato con diagonale:</strong> disponibilità, ad esempio i tempi di attesa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-2.5">
+                    <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">Scegli il tuo caso</h4>
+                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60 overflow-hidden">
+                        <summary class="cursor-pointer list-none p-4 flex items-center justify-between gap-3">
+                            <span class="min-w-0">
+                                <span class="block text-[10px] font-black uppercase tracking-wider text-emerald-400">Caso 1</span>
+                                <span class="block text-sm font-extrabold text-white leading-snug">Rientro da ferie, malattia o weekend</span>
+                                <span class="block text-[11px] text-slate-400 leading-snug mt-0.5">Dall'ultima volta che hai tolto la carta hai solo riposato</span>
+                            </span>
+                            <span class="text-slate-400 text-sm flex-shrink-0" aria-hidden="true">▾</span>
+                        </summary>
+                        <div class="px-4 pb-4 space-y-3.5">
+                            <div class="bg-[#0F1C32]/90 border border-slate-700/60 rounded-xl p-3 text-xs text-slate-300 leading-relaxed"><strong class="text-white">Esempio:</strong> hai tolto la carta venerdì alle 17:00 e la inserisci lunedì alle 06:00. Tutto il periodo è riposo.</div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Inserisci la carta</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed">A veicolo fermo, inserisci la carta nella fessura 1 e attendi nome e ora dell'ultima estrazione.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Conferma il riposo</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-cyan-500/20 text-cyan-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">VDO</span>A "1M entrata aggiungi?" scegli <strong class="text-white">Sì</strong> e premi OK. Scegli il lettino, tieni premuto OK per saltare ai minuti e premi ancora OK.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-amber-500/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">STONERIDGE</span>A "Riposo fino ad ora?" scegli <strong class="text-white">Sì</strong> e premi OK.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Indica il paese</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-cyan-500/20 text-cyan-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">VDO</span>Alla richiesta "paese inizio" scegli <strong class="text-white">I</strong> (Italia) con le frecce e premi OK. Compare solo se all'ultima estrazione hai inserito il paese di fine.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-amber-500/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">STONERIDGE</span>Conferma "Paese di arrivo" dell'ultimo giorno e "Paese di partenza" di oggi. Non compaiono se tra estrazione e inserimento sono passate meno di 9 ore.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Conferma i dati</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-cyan-500/20 text-cyan-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">VDO</span>A "1M confermi?" scegli <strong class="text-white">Sì</strong> e premi OK.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-amber-500/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">STONERIDGE</span>Scegli se stampare a "Stampa inserimenti?", poi a "Conferma inserimenti?" scegli <strong class="text-white">Sì</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60 overflow-hidden">
+                        <summary class="cursor-pointer list-none p-4 flex items-center justify-between gap-3">
+                            <span class="min-w-0">
+                                <span class="block text-[10px] font-black uppercase tracking-wider text-emerald-400">Caso 2</span>
+                                <span class="block text-sm font-extrabold text-white leading-snug">Hai lavorato a terra e guidi lo stesso giorno</span>
+                                <span class="block text-[11px] text-slate-400 leading-snug mt-0.5">Cantiere, officina o magazzino prima di salire sul mezzo</span>
+                            </span>
+                            <span class="text-slate-400 text-sm flex-shrink-0" aria-hidden="true">▾</span>
+                        </summary>
+                        <div class="px-4 pb-4 space-y-3.5">
+                            <div class="bg-[#0F1C32]/90 border border-slate-700/60 rounded-xl p-3 text-xs text-slate-300 leading-relaxed"><strong class="text-white">Esempio:</strong> ieri sera hai tolto la carta alle 18:00. Stamattina hai lavorato in cantiere dalle 07:00 e alle 10:30 sali sul camion. Da ieri alle 18:00 alle 07:00 è riposo, dalle 07:00 alle 10:30 sono altre mansioni.</div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Avvia l'inserimento</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-cyan-500/20 text-cyan-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">VDO</span>Inserisci la carta alle 10:30 e a "1M entrata aggiungi?" scegli <strong class="text-white">Sì</strong>.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-amber-500/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">STONERIDGE</span>Inserisci la carta. A "Riposo fino ad ora?" scegli <strong class="text-white">No</strong>, poi a "Agg. inser. man.?" scegli <strong class="text-white">Sì</strong>.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Registra il riposo fino alle 07:00</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed">Scegli il lettino 🛏️ e imposta come fine il giorno e l'ora in cui hai iniziato a lavorare: <strong class="text-white">07:00</strong>. Conferma.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Registra il lavoro fino a ora</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed">Scegli i martelletti ⚒️ e lascia come fine l'ora attuale: <strong class="text-white">10:30</strong>. Conferma.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">4</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Indica il paese e conferma</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-cyan-500/20 text-cyan-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">VDO</span>Alla richiesta "paese inizio" scegli <strong class="text-white">I</strong> (Italia) con le frecce e premi OK. Compare solo se all'ultima estrazione hai inserito il paese di fine.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-amber-500/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">STONERIDGE</span>Conferma "Paese di arrivo" dell'ultimo giorno e "Paese di partenza" di oggi. Non compaiono se tra estrazione e inserimento sono passate meno di 9 ore.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-cyan-500/20 text-cyan-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">VDO</span>A "1M confermi?" scegli <strong class="text-white">Sì</strong> e premi OK.</p>
+                                    <p class="text-xs text-slate-300 leading-relaxed"><span class="inline-block bg-amber-500/20 text-amber-300 text-[9px] font-black px-1.5 py-0.5 rounded mr-1">STONERIDGE</span>Scegli se stampare a "Stampa inserimenti?", poi a "Conferma inserimenti?" scegli <strong class="text-white">Sì</strong>.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60 overflow-hidden">
+                        <summary class="cursor-pointer list-none p-4 flex items-center justify-between gap-3">
+                            <span class="min-w-0">
+                                <span class="block text-[10px] font-black uppercase tracking-wider text-emerald-400">Caso 3</span>
+                                <span class="block text-sm font-extrabold text-white leading-snug">Non guidi da settimane perché lavori a terra</span>
+                                <span class="block text-[11px] text-slate-400 leading-snug mt-0.5">Solo cantiere o officina nelle ultime settimane</span>
+                            </span>
+                            <span class="text-slate-400 text-sm flex-shrink-0" aria-hidden="true">▾</span>
+                        </summary>
+                        <div class="px-4 pb-4 space-y-3.5">
+                            <div class="bg-amber-950/30 border border-amber-800/60 rounded-xl p-3 text-xs text-amber-100 leading-relaxed"><strong>Da sapere:</strong> la regola è inserire sulla carta, con l'inserimento manuale, i periodi lontano dal veicolo. Il Modulo Assenze UE serve quando le registrazioni, anche manuali, non sono possibili per ragioni obiettive: non sostituisce l'inserimento.</div>
+                            <div class="bg-[#0F1C32]/90 border border-slate-700/60 rounded-xl p-3 text-xs text-slate-300 leading-relaxed"><strong class="text-white">Esempio:</strong> hai lavorato solo in officina per 3 settimane e oggi devi guidare.</div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Passa in ufficio prima di partire</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed">L'ufficio ti dice come registrare il periodo e, se previsto, ti consegna il Modulo Assenze UE con la voce "altre mansioni diverse dalla guida". Firmalo e tienilo con te.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Registra sul tachigrafo</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed">Inserisci la carta e registra il periodo come indicato dall'ufficio. Per la giornata di oggi segui il Caso 1 o il Caso 2.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <span class="w-6 h-6 rounded-full bg-[#3B5BDB] text-white text-[11px] font-black flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    <h5 class="text-xs font-black text-white">Ai controlli</h5>
+                                    <p class="text-xs text-slate-300 leading-relaxed">Presenta la carta e il modulo, se ti è stato consegnato. In assenza di registrazioni l'agente può esaminare altri documenti probanti.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div>
+                    <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">Schema riassuntivo</h4>
+                    <div class="space-y-2">
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 space-y-1.5">
+                            <p class="text-xs font-black text-white leading-snug">Ferie, malattia o weekend</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Sul tachigrafo:</strong> riposo 🛏️ fino a ora, paese, conferma.</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Documenti:</strong> nessuno previsto dal Regolamento. Se l'ufficio ti consegna il Modulo, tienilo con te.</p>
+                        </div>
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 space-y-1.5">
+                            <p class="text-xs font-black text-white leading-snug">Qualche ora di lavoro a terra prima di guidare</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Sul tachigrafo:</strong> riposo 🛏️ fino all'inizio del lavoro, martelletti ⚒️ fino a ora, paese, conferma.</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Documenti:</strong> nessuno: è tutto registrato sulla carta.</p>
+                        </div>
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 space-y-1.5">
+                            <p class="text-xs font-black text-white leading-snug">Non guidi da settimane</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Sul tachigrafo:</strong> registra come indicato dall'ufficio e segui il Caso 1 o 2 per oggi.</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Documenti:</strong> Modulo Assenze UE, se previsto dall'ufficio.</p>
+                        </div>
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 space-y-1.5">
+                            <p class="text-xs font-black text-white leading-snug">Hai saltato la procedura o risposto No per errore</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Sul tachigrafo:</strong> avvisa subito l'ufficio. Prassi aziendale: stampa giornaliera, scrivi sul retro cosa è successo e firma.</p>
+                            <p class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Documenti:</strong> la stampa firmata.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-[10px] text-slate-400 leading-relaxed px-1">Fonti: Reg. (UE) 165/2014, artt. 34 e 36; Decisione 2009/959/UE, considerando 1 e 4; manuali VDO DTCO 4.1-4.1b e Stoneridge SE5000. Le scritte sul display possono cambiare in base a modello e versione: fa fede il manuale del tuo tachigrafo.</p>
+            </div>
+        </div>
+    </div>
+
     <div id="vdoManualEntryModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[97] flex items-center justify-center p-3 sm:p-4 hidden">
         <div class="bg-[#111C2E] border border-cyan-500/50 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
             
@@ -2618,7 +2848,7 @@
             <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-300">
                 <div class="bg-blue-950/40 border border-blue-800/50 p-3.5 rounded-2xl text-blue-200 text-[11px] leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shadow-inner">
                     <div>
-                        ℹ️ <strong>Obbligo di Legge UE:</strong> Compila a computer prima del viaggio. Firma originale e custodia a bordo per 56 giorni.
+                        ℹ️ <strong>Documento di supporto:</strong> compilalo a computer prima del viaggio e fallo firmare. Non sostituisce l'inserimento manuale sulla carta.
                     </div>
                     <button type="button" onclick="openAbsenceGuideModal()" class="self-start sm:self-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-xl text-[10px] transition flex items-center space-x-1.5 flex-shrink-0 shadow-md">
                         <span>📘</span>
@@ -5392,6 +5622,8 @@
 
         function openVdoManualModal() { document.getElementById('vdoManualEntryModal').classList.remove('hidden'); }
         function closeVdoManualModal() { document.getElementById('vdoManualEntryModal').classList.add('hidden'); }
+        function openGuidaCasiModal() { document.getElementById('guidaCasiModal').classList.remove('hidden'); }
+        function closeGuidaCasiModal() { document.getElementById('guidaCasiModal').classList.add('hidden'); }
 
         function openAttestationModal() {
             const select = document.getElementById('attestDriverSelect');
