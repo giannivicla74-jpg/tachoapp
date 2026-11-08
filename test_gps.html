@@ -336,14 +336,14 @@
                 <div class="min-w-0">
                     <div class="flex items-center space-x-2 flex-wrap gap-y-1">
                         <span class="font-black text-sm sm:text-base text-white uppercase tracking-wide truncate max-w-[200px] sm:max-w-xs" id="adminHeaderCompanyNameShort">Azienda</span>
-                        <span class="text-[10px] sm:text-[11px] font-mono font-black text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded-lg border border-cyan-500/50 shadow-sm shrink-0 tracking-wider" id="adminHeaderCompanyCode">AZ-MAIN</span>
+                        <span class="text-[10px] sm:text-[11px] font-mono font-bold text-slate-300 bg-slate-800/80 px-2 py-0.5 rounded-lg border border-slate-700 shrink-0 tracking-wider" id="adminHeaderCompanyCode">AZ-MAIN</span>
                         <span id="superAdminBadge" class="hidden px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">SuperAdmin</span>
                         <button id="btnSwitchCompanyHeader" onclick="openSuperAdminModal()" class="hidden text-[9px] text-indigo-400 hover:text-indigo-200 underline font-bold">⇄ Cambia</button>
                     </div>
 
                     <div class="flex items-center space-x-2 mt-0.5">
                         <span class="text-[10px] font-bold text-emerald-400 tracking-wider flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                             Admin
                         </span>
                         <span class="text-slate-600 text-[10px]">&bull;</span>
@@ -356,25 +356,24 @@
             <div class="flex-shrink-0 flex items-center flex-wrap gap-1.5 sm:gap-2">
                 <!-- 1. Badge / Tasto Licenza Flotta -->
                 <button id="headerLicenseBadge" type="button" onclick="openClientLicenseModal()" class="hidden h-8 text-[10px] sm:text-xs px-2.5 sm:px-3 rounded-xl font-bold transition flex items-center space-x-1.5 border cursor-pointer shadow-sm active:scale-95 whitespace-nowrap">
-                    <span id="headerLicenseIcon">🛡️</span>
+                    <span id="headerLicenseIcon" class="empty:hidden"></span>
                     <span id="headerLicenseText">Licenza</span>
                 </button>
 
                 <!-- 2. Tasto Upgrade Rapido WhatsApp (Visibile se Piano Gratuito) -->
-                <button id="btnHeaderUpgradeFleet" type="button" onclick="requestFleetUpgradeWhatsApp()" class="hidden h-8 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[10px] sm:text-xs px-2.5 sm:px-3 rounded-xl shadow-md transition flex items-center space-x-1 cursor-pointer active:scale-95 animate-pulse whitespace-nowrap" title="Richiedi a Giovanni l'attivazione di più mezzi">
-                    <span>🚀</span>
+                <button id="btnHeaderUpgradeFleet" type="button" onclick="requestFleetUpgradeWhatsApp()" class="hidden h-8 bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold text-[10px] sm:text-xs px-2.5 sm:px-3 rounded-xl transition flex items-center space-x-1 cursor-pointer active:scale-95 whitespace-nowrap" title="Richiedi a Giovanni l'attivazione di più mezzi">
                     <span>Passa a PRO</span>
                 </button>
 
                 <!-- 3. Tasto Installa PWA -->
-                <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden h-8 px-2.5 sm:px-3 text-[10px] sm:text-xs font-bold text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95 whitespace-nowrap" title="Installa l'applicazione sul tuo dispositivo">
-                    <span>📲</span>
+                <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden h-8 px-2.5 sm:px-3 text-[10px] sm:text-xs font-bold bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95 whitespace-nowrap" title="Installa l'applicazione sul tuo dispositivo">
+                    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"/></svg>
                     <span class="hidden sm:inline">Installa</span>
                 </button>
 
                 <!-- 4. Tasto Esci -->
                 <button onclick="logout()" class="h-8 px-3 text-[10px] sm:text-xs font-extrabold text-slate-300 hover:text-white bg-slate-900/90 hover:bg-red-950/60 border border-slate-700/80 hover:border-red-500/50 rounded-xl transition-all shadow-sm flex items-center space-x-1.5 cursor-pointer active:scale-95 whitespace-nowrap">
-                    <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
                     <span>Esci</span>
@@ -423,8 +422,8 @@
                     <span>👁️</span> <span>Accedi in Sola Consultazione</span>
                 </button>
                 <!-- 2. Inserimento Chiave -->
-                <button type="button" onclick="openClientLicenseModal()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition">
-                    <span>🔑</span> <span>Inserisci Chiave di Attivazione</span>
+                <button type="button" onclick="openClientLicenseModal()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition">
+                    <span>Inserisci Chiave di Attivazione</span>
                 </button>
                 <!-- 3. Rinnovo WhatsApp Rapido Giovanni -->
                 <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 font-bold py-2 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 transition">
@@ -544,8 +543,7 @@
                 <!-- Tasto Auto-Registrazione Nuova Azienda / Inizia Gratis (Nascosto se modalità Conducente) -->
                 <div id="selfRegisterCompanyBox" class="pt-2 border-t border-slate-800/80 text-center">
                     <button type="button" onclick="openRegisterCompanyModal()"
-                        class="w-full bg-gradient-to-r from-emerald-600/30 via-teal-600/30 to-indigo-600/30 hover:from-emerald-600/40 hover:to-indigo-600/40 border border-emerald-500/50 text-emerald-300 hover:text-white font-bold py-2.5 px-3 rounded-2xl text-xs transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-98">
-                        <span>✨</span>
+                        class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-bold py-2.5 px-3 rounded-2xl text-xs transition-all shadow-md flex items-center justify-center space-x-2 cursor-pointer active:scale-98">
                         <span>Sei una nuova Azienda? Inizia Gratis (Pro Bono)</span>
                     </button>
                     <p class="text-[10px] text-slate-400 mt-1.5">Piano Pro Bono gratuito &bull; Nessuna carta di credito</p>
@@ -609,14 +607,14 @@
                         <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                         <span id="driverLoginErrorText">Nome o PIN non corretti.</span>
                     </div>
-                    <button type="button" onclick="recoverDriverPinWhatsApp()" class="w-full py-2 px-3 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/60 rounded-xl text-[11px] font-bold text-emerald-300 flex items-center justify-center space-x-1.5 transition active:scale-95 shadow-md">
+                    <button type="button" onclick="recoverDriverPinWhatsApp()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full py-2 px-3 rounded-xl text-[11px] font-bold flex items-center justify-center space-x-1.5 transition active:scale-95 shadow-md">
                         <svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                        <span>📲 Ricevi Promemoria PIN su WhatsApp</span>
+                        <span>Ricevi Promemoria PIN su WhatsApp</span>
                     </button>
                 </div>
 
                 <button onclick="handleDriverAccess()" 
-                    class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] text-sm">
+                    class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-200 active:scale-[0.98] text-sm">
                     Accedi ai Tuoi Dati
                 </button>
             </div>
@@ -625,16 +623,16 @@
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="no-print hidden space-y-6 w-full min-w-0">
             <div class="no-print grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
                     <span>Conducenti</span>
                     <span id="badgeFleet" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
-                <button onclick="switchTab('vehicles')" id="btnVehicles" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                <button onclick="switchTab('vehicles')" id="btnVehicles" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
                     <span>Mezzi</span>
                     <span class="text-[10px] opacity-75 font-normal">(90g)</span>
                     <span id="badgeVehicles" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
-                <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
                     <span>Azienda</span>
                     <span id="badgeCompany" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">!</span>
                 </button>
@@ -649,37 +647,35 @@
             <div id="tabFleet" class="no-print space-y-5 w-full min-w-0">
                 
                 <!-- Barra Rapida Condivisione Link Autisti -->
-                <div class="no-print bg-gradient-to-r from-emerald-950/70 via-[#102035] to-indigo-950/70 p-3.5 sm:p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
+                <div class="no-print bg-[#15243E] p-3.5 sm:p-4 rounded-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
                     <div class="flex items-center space-x-3 min-w-0">
-                        <div class="p-2.5 bg-emerald-500/20 text-emerald-300 rounded-2xl border border-emerald-500/30 flex-shrink-0 text-xl shadow-inner">
-                            📲
-                        </div>
+                        <div class="p-2.5 bg-slate-800/80 text-slate-300 rounded-xl border border-slate-700 flex-shrink-0"><svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a1 1 0 011 1v16a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1zM11 18h2"/></svg></div>
                         <div class="min-w-0">
                             <h4 class="text-xs font-bold text-white tracking-tight flex items-center space-x-1.5">
                                 <span>Link Accesso Diretto Autisti</span>
-                                <span class="text-[9px] bg-emerald-500/20 text-emerald-300 font-extrabold px-2 py-0.2 rounded-full border border-emerald-500/30">SICURO</span>
+                                <span class="text-[9px] bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded-full border border-slate-700">SICURO</span>
                             </h4>
                             <p class="text-[10px] text-slate-300 truncate">Invia questo link ai conducenti: entreranno direttamente per lo scarico carta (senza PIN admin).</p>
                         </div>
                     </div>
                     <div class="flex items-center space-x-2 flex-shrink-0">
-                        <button onclick="shareDriverLinkWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition flex items-center space-x-1.5 shadow-md active:scale-95 cursor-pointer">
-                            <span>💬</span>
+                        <button onclick="shareDriverLinkWhatsApp()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-2 px-3 rounded-xl text-xs transition flex items-center space-x-1.5 active:scale-95 cursor-pointer">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8 8 0 01-11.6 7.1L4 20l1-4.9A8 8 0 1121 12z"/></svg>
                             <span>WhatsApp</span>
                         </button>
                         <button onclick="copyDriverLink()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold py-2 px-3 rounded-xl text-xs transition flex items-center space-x-1.5 active:scale-95 cursor-pointer" title="Copia negli appunti">
-                            <span>🔗</span>
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg>
                             <span>Copia Link</span>
                         </button>
                     </div>
                 </div>
 
                 <div class="no-print grid grid-cols-2 gap-3 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
-                    <button onclick="exportFleetToExcel()" class="bg-emerald-700/80 hover:bg-emerald-600 text-white text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2 shadow-md">
-                        <svg class="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <button onclick="exportFleetToExcel()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         <span>Export Excel (.csv)</span>
                     </button>
-                    <button onclick="printReportPDF()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 text-[11px] font-black py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2 shadow-md">
+                    <button onclick="printReportPDF()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
                         <span>Report PDF Flotta</span>
                     </button>
@@ -687,7 +683,7 @@
 
                 <!-- Form Aggiungi / Modifica Conducente -->
                 <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h2 id="formTitle" class="text-emerald-400 font-bold text-base tracking-tight">Aggiungi Conducente</h2>
+                    <h2 id="formTitle" class="text-white font-bold text-base tracking-tight">Aggiungi Conducente</h2>
                     <input type="hidden" id="editDriverId" value="">
 
                     <div class="space-y-3">
@@ -715,10 +711,10 @@
                                 <input type="text" maxlength="6" inputmode="numeric" id="addPin" placeholder="vuoto = automatico" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono font-bold text-amber-300 placeholder-slate-500 text-sm text-center">
                             </div>
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1 flex items-center space-x-1">
-                                    <span>📲</span> <span>Cellulare WhatsApp (Accesso &amp; Reset)</span>
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1 flex items-center space-x-1">
+                                    <span>Cellulare WhatsApp (Accesso &amp; Reset)</span>
                                 </label>
-                                <input type="tel" id="addPhone" placeholder="es. +39 347 1234567" class="w-full px-4 py-3 bg-[#0F1C32] border border-emerald-500/50 focus:border-emerald-400 rounded-2xl outline-none text-sm text-white placeholder-slate-500 font-semibold shadow-inner">
+                                <input type="tel" id="addPhone" placeholder="es. +39 347 1234567" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-sm text-white placeholder-slate-500 font-semibold shadow-inner">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
@@ -776,8 +772,8 @@
                         </div>
 
                         <div class="flex gap-2 pt-2">
-                            <button id="saveBtn" onclick="saveDriver()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg active:scale-98 border border-emerald-400/20 flex items-center justify-center space-x-1.5">
-                                <span>💾</span> <span>Salva Conducente</span>
+                            <button id="saveBtn" onclick="saveDriver()" class="flex-1 bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-3 rounded-2xl text-xs transition-all active:scale-98 flex items-center justify-center space-x-1.5">
+                                <span>Salva Conducente</span>
                             </button>
                             <button id="cancelEditBtn" onclick="resetDriverForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-2xl text-xs transition border border-slate-700">
                                 Annulla
@@ -814,8 +810,8 @@
                             <span id="fleetCount" class="bg-slate-800 text-slate-300 px-2.5 py-0.5 text-xs font-bold rounded-full">0</span>
                         </div>
                         <button onclick="shareCompanyFleetLinkWhatsApp()" title="Invia Link Diretto a tutti gli Autisti su WhatsApp" 
-                            class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow-md transition active:scale-95 border border-emerald-400/20">
-                            <span>📲</span>
+                            class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold px-3 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 transition active:scale-95">
+                            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10a1 1 0 011 1v16a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1zM11 18h2"/></svg>
                             <span>Invia Link App agli Autisti</span>
                         </button>
                     </div>
@@ -847,7 +843,7 @@
                 
                 <!-- Form Aggiungi / Modifica Mezzo -->
                 <div class="no-print bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h2 id="vehicleFormTitle" class="text-emerald-400 font-bold text-base tracking-tight">Aggiungi Veicolo / Mezzo</h2>
+                    <h2 id="vehicleFormTitle" class="text-white font-bold text-base tracking-tight">Aggiungi Veicolo / Mezzo</h2>
                     <input type="hidden" id="editVehicleId" value="">
 
                     <div class="space-y-3">
@@ -864,8 +860,8 @@
                         </div>
 
                         <div class="flex gap-2 pt-2">
-                            <button id="saveVehicleBtn" onclick="saveVehicle()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-2xl text-xs transition-all shadow-lg active:scale-98 border border-emerald-400/20 flex items-center justify-center space-x-1.5">
-                                <span>💾</span> <span>Salva Mezzo</span>
+                            <button id="saveVehicleBtn" onclick="saveVehicle()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white flex-1 font-bold py-3 rounded-2xl text-xs transition-all shadow-lg active:scale-98 flex items-center justify-center space-x-1.5">
+                                <span>Salva Mezzo</span>
                             </button>
                             <button id="cancelVehicleEditBtn" onclick="resetVehicleForm()" class="hidden px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-3 rounded-2xl text-xs transition border border-slate-700">
                                 Annulla
@@ -927,7 +923,7 @@
                 
                 <!-- Box Personalizzazione Azienda & Carta Azienda -->
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h3 class="font-bold text-sm text-emerald-400">🏢 Denominazione Azienda &amp; Carta Azienda (5 Anni)</h3>
+                    <h3 class="font-bold text-sm text-white">Denominazione Azienda &amp; Carta Azienda (5 Anni)</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
                         Gestisci la ragione sociale e monitora la scadenza quinquennale della Carta Azienda utilizzata per scaricare i veicoli.
                     </p>
@@ -989,8 +985,7 @@
                             </div>
                         </div>
 
-                        <button onclick="saveCompanyDetails()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
-                            <span>💾</span>
+                        <button onclick="saveCompanyDetails()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
                             <span>Salva Dati Azienda, Carta &amp; Logo</span>
                         </button>
                     </div>
@@ -1000,7 +995,7 @@
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
                     <div class="flex items-center space-x-2">
                         <span class="text-base">🔑</span>
-                        <h3 class="font-bold text-sm text-amber-400">Sicurezza &bull; Cambia Password Amministratore</h3>
+                        <h3 class="font-bold text-sm text-white">Sicurezza &bull; Cambia Password Amministratore</h3>
                     </div>
                     <p class="text-xs text-slate-400 leading-relaxed">
                         Modifica la password con cui accedi all'Area Amministrativa riservata della tua flotta (minimo 8 caratteri).
@@ -1019,8 +1014,7 @@
                         </div>
                     </div>
 
-                    <button onclick="saveAdminPersonalPin()" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
-                        <span>🔒</span>
+                    <button onclick="saveAdminPersonalPin()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
                         <span>Salva Nuova Password</span>
                     </button>
                 </div>
@@ -1039,7 +1033,7 @@
                         In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. La non conformità comporta gravissime sanzioni.
                     </p>
 
-                    <button onclick="openCciaaModal()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
+                    <button onclick="openCciaaModal()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         <span>Informativa Ufficiale Camere di Commercio (CCIAA)</span>
                     </button>
@@ -1055,18 +1049,18 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h3 class="font-extrabold text-sm text-white group-hover:text-emerald-200 transition-colors leading-snug">Modulo di Controllo Assenze UE (Attestato di Attività)</h3>
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Modulo di Controllo Assenze UE (Attestato di Attività)</h3>
                             <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Compila a computer e stampa il modello ufficiale per Malattia, Ferie e Permessi (Decisione 2009/959/UE).</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openAttestationModal()" class="w-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 hover:border-emerald-400/70 text-emerald-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                    <button type="button" onclick="openAttestationModal()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
                         <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                             </svg>
                             <span class="tracking-wide">Compila e Stampa Modulo Assenze Ufficiale UE</span>
                         </div>
-                        <svg class="w-4 h-4 text-emerald-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
@@ -1081,18 +1075,18 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h3 class="font-extrabold text-sm text-white group-hover:text-teal-200 transition-colors leading-snug">Procedura: Malattia, Ferie &amp; Mancato Scarico (28 gg)</h3>
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Procedura: Malattia, Ferie &amp; Mancato Scarico (28 gg)</h3>
                             <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Guida per la tutela dell'azienda e degli autisti: forza maggiore, scarico preventivo e modulo assenze.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-teal-500/15 hover:bg-teal-500/25 border border-teal-500/40 hover:border-teal-400/70 text-teal-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
                         <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                             </svg>
                             <span class="tracking-wide">Apri Guida Procedurale Malattia &amp; Ferie</span>
                         </div>
-                        <svg class="w-4 h-4 text-teal-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
@@ -1105,18 +1099,18 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h3 class="font-extrabold text-sm text-white group-hover:text-indigo-200 transition-colors leading-snug">Manuale d'Istruzioni &amp; Guida Normativa</h3>
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Manuale d'Istruzioni &amp; Guida Normativa</h3>
                             <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Spiegazione del Piano Ferie, obbligo consegna carta, termini dei 28 giorni e sanzioni di legge.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openManualModal()" class="w-full bg-indigo-500/15 hover:bg-indigo-500/25 border border-indigo-500/40 hover:border-indigo-400/70 text-indigo-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                    <button type="button" onclick="openManualModal()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
                         <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
                             <span class="tracking-wide">Consulta il Manuale d'Istruzioni Ufficiale</span>
                         </div>
-                        <svg class="w-4 h-4 text-indigo-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
@@ -1131,19 +1125,19 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h3 class="font-extrabold text-sm text-white group-hover:text-cyan-200 transition-colors leading-snug">Guida Operativa: Inserimento Carta su Tachigrafo VDO</h3>
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Guida Operativa: Inserimento Carta su Tachigrafo VDO</h3>
                             <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Istruzioni passo-passo sul display per gli autisti: manual entry, riposo letto 🛌, nazione IT e partenza.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/40 hover:border-cyan-400/70 text-cyan-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
                         <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <rect x="2" y="5" width="20" height="14" rx="2" stroke-width="2"></rect>
                                 <path stroke-linecap="round" stroke-width="2" d="M6 10h12M6 14h7"></path>
                             </svg>
                             <span class="tracking-wide">Apri Guida Display VDO (Passo-Passo)</span>
                         </div>
-                        <svg class="w-4 h-4 text-cyan-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
@@ -1161,14 +1155,14 @@
                             <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Pianifica i viaggi e verifica le pause obbligatorie (45m) e i riposi per evitare sanzioni.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-violet-500/15 hover:bg-violet-500/25 border border-violet-500/40 hover:border-violet-400/70 text-violet-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                    <button type="button" onclick="openDrivingSimulatorModal()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
                         <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-violet-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                             </svg>
                             <span class="tracking-wide">Apri Simulatore di Guida &amp; Norme CE 561/2006</span>
                         </div>
-                        <svg class="w-4 h-4 text-violet-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
@@ -1181,23 +1175,23 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h3 class="font-extrabold text-sm text-white group-hover:text-emerald-200 transition-colors leading-snug">Registro Scarichi Flotta Excel (.csv)</h3>
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Registro Scarichi Flotta Excel (.csv)</h3>
                             <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Genera ed esporta il file tabellare con tutti i conducenti, veicoli, scadenze e stati di conformità.</p>
                         </div>
                     </div>
-                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 hover:border-emerald-400/70 text-emerald-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
                         <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             <span class="tracking-wide">Scarica Registro Ufficiale Excel (.csv)</span>
                         </div>
-                        <svg class="w-4 h-4 text-emerald-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
 
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h3 class="font-bold text-sm text-emerald-400">⚙️ Gestione e Aggiornamento Link Portali</h3>
+                    <h3 class="font-bold text-sm text-white">Gestione e Aggiornamento Link Portali</h3>
                     <p class="text-xs text-slate-400 leading-relaxed">
                         Puoi personalizzare i link ufficiali che vengono mostrati sia qui che nella schermata dei conducenti:
                     </p>
@@ -1212,7 +1206,7 @@
                             <input type="url" id="linkTaciInput" placeholder="https://taci.infocamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
                         </div>
 
-                        <button onclick="saveCustomLinks()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md">
+                        <button onclick="saveCustomLinks()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-3 rounded-xl text-xs transition shadow-md">
                             Aggiorna Link Ufficiali
                         </button>
                     </div>
@@ -1286,8 +1280,7 @@
             <div class="flex items-center justify-between bg-[#15243E]/90 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-slate-800 shadow-md">
                 <!-- Se l'Amministratore sta visualizzando la scheda -->
                 <div id="driverViewAdminBackBtn" class="hidden">
-                    <button onclick="backToAdminFromDriverView()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow transition active:scale-95">
-                        <span>⬅️</span>
+                    <button onclick="backToAdminFromDriverView()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold px-3.5 py-1.5 rounded-xl text-xs flex items-center space-x-1.5 shadow transition active:scale-95">
                         <span>Torna al Pannello Flotta</span>
                     </button>
                 </div>
@@ -1299,8 +1292,7 @@
                         <span class="text-xs font-bold text-slate-200">Area Personale Conducente</span>
                     </div>
                     <div class="flex items-center space-x-1.5">
-                        <button type="button" onclick="triggerPWAInstall()" class="pwa-install-btn hidden text-xs text-emerald-300 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 px-2.5 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 shadow-sm active:scale-95 cursor-pointer" title="Installa l'App sul tuo telefono">
-                            <span>📲</span>
+                        <button type="button" onclick="triggerPWAInstall()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 pwa-install-btn hidden text-xs px-2.5 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 shadow-sm active:scale-95 cursor-pointer" title="Installa l'App sul tuo telefono">
                             <span>Installa</span>
                         </button>
                         <button onclick="logoutDriver()" class="text-xs text-red-300 hover:text-red-200 bg-red-950/60 hover:bg-red-900 border border-red-800/80 px-3 py-1.5 rounded-xl font-bold transition flex items-center space-x-1 active:scale-95 shadow-sm">
@@ -1334,8 +1326,7 @@
                         <span class="text-[10px] text-slate-400 block">Riceverai le notifiche prima del termine dei 28gg</span>
                     </div>
                 </div>
-                <button type="button" onclick="triggerInstantTestPush()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] py-1.5 px-3 rounded-xl transition shadow-xs flex items-center space-x-1 cursor-pointer">
-                    <span>🧪</span>
+                <button type="button" onclick="triggerInstantTestPush()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold text-[10px] py-1.5 px-3 rounded-xl transition shadow-xs flex items-center space-x-1 cursor-pointer">
                     <span>Prova Notifica</span>
                 </button>
             </div>
@@ -1617,8 +1608,8 @@
                 </div>
 
                 <div class="flex items-center gap-2 pt-1">
-                    <button onclick="saveDriverVacation()" class="flex-1 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 font-black py-3 px-4 rounded-xl shadow-md text-xs transition active:scale-[0.98]">
-                        💾 Salva Ferie
+                    <button onclick="saveDriverVacation()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white flex-1 font-black py-3 px-4 rounded-xl shadow-md text-xs transition active:scale-[0.98]">
+                        Salva Ferie
                     </button>
                     <button id="clearDriverVacationBtn" onclick="clearDriverVacation()" class="hidden bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-200 font-bold py-3 px-4 rounded-xl text-xs transition shadow-md">
                         🗑️ Rimuovi
@@ -1627,10 +1618,10 @@
             </div>
 
             <!-- Box Moduli Assenze UE Rilasciati (Attestati di Attività) -->
-            <div id="driverAttestationsBox" class="bg-[#15243E] border border-emerald-500/30 rounded-3xl p-5 shadow-xl space-y-3">
+            <div id="driverAttestationsBox" class="bg-[#15243E] border border-slate-500/30 rounded-3xl p-5 shadow-xl space-y-3">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20 text-xl">
+                        <div class="p-2.5 bg-slate-500/10 text-slate-400 rounded-2xl border border-slate-500/20 text-xl">
                             📄
                         </div>
                         <div>
@@ -1638,7 +1629,7 @@
                             <p class="text-[11px] text-slate-400">Attestati di Attività (Dec. 2009/959/UE) in custodia.</p>
                         </div>
                     </div>
-                    <span id="driverAttestationsCount" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">0</span>
+                    <span id="driverAttestationsCount" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30">0</span>
                 </div>
                 <div id="driverAttestationsList" class="space-y-2 pt-1">
                     <div class="p-3 bg-[#0F1C32]/60 rounded-xl border border-dashed border-slate-700/80 text-center text-xs text-slate-400">
@@ -1674,8 +1665,8 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <!-- 1. Guida Display Tachigrafo VDO -->
-                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#14233D] border border-cyan-500/30 hover:border-cyan-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/10 border border-cyan-500/30 text-cyan-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                    <button type="button" onclick="openVdoManualModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#14233D] border border-slate-500/30 hover:border-slate-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-500/20 to-blue-600/10 border border-slate-500/30 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <rect x="2.5" y="4.5" width="19" height="15" rx="3" stroke-width="1.8"></rect>
                                 <path stroke-linecap="round" stroke-width="1.8" d="M6 9h12M6 14h6m3 0h3"></path>
@@ -1683,15 +1674,15 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h5 class="text-xs font-black text-white group-hover:text-cyan-200 transition-colors leading-snug">Guida Display Tachigrafo VDO</h5>
+                            <h5 class="text-xs font-black text-white group-hover:text-slate-200 transition-colors leading-snug">Guida Display Tachigrafo VDO</h5>
                             <p class="text-[10px] text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-snug">Simboli, pittogrammi &amp; messaggi DTCO</p>
                         </div>
-                        <svg class="w-4 h-4 text-slate-500 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
 
                     <!-- 2. Guida Malattia & Ferie (28gg) -->
-                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#0e2622] border border-teal-500/30 hover:border-teal-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-teal-500/20 to-emerald-600/10 border border-teal-500/30 text-teal-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                    <button type="button" onclick="openAbsenceGuideModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#0e2622] border border-slate-500/30 hover:border-slate-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-500/20 to-slate-600/10 border border-slate-500/30 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <rect x="3" y="4" width="18" height="17" rx="3" stroke-width="1.8"></rect>
                                 <path stroke-linecap="round" stroke-width="1.8" d="M8 2v4m8-2v4M3 9h18"></path>
@@ -1699,24 +1690,24 @@
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h5 class="text-xs font-black text-white group-hover:text-teal-200 transition-colors leading-snug">Guida Malattia &amp; Ferie (28gg)</h5>
+                            <h5 class="text-xs font-black text-white group-hover:text-slate-200 transition-colors leading-snug">Guida Malattia &amp; Ferie (28gg)</h5>
                             <p class="text-[10px] text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-snug">Modulo Assenze UE &amp; inserimento manuale</p>
                         </div>
-                        <svg class="w-4 h-4 text-slate-500 group-hover:text-teal-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
 
                     <!-- 3. Manuale Conducente Completo -->
-                    <button type="button" onclick="openManualModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#18203c] border border-indigo-500/30 hover:border-indigo-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
-                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-indigo-500/20 to-blue-600/10 border border-indigo-500/30 text-indigo-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                    <button type="button" onclick="openManualModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#18203c] border border-slate-500/30 hover:border-slate-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
+                        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-slate-500/20 to-blue-600/10 border border-slate-500/30 text-slate-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <h5 class="text-xs font-black text-white group-hover:text-indigo-200 transition-colors leading-snug">Manuale Conducente Completo</h5>
+                            <h5 class="text-xs font-black text-white group-hover:text-slate-200 transition-colors leading-snug">Manuale Conducente Completo</h5>
                             <p class="text-[10px] text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-snug">Normativa CE 561, sanzioni &amp; obblighi</p>
                         </div>
-                        <svg class="w-4 h-4 text-slate-500 group-hover:text-indigo-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                        <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-300 group-hover:translate-x-0.5 transition-all flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
 
                     <!-- 4. Informativa Ufficiale Camera di Commercio (CCIAA) -->
@@ -2228,8 +2219,8 @@
                     <button type="button" onclick="closeCropModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3.5 rounded-xl transition">
                         Annulla
                     </button>
-                    <button type="button" onclick="confirmCropPhoto()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3.5 rounded-xl transition shadow-md">
-                        ✂️ Conferma Inquadratura
+                    <button type="button" onclick="confirmCropPhoto()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white flex-1 text-xs font-bold py-3.5 rounded-xl transition shadow-md">
+                        Conferma Inquadratura
                     </button>
                 </div>
             </div>
@@ -2474,7 +2465,7 @@
             <!-- Footer Modale -->
             <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
                 <span class="text-[10px] text-slate-400">GC CodeLab &bull; DTCO VDO Inserimento Manuale</span>
-                <button type="button" onclick="closeVdoManualModal()" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl transition shadow-md">
+                <button type="button" onclick="closeVdoManualModal()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-5 py-2.5 text-xs font-bold rounded-xl transition shadow-md">
                     Ho Capito / Chiudi
                 </button>
             </div>
@@ -2547,8 +2538,7 @@
                             <li>✔️ <strong>Registrazione Manuale sul Tachigrafo:</strong> Al rientro, quando l'autista inserisce la carta nel tachigrafo, deve effettuare la procedura di inserimento manuale (Manual Entry) confermando il <strong>simbolo del Letto (Riposo 🛌)</strong> per tutto il periodo di assenza.</li>
                             <li>✔️ <strong>Attestato di Attività (Modulo Assenze UE):</strong> Compilazione della <em>Casella 15 (Ferie)</em> a supporto interno e per i controlli dell'Ispettorato del Lavoro.</li>
                         </ul>
-                        <button type="button" onclick="closeAbsenceGuideModal(); openVdoManualModal();" class="w-full mt-2 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-3 rounded-xl text-[11px] transition flex items-center justify-center space-x-1.5 shadow-md active:scale-98">
-                            <span>📟</span>
+                        <button type="button" onclick="closeAbsenceGuideModal(); openVdoManualModal();" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full mt-2 font-bold py-2.5 px-3 rounded-xl text-[11px] transition flex items-center justify-center space-x-1.5 shadow-md active:scale-98">
                             <span>Visualizza Guida Passo-Passo Display Tachigrafo VDO</span>
                         </button>
                     </div>
@@ -2585,7 +2575,7 @@
             <!-- Footer Modale -->
             <div class="p-4 border-t border-slate-800 bg-[#15233A] flex justify-between items-center">
                 <span class="text-[10px] text-slate-400">GC CodeLab &bull; Formazione Flotta &amp; Normativa UE</span>
-                <button type="button" onclick="closeAbsenceGuideModal()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-md">
+                <button type="button" onclick="closeAbsenceGuideModal()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-5 py-2.5 text-xs font-bold rounded-xl transition shadow-md">
                     Ho Capito / Chiudi
                 </button>
             </div>
@@ -2696,12 +2686,10 @@
                 <button type="button" onclick="closeAttestationModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3.5 rounded-xl transition text-center">
                     Chiudi
                 </button>
-                <button type="button" onclick="saveAttestationToDriverProfile()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-1.5 active:scale-95 text-center">
-                    <span>💾</span>
+                <button type="button" onclick="saveAttestationToDriverProfile()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-1.5 active:scale-95 text-center">
                     <span>Salva nel Profilo Autista</span>
                 </button>
-                <button type="button" onclick="printOfficialAttestationSheet()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-1.5 active:scale-95 text-center">
-                    <span>🖨️</span>
+                <button type="button" onclick="printOfficialAttestationSheet()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-xs font-extrabold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-1.5 active:scale-95 text-center">
                     <span>Stampa / PDF Ufficiale</span>
                 </button>
             </div>
@@ -2899,8 +2887,8 @@
 
                     <div class="pt-2">
                         <button type="button" onclick="handleRegisterCompanySubmit()" 
-                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg active:scale-98 cursor-pointer">
-                            🚀 Attiva Flotta Gratuita Ora
+                            class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg active:scale-98 cursor-pointer">
+                            Attiva Flotta Gratuita Ora
                         </button>
                     </div>
                 </div>
@@ -2932,8 +2920,7 @@
 
                     <div class="space-y-2 pt-1">
                         <button type="button" onclick="loginDirectlyAsRegisteredCompany()" 
-                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer active:scale-98">
-                            <span>🚀</span>
+                            class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-extrabold py-3.5 rounded-2xl text-xs transition-all shadow-lg flex items-center justify-center space-x-2 cursor-pointer active:scale-98">
                             <span>Entra Subito nel Gestionale Flotta</span>
                         </button>
 
@@ -2944,8 +2931,7 @@
                         </button>
 
                         <button type="button" onclick="notifyGiovanniNewCompanyWhatsApp()" 
-                            class="w-full bg-indigo-950/50 hover:bg-indigo-900/60 text-indigo-300 border border-indigo-500/30 font-bold py-2 rounded-2xl text-[11px] transition flex items-center justify-center space-x-1.5 cursor-pointer">
-                            <span>💬</span>
+                            class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-bold py-2 rounded-2xl text-[11px] transition flex items-center justify-center space-x-1.5 cursor-pointer">
                             <span>Invia Notifica Attivazione a GC CodeLab (WhatsApp)</span>
                         </button>
                     </div>
@@ -2982,8 +2968,7 @@
                         <div class="relative flex-1 sm:w-60">
                             <input type="text" id="superAdminSearchInput" oninput="renderSuperAdminCompaniesList()" placeholder="🔍 Cerca flotta, codice o P.IVA..." class="w-full bg-[#08101D] border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
                         </div>
-                        <button onclick="openRegisterCompanyModal(); closeSuperAdminModal();" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 flex-shrink-0 cursor-pointer">
-                            <span>➕</span>
+                        <button onclick="openRegisterCompanyModal(); closeSuperAdminModal();" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 flex-shrink-0 cursor-pointer">
                             <span>Nuova Flotta</span>
                         </button>
                     </div>
@@ -3087,7 +3072,7 @@
                         </span>
                         <span class="text-[10px] text-slate-400 block truncate">Invia il nuovo PIN con guida al titolare</span>
                     </div>
-                    <button type="button" onclick="sendAdminPinResetWhatsApp()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow-md active:scale-95 transition flex-shrink-0">
+                    <button type="button" onclick="sendAdminPinResetWhatsApp()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold px-3 py-2 rounded-xl text-xs flex items-center space-x-1.5 shadow-md active:scale-95 transition flex-shrink-0">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                         <span>Invia su WA</span>
                     </button>
@@ -3102,8 +3087,8 @@
                     <button type="button" onclick="closeEditCompanyModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold px-4 py-2.5 rounded-xl text-xs transition">
                         Annulla
                     </button>
-                    <button type="button" onclick="saveEditedCompany()" class="bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
-                        <span>💾</span> <span>Salva Modifiche</span>
+                    <button type="button" onclick="saveEditedCompany()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
+                        <span>Salva Modifiche</span>
                     </button>
                 </div>
             </div>
@@ -3241,8 +3226,8 @@
                     <button type="button" onclick="copyGeneratedLicenseKey()" class="py-2 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1">
                         <span>📋</span> <span>Copia Chiave</span>
                     </button>
-                    <button type="button" onclick="sendGeneratedLicenseKeyWhatsApp()" class="py-2 px-3 bg-emerald-700/80 hover:bg-emerald-600 text-white font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1 shadow">
-                        <span>💬</span> <span>Invia su WhatsApp</span>
+                    <button type="button" onclick="sendGeneratedLicenseKeyWhatsApp()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 py-2 px-3 font-bold rounded-xl text-[11px] transition flex items-center justify-center space-x-1 shadow">
+                        <span>Invia su WhatsApp</span>
                     </button>
                 </div>
             </div>
@@ -3251,8 +3236,8 @@
                 <button type="button" onclick="closeManageLicenseModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
                     Annulla
                 </button>
-                <button type="button" onclick="saveCompanyLicense()" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
-                    <span>⚡</span> <span>Applica da Remoto (con Conferma)</span>
+                <button type="button" onclick="saveCompanyLicense()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white flex-1 font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5">
+                    <span>Applica da Remoto (con Conferma)</span>
                 </button>
             </div>
         </div>
@@ -3314,15 +3299,15 @@
                 <label class="block text-[11px] font-bold text-purple-300">Hai una Chiave di Attivazione / Rinnovo?</label>
                 <input type="text" id="clientLicenseKeyInput" placeholder="es. GC-PRO-20270907-AZ101-XXXXXX" 
                     class="w-full px-3.5 py-2.5 bg-[#08111E] border border-slate-700 rounded-xl outline-none font-mono text-xs text-white uppercase text-center font-bold tracking-wider focus:border-purple-400">
-                <button type="button" onclick="activateLicenseKeyFromInput()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 cursor-pointer">
-                    <span>⚡</span> <span>Attiva Chiave Licenza</span>
+                <button type="button" onclick="activateLicenseKeyFromInput()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <span>Attiva Chiave Licenza</span>
                 </button>
             </div>
 
             <!-- Supporto & Contatti Commerciali GC CodeLab -->
             <div class="space-y-2 pt-1">
-                <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition cursor-pointer">
-                    <span>💬</span> <span>Richiedi Rinnovo Licenza su WhatsApp</span>
+                <button type="button" onclick="requestLicenseRenewalWhatsApp()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-bold py-2.5 px-4 rounded-xl text-xs flex items-center justify-center space-x-2 shadow-lg transition cursor-pointer">
+                    <span>Richiedi Rinnovo Licenza su WhatsApp</span>
                 </button>
                 <p class="text-[10px] text-center text-slate-500">
                     GC CodeLab &bull; Assistenza Diretta &bull; Software Flotta
@@ -3350,7 +3335,7 @@
                 <button type="button" onclick="closeSwitchDriverCompanyModal()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">
                     Annulla
                 </button>
-                <button type="button" onclick="confirmSwitchDriverCompany()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md">
+                <button type="button" onclick="confirmSwitchDriverCompany()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white flex-1 font-bold py-2.5 rounded-xl text-xs transition shadow-md">
                     Attiva Flotta
                 </button>
             </div>
@@ -4229,7 +4214,7 @@
             const btn = document.getElementById('adminLoginBtn');
             if (pinVal.length >= 6 && emailVal.includes('@')) {
                 btn.disabled = false;
-                btn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all duration-300 transform active:scale-[0.98] text-sm cursor-pointer";
+                btn.className = "w-full bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all duration-300 transform active:scale-[0.98] text-sm cursor-pointer";
             } else {
                 btn.disabled = true;
                 btn.className = "w-full bg-slate-800 text-slate-500 font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all duration-300 transform text-sm cursor-not-allowed";
@@ -5657,7 +5642,7 @@
                     <div class="text-center py-8 text-slate-400">
                         <span class="text-3xl block mb-2">📄</span>
                         <p class="text-xs">Nessun modulo di assenza salvato per questo conducente.</p>
-                        <button onclick="closeDriverAttestationsModal(); openAttestationModal(); document.getElementById('attestDriverSelect').value='${validDriverId}'; onAttestDriverChange();" class="mt-3 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition">
+                        <button onclick="closeDriverAttestationsModal(); openAttestationModal(); document.getElementById('attestDriverSelect').value='${validDriverId}'; onAttestDriverChange();" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white mt-3 px-3 py-1.5 rounded-xl text-xs font-bold transition">
                             + Compila Nuovo Modulo
                         </button>
                     </div>
@@ -5678,8 +5663,7 @@
                                 <p class="text-[9px] text-slate-400 mt-0.5">Firmato da: ${att.signatory || 'Impresa'} &bull; ${att.placeDate || ''}</p>
                             </div>
                             <div class="flex items-center space-x-1.5 flex-shrink-0">
-                                <button onclick="reprintSavedAttestation('${validDriverId}', '${att.id}')" title="Stampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
-                                    <span>🖨️</span>
+                                <button onclick="reprintSavedAttestation('${validDriverId}', '${att.id}')" title="Stampa / Salva PDF" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
                                     <span>Stampa</span>
                                 </button>
                                 <button onclick="deleteSavedAttestation('${validDriverId}', '${att.id}')" title="Elimina Modulo" class="p-1.5 bg-red-950 hover:bg-red-900 border border-red-800 text-red-300 rounded-xl text-[10px] transition">
@@ -5889,7 +5873,7 @@
                 // Nessuna flotta collegata: mostra i pulsanti per inserire il codice flotta o registrarsi gratis
                 if (activationBox) activationBox.classList.remove('hidden');
                 if (selfRegBox) selfRegBox.classList.remove('hidden');
-                if (btnText) btnText.innerText = "🔑 Inserisci Codice Azienda per Attivare";
+                if (btnText) btnText.innerText = "Inserisci Codice Azienda per Attivare";
             }
         }
 
@@ -6185,7 +6169,7 @@
             const tabSanctions = document.getElementById('tabSanctions');
             const tabLiveMap = document.getElementById('tabLiveMap');
 
-            const inactiveBtnStyle = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
+            const inactiveBtnStyle = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
             if (btnFleet) btnFleet.className = inactiveBtnStyle;
             if (btnVehicles) btnVehicles.className = inactiveBtnStyle;
             if (btnSanctions) btnSanctions.className = inactiveBtnStyle;
@@ -6196,7 +6180,7 @@
             if (tabSanctions) tabSanctions.classList.add('hidden');
             if (tabLiveMap) tabLiveMap.classList.add('hidden');
 
-            const activeBtnStyle = "relative bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
+            const activeBtnStyle = "relative bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
 
             if (tab === 'fleet') {
                 if (btnFleet) btnFleet.className = activeBtnStyle;
@@ -6643,16 +6627,14 @@
                     <!-- 3. BARRA AZIONI PULITA IN BASSO -->
                     <div class="flex items-center justify-between pt-1 gap-2 flex-wrap">
                         <div class="flex items-center space-x-2 flex-wrap gap-y-1">
-                            <button onclick="openManageLicenseModal('${code}')" class="bg-purple-900/30 hover:bg-purple-800/60 text-purple-200 border border-purple-500/40 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer shadow-xs">
-                                <span>🛡️</span>
+                            <button onclick="openManageLicenseModal('${code}')" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer shadow-xs">
                                 <span>Licenza &amp; Piani</span>
                             </button>
                             <button onclick="openEditCompanyModal('${code}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer">
                                 <span>✏️</span>
                                 <span>Modifica</span>
                             </button>
-                            <button onclick="sendCompanyWhatsAppDirect('${code}')" class="bg-emerald-900/30 hover:bg-emerald-800/50 text-emerald-300 border border-emerald-500/40 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer">
-                                <span>💬</span>
+                            <button onclick="sendCompanyWhatsAppDirect('${code}')" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 cursor-pointer">
                                 <span>WhatsApp</span>
                             </button>
                             ${comp.code !== 'AZ-MAIN' ? `
@@ -6663,8 +6645,8 @@
                         </div>
 
                         <div>
-                            <button onclick="selectCompanyFromSuperAdmin('${code}')" class="${isCurrent ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black ring-2 ring-emerald-400/40' : 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold'} px-4 py-2 rounded-xl text-xs transition shadow-md flex items-center space-x-1.5 cursor-pointer">
-                                <span>${isCurrent ? '🚀 Flotta In Uso' : '👉 Apri Questa Flotta'}</span>
+                            <button onclick="selectCompanyFromSuperAdmin('${code}')" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white ${isCurrent ? 'bg-gradient-to-r font-black ring-2 ring-emerald-400/40' : 'bg-gradient-to-r font-bold'} px-4 py-2 rounded-xl text-xs transition shadow-md flex items-center space-x-1.5 cursor-pointer">
+                                <span>${isCurrent ? 'Flotta In Uso' : 'Apri Questa Flotta'}</span>
                             </button>
                         </div>
                     </div>
@@ -7315,9 +7297,9 @@
 
             if (!code || isMaster) {
                 badge.classList.remove('hidden');
-                badge.className = `${baseBtnCls} bg-emerald-500/15 text-emerald-300 border-emerald-500/30`;
+                badge.className = `${baseBtnCls} bg-slate-800/70 text-slate-200 border-slate-700`;
                 text.innerText = 'Licenza Master (A Vita)';
-                if (icon) icon.innerText = '♾️';
+                if (icon) icon.innerText = '';
                 updateFreeLicenseUI();
                 return;
             }
@@ -7328,9 +7310,9 @@
 
             if (!expStr) {
                 badge.classList.remove('hidden');
-                badge.className = isFree ? `${baseBtnCls} bg-teal-500/20 text-teal-300 border-teal-500/40` : `${baseBtnCls} bg-amber-500/15 text-amber-300 border-amber-500/30`;
+                badge.className = isFree ? `${baseBtnCls} bg-slate-800/70 text-slate-200 border-slate-700` : `${baseBtnCls} bg-amber-500/15 text-amber-300 border-amber-500/30`;
                 text.innerText = isFree ? 'Licenza Gratuita' : 'Trial (In Prova)';
-                if (icon) icon.innerText = isFree ? '🎁' : '⏳';
+                if (icon) icon.innerText = isFree ? '' : '⏳';
                 updateFreeLicenseUI();
                 return;
             }
@@ -7349,13 +7331,13 @@
                 text.innerText = `Scade tra ${daysLeft} gg`;
                 if (icon) icon.innerText = '⚠️';
             } else if (isFree) {
-                badge.className = `${baseBtnCls} bg-teal-500/20 text-teal-300 border-teal-500/40`;
+                badge.className = `${baseBtnCls} bg-slate-800/70 text-slate-200 border-slate-700`;
                 text.innerText = (daysLeft > 10000) ? 'Gratuita Illimitata' : `Gratuita (${daysLeft} gg)`;
-                if (icon) icon.innerText = '🎁';
+                if (icon) icon.innerText = '';
             } else {
-                badge.className = `${baseBtnCls} bg-emerald-500/15 text-emerald-300 border-emerald-500/30`;
+                badge.className = `${baseBtnCls} bg-slate-800/70 text-slate-200 border-slate-700`;
                 text.innerText = `${daysLeft} gg rimasti`;
-                if (icon) icon.innerText = '🛡️';
+                if (icon) icon.innerText = '';
             }
             const upgradeBtn = document.getElementById('btnHeaderUpgradeFleet');
             if (upgradeBtn) {
@@ -7944,7 +7926,7 @@
             }
 
             document.getElementById('formTitle').innerText = "Modifica Conducente";
-            document.getElementById('saveBtn').innerHTML = "<span>💾</span> <span>Aggiorna Conducente</span>";
+            document.getElementById('saveBtn').innerHTML = "<span>Aggiorna Conducente</span>";
             document.getElementById('cancelEditBtn').classList.remove('hidden');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -7969,7 +7951,7 @@
             document.getElementById('currentAttachmentStatus').innerText = "";
 
             document.getElementById('formTitle').innerText = "Aggiungi Conducente";
-            document.getElementById('saveBtn').innerHTML = "<span>💾</span> <span>Salva Conducente</span>";
+            document.getElementById('saveBtn').innerHTML = "<span>Salva Conducente</span>";
             document.getElementById('cancelEditBtn').classList.add('hidden');
         }
 
@@ -9189,8 +9171,7 @@
                                     <p class="text-[9px] text-slate-400 mt-0.5">Rilasciato da: ${att.signatory || 'Impresa'}</p>
                                 </div>
                                 <div class="flex items-center space-x-1.5 flex-shrink-0">
-                                    <button onclick="reprintSavedAttestation('${validDriverId}', '${att.id}')" title="Ristampa / Salva PDF" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
-                                        <span>🖨️</span>
+                                    <button onclick="reprintSavedAttestation('${validDriverId}', '${att.id}')" title="Ristampa / Salva PDF" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-xl text-[10px] font-bold shadow-sm transition active:scale-95 flex items-center space-x-1">
                                         <span>Stampa PDF</span>
                                     </button>
                                     ${isManager ? `
