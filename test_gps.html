@@ -3034,6 +3034,13 @@
                         <input type="password" id="linkPinConfirm" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="Conferma PIN" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
                         <button type="button" onclick="saveLinkPin()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white px-3 py-2 rounded-xl text-xs font-bold transition">Salva PIN</button>
                     </div>
+                    <div class="pt-1 space-y-1.5">
+                        <label for="superAdminNote" class="block text-[10px] uppercase font-bold text-slate-400">Nota personale &bull; visibile solo al Supervisore</label>
+                        <textarea id="superAdminNote" rows="3" maxlength="2000" placeholder="Scrivi qui un promemoria..." class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 resize-y"></textarea>
+                        <div class="flex justify-end">
+                            <button type="button" id="superAdminNoteSave" disabled onclick="saveSuperAdminNote()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed">Salva nota</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="superAdminCompaniesList" class="space-y-3">
@@ -5142,6 +5149,34 @@
             }
         }
 
+        const SUPER_ADMIN_NOTE_PATH = 'settings/nota_supervisore';
+
+        // Il tasto Salva si attiva solo dopo la lettura, per non sovrascrivere la nota con un campo vuoto
+        async function loadSuperAdminNote() {
+            if (!TachoAuth.isSuperAdmin()) return;
+            const saveBtn = document.getElementById('superAdminNoteSave');
+            saveBtn.disabled = true;
+            try {
+                const snapshot = await db.ref(SUPER_ADMIN_NOTE_PATH).once('value');
+                document.getElementById('superAdminNote').value = snapshot.val() || '';
+                saveBtn.disabled = false;
+            } catch (err) {
+                console.error('Nota Supervisore non caricata:', err);
+                showToast("Nota non caricata: controlla la connessione.", "error");
+            }
+        }
+
+        async function saveSuperAdminNote() {
+            if (!TachoAuth.isSuperAdmin()) return;
+            try {
+                await db.ref(SUPER_ADMIN_NOTE_PATH).set(document.getElementById('superAdminNote').value.trim() || null);
+                showToast("Nota salvata.", "success");
+            } catch (err) {
+                console.error('Nota Supervisore non salvata:', err);
+                showToast("Nota non salvata: controlla la connessione e riprova.", "error");
+            }
+        }
+
         async function saveLinkPin() {
             const current = document.getElementById('linkPinCurrent');
             const fresh = document.getElementById('linkPinNew');
@@ -6774,6 +6809,7 @@
         // --- GESTIONE PANNELLO SUPER ADMIN (GIOVANNI) ---
         function openSuperAdminModal() {
             renderSuperAdminCompaniesList();
+            loadSuperAdminNote();
             document.getElementById('superAdminModal').classList.remove('hidden');
         }
 
