@@ -1,12 +1,13 @@
-// Service Worker GC-TachoControl v13.7 Pro - Supporto Notifiche Push & Offline PWA Caching Sicuro
+// Service Worker GC-TachoControl v14.0 Pro (accesso sicuro) - Supporto Notifiche Push & Offline PWA Caching Sicuro
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js');
 
-const CACHE_NAME = 'tachocontrol-offline-v13.7';
+const CACHE_NAME = 'tachocontrol-offline-v14.0';
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
     'manifest.json',
+    'tacho-auth.js',
     'favicon.ico',
     'logo-192.png',
     'logo-512.png',
@@ -22,6 +23,7 @@ const ASSETS_TO_CACHE = [
     'https://cdn.tailwindcss.com',
     'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
     'https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js',
+    'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js',
     'https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js',
     'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css'

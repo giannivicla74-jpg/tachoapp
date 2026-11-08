@@ -1,25 +1,152 @@
 {
   "rules": {
-    ".read": true,
-    ".write": true,
+    ".read": false,
+    ".write": false,
+    "utenti": {
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')",
+      ".indexOn": [
+        "companyId"
+      ],
+      "$uid": {
+        ".read": "auth != null && (auth.uid === $uid || (auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin'))",
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'admin' && (!data.exists() || (data.child('companyId').val() === root.child('utenti').child(auth.uid).child('companyId').val() && data.child('role').val() === 'driver')) && (!newData.exists() || (newData.child('companyId').val() === root.child('utenti').child(auth.uid).child('companyId').val() && newData.child('role').val() === 'driver'))) || (auth != null && auth.uid === $uid && !data.exists() && newData.child('role').val() === 'admin' && !root.child('aziende_registry').child(newData.child('companyId').val()).exists() && newData.parent().parent().child('aziende_registry').child(newData.child('companyId').val()).child('ownerUid').val() === auth.uid)",
+        ".validate": "newData.hasChildren(['companyId', 'role'])",
+        "role": {
+          ".validate": "newData.val() === 'driver' || newData.val() === 'admin' || newData.val() === 'superadmin'"
+        }
+      }
+    },
+    "login_autisti": {
+      "$cid": {
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
+        "$key": {
+          ".read": true,
+          ".validate": "newData.hasChildren(['email', 'driverId'])"
+        }
+      }
+    },
+    "aziende_privato": {
+      "$cid": {
+        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+      }
+    },
     "aziende_registry": {
-      ".indexOn": ["code", "adminPin", "licenseStatus"]
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')",
+      ".indexOn": [
+        "code",
+        "licenseStatus"
+      ],
+      "$cid": {
+        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid)",
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && !data.exists() && newData.child('ownerUid').val() === auth.uid && !root.child('utenti').child(auth.uid).exists() && !root.child('aziende').child($cid).exists() && newData.parent().parent().child('utenti').child(auth.uid).child('companyId').val() === $cid && newData.child('plan').val() === 'free' && newData.child('maxDrivers').val() <= 1 && newData.child('maxVehicles').val() <= 1)",
+        "name": {
+          ".read": true,
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "phone": {
+          ".read": true,
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "logoBase64": {
+          ".read": true,
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "vat": {
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "fiscalCode": {
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "adminName": {
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "email": {
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "legalAddress": {
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "operativeAddress": {
+          ".write": "(auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+        },
+        "adminPin": {
+          ".validate": false
+        }
+      }
     },
     "aziende": {
-      "$companyId": {
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')",
+      "$cid": {
+        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid)",
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
         "operai": {
-          ".indexOn": ["pin", "cardNumber", "cantiere"]
+          ".indexOn": [
+            "pin",
+            "cardNumber",
+            "cantiere"
+          ],
+          "$driverId": {
+            ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId) && newData.exists()",
+            "authUid": {
+              ".validate": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin') || newData.val() === data.val()"
+            }
+          }
         },
         "veicoli": {
-          ".indexOn": ["plate", "cantiere"]
+          ".indexOn": [
+            "plate",
+            "cantiere"
+          ]
+        },
+        "live_positions": {
+          "$driverId": {
+            ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId)"
+          }
         }
       }
     },
     "operai": {
-      ".indexOn": ["pin", "cardNumber", "cantiere"]
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
+      ".indexOn": [
+        "pin",
+        "cardNumber",
+        "cantiere"
+      ],
+      "$driverId": {
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId) && newData.exists()",
+        "authUid": {
+          ".validate": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin') || newData.val() === data.val()"
+        }
+      }
     },
     "veicoli": {
-      ".indexOn": ["plate", "cantiere"]
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
+      ".indexOn": [
+        "plate",
+        "cantiere"
+      ]
+    },
+    "live_positions": {
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
+      "$driverId": {
+        ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId)"
+      }
+    },
+    "config": {
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+    },
+    "settings": {
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')",
+      ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')"
+    },
+    "dev_lexicon_terms": {
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')",
+      ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')"
     }
   }
 }

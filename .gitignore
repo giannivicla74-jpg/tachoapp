@@ -1,2 +1,5 @@
 *.BAK*
 *.bak
+
+# Log emulatori Firebase
+*-debug.log

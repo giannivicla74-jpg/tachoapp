@@ -6,7 +6,7 @@
     <title>TachoControl Pro - AMBIENTE DI TEST GPS (Riservato Gianni)</title>
     
     <!-- Content Security Policy per Protezione Avanzata XSS con supporto OpenStreetMap & Leaflet -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseio.com https://*.firebasedatabase.app https://*.googleapis.com https://*.gstatic.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://*.tile.openstreetmap.org https://nominatim.openstreetmap.org data: blob:; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https: wss:; object-src 'none'; base-uri 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseio.com https://*.firebasedatabase.app https://*.googleapis.com https://*.gstatic.com https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://unpkg.com https://*.tile.openstreetmap.org https://nominatim.openstreetmap.org data: blob:; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' http://127.0.0.1:9000 ws://127.0.0.1:9000 http://127.0.0.1:9099 https: wss:; object-src 'none'; base-uri 'self';">
 
     <!-- Inclusione Libreria Mappe Leaflet.js per tracciamento GPS in tempo reale -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -39,6 +39,7 @@
     <!-- INCLUSIONE SDK FIREBASE (App, Database e Messaging) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
 
     <script>
@@ -509,7 +510,9 @@
                     </div>
 
                     <div class="space-y-2">
-                        <input type="password" id="pinInput" placeholder="Inserisci PIN Amministratore" maxlength="4" inputmode="numeric" autocomplete="one-time-code" oninput="checkAdminPinLength()"
+                        <input type="email" id="adminEmailInput" placeholder="Email amministratore" autocomplete="username" oninput="checkAdminPinLength()"
+                            class="w-full px-4 py-3 bg-[#0A1322] border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-center text-sm font-semibold text-white placeholder-slate-500">
+                        <input type="password" id="pinInput" placeholder="Password" autocomplete="current-password" oninput="checkAdminPinLength()" onkeydown="if (event.key === 'Enter') handleAdminLogin()"
                             class="w-full px-4 py-3 bg-[#0A1322] border border-slate-700/80 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-center text-sm font-semibold tracking-widest text-white placeholder-slate-500 transition-all">
                         
                         <div id="loginError" class="hidden text-red-400 text-xs font-semibold text-center bg-red-950/40 p-2.5 rounded-xl border border-red-800 flex items-center justify-center space-x-1.5">
@@ -521,6 +524,10 @@
                             class="w-full bg-slate-800 text-slate-500 font-bold py-3 px-4 rounded-xl shadow transition-all duration-300 transform text-xs cursor-not-allowed">
                             Accedi a Gestione Flotta
                         </button>
+                        <div class="flex items-center justify-between gap-2 pt-1 text-[10px] font-bold">
+                            <button type="button" onclick="forgotAdminPassword()" class="text-slate-400 hover:text-emerald-300 hover:underline transition">Password dimenticata?</button>
+                            <button type="button" onclick="TachoAuth.ui.openLegacyActivation(activeCompanyId)" class="text-amber-400 hover:text-amber-300 hover:underline transition">Prima volta? Attiva con il vecchio PIN</button>
+                        </div>
                     </div>
                 </div>
 
@@ -579,7 +586,7 @@
 
                 <div class="relative">
                     <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Seleziona Conducente</label>
-                    <input type="text" id="driverSearchInput" list="driversListOptions" placeholder="Scrivi o seleziona il tuo Nome..."
+                    <input type="text" id="driverSearchInput" list="driversListOptions" placeholder="Scrivi Nome e Cognome..." autocomplete="username"
                         class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none text-sm text-white placeholder-slate-500 transition-all font-semibold">
                     
                     <datalist id="driversListOptions"></datalist>
@@ -587,12 +594,12 @@
 
                 <div>
                     <div class="flex justify-between items-center mb-1">
-                        <label class="block text-[10px] uppercase font-bold text-slate-400">PIN Personale (4 cifre)</label>
+                        <label class="block text-[10px] uppercase font-bold text-slate-400">PIN Personale (6 cifre)</label>
                         <button type="button" onclick="recoverDriverPinWhatsApp()" class="text-[10px] text-emerald-400 hover:text-emerald-300 hover:underline font-bold transition">
                             PIN dimenticato?
                         </button>
                     </div>
-                    <input type="password" id="driverPersonalPinInput" placeholder="••••" maxlength="4" inputmode="numeric"
+                    <input type="password" id="driverPersonalPinInput" placeholder="••••••" maxlength="6" inputmode="numeric" autocomplete="current-password" onkeydown="if (event.key === 'Enter') handleDriverAccess()"
                         class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none text-center font-bold tracking-widest text-lg text-white placeholder-slate-500 transition-all">
                 </div>
 
@@ -703,8 +710,8 @@
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Personale (4 cifre)</label>
-                                <input type="text" maxlength="4" inputmode="numeric" id="addPin" placeholder="es. 1234" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono font-bold text-amber-300 placeholder-slate-500 text-sm text-center">
+                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Personale (6 cifre)</label>
+                                <input type="text" maxlength="6" inputmode="numeric" id="addPin" placeholder="vuoto = automatico" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none font-mono font-bold text-amber-300 placeholder-slate-500 text-sm text-center">
                             </div>
                             <div>
                                 <label class="block text-[10px] uppercase font-bold text-emerald-400 mb-1 flex items-center space-x-1">
@@ -992,28 +999,28 @@
                 <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
                     <div class="flex items-center space-x-2">
                         <span class="text-base">🔑</span>
-                        <h3 class="font-bold text-sm text-amber-400">Sicurezza &bull; Personalizza PIN Amministratore</h3>
+                        <h3 class="font-bold text-sm text-amber-400">Sicurezza &bull; Cambia Password Amministratore</h3>
                     </div>
                     <p class="text-xs text-slate-400 leading-relaxed">
-                        Modifica in autonomia il tuo codice PIN a 4 cifre per accedere all'Area Amministrativa riservata della tua flotta.
+                        Modifica la password con cui accedi all'Area Amministrativa riservata della tua flotta (minimo 8 caratteri).
                     </p>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nuovo PIN (4 Cifre)</label>
-                            <input type="password" id="newAdminPinInput" maxlength="4" inputmode="numeric" placeholder="••••" 
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Nuova Password</label>
+                            <input type="password" id="newAdminPinInput" autocomplete="new-password" placeholder="••••••••"
                                 class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-amber-400">
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Conferma Nuovo PIN</label>
-                            <input type="password" id="confirmAdminPinInput" maxlength="4" inputmode="numeric" placeholder="••••" 
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Conferma Password</label>
+                            <input type="password" id="confirmAdminPinInput" autocomplete="new-password" placeholder="••••••••"
                                 class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-amber-400">
                         </div>
                     </div>
 
                     <button onclick="saveAdminPersonalPin()" class="w-full bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold py-3 rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1.5 active:scale-98">
                         <span>🔒</span>
-                        <span>Salva Nuovo PIN Riservato</span>
+                        <span>Salva Nuova Password</span>
                     </button>
                 </div>
 
@@ -2857,7 +2864,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Email Referente</label>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Email Referente (per l'accesso) *</label>
                             <input type="email" id="regCompanyEmail" placeholder="info@azienda.it" 
                                 class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-xs text-white placeholder-slate-500 focus:border-indigo-400">
                         </div>
@@ -2870,13 +2877,13 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Amministratore (4 Cifre) *</label>
-                            <input type="password" maxlength="4" inputmode="numeric" id="regCompanyPin" placeholder="••••" 
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Password Amministratore (min. 8) *</label>
+                            <input type="password" autocomplete="new-password" id="regCompanyPin" placeholder="••••••••"
                                 class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-indigo-400">
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Conferma PIN (4 Cifre) *</label>
-                            <input type="password" maxlength="4" inputmode="numeric" id="regCompanyPinConfirm" placeholder="••••" 
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Conferma Password *</label>
+                            <input type="password" autocomplete="new-password" id="regCompanyPinConfirm" placeholder="••••••••"
                                 class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500 focus:border-indigo-400">
                         </div>
                     </div>
@@ -2919,7 +2926,7 @@
                             <span class="text-white font-bold text-xs" id="successRegCompanyName">-</span>
                         </div>
                         <div class="flex justify-between items-center">
-                            <span class="text-slate-400 font-bold text-[11px]">Il Tuo PIN Amministratore:</span>
+                            <span class="text-slate-400 font-bold text-[11px]">Accesso Admin (email):</span>
                             <span class="text-amber-300 font-mono font-black text-xs bg-amber-950/80 px-2 py-0.5 rounded border border-amber-800/60" id="successRegCompanyPin">••••</span>
                         </div>
                     </div>
@@ -3040,8 +3047,9 @@
                             class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono text-white text-xs uppercase focus:border-indigo-400">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">PIN Admin (4 Cifre) *</label>
-                        <input type="password" maxlength="4" inputmode="numeric" id="editCompanyPin" placeholder="PIN" 
+                        <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Password Admin</label>
+                        <button type="button" onclick="sendCompanyAdminPasswordReset()" class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 hover:border-amber-400 rounded-xl text-amber-300 text-xs font-bold transition">📧 Invia email di reimpostazione</button>
+                        <input type="hidden" id="editCompanyPin"
                             class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-center text-amber-300 text-xs focus:border-amber-400">
                     </div>
                 </div>
@@ -3790,8 +3798,9 @@
 
     <div id="toastContainer" class="no-print fixed bottom-5 right-5 z-[99999] flex flex-col gap-2 pointer-events-none max-w-xs w-full px-4"></div>
 
+    <!-- ACCESSO SICURO: login con Firebase Authentication (email/password per admin, nome + PIN 6 cifre per autisti) -->
+    <script src="tacho-auth.js"></script>
     <script>
-        const ADMIN_PIN = "8528"; // PIN Master Super Admin (Giovanni)
         let companiesRegistry = {};
         
         // Rilevamento automatico parametro URL per link diretto autisti (es. ?az=AZ-101&role=driver)
@@ -3821,12 +3830,23 @@
         // Inizializzazione Cache Offline Preventiva da LocalStorage
         try {
             const cachedRegistry = localStorage.getItem('cached_companiesRegistry');
-            if (cachedRegistry) companiesRegistry = JSON.parse(cachedRegistry);
+            if (cachedRegistry) {
+                companiesRegistry = JSON.parse(cachedRegistry) || {};
+                // Le versioni precedenti salvavano sul telefono i PIN di tutte le aziende: li rimuoviamo
+                Object.keys(companiesRegistry).forEach((k) => { if (companiesRegistry[k]) delete companiesRegistry[k].adminPin; });
+                localStorage.setItem('cached_companiesRegistry', JSON.stringify(companiesRegistry));
+            }
         } catch(e) {
             console.warn("Errore lettura registro aziende locale:", e);
         }
 
         let driversMap = {};
+        let privateDriverPins = {}; // PIN autisti: leggibili solo dall'amministratore (aziende_privato)
+        function mergePrivateDriverPins() {
+            for (let id in driversMap) {
+                if (driversMap[id] && privateDriverPins[id]) driversMap[id].pin = privateDriverPins[id];
+            }
+        }
         let vehiclesMap = {};
         let currentCompanyName = activeCompanyId ? "GC CodeLab - Gestione Flotta" : "Piattaforma Cloud • Gestione Flotte";
         let currentCompanyVat = "";
@@ -3847,37 +3867,44 @@
             taci: "https://taci.infocamere.it/"
         };
 
-        // Listener globale per il registro di tutte le aziende (con salvataggio locale per offline)
-        db.ref('aziende_registry').on('value', (snapshot) => {
-            companiesRegistry = snapshot.val() || {};
+        // Registro aziende (con salvataggio locale per offline):
+        // il Supervisore vede tutte le aziende, admin e autisti solo la propria e solo dopo il login.
+        let registryRef = null;
+        let registryCb = null;
+
+        function startRegistrySync() {
+            if (registryRef && registryCb) registryRef.off('value', registryCb);
+            registryRef = null;
+            registryCb = null;
+            const profile = TachoAuth.profile;
+            if (TachoAuth.isSuperAdmin()) {
+                registryRef = db.ref('aziende_registry');
+                registryCb = registryRef.on('value', (snapshot) => applyCompaniesRegistry(snapshot.val() || {}),
+                    (err) => console.warn('Registro aziende non leggibile:', err && err.message));
+            } else if (profile && profile.companyId) {
+                const cid = profile.companyId;
+                registryRef = db.ref('aziende_registry/' + cid);
+                registryCb = registryRef.on('value', (snapshot) => {
+                    const own = {};
+                    if (snapshot.exists()) own[cid] = snapshot.val();
+                    applyCompaniesRegistry(own);
+                }, (err) => console.warn('Scheda azienda non leggibile:', err && err.message));
+            } else if (activeCompanyId) {
+                // Prima del login: solo nome, telefono e logo dell'azienda (dati pubblici)
+                TachoAuth.publicCompanyInfo(activeCompanyId).then((info) => {
+                    if (!info || TachoAuth.profile) return;
+                    const pub = {};
+                    pub[info.code] = Object.assign({}, companiesRegistry[info.code] || {}, info);
+                    applyCompaniesRegistry(pub);
+                });
+            }
+        }
+
+        function applyCompaniesRegistry(newRegistry) {
+            companiesRegistry = newRegistry || {};
             try {
                 localStorage.setItem('cached_companiesRegistry', JSON.stringify(companiesRegistry));
             } catch(e) {}
-            if (!companiesRegistry['AZ-MAIN']) {
-                const mainCompany = {
-                    code: "AZ-MAIN",
-                    name: "GC CodeLab - Gestione Flotta",
-                    vat: "Principale",
-                    adminPin: ADMIN_PIN,
-                    plan: "enterprise",
-                    licenseStatus: "active",
-                    licenseExpiresAt: "2099-12-31",
-                    licenseKey: "GC-MASTER-LIFETIME",
-                    maxVehicles: 999,
-                    maxDrivers: 999,
-                    createdAt: "2026-08-25T00:00:00.000Z"
-                };
-                db.ref('aziende_registry/AZ-MAIN').set(mainCompany);
-            } else if (!companiesRegistry['AZ-MAIN'].licenseExpiresAt) {
-                db.ref('aziende_registry/AZ-MAIN').update({
-                    plan: "enterprise",
-                    licenseStatus: "active",
-                    licenseExpiresAt: "2099-12-31",
-                    licenseKey: "GC-MASTER-LIFETIME",
-                    maxVehicles: 999,
-                    maxDrivers: 999
-                });
-            }
             if (activeCompanyId && companiesRegistry[activeCompanyId]) {
                 currentCompanyName = companiesRegistry[activeCompanyId].name;
                 currentCompanyVat = companiesRegistry[activeCompanyId].vat || "";
@@ -3890,7 +3917,7 @@
             updateHeaderLicenseBadge();
             updateFreeLicenseUI();
             if (isSuperAdmin) renderSuperAdminCompaniesList();
-        });
+        }
 
         // --- GESTIONE PERCORSI E RIFERIMENTI FIREBASE MULTI-AZIENDA ---
         function getCompanyPath(subPath) {
@@ -3982,7 +4009,22 @@
                 console.warn("Errore lettura cache locale flotta:", e);
             }
 
-            // 2. SINCRONIZZAZIONE REALTIME CLOUD FIREBASE
+            // 2. SINCRONIZZAZIONE REALTIME CLOUD FIREBASE (solo dopo il login: senza accesso il database risponde "permesso negato")
+            if (!TachoAuth.canAccess(activeCompanyId)) return;
+
+            if (TachoAuth.isAdminOf(activeCompanyId)) {
+                const pinRef = db.ref('aziende_privato/' + activeCompanyId + '/pin_autisti');
+                const pinCb = pinRef.on('value', snapshot => {
+                    privateDriverPins = snapshot.val() || {};
+                    mergePrivateDriverPins();
+                    const adminSecPins = document.getElementById('adminSection');
+                    if (adminSecPins && !adminSecPins.classList.contains('hidden')) renderFleetTable();
+                }, err => console.warn('PIN autisti non leggibili:', err && err.message));
+                activeListeners.push({ ref: pinRef, callback: pinCb });
+            } else {
+                privateDriverPins = {};
+            }
+
             const configNameRef = dbCompanyRef('config/denominazioneAzienda');
             const configNameCb = configNameRef.on('value', snapshot => {
                 const name = snapshot.val();
@@ -4065,9 +4107,11 @@
             const operaiRef = dbCompanyRef('operai');
             const operaiCb = operaiRef.on('value', snapshot => {
                 driversMap = snapshot.val() || {};
+                mergePrivateDriverPins();
                 try {
                     localStorage.setItem('cached_driversMap_' + activeCompanyId, JSON.stringify(driversMap));
                 } catch(e) {}
+                TachoAuth.ui.updateMigrationBanner(activeCompanyId, currentCompanyName, driversMap);
                 populateDatalist();
                 const adminSec = document.getElementById('adminSection');
                 const tabFleet = document.getElementById('tabFleet');
@@ -4110,12 +4154,64 @@
         // Avvio immediato ascoltatori per l'azienda attiva
         setupCompanyListeners();
         updateCompanyActivationUI();
+        startRegistrySync();
 
-        // Funzione per animare il tasto Admin quando il PIN raggiunge le 4 cifre
+        // --- ACCESSO SICURO: reazione ai cambi di login (Firebase Authentication) ---
+        TachoAuth.onChange((user, profile) => {
+            isSuperAdmin = TachoAuth.isSuperAdmin();
+            const superBadge = document.getElementById('superAdminBadge');
+            if (superBadge) superBadge.classList.toggle('hidden', !isSuperAdmin);
+            const switchBtn = document.getElementById('btnSwitchCompanyHeader');
+            if (switchBtn) switchBtn.classList.toggle('hidden', !isSuperAdmin);
+
+            const adminSec = document.getElementById('adminSection');
+            const driverSec = document.getElementById('driverSection');
+            const loginSec = document.getElementById('loginSection');
+            const isVisible = (el) => el && !el.classList.contains('hidden');
+
+            if (!user || !profile) {
+                // Nessuna sessione valida: niente dati riservati, si torna al login
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('savedDriverId');
+                currentLoggedInDriver = null;
+                privateDriverPins = {};
+                setupCompanyListeners();
+                startRegistrySync();
+                if (isVisible(adminSec) || isVisible(driverSec)) {
+                    if (isDriverOnlyMode) goToDriverSelection(); else showSection('login');
+                }
+                return;
+            }
+
+            if (profile.role === 'driver') {
+                localStorage.setItem('userRole', 'driver');
+                localStorage.setItem('savedDriverId', profile.driverId);
+                localStorage.setItem('savedDriverCompany', profile.companyId);
+            } else {
+                localStorage.setItem('userRole', 'admin');
+            }
+
+            if (profile.companyId && activeCompanyId !== profile.companyId && (!isSuperAdmin || !activeCompanyId)) {
+                switchActiveCompany(profile.companyId);
+            } else {
+                setupCompanyListeners();
+            }
+            startRegistrySync();
+
+            // Admin gia' collegato su questo dispositivo: entra direttamente nel pannello
+            const driverSelSec = document.getElementById('driverSelectionSection');
+            const noSectionYet = !isVisible(loginSec) && !isVisible(adminSec) && !isVisible(driverSec) && !isVisible(driverSelSec);
+            if (profile.role !== 'driver' && !isDriverOnlyMode && (isVisible(loginSec) || noSectionYet)) {
+                showSection('admin');
+            }
+        });
+
+        // Funzione per attivare il tasto Admin quando email e password sono compilate
         function checkAdminPinLength() {
             const pinVal = document.getElementById('pinInput').value;
+            const emailVal = (document.getElementById('adminEmailInput')?.value || '').trim();
             const btn = document.getElementById('adminLoginBtn');
-            if (pinVal.length === 4) {
+            if (pinVal.length >= 6 && emailVal.includes('@')) {
                 btn.disabled = false;
                 btn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/20 transition-all duration-300 transform active:scale-[0.98] text-sm cursor-pointer";
             } else {
@@ -4552,31 +4648,23 @@
         }
 
         function saveAdminPersonalPin() {
-            const p1 = document.getElementById('newAdminPinInput').value.trim();
-            const p2 = document.getElementById('confirmAdminPinInput').value.trim();
+            const p1 = document.getElementById('newAdminPinInput').value;
+            const p2 = document.getElementById('confirmAdminPinInput').value;
 
-            if (!p1 || p1.length !== 4 || !/^\d{4}$/.test(p1)) {
-                showToast("Il PIN deve essere composto da 4 cifre numeriche.", "error");
+            if (!p1 || p1.length < 8) {
+                showToast("La nuova password deve avere almeno 8 caratteri.", "error");
                 return;
             }
             if (p1 !== p2) {
-                showToast("I due PIN inseriti non coincidono. Riprova.", "error");
+                showToast("Le due password non coincidono. Riprova.", "error");
                 return;
             }
 
-            const code = activeCompanyId || 'AZ-MAIN';
-            db.ref('aziende_registry/' + code + '/adminPin').set(p1, (err) => {
-                if (!err) {
-                    if (companiesRegistry[code]) {
-                        companiesRegistry[code].adminPin = p1;
-                    }
-                    document.getElementById('newAdminPinInput').value = "";
-                    document.getElementById('confirmAdminPinInput').value = "";
-                    showToast("✅ PIN Amministratore aggiornato con successo!", "success");
-                } else {
-                    showToast("Errore durante il salvataggio del PIN: " + err.message, "error");
-                }
-            });
+            TachoAuth.changePassword(p1).then(() => {
+                document.getElementById('newAdminPinInput').value = "";
+                document.getElementById('confirmAdminPinInput').value = "";
+                showToast("✅ Password aggiornata con successo!", "success");
+            }).catch((err) => showToast(TachoAuth.errorMessage(err), "error"));
         }
 
         function contactSupportForgotPin() {
@@ -5752,16 +5840,15 @@
 
             if (supervisorTapCount >= 5) {
                 supervisorTapCount = 0;
-                const pin = prompt("👑 Accesso Riservato Supervisore Globale (GC CodeLab)\nInserisci il PIN Master:");
-                if (pin === ADMIN_PIN) {
+                if (TachoAuth.isSuperAdmin()) {
                     isSuperAdmin = true;
                     const superBadge = document.getElementById('superAdminBadge');
                     if (superBadge) superBadge.classList.remove('hidden');
                     const switchBtn = document.getElementById('btnSwitchCompanyHeader');
                     if (switchBtn) switchBtn.classList.remove('hidden');
                     openSuperAdminModal();
-                } else if (pin) {
-                    showToast("PIN Master non valido", "error");
+                } else {
+                    showToast("👑 Supervisore Globale: accedi con email e password del tuo account Supervisore, poi tocca « ⇄ Cambia » in alto accanto al nome azienda.", "warning");
                 }
             }
         }
@@ -5791,47 +5878,61 @@
         }
 
         function handleAdminLogin() {
-            const pinVal = document.getElementById('pinInput').value.trim();
+            const email = (document.getElementById('adminEmailInput')?.value || '').trim();
+            const password = document.getElementById('pinInput').value;
             const errorEl = document.getElementById('loginError');
             const errorText = document.getElementById('loginErrorText');
+            const btn = document.getElementById('adminLoginBtn');
             errorEl.classList.add('hidden');
 
-            if (!pinVal) {
-                errorText.innerText = "Inserisci il PIN Amministrativo.";
+            if (!email || !password) {
+                errorText.innerText = "Inserisci email e password.";
                 errorEl.classList.remove('hidden');
                 return;
             }
 
-            // 1. Se nessuna flotta è collegata, non è possibile fare login con un PIN generico
-            if (!activeCompanyId) {
-                errorText.innerText = "Nessuna flotta collegata. Inserisci prima il tuo Codice Azienda.";
-                errorEl.classList.remove('hidden');
-                showToast("⚠️ Inserisci prima il Codice Azienda per collegare la tua flotta", "warning");
-                openSwitchDriverCompanyModal();
-                return;
-            }
-
-            // 2. Accesso Amministratore ESCLUSIVAMENTE per l'azienda attiva collegata
-            const comp = companiesRegistry[activeCompanyId];
-            if (comp && String(comp.adminPin).trim() === pinVal) {
-                isSuperAdmin = false;
+            const oldLabel = btn.innerText;
+            btn.disabled = true;
+            btn.innerText = "Accesso in corso...";
+            TachoAuth.loginAdmin(email, password).then((profile) => {
+                isSuperAdmin = profile.role === 'superadmin';
                 localStorage.setItem('userRole', 'admin');
-                const superBadge = document.getElementById('superAdminBadge');
-                if (superBadge) superBadge.classList.add('hidden');
-                const switchBtn = document.getElementById('btnSwitchCompanyHeader');
-                if (switchBtn) switchBtn.classList.add('hidden');
-
+                if (profile.companyId && activeCompanyId !== profile.companyId && (!isSuperAdmin || !activeCompanyId)) {
+                    switchActiveCompany(profile.companyId);
+                }
                 showSection("admin");
-                showToast(`Accesso Amministratore: ${comp.name}`, "success");
+                const comp = companiesRegistry[activeCompanyId];
+                if (isSuperAdmin) {
+                    showToast('👑 Accesso Supervisore Globale', 'success');
+                    openSuperAdminModal();
+                } else {
+                    showToast(`Accesso Amministratore${comp && comp.name ? ': ' + comp.name : ''}`, "success");
+                }
                 document.getElementById('pinInput').value = "";
-                return;
-            }
-
-            // 3. PIN Errato per l'azienda corrente
-            errorText.innerText = `PIN non corretto per ${comp ? comp.name : activeCompanyId}.`;
-            errorEl.classList.remove('hidden');
-            showToast("PIN Amministrativo non valido", "error");
+            }).catch((err) => {
+                errorText.innerText = TachoAuth.errorMessage(err);
+                errorEl.classList.remove('hidden');
+                showToast("Accesso non riuscito", "error");
+            }).finally(() => {
+                btn.innerText = oldLabel;
+                checkAdminPinLength();
+            });
         }
+
+        function forgotAdminPassword() {
+            const typed = (document.getElementById('adminEmailInput')?.value || '').trim();
+            const email = typed || prompt("Inserisci l'email del tuo account amministratore:");
+            if (!email) return;
+            TachoAuth.sendPasswordReset(email).then(() => {
+                showToast("📧 Ti abbiamo inviato un'email per reimpostare la password: " + email, "success");
+            }).catch((err) => showToast(TachoAuth.errorMessage(err), "error"));
+        }
+
+        // Chiamata da tacho-auth.js dopo l'attivazione con il vecchio PIN
+        window.onTachoAdminActivated = function () {
+            showSection('admin');
+            showToast("✅ Accesso sicuro attivato! Da ora entri con email e password.", "success");
+        };
 
         function goToDriverSelection() {
             if (!activeCompanyId) {
@@ -5845,62 +5946,37 @@
         }
 
         function handleDriverAccess() {
-            const fullNameInput = document.getElementById('driverSearchInput').value.trim().toLowerCase();
+            const rawName = document.getElementById('driverSearchInput').value.trim();
             const pinVal = document.getElementById('driverPersonalPinInput').value.trim();
             const errorEl = document.getElementById('driverLoginError');
+            const errorTextEl = document.getElementById('driverLoginErrorText') || errorEl;
             errorEl.classList.add('hidden');
 
-            if (!fullNameInput || pinVal.length !== 4) {
-                errorEl.innerText = "Seleziona o scrivi il tuo nome e inserisci il PIN di 4 cifre.";
+            if (!rawName || !/^\d{6}$/.test(pinVal)) {
+                errorTextEl.innerText = "Scrivi nome e cognome e inserisci il PIN di 6 cifre.";
                 errorEl.classList.remove('hidden');
                 return;
             }
 
-            let foundKey = null;
-            let foundDriver = null;
-            for (let id in driversMap) {
-                const d = driversMap[id];
-                const fullName = `${d.name} ${d.surname}`.trim().toLowerCase();
-                if ((fullName === fullNameInput || d.name.toLowerCase() === fullNameInput) && String(d.pin).trim() === pinVal) {
-                    foundKey = id;
-                    foundDriver = d;
-                    break;
-                }
-            }
-
-            if (foundDriver) {
-                currentLoggedInDriver = { id: foundKey, ...foundDriver };
+            showToast("Accesso in corso...", "info");
+            TachoAuth.loginDriver(activeCompanyId || 'AZ-MAIN', rawName, pinVal).then((profile) => {
                 isAdminViewingDriver = false;
-                localStorage.setItem('savedDriverId', foundKey);
-                localStorage.setItem('savedDriverCompany', activeCompanyId || 'AZ-MAIN');
+                localStorage.setItem('savedDriverId', profile.driverId);
+                localStorage.setItem('savedDriverCompany', profile.companyId);
                 localStorage.setItem('userRole', 'driver');
-                renderDriverView(currentLoggedInDriver);
-                showSection("driver");
-                // Aggiornamento automatico Token Push in Background
-                if ("Notification" in window && Notification.permission === "granted" && messaging) {
-                    navigator.serviceWorker.ready.then((registration) => {
-                        messaging.getToken({
-                            vapidKey: "BFKTM_XGBt7jMR86n4QL69jIgXvOfGxmlrhRPcPzdQ9PLabfGVUi_QmzisRjQqYHRjOLezgJSvSJVEGhb40yw9g",
-                            serviceWorkerRegistration: registration
-                        }).then((currentToken) => {
-                            if (currentToken) {
-                                dbCompanyRef('operai/' + currentLoggedInDriver.id + '/fcmToken').set(currentToken);
-                                console.log("Token aggiornato per il telefono:", currentToken);
-                            }
-                        }).catch((err) => {
-                            console.log("Errore recupero token: ", err);
-                        });
-                    });
-                }
-                showToast(`Benvenuto, ${foundDriver.name}`, "success");
                 document.getElementById('driverSearchInput').value = "";
                 document.getElementById('driverPersonalPinInput').value = "";
-            } else {
-                const errorTextEl = document.getElementById('driverLoginErrorText') || errorEl;
-                errorTextEl.innerText = "Nome o PIN non corretti. Riprova.";
+                // La scheda si apre subito se i dati sono gia' sul telefono, altrimenti appena arrivano dal cloud
+                if (activeCompanyId === profile.companyId && driversMap[profile.driverId]) {
+                    checkAutoLoginDriver();
+                }
+                const d = driversMap[profile.driverId];
+                showToast(`Benvenuto${d && d.name ? ', ' + d.name : ''}`, "success");
+            }).catch((err) => {
+                errorTextEl.innerText = TachoAuth.errorMessage(err);
                 errorEl.classList.remove('hidden');
                 showToast("Credenziali non valide", "error");
-            }
+            });
         }
 
         function recoverDriverPinWhatsApp() {
@@ -5926,8 +6002,8 @@
             }
 
             if (!foundDriver) {
-                showToast("Conducente non trovato. Seleziona il tuo nome dalla lista.", "error");
-                return;
+                // Prima del login l'elenco autisti non e' disponibile: la richiesta va al responsabile
+                foundDriver = { name: document.getElementById('driverSearchInput').value.trim(), surname: '', phone: '' };
             }
 
             // 1. Se l'autista ha il suo numero di cellulare inserito
@@ -5935,7 +6011,7 @@
             if (driverPhone && driverPhone.length >= 8) {
                 const msg = `🔑 *PROMEMORIA PIN • TACHOCONTROL*\n\n` +
                     `Ciao *${foundDriver.name} ${foundDriver.surname}*,\n` +
-                    `Ecco il promemoria del tuo PIN personale di 4 cifre per accedere all'App:\n\n` +
+                    `Ecco il promemoria del tuo PIN personale di 6 cifre per accedere all'App:\n\n` +
                     `👉 *Il tuo PIN:* *${foundDriver.pin || '••••'}*\n\n` +
                     `🏢 *Azienda:* ${compName} (${compCode})\n` +
                     `_Apri l'App TachoControl e inserisci questo PIN per visualizzare la tua scheda._`;
@@ -6048,6 +6124,9 @@
         }
 
         function logout() {
+            TachoAuth.logout();
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('savedDriverId');
             stopSpeakingVoice();
             if (typeof lastAutoAnnouncedStageId !== 'undefined') lastAutoAnnouncedStageId = null;
             currentLoggedInDriver = null;
@@ -6171,11 +6250,8 @@
 
         function handleRegisterCompanySubmit() {
             if (!isSuperAdmin && !isRegisteringSelf) {
-                const checkPin = prompt("Inserisci il PIN Super Admin per autorizzare la creazione dello spazio cloud:");
-                if (checkPin !== ADMIN_PIN) {
-                    alert("Azione non autorizzata.");
-                    return;
-                }
+                alert("Azione non autorizzata.");
+                return;
             }
 
             const name = document.getElementById('regCompanyName').value.trim();
@@ -6215,14 +6291,20 @@
                 return;
             }
 
-            if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-                errEl.innerText = "Il PIN Amministratore deve essere composto da 4 cifre numeriche.";
+            if (!email || !email.includes('@')) {
+                errEl.innerText = "Inserisci l'email del referente: servirà per accedere all'Area Amministrativa.";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            if (!pin || pin.length < 8) {
+                errEl.innerText = "La password amministratore deve avere almeno 8 caratteri.";
                 errEl.classList.remove('hidden');
                 return;
             }
 
             if (pin !== pinConfirm) {
-                errEl.innerText = "I due PIN inseriti non coincidono.";
+                errEl.innerText = "Le due password non coincidono.";
                 errEl.classList.remove('hidden');
                 return;
             }
@@ -6248,7 +6330,6 @@
                 operativeAddress: operativeAddress || "",
                 email: email || "",
                 phone: phone || "",
-                adminPin: pin,
                 plan: "free",
                 isProBono: true,
                 licenseStatus: "active",
@@ -6259,7 +6340,10 @@
                 createdAt: new Date().toISOString()
             };
 
-            db.ref('aziende_registry/' + code).set(newCompany, (err) => {
+            // Crea l'account amministratore (email + password) e la scheda azienda in un'unica operazione
+            TachoAuth.createCompanyWithAdmin(newCompany, email, pin, !isSuperAdmin)
+            .then(() => null, (e) => ({ message: TachoAuth.errorMessage(e) }))
+            .then((err) => {
                 if (!err) {
                     db.ref('aziende/' + code + '/config/denominazioneAzienda').set(name);
                     db.ref('aziende/' + code + '/config/partitaIva').set(vat);
@@ -6269,7 +6353,7 @@
 
                     document.getElementById('successRegCompanyCode').innerText = code;
                     document.getElementById('successRegCompanyName').innerText = name;
-                    document.getElementById('successRegCompanyPin').innerText = pin;
+                    document.getElementById('successRegCompanyPin').innerText = email;
 
                     document.getElementById('registerCompanyFormView').classList.add('hidden');
                     document.getElementById('registerCompanySuccessView').classList.remove('hidden');
@@ -6427,7 +6511,7 @@
                 const safeFiscalCode = escapeHtml(comp.fiscalCode || '');
                 const safeOpAddr = escapeHtml(comp.operativeAddress || '');
                 const safeLegalAddr = escapeHtml(comp.legalAddress || '');
-                const safeAdminPin = escapeHtml(comp.adminPin || '••••');
+                const safeAdminPin = escapeHtml(comp.email || 'email non impostata');
                 const safePhone = escapeHtml(comp.phone || '');
                 const safeEmail = escapeHtml(comp.email || '');
 
@@ -6531,8 +6615,8 @@
                         <div class="bg-[#08101D] p-3 rounded-xl border border-slate-800/70 space-y-1.5">
                             <span class="block text-[9px] uppercase font-bold text-slate-400 tracking-wider">🔑 Credenziali &amp; Mezzi</span>
                             <div class="flex items-center justify-between">
-                                <span class="text-slate-400 text-[11px]">PIN Admin Flotta:</span>
-                                <span class="font-mono font-black text-amber-300 bg-amber-950/80 px-2.5 py-0.5 rounded border border-amber-800/60 text-xs shadow-xs">${safeAdminPin}</span>
+                                <span class="text-slate-400 text-[11px]">Accesso Admin:</span>
+                                <span class="font-mono font-bold text-amber-300 bg-amber-950/80 px-2.5 py-0.5 rounded border border-amber-800/60 text-[11px] shadow-xs truncate max-w-[60%]">${safeAdminPin}</span>
                             </div>
                             <div class="text-[11px] text-slate-400 flex items-center justify-between">
                                 <span>Capacità Flotta:</span>
@@ -6591,7 +6675,6 @@
             document.getElementById('editCompanyFiscalCode').value = comp.fiscalCode || '';
             document.getElementById('editCompanyLegalAddress').value = comp.legalAddress || '';
             document.getElementById('editCompanyOperativeAddress').value = comp.operativeAddress || '';
-            document.getElementById('editCompanyPin').value = comp.adminPin || '';
             document.getElementById('editCompanyEmail').value = comp.email || '';
             document.getElementById('editCompanyPhone').value = comp.phone || '';
 
@@ -6609,6 +6692,17 @@
 
         function closeEditCompanyModal() {
             document.getElementById('editCompanyModal').classList.add('hidden');
+        }
+
+        function sendCompanyAdminPasswordReset() {
+            const email = (document.getElementById('editCompanyEmail')?.value || '').trim();
+            if (!email) {
+                showToast("Inserisci prima l'email dell'amministratore dell'azienda.", "error");
+                return;
+            }
+            TachoAuth.sendPasswordReset(email).then(() => {
+                showToast("📧 Email di reimpostazione password inviata a " + email, "success");
+            }).catch((err) => showToast(TachoAuth.errorMessage(err), "error"));
         }
 
         function saveEditedCompany() {
@@ -6633,11 +6727,6 @@
                 showToast("Inserisci la Partita IVA.", "error");
                 return;
             }
-            if (!newPin || newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
-                showToast("Il PIN deve essere di 4 cifre numeriche.", "error");
-                return;
-            }
-
             const updates = {
                 name: newName,
                 adminName: newAdminName,
@@ -6645,7 +6734,6 @@
                 fiscalCode: newFiscalCode,
                 legalAddress: newLegalAddress,
                 operativeAddress: newOperativeAddress,
-                adminPin: newPin,
                 email: newEmail,
                 phone: newPhone
             };
@@ -6675,20 +6763,19 @@
         function sendAdminPinResetWhatsApp() {
             const code = document.getElementById('editCompanyCodeHidden').value || 'AZ-MAIN';
             const compName = document.getElementById('editCompanyName').value.trim() || 'Azienda';
-            const pin = document.getElementById('editCompanyPin').value.trim() || '••••';
+            const email = (document.getElementById('editCompanyEmail')?.value || '').trim();
             const phone = document.getElementById('editCompanyPhone').value.trim();
             const baseAppUrl = window.location.href.split('?')[0];
+            sendCompanyAdminPasswordReset();
 
-            const msg = `🏢 *ASSISTENZA TACHOCONTROL • RESET PIN AMMINISTRATORE*\n\n` +
+            const msg = `🏢 *ASSISTENZA TACHOCONTROL • REIMPOSTAZIONE PASSWORD*\n\n` +
                 `Gentile Responsabile di *${compName}* (Codice Flotta: *${code}*),\n` +
-                `Abbiamo reimpostato il tuo PIN di accesso Amministratore provvisorio:\n\n` +
-                `🔑 *PIN Provvisorio:* *${pin}*\n` +
+                `ti abbiamo inviato un'email${email ? ' a *' + email + '*' : ''} con il link per scegliere una nuova password dell'Area Amministrativa.\n\n` +
                 `🌐 *Link Piattaforma:* ${baseAppUrl}\n\n` +
-                `📝 *ISTRUZIONI PER PERSONALIZZARE IL TUO PIN:*\n` +
-                `1. Accedi alla piattaforma inserendo il PIN provvisorio sopra indicato\n` +
-                `2. Clicca sulla scheda in alto *"Azienda & Norme"*\n` +
-                `3. Troverai la sezione *"🔑 Sicurezza • Personalizza PIN Amministratore"*\n` +
-                `4. Inserisci il tuo nuovo PIN segreto a 4 cifre e clicca su *"Salva Nuovo PIN Riservato"*\n\n` +
+                `📝 *COSA FARE:*\n` +
+                `1. Apri l'email "Reimposta la password" (controlla anche lo Spam)\n` +
+                `2. Scegli la nuova password\n` +
+                `3. Accedi all'App con la tua email e la nuova password\n\n` +
                 `_Assistenza Tecnica GC CodeLab_`;
 
             const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
@@ -6707,10 +6794,10 @@
             const msg = `🏢 *ASSISTENZA TACHOCONTROL • CREDENZIALI AMMINISTRATORE*\n\n` +
                 `Gentile Responsabile di *${comp.name || 'Azienda'}* (Codice Flotta: *${code}*),\n` +
                 `Ecco le tue credenziali di accesso per l'Area Amministrativa:\n\n` +
-                `🔑 *PIN di Accesso:* *${comp.adminPin || '••••'}*\n` +
+                `📧 *Email di Accesso:* *${comp.email || 'quella indicata in registrazione'}*\n` +
                 `🌐 *Link Piattaforma:* ${baseAppUrl}\n\n` +
-                `📝 *COME PERSONALIZZARE IL PIN:*\n` +
-                `Entra nell'App con il PIN, vai nella scheda *"Azienda & Norme"* e potrai modificare il PIN a tuo piacimento in totale autonomia.\n\n` +
+                `🔒 *PASSWORD:*\n` +
+                `Accedi con la tua email e la password scelta. Se non la ricordi, tocca *"Password dimenticata?"* nella schermata di accesso: riceverai un'email per impostarne una nuova.\n\n` +
                 `_Assistenza Tecnica GC CodeLab_`;
 
             const cleanPhone = (comp.phone || '').replace(/[^0-9]/g, '');
@@ -6756,7 +6843,14 @@
                 return;
             }
 
-            // Procedi con l'eliminazione su Firebase Cloud
+            // Procedi con l'eliminazione su Firebase Cloud (inclusi accessi e PIN degli autisti)
+            db.ref('utenti').orderByChild('companyId').equalTo(code).once('value').then((snap) => {
+                const cleanup = {};
+                snap.forEach((child) => { cleanup['utenti/' + child.key] = null; });
+                cleanup['login_autisti/' + code] = null;
+                cleanup['aziende_privato/' + code] = null;
+                return db.ref().update(cleanup);
+            }).catch((e) => console.warn('Pulizia accessi azienda non completata:', e && e.message));
             db.ref('aziende_registry/' + code).remove();
             db.ref('aziende/' + code).remove((err) => {
                 if (!err) {
@@ -6875,6 +6969,11 @@
                 maxDrivers: maxDrv,
                 isProBono: isProBonoKey
             };
+
+            // La licenza puo' essere scritta solo dal Supervisore (regole del database)
+            if (!TachoAuth.isSuperAdmin()) {
+                return { valid: false, error: "Per sicurezza l'attivazione della licenza viene eseguita da GC CodeLab: inviaci la chiave ricevuta e la attiviamo noi." };
+            }
 
             // Salva nel registry Firebase e locale
             db.ref('aziende_registry/' + activeCode).update(updateData);
@@ -7584,8 +7683,7 @@
         }
 
         function handleSupervisorUnlockFromLockScreen() {
-            const pin = prompt("👑 Inserisci il PIN Master Supervisore (Giovanni) per sbloccare l'accesso di emergenza:");
-            if (pin === ADMIN_PIN) {
+            if (TachoAuth.isSuperAdmin()) {
                 isSuperAdmin = true;
                 localStorage.setItem('userRole', 'admin');
                 const superBadge = document.getElementById('superAdminBadge');
@@ -7598,8 +7696,8 @@
 
                 showSection("admin");
                 showToast("👑 Sblocco di Emergenza Supervisore Eseguito!", "success");
-            } else if (pin !== null) {
-                alert("PIN Supervisore errato.");
+            } else {
+                alert("Sblocco riservato al Supervisore: accedi con il suo account (email e password) e riprova.");
             }
         }
 
@@ -7637,11 +7735,23 @@
             }
             if (companiesRegistry[inputVal] || inputVal === 'AZ-MAIN') {
                 switchActiveCompany(inputVal);
+                startRegistrySync();
                 closeSwitchDriverCompanyModal();
                 showToast(`Flotta attivata: ${companiesRegistry[inputVal]?.name || inputVal}`, "success");
-            } else {
-                showToast("Codice azienda non trovato nel database.", "error");
+                return;
             }
+            // Prima del login si verifica solo che il codice esista (nome pubblico dell'azienda)
+            TachoAuth.publicCompanyInfo(inputVal).then((info) => {
+                if (!info) {
+                    showToast("Codice azienda non trovato nel database.", "error");
+                    return;
+                }
+                companiesRegistry[inputVal] = Object.assign({}, companiesRegistry[inputVal] || {}, info);
+                switchActiveCompany(inputVal);
+                startRegistrySync();
+                closeSwitchDriverCompanyModal();
+                showToast(`Flotta attivata: ${info.name || inputVal}`, "success");
+            });
         }
 
         // --- GESTIONE CONDUCENTI ---
@@ -7695,17 +7805,30 @@
             }
 
             let pin = rawPin;
-            if (!pin || pin.length !== 4) {
-                pin = Math.floor(1000 + Math.random() * 9000).toString();
+            if (!/^\d{6}$/.test(pin)) {
+                pin = TachoAuth.generatePin();
                 showToast(`Assegnato PIN generato: ${pin}`, "info");
             }
+
+            // Il PIN non viene salvato nella scheda (leggibile dagli autisti) ma nell'account sicuro
+            const previous = editId ? (driversMap[editId] || {}) : {};
+            const needsAccount = !editId || !previous.authUid || String(previous.pin || '') !== pin ||
+                previous.name !== name || previous.surname !== surname;
+            const companyForAccount = activeCompanyId || 'AZ-MAIN';
+            const syncDriverAccount = (driverId) => {
+                if (!needsAccount) return;
+                TachoAuth.createDriverAccount(companyForAccount, driverId, name, surname, pin).then(() => {
+                    showToast(`🔑 Accesso autista pronto: ${name} ${surname} - PIN ${pin}`, "success");
+                }).catch((err) => {
+                    alert(`Scheda salvata, ma l'accesso per ${name} ${surname} non e' stato creato:\n${TachoAuth.errorMessage(err)}`);
+                });
+            };
 
             const driverData = {
                 name,
                 surname,
                 cardNumber: card || "-",
                 cantiere,
-                pin,
                 phone: phone || "-",
                 lastDownloadDate: lastDl,
                 cardExpiryDate: cardExpiry,
@@ -7732,6 +7855,7 @@
             if (editId) {
                 dbCompanyRef('operai/' + editId).update(driverData, (error) => {
                     if (!error) {
+                        syncDriverAccount(editId);
                         showToast("Conducente aggiornato nel Cloud!", "success");
                         resetDriverForm();
                         updateAdminBadges();
@@ -7743,6 +7867,7 @@
                 const newRef = dbCompanyRef('operai').push();
                 newRef.set(driverData, (error) => {
                     if (!error) {
+                        syncDriverAccount(newRef.key);
                         showToast("Conducente salvato nel Cloud con successo!", "success");
                         resetDriverForm();
                         updateAdminBadges();
@@ -7960,6 +8085,7 @@
         }
 
         function logoutDriver() {
+            if (!isAdminViewingDriver) TachoAuth.logout();
             stopSpeakingVoice();
             if (typeof lastAutoAnnouncedStageId !== 'undefined') lastAutoAnnouncedStageId = null;
             localStorage.removeItem('savedDriverId');
@@ -7975,6 +8101,12 @@
             const savedDriverId = localStorage.getItem('savedDriverId');
             const savedComp = localStorage.getItem('savedDriverCompany');
 
+            // Senza una sessione di accesso valida su questo telefono non si apre nessuna scheda
+            if (savedRole === 'driver' && savedDriverId && !TachoAuth.hasSessionHint()) {
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('savedDriverId');
+                return false;
+            }
             if (savedRole === 'driver' && savedDriverId) {
                 if (savedComp && (!activeCompanyId || activeCompanyId !== savedComp)) {
                     switchActiveCompany(savedComp);
@@ -8082,6 +8214,9 @@
 
         function deleteDriver(id) {
             if (confirm("Vuoi davvero eliminare questo conducente dal Cloud?")) {
+                const removedDriver = driversMap[id] || {};
+                TachoAuth.removeDriverAccount(activeCompanyId || 'AZ-MAIN', id, removedDriver.authUid)
+                    .catch((e) => console.warn('Accesso autista non rimosso:', e && e.message));
                 dbCompanyRef('operai/' + id).remove((error) => {
                     if(!error) {
                         showToast("Conducente eliminato.", "success");
