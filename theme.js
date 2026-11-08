@@ -55,6 +55,9 @@
         // Nell'area amministratore sta nell'intestazione; nelle altre schermate resta in basso a destra
         const headerActions = document.querySelector('#adminHeader .flex-shrink-0.flex.items-center.flex-wrap');
         if (headerActions) headerActions.insertBefore(makeButton('themeToggleHeader', 'theme-toggle-header'), headerActions.firstChild);
+        // Nell'area del conducente sta nella barra in alto, accanto a Esci / Cambia
+        const driverActions = document.querySelector('#driverViewDriverControls > div:last-child');
+        if (driverActions) driverActions.insertBefore(makeButton('themeToggleDriver', 'theme-toggle-header'), driverActions.lastElementChild);
         // Nella pagina di accesso sta nel riquadro Area Amministrativa
         const loginRow = document.querySelector('#loginAdminBox > div');
         if (loginRow) loginRow.appendChild(makeButton('themeToggleLogin', 'theme-toggle-header'));

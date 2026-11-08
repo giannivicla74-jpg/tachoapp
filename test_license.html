@@ -258,6 +258,9 @@
             #simBoxTiles .text-xl { font-size: 1.875rem; }
             #simBoxTappe { grid-column: 2; grid-row: span 3; }
         }
+
+        details[open] > summary > [aria-hidden="true"] { transform: rotate(180deg); }
+        details > summary > [aria-hidden="true"] { display: inline-block; transition: transform .15s; }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased w-full max-w-full overflow-x-hidden">
@@ -3242,11 +3245,15 @@
                     </div>
                 </div>
 
-                <div class="bg-[#08101D] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
-                    <div>
-                        <div class="text-xs font-bold text-white">Link portali ufficiali</div>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Valgono per tutte le aziende. Per modificarli serve il PIN.</p>
-                    </div>
+                <details class="sa-fold bg-[#08101D] border border-slate-800 rounded-2xl">
+                    <summary class="cursor-pointer list-none p-3.5 flex items-center justify-between gap-3">
+                        <span class="min-w-0">
+                            <span class="block text-xs font-bold text-white">Link portali ufficiali</span>
+                            <span class="block text-[10px] text-slate-400 mt-0.5">Valgono per tutte le aziende. Per modificarli serve il PIN.</span>
+                        </span>
+                        <span class="text-slate-400 text-sm flex-shrink-0" aria-hidden="true">▾</span>
+                    </summary>
+                    <div class="px-3.5 pb-3.5 space-y-2.5">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div>
                             <label for="linkUnioncamereInput" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Portale Unioncamere</label>
@@ -3265,13 +3272,18 @@
                         <button type="button" onclick="lockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition">Annulla</button>
                         <button type="button" id="linkSaveBtn" onclick="saveCustomLinks()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white px-3 py-2 rounded-xl text-xs font-bold transition">Salva per tutte le aziende</button>
                     </div>
-                </div>
-
-                <div class="bg-[#08101D] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
-                    <div>
-                        <div class="text-xs font-bold text-white">PIN GC CodeLab per la modifica dei link portali</div>
-                        <p class="text-[10px] text-slate-400 mt-0.5">Da 6 a 12 cifre. La prima volta lascia vuoto "PIN attuale".</p>
                     </div>
+                </details>
+
+                <details class="sa-fold bg-[#08101D] border border-slate-800 rounded-2xl">
+                    <summary class="cursor-pointer list-none p-3.5 flex items-center justify-between gap-3">
+                        <span class="min-w-0">
+                            <span class="block text-xs font-bold text-white">PIN GC CodeLab per la modifica dei link portali</span>
+                            <span class="block text-[10px] text-slate-400 mt-0.5">Da 6 a 12 cifre. La prima volta lascia vuoto "PIN attuale".</span>
+                        </span>
+                        <span class="text-slate-400 text-sm flex-shrink-0" aria-hidden="true">▾</span>
+                    </summary>
+                    <div class="px-3.5 pb-3.5 space-y-2.5">
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
                         <input type="password" id="linkPinCurrent" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="PIN attuale" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
                         <input type="password" id="linkPinNew" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="Nuovo PIN" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
@@ -3285,7 +3297,8 @@
                             <button type="button" id="superAdminNoteSave" disabled onclick="saveSuperAdminNote()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed">Salva nota</button>
                         </div>
                     </div>
-                </div>
+                    </div>
+                </details>
 
                 <div id="superAdminCompaniesList" class="space-y-3">
                     <!-- Popolato dinamicamente -->
@@ -6834,6 +6847,7 @@
         }
 
         function closeSuperAdminModal() {
+            document.querySelectorAll('#superAdminModal .sa-fold').forEach((d) => { d.open = false; });
             lockLinkEditor();
             document.getElementById('superAdminModal').classList.add('hidden');
         }
