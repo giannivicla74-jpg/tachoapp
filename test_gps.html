@@ -144,6 +144,8 @@
             #tabFleet,
             #tabVehicles,
             #tabSanctions,
+            #tabNorms,
+            #tabScarico,
             #driverSection,
             #toastContainer,
             .no-print,
@@ -327,8 +329,8 @@
             <!-- Identità Aziendale: Logo, Nome, Codice e Ruolo -->
             <div class="flex items-center space-x-3 min-w-0">
                 <!-- Avatar / Logo Aziendale Grande, Elegante & Nitido -->
-                <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-[#070F1C] border border-slate-700/80 p-1 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
-                    <img id="adminHeaderCompanyLogo" src="" alt="Logo" class="hidden w-full h-full object-contain rounded-xl">
+                <div class="min-w-[3.5rem] min-h-[3.5rem] sm:min-w-[4rem] sm:min-h-[4rem] rounded-xl bg-white border border-slate-600/60 p-1.5 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+                    <img id="adminHeaderCompanyLogo" src="" alt="Logo" class="hidden h-11 sm:h-[52px] w-auto max-w-[120px] sm:max-w-[200px] object-contain">
                     <span class="text-2xl text-slate-400" id="adminHeaderCompanyIcon">🏢</span>
                 </div>
 
@@ -622,19 +624,24 @@
 
         <!-- =================== 2. ADMIN SECTION =================== -->
         <div id="adminSection" class="no-print hidden space-y-6 w-full min-w-0">
-            <div class="no-print grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div class="no-print grid grid-cols-2 sm:grid-cols-6 gap-2">
                 <button onclick="switchTab('fleet')" id="btnFleet" class="relative bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
-                    <span>Conducenti</span>
+                    <span class="flex flex-col items-center text-center"><span>Conducenti</span><span class="block text-[9px] sm:text-[11px] font-medium opacity-80 leading-tight mt-0.5">Aggiungi, scarico carta e sincronizzazione date</span></span>
                     <span id="badgeFleet" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
                 <button onclick="switchTab('vehicles')" id="btnVehicles" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
-                    <span>Mezzi</span>
-                    <span class="text-[10px] opacity-75 font-normal">(90g)</span>
+                    <span class="flex flex-col items-center text-center"><span>Flotta Mezzi</span><span class="block text-[9px] sm:text-[11px] font-medium opacity-80 leading-tight mt-0.5">Aggiungi e scarico tachigrafo ogni 90 giorni</span></span>
                     <span id="badgeVehicles" class="hidden absolute -top-1.5 -right-1.5 bg-red-600 text-white font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">0</span>
                 </button>
+                <button onclick="switchTab('scarico')" id="btnScarico" class="col-span-2 sm:col-span-1 relative bg-[#15243E] hover:bg-slate-800 border border-amber-500/50 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                    <span class="flex flex-col items-center text-center"><span>Scarico Dati</span><span class="block text-[9px] sm:text-[11px] font-medium opacity-80 leading-tight mt-0.5">Obblighi, termini e sanzioni</span></span>
+                </button>
                 <button onclick="switchTab('sanctions')" id="btnSanctions" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
-                    <span>Azienda</span>
+                    <span class="flex flex-col items-center text-center"><span>Azienda</span><span class="block text-[9px] sm:text-[11px] font-medium opacity-80 leading-tight mt-0.5">Dati, password e registro Excel</span></span>
                     <span id="badgeCompany" class="hidden absolute -top-1.5 -right-1.5 bg-amber-500 text-slate-950 font-black text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0B1626]">!</span>
+                </button>
+                <button onclick="switchTab('norms')" id="btnNorms" class="relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1">
+                    <span class="flex flex-col items-center text-center"><span>Norme</span><span class="block text-[9px] sm:text-[11px] font-medium opacity-80 leading-tight mt-0.5">Assenze, guide, manuale e simulatore</span></span>
                 </button>
                 <button onclick="switchTab('livemap')" id="btnLiveMap" class="relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/50 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1.5">
                     <span>🗺️</span>
@@ -673,7 +680,7 @@
                 <div class="no-print grid grid-cols-2 gap-3 bg-[#15243E] p-3 rounded-2xl border border-slate-800">
                     <button onclick="exportFleetToExcel()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2">
                         <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <span>Export Excel (.csv)</span>
+                        <span>Export Excel</span>
                     </button>
                     <button onclick="printReportPDF()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-[11px] font-bold py-2.5 px-2 rounded-xl transition text-center flex items-center justify-center space-x-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
@@ -918,7 +925,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: AZIENDA & NORME -->
+            <!-- TAB 3: AZIENDA -->
             <div id="tabSanctions" class="no-print hidden space-y-6 w-full min-w-0">
                 
                 <!-- Box Personalizzazione Azienda & Carta Azienda -->
@@ -1019,25 +1026,113 @@
                     </button>
                 </div>
 
-                <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl relative overflow-hidden">
-                    <div class="flex items-start space-x-3 mb-3">
-                        <div class="p-2 bg-amber-500/10 rounded-xl text-amber-500 flex-shrink-0">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                <!-- Box Esportazione Registro Completo Excel -->
+                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-emerald-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
                         </div>
-                        <div>
-                            <h4 class="font-extrabold text-amber-400 text-sm">Norme di Controllo e Sanzioni per lo Scarico Dati</h4>
+                        <div class="min-w-0 flex-1">
+                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Registro Scarichi Flotta Excel</h3>
+                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Genera ed esporta il file tabellare con tutti i conducenti, veicoli, scadenze e stati di conformità.</p>
                         </div>
                     </div>
-
-                    <p class="text-xs text-amber-200/90 leading-relaxed font-normal mb-3">
-                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. La non conformità comporta gravissime sanzioni.
-                    </p>
-
-                    <button onclick="openCciaaModal()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-black py-3.5 px-4 rounded-2xl shadow-lg flex items-center justify-center text-xs space-x-2 transition-all active:scale-[0.98]">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                        <span>Informativa Ufficiale Camere di Commercio (CCIAA)</span>
+                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
+                        <div class="flex items-center space-x-2.5 text-left">
+                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            <span class="tracking-wide">Scarica Registro Ufficiale Excel</span>
+                        </div>
+                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
                 </div>
+
+            </div>
+
+            <!-- TAB SCARICO DATI: OBBLIGHI, TERMINI E SANZIONI -->
+            <div id="tabScarico" class="no-print hidden space-y-5 w-full min-w-0">
+
+                <div class="bg-[#0D1527] border-l-4 border-red-500 rounded-2xl p-5 sm:p-6 shadow-xl space-y-2">
+                    <h2 class="font-extrabold text-white text-lg sm:text-xl leading-snug">Lo scarico dati è un obbligo dell'impresa</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Saltare una scadenza espone l'azienda a una sanzione <strong class="text-white">per ogni dipendente interessato</strong>. La memoria della carta è limitata: i dati non scaricati in tempo possono andare persi e mancare proprio durante un controllo.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="bg-[#15243E] rounded-2xl p-5 border border-slate-800/80 shadow-lg">
+                        <div class="text-4xl font-black text-white leading-none">28 <span class="text-base font-bold text-slate-300">giorni</span></div>
+                        <div class="text-sm font-bold text-white mt-2.5">Carta conducente</div>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">Intervallo massimo tra due scarichi. Reg. (UE) 581/2010, art. 1.</p>
+                    </div>
+                    <div class="bg-[#15243E] rounded-2xl p-5 border border-slate-800/80 shadow-lg">
+                        <div class="text-4xl font-black text-white leading-none">90 <span class="text-base font-bold text-slate-300">giorni</span></div>
+                        <div class="text-sm font-bold text-white mt-2.5">Unità di bordo del mezzo</div>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">Intervallo massimo tra due scarichi. Reg. (UE) 581/2010, art. 1.</p>
+                    </div>
+                    <div class="bg-[#15243E] rounded-2xl p-5 border border-slate-800/80 shadow-lg">
+                        <div class="text-4xl font-black text-white leading-none">12 <span class="text-base font-bold text-slate-300">mesi</span></div>
+                        <div class="text-sm font-bold text-white mt-2.5">Conservazione dei dati</div>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">Periodo minimo di conservazione in azienda. Reg. (CE) 561/2006, art. 10.</p>
+                    </div>
+                </div>
+
+                <div class="bg-[#0D1527] border-l-4 border-amber-500 rounded-2xl p-5 shadow-xl space-y-3.5">
+                    <h3 class="font-extrabold text-amber-400 text-base">Norme di Controllo e Sanzioni per lo Scarico Dati</h3>
+                    <p class="text-xs text-amber-200/90 leading-relaxed">
+                        In base al <strong>Regolamento (UE) n. 581/2010</strong>, lo scarico dati in azienda ha un limite di <strong>28 giorni per la carta autista</strong> e <strong>90 giorni per il veicolo</strong>. Il mancato rispetto è sanzionato a carico dell'impresa.
+                    </p>
+                    <div class="bg-amber-950/30 border border-amber-800/60 rounded-xl p-3.5 text-xs text-amber-100 leading-relaxed">
+                        <strong>Art. 174, comma 14, Codice della Strada:</strong> sanzione all'impresa <strong>per ciascun dipendente</strong> a cui si riferisce la violazione.
+                        Importo indicativo: <strong>da € 334 a € 1.334 per dipendente</strong> (valori 2019-2020). Gli importi vengono rivalutati periodicamente: verifica quello in vigore sul testo ufficiale.
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32010R0581" target="_blank" rel="noopener noreferrer" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs text-center transition">Testo ufficiale Reg. (UE) 581/2010</a>
+                        <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1992-04-30;285~art174" target="_blank" rel="noopener noreferrer" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs text-center transition">Art. 174 Codice della Strada</a>
+                    </div>
+                    <button onclick="openCciaaModal()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-bold py-3 px-4 rounded-xl text-xs transition">
+                        Informativa Ufficiale Camere di Commercio (CCIAA)
+                    </button>
+                </div>
+
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+                        <h3 class="font-bold text-sm text-white">Gestione e Aggiornamento Link Portali</h3>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        Questi link valgono per tutta l'azienda, amministratori e autisti. Per modificarli serve il PIN GC CodeLab.
+                    </p>
+
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale Unioncamere Metrologia</label>
+                            <input type="url" id="linkUnioncamereInput" disabled placeholder="https://www.metrologialegale.unioncamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale TACI InfoCamere</label>
+                            <input type="url" id="linkTaciInput" disabled placeholder="https://taci.infocamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                        </div>
+
+                        <div id="linkPinRow" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                            <input type="password" id="linkPinInput" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="PIN GC CodeLab" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500">
+                            <button type="button" id="linkUnlockBtn" onclick="unlockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 rounded-xl text-xs transition">Sblocca modifica</button>
+                        </div>
+
+                        <div id="linkEditActions" class="hidden grid grid-cols-2 gap-2.5 pt-1">
+                            <button type="button" onclick="lockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 rounded-xl text-xs transition">Annulla</button>
+                            <button type="button" id="linkSaveBtn" onclick="saveCustomLinks()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-3 rounded-xl text-xs transition shadow-md">Aggiorna Link Ufficiali</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB NORME: MODULI E GUIDE -->
+            <div id="tabNorms" class="no-print hidden space-y-6 w-full min-w-0">
 
                 <!-- Box Modulo Assenze UE (Attestato di Attività) -->
                 <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-emerald-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
@@ -1164,52 +1259,6 @@
                         </div>
                         <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                     </button>
-                </div>
-
-                <!-- Box Esportazione Registro Completo Excel (.csv) -->
-                <div class="bg-[#0F1C32]/90 hover:bg-[#13233E] rounded-3xl p-5 border border-slate-700/60 hover:border-emerald-500/50 shadow-xl space-y-3.5 transition-all duration-200 group">
-                    <div class="flex items-center space-x-3.5">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-extrabold text-sm text-white group-hover:text-white transition-colors leading-snug">Registro Scarichi Flotta Excel (.csv)</h3>
-                            <p class="text-xs text-slate-400 group-hover:text-slate-300 transition-colors mt-0.5 leading-relaxed">Genera ed esporta il file tabellare con tutti i conducenti, veicoli, scadenze e stati di conformità.</p>
-                        </div>
-                    </div>
-                    <button type="button" onclick="exportFleetToExcel()" class="w-full bg-slate-500/15 hover:bg-slate-500/25 border border-slate-500/40 hover:border-slate-400/70 text-slate-200 hover:text-white font-bold py-3.5 px-4 rounded-2xl shadow-md flex items-center justify-between text-xs transition-all duration-200 active:scale-[0.98] group/btn">
-                        <div class="flex items-center space-x-2.5 text-left">
-                            <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                            <span class="tracking-wide">Scarica Registro Ufficiale Excel (.csv)</span>
-                        </div>
-                        <svg class="w-4 h-4 text-slate-400/80 group-hover/btn:translate-x-1 transition-transform flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-
-                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <h3 class="font-bold text-sm text-white">Gestione e Aggiornamento Link Portali</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Puoi personalizzare i link ufficiali che vengono mostrati sia qui che nella schermata dei conducenti:
-                    </p>
-
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale Unioncamere Metrologia</label>
-                            <input type="url" id="linkUnioncamereInput" placeholder="https://www.metrologialegale.unioncamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale TACI InfoCamere</label>
-                            <input type="url" id="linkTaciInput" placeholder="https://taci.infocamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500">
-                        </div>
-
-                        <button onclick="saveCustomLinks()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white w-full font-bold py-3 rounded-xl text-xs transition shadow-md">
-                            Aggiorna Link Ufficiali
-                        </button>
-                    </div>
                 </div>
 
             </div>
@@ -1822,8 +1871,8 @@
                             </li>
                         </ul>
                         <div class="bg-red-950/60 border border-red-800 p-3 rounded-xl text-red-200 text-[11px]">
-                            <strong>🚨 Quadro Sanzionatorio (Art. 19 L. 727/1978 e C.d.S.):</strong>
-                            La mancata o tardiva estrazione dei dati comporta sanzioni amministrative da <strong>€ 831,00 a oltre € 3.328,00</strong>, con responsabilità diretta dell'impresa e decurtazione di punti sulla CQC.
+                            <strong>🚨 Quadro Sanzionatorio (Art. 174, c. 14, Codice della Strada):</strong>
+                            La mancata o tardiva estrazione dei dati comporta una sanzione a carico dell'impresa <strong>per ciascun dipendente</strong> interessato: indicativamente <strong>da € 334 a € 1.334</strong> (valori 2019-2020, rivalutati periodicamente).
                         </div>
                     </div>
 
@@ -2974,6 +3023,19 @@
                     </div>
                 </div>
 
+                <div class="bg-[#08101D] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
+                    <div>
+                        <div class="text-xs font-bold text-white">PIN GC CodeLab per la modifica dei link portali</div>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Da 6 a 12 cifre. La prima volta lascia vuoto "PIN attuale".</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                        <input type="password" id="linkPinCurrent" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="PIN attuale" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
+                        <input type="password" id="linkPinNew" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="Nuovo PIN" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
+                        <input type="password" id="linkPinConfirm" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="Conferma PIN" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
+                        <button type="button" onclick="saveLinkPin()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white px-3 py-2 rounded-xl text-xs font-bold transition">Salva PIN</button>
+                    </div>
+                </div>
+
                 <div id="superAdminCompaniesList" class="space-y-3">
                     <!-- Popolato dinamicamente -->
                 </div>
@@ -3850,6 +3912,7 @@
             unioncamere: "https://www.metrologialegale.unioncamere.it/",
             taci: "https://taci.infocamere.it/"
         };
+        const DEFAULT_PORTAL_LINKS = { ...customLinks };
 
         // Registro aziende (con salvataggio locale per offline):
         // il Supervisore vede tutte le aziende, admin e autisti solo la propria e solo dopo il login.
@@ -4086,6 +4149,10 @@
                 updateDOMCompanyLogo();
             });
             activeListeners.push({ ref: configLogoRef, callback: configLogoCb });
+
+            const portalLinksRef = db.ref('link_portali/' + activeCompanyId);
+            const portalLinksCb = portalLinksRef.on('value', snapshot => applyCloudLinks(snapshot.val()), () => {});
+            activeListeners.push({ ref: portalLinksRef, callback: portalLinksCb });
 
             const configCardRef = dbCompanyRef('config/cartaAzienda');
             const configCardCb = configCardRef.on('value', snapshot => {
@@ -4588,64 +4655,190 @@
             updateAdminBadges();
         }
 
-        function exportFleetToExcel() {
-            const compCode = activeCompanyId || 'AZ-MAIN';
-            const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || 'Gestione Flotta');
-            
-            let csvContent = "\uFEFF"; // UTF-8 BOM per corretta apertura in Excel
-            csvContent += `REGISTRO UFFICIALE SCARICHI TACHIGRAFO (Reg. UE 581/2010)\n`;
-            csvContent += `Azienda:;${compName} (${compCode})\n`;
-            csvContent += `Data Generazione:;${new Date().toLocaleDateString('it-IT')} ${new Date().toLocaleTimeString('it-IT')}\n\n`;
-            
-            // SEZIONE 1: CONDUCENTI (28 Giorni)
-            csvContent += `SEZIONE 1 • CONDUCENTI (Limite Massimo 28 Giorni - Reg. UE 581/2010)\n`;
-            csvContent += `Nome;Cognome;Numero Carta Conducente;Cantiere/Sede;Cellulare WhatsApp;Data Prossima Scadenza Scarico;Giorni Rimanenti;Stato di Conformità;Piano Ferie;Note\n`;
-            
-            for (let id in driversMap) {
-                const d = driversMap[id];
-                if (!d) continue;
-                const targetDate = d.lastDownloadDate || new Date().toISOString().split('T')[0];
-                const daysRem = getDaysRemaining(targetDate);
-                let status = "IN REGOLA";
-                if (daysRem <= 0) status = "SCADUTO / NON CONFORME";
-                else if (daysRem <= 2) status = "URGENTE / SCADENZA OGGI";
-                else if (daysRem <= 7) status = "PROMEMORIA ATTIVO";
+        // Registro Excel: la libreria (circa 1 MB) si scarica solo quando serve, non all'apertura dell'app.
+        const EXCEL_LIB_URL = 'https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js';
+        let excelLibLoading = null;
+        let excelExportBusy = false;
 
-                let ferieStr = "Nessuna";
-                if (d.vacationStartDate && d.vacationEndDate) {
-                    ferieStr = `${formatDateItalian(d.vacationStartDate)} al ${formatDateItalian(d.vacationEndDate)}`;
-                }
-
-                csvContent += `"${(d.name || '').replace(/"/g, '""')}";"${(d.surname || '').replace(/"/g, '""')}";"${(d.cardNumber || '-').replace(/"/g, '""')}";"${(d.cantiere || '-').replace(/"/g, '""')}";"${(d.phone || '-').replace(/"/g, '""')}";"${formatDateItalian(targetDate)}";"${daysRem}";"${status}";"${ferieStr}";"${(d.notes || '-').replace(/"/g, '""')}"\n`;
+        function loadExcelLib() {
+            if (window.ExcelJS) return Promise.resolve();
+            if (!excelLibLoading) {
+                excelLibLoading = new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = EXCEL_LIB_URL;
+                    script.onload = resolve;
+                    script.onerror = () => { excelLibLoading = null; reject(new Error('Libreria Excel non raggiungibile')); };
+                    document.head.appendChild(script);
+                });
             }
-            
-            csvContent += `\n\n`;
-            
-            // SEZIONE 2: VEICOLI (90 Giorni)
-            csvContent += `SEZIONE 2 • FLOTTA VEICOLI (Limite Massimo 90 Giorni - Reg. UE 581/2010)\n`;
-            csvContent += `Targa Mezzo;Modello/Tipo;Cantiere/Sede;Data Prossima Scadenza Scarico;Giorni Rimanenti;Stato di Conformità;Note\n`;
-            
-            for (let id in vehiclesMap) {
-                const v = vehiclesMap[id];
-                if (!v) continue;
-                const targetDate = v.lastDownloadDate || new Date().toISOString().split('T')[0];
-                const daysRem = getDaysRemaining(targetDate);
-                let status = "IN REGOLA";
-                if (daysRem <= 0) status = "SCADUTO / NON CONFORME";
-                else if (daysRem <= 5) status = "URGENTE / SCADENZA IMMINENTE";
+            return excelLibLoading;
+        }
 
-                csvContent += `"${(v.plate || '').replace(/"/g, '""')}";"${(v.model || '-').replace(/"/g, '""')}";"${(v.cantiere || '-').replace(/"/g, '""')}";"${formatDateItalian(targetDate)}";"${daysRem}";"${status}";"${(v.notes || '-').replace(/"/g, '""')}"\n`;
+        function excelDate(dateStr) {
+            const date = dateStr ? parseLocalDate(dateStr) : null;
+            if (!date || isNaN(date)) return dateStr || '-';
+            return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        }
+
+        // Scritto a gruppi resta leggibile e Excel non lo tratta come numero
+        function excelPhone(phone) {
+            const value = String(phone || '-').trim();
+            return /^\d{10}$/.test(value) ? `${value.slice(0, 3)} ${value.slice(3, 6)} ${value.slice(6)}` : value;
+        }
+
+        function excelStatusColors(status) {
+            if (status.startsWith('SCADUTO')) return { bg: 'FFFEE2E2', text: 'FF991B1B' };
+            if (status.startsWith('URGENTE')) return { bg: 'FFFFEDD5', text: 'FF9A3412' };
+            if (status.startsWith('PROMEMORIA')) return { bg: 'FFFEF3C7', text: 'FF92400E' };
+            return { bg: 'FFDCFCE7', text: 'FF166534' };
+        }
+
+        function addRegistrySheet(workbook, { sheetName, title, companyLine, infoLine, columns, rows }) {
+            const HEADER_ROW = 5;
+            const ws = workbook.addWorksheet(sheetName, {
+                views: [{ state: 'frozen', ySplit: HEADER_ROW, showGridLines: false }],
+                pageSetup: { paperSize: 9, orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0, printTitlesRow: `${HEADER_ROW}:${HEADER_ROW}` }
+            });
+
+            [[title, 15, true, 'FFFFFFFF', 'FF0B1626', 28], [companyLine, 11, true, 'FF0F172A', 'FFE2E8F0', 20], [infoLine, 10, false, 'FF475569', 'FFF1F5F9', 18]].forEach(([text, size, bold, color, fill, height], i) => {
+                const row = i + 1;
+                ws.mergeCells(row, 1, row, columns.length);
+                const cell = ws.getCell(row, 1);
+                cell.value = text;
+                cell.font = { name: 'Calibri', size, bold, color: { argb: color } };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fill } };
+                cell.alignment = { vertical: 'middle', indent: 1 };
+                ws.getRow(row).height = height;
+            });
+
+            const border = { style: 'thin', color: { argb: 'FFCBD5E1' } };
+            const borders = { top: border, left: border, bottom: border, right: border };
+
+            const header = ws.getRow(HEADER_ROW);
+            header.height = 42;
+            columns.forEach((col, c) => {
+                const cell = header.getCell(c + 1);
+                cell.value = col.header;
+                cell.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF3B5BDB' } };
+                cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                cell.border = borders;
+            });
+
+            rows.forEach((values, r) => {
+                const row = ws.getRow(HEADER_ROW + 1 + r);
+                row.height = 21;
+                columns.forEach((col, c) => {
+                    const cell = row.getCell(c + 1);
+                    cell.value = values[c];
+                    cell.font = { name: 'Calibri', size: 11, color: { argb: 'FF0F172A' } };
+                    cell.alignment = { vertical: 'middle', horizontal: col.align || 'left', indent: col.align ? 0 : 1, wrapText: !!col.wrap };
+                    cell.border = borders;
+                    if (values[c] instanceof Date) cell.numFmt = 'dd/mm/yyyy';
+                    if (r % 2) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+                    if (col.status) {
+                        const colors = excelStatusColors(values[c]);
+                        cell.font = { name: 'Calibri', size: 11, bold: true, color: { argb: colors.text } };
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: colors.bg } };
+                    }
+                });
+            });
+
+            columns.forEach((col, c) => {
+                const longest = rows.reduce((max, values) => Math.max(max, values[c] instanceof Date ? 10 : String(values[c]).length), 0);
+                ws.getColumn(c + 1).width = Math.min(col.max || 34, Math.max(col.min || 12, longest + 4));
+            });
+
+            // Le note lunghe vanno a capo: la riga deve crescere per mostrarle tutte
+            rows.forEach((values, r) => {
+                const lines = Math.max(...columns.map((col, c) => col.wrap ? Math.ceil(String(values[c]).length / (ws.getColumn(c + 1).width - 3)) : 1));
+                ws.getRow(HEADER_ROW + 1 + r).height = Math.max(21, lines * 15 + 6);
+            });
+
+            ws.autoFilter = { from: { row: HEADER_ROW, column: 1 }, to: { row: HEADER_ROW + Math.max(rows.length, 1), column: columns.length } };
+        }
+
+        async function exportFleetToExcel() {
+            if (excelExportBusy) return;
+            excelExportBusy = true;
+            try {
+                showToast("Preparazione del Registro Excel...", "success");
+                await loadExcelLib();
+
+                const compCode = activeCompanyId || 'AZ-MAIN';
+                const compName = (companiesRegistry[compCode] && companiesRegistry[compCode].name) ? companiesRegistry[compCode].name : (currentCompanyName || 'Gestione Flotta');
+                const now = new Date();
+                const generated = `Generato il ${now.toLocaleDateString('it-IT')} alle ${now.toLocaleTimeString('it-IT')}`;
+                const companyLine = `Azienda: ${compName} (${compCode})`;
+                const text = (value) => String(value || '-');
+
+                const driverRows = Object.values(driversMap).filter(Boolean).map((d) => {
+                    const targetDate = d.lastDownloadDate || now.toISOString().split('T')[0];
+                    const daysRem = getDaysRemaining(targetDate);
+                    let status = "IN REGOLA";
+                    if (daysRem <= 0) status = "SCADUTO / NON CONFORME";
+                    else if (daysRem <= 2) status = "URGENTE / IN SCADENZA";
+                    else if (daysRem <= 7) status = "PROMEMORIA ATTIVO";
+                    const ferie = (d.vacationStartDate && d.vacationEndDate) ? `dal ${formatDateItalian(d.vacationStartDate)} al ${formatDateItalian(d.vacationEndDate)}` : "Nessuna";
+                    return [String(d.name || ''), String(d.surname || ''), text(d.cardNumber), text(d.cantiere), excelPhone(d.phone), excelDate(targetDate), daysRem, status, ferie, text(d.notes)];
+                });
+
+                const vehicleRows = Object.values(vehiclesMap).filter(Boolean).map((v) => {
+                    const targetDate = v.lastDownloadDate || now.toISOString().split('T')[0];
+                    const daysRem = getDaysRemaining(targetDate);
+                    let status = "IN REGOLA";
+                    if (daysRem <= 0) status = "SCADUTO / NON CONFORME";
+                    else if (daysRem <= 5) status = "URGENTE / SCADENZA IMMINENTE";
+                    return [String(v.plate || ''), text(v.model), text(v.cantiere), excelDate(targetDate), daysRem, status, text(v.notes)];
+                });
+
+                const workbook = new ExcelJS.Workbook();
+                workbook.creator = 'TachoControl Cloud';
+                workbook.created = now;
+
+                addRegistrySheet(workbook, {
+                    sheetName: 'Conducenti',
+                    title: 'REGISTRO UFFICIALE SCARICHI TACHIGRAFO • CONDUCENTI',
+                    companyLine,
+                    infoLine: `Limite massimo 28 giorni (Reg. UE 581/2010) • ${generated}`,
+                    columns: [
+                        { header: 'Nome', min: 14 }, { header: 'Cognome', min: 14 }, { header: 'Numero Carta Conducente', min: 22 }, { header: 'Cantiere / Sede', min: 22 },
+                        { header: 'Cellulare WhatsApp', min: 26 }, { header: 'Prossima Scadenza\nScarico', min: 25, align: 'center' }, { header: 'Giorni\nRimanenti', min: 17, align: 'center' },
+                        { header: 'Stato di Conformità', min: 28, status: true }, { header: 'Piano Ferie', min: 19 }, { header: 'Note', min: 18, max: 45, wrap: true }
+                    ],
+                    rows: driverRows
+                });
+
+                addRegistrySheet(workbook, {
+                    sheetName: 'Flotta Veicoli',
+                    title: 'REGISTRO UFFICIALE SCARICHI TACHIGRAFO • FLOTTA VEICOLI',
+                    companyLine,
+                    infoLine: `Limite massimo 90 giorni (Reg. UE 581/2010) • ${generated}`,
+                    columns: [
+                        { header: 'Targa Mezzo', min: 19 }, { header: 'Modello / Tipo', min: 22 }, { header: 'Cantiere / Sede', min: 22 },
+                        { header: 'Prossima Scadenza\nScarico', min: 25, align: 'center' }, { header: 'Giorni\nRimanenti', min: 17, align: 'center' },
+                        { header: 'Stato di Conformità', min: 32, status: true }, { header: 'Note', min: 18, max: 45, wrap: true }
+                    ],
+                    rows: vehicleRows
+                });
+
+                const buffer = await workbook.xlsx.writeBuffer();
+                const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Registro_Scarichi_Tachigrafo_${compCode}_${now.toISOString().split('T')[0]}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+                showToast("Registro Excel scaricato con successo!", "success");
+            } catch (err) {
+                console.error('Export Excel non riuscito:', err);
+                showToast("Registro Excel non creato: controlla la connessione internet e riprova.", "error");
+            } finally {
+                excelExportBusy = false;
             }
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', `Registro_Scarichi_Tachigrafo_${compCode}_${new Date().toISOString().split('T')[0]}.csv`);
-            document.body.appendChild(a);
-            a.click();
-            a.remove();
-            showToast("📊 Registro Excel (.csv) scaricato con successo!", "success");
         }
 
         function saveAdminPersonalPin() {
@@ -4863,22 +5056,107 @@
             if (btnUnion) btnUnion.href = customLinks.unioncamere;
             const btnTaci = document.getElementById('btnLinkTaci');
             if (btnTaci) btnTaci.href = customLinks.taci;
+            if (linkEditUnlocked) return; // non sovrascrive quello che si sta digitando
             const inUnion = document.getElementById('linkUnioncamereInput');
             if (inUnion) inUnion.value = customLinks.unioncamere;
             const inTaci = document.getElementById('linkTaciInput');
             if (inTaci) inTaci.value = customLinks.taci;
         }
 
-        function saveCustomLinks() {
-            const uLink = document.getElementById('linkUnioncamereInput').value.trim();
-            const tLink = document.getElementById('linkTaciInput').value.trim();
+        function isHttpsLink(url) {
+            return typeof url === 'string' && /^https:\/\/\S+$/.test(url);
+        }
 
-            if (uLink) customLinks.unioncamere = uLink;
-            if (tLink) customLinks.taci = tLink;
-
-            localStorage.setItem('tacho_custom_links', JSON.stringify(customLinks));
+        // Link portali salvati nel Cloud: valgono per tutta l'azienda
+        function applyCloudLinks(saved) {
+            customLinks = {
+                unioncamere: saved && isHttpsLink(saved.unioncamere) ? saved.unioncamere : DEFAULT_PORTAL_LINKS.unioncamere,
+                taci: saved && isHttpsLink(saved.taci) ? saved.taci : DEFAULT_PORTAL_LINKS.taci
+            };
+            try { localStorage.setItem('tacho_custom_links', JSON.stringify(customLinks)); } catch (e) {}
             updateDOMCustomLinks();
-            showToast("Link portali aggiornati con successo!", "success");
+        }
+
+        let linkEditUnlocked = false;
+        let linkEditTimer = null;
+
+        function setLinkEditMode(unlocked) {
+            linkEditUnlocked = unlocked;
+            clearTimeout(linkEditTimer);
+            ['linkUnioncamereInput', 'linkTaciInput'].forEach((id) => { document.getElementById(id).disabled = !unlocked; });
+            document.getElementById('linkPinRow').classList.toggle('hidden', unlocked);
+            document.getElementById('linkEditActions').classList.toggle('hidden', !unlocked);
+            if (unlocked) linkEditTimer = setTimeout(lockLinkEditor, 5 * 60 * 1000);
+        }
+
+        function lockLinkEditor() {
+            if (!linkEditUnlocked) return;
+            TachoAuth.lockLinkEditing();
+            setLinkEditMode(false);
+            updateDOMCustomLinks();
+        }
+
+        async function unlockLinkEditor() {
+            const input = document.getElementById('linkPinInput');
+            const btn = document.getElementById('linkUnlockBtn');
+            const pin = input.value.trim();
+            if (!/^\d{6,12}$/.test(pin)) {
+                showToast("Inserisci il PIN GC CodeLab (da 6 a 12 cifre).", "error");
+                return;
+            }
+            btn.disabled = true;
+            try {
+                await TachoAuth.unlockLinkEditing(pin);
+                setLinkEditMode(true);
+                showToast("Modifica sbloccata per 5 minuti.", "success");
+            } catch (err) {
+                showToast(err.message, "error");
+            } finally {
+                input.value = '';
+                btn.disabled = false;
+            }
+        }
+
+        async function saveCustomLinks() {
+            if (!linkEditUnlocked) return;
+            const links = {
+                unioncamere: document.getElementById('linkUnioncamereInput').value.trim() || customLinks.unioncamere,
+                taci: document.getElementById('linkTaciInput').value.trim() || customLinks.taci
+            };
+            if (!isHttpsLink(links.unioncamere) || !isHttpsLink(links.taci)) {
+                showToast("I link devono iniziare con https://", "error");
+                return;
+            }
+            const btn = document.getElementById('linkSaveBtn');
+            btn.disabled = true;
+            try {
+                await TachoAuth.saveProtectedLinks(activeCompanyId || 'AZ-MAIN', links);
+                setLinkEditMode(false);
+                applyCloudLinks(links);
+                showToast("Link portali aggiornati per tutta l'azienda!", "success");
+            } catch (err) {
+                console.error('Salvataggio link non riuscito:', err);
+                showToast("Link non salvati: controlla la connessione e riprova.", "error");
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        async function saveLinkPin() {
+            const current = document.getElementById('linkPinCurrent');
+            const fresh = document.getElementById('linkPinNew');
+            const confirmPin = document.getElementById('linkPinConfirm');
+            if (fresh.value !== confirmPin.value) {
+                showToast("I due PIN non coincidono.", "error");
+                return;
+            }
+            try {
+                await TachoAuth.setLinkPin(current.value.trim(), fresh.value.trim());
+                current.value = fresh.value = confirmPin.value = '';
+                showToast("PIN modifica link salvato.", "success");
+            } catch (err) {
+                showToast(err.message, "error");
+            }
         }
 
         function handleFileSelect(e) {
@@ -6162,22 +6440,32 @@
             const btnFleet = document.getElementById('btnFleet');
             const btnVehicles = document.getElementById('btnVehicles');
             const btnSanctions = document.getElementById('btnSanctions');
+            const btnNorms = document.getElementById('btnNorms');
+            const btnScarico = document.getElementById('btnScarico');
             const btnLiveMap = document.getElementById('btnLiveMap');
 
             const tabFleet = document.getElementById('tabFleet');
             const tabVehicles = document.getElementById('tabVehicles');
             const tabSanctions = document.getElementById('tabSanctions');
+            const tabNorms = document.getElementById('tabNorms');
+            const tabScarico = document.getElementById('tabScarico');
+
+            lockLinkEditor();
             const tabLiveMap = document.getElementById('tabLiveMap');
 
             const inactiveBtnStyle = "relative bg-[#15243E] hover:bg-slate-800 border border-slate-700/60 text-slate-300 font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
             if (btnFleet) btnFleet.className = inactiveBtnStyle;
             if (btnVehicles) btnVehicles.className = inactiveBtnStyle;
             if (btnSanctions) btnSanctions.className = inactiveBtnStyle;
+            if (btnNorms) btnNorms.className = inactiveBtnStyle;
+            if (btnScarico) btnScarico.className = "col-span-2 sm:col-span-1 " + inactiveBtnStyle.replace('border-slate-700/60', 'border-amber-500/50');
             if (btnLiveMap) btnLiveMap.className = "relative bg-[#15243E] hover:bg-slate-800 border border-cyan-500/40 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1.5";
             
             if (tabFleet) tabFleet.classList.add('hidden');
             if (tabVehicles) tabVehicles.classList.add('hidden');
             if (tabSanctions) tabSanctions.classList.add('hidden');
+            tabNorms.classList.add('hidden');
+            tabScarico.classList.add('hidden');
             if (tabLiveMap) tabLiveMap.classList.add('hidden');
 
             const activeBtnStyle = "relative bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center text-center";
@@ -6194,6 +6482,12 @@
                 if (btnLiveMap) btnLiveMap.className = "relative bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 px-2 rounded-xl shadow-md text-xs transition flex items-center justify-center space-x-1.5 border border-cyan-400/60 shadow-cyan-900/30";
                 if (tabLiveMap) tabLiveMap.classList.remove('hidden');
                 if (typeof FleetMapManager !== 'undefined') FleetMapManager.initAdminFleetMap();
+            } else if (tab === 'scarico') {
+                btnScarico.className = "col-span-2 sm:col-span-1 " + activeBtnStyle;
+                tabScarico.classList.remove('hidden');
+            } else if (tab === 'norms') {
+                btnNorms.className = activeBtnStyle;
+                tabNorms.classList.remove('hidden');
             } else {
                 if (btnSanctions) btnSanctions.className = activeBtnStyle;
                 if (tabSanctions) tabSanctions.classList.remove('hidden');

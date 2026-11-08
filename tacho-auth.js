@@ -452,7 +452,61 @@
         };
     }
 
+    // --- PIN GC CodeLab per i link portali ---
+    // Il PIN e' la password di un account dedicato: lo verifica Firebase, che limita anche i tentativi.
+    // Le regole del database permettono di scrivere i link solo a questo account.
+    const LINK_EDITOR_EMAIL = 'pin-link@gestione.tachoapp.gccodelab.it';
+    let linkApp = null;
+    function linkEditorApp() {
+        if (!linkApp) {
+            linkApp = firebase.initializeApp(firebase.app().options, 'tacho-link');
+            attachEmulators(linkApp);
+            linkApp.auth().setPersistence(firebase.auth.Auth.Persistence.NONE).catch(() => {});
+        }
+        return linkApp;
+    }
+    function linkPinError(e) {
+        if (e && e.code === 'auth/too-many-requests') return fail('tacho/pin-limit', 'Troppi tentativi con PIN errato. Riprova tra qualche minuto.');
+        if (e && e.code === 'auth/network-request-failed') return fail('tacho/offline', 'Connessione assente: riprova quando sei online.');
+        return fail('tacho/bad-pin', 'PIN non corretto.');
+    }
+    async function unlockLinkEditing(pin) {
+        try {
+            await linkEditorApp().auth().signInWithEmailAndPassword(LINK_EDITOR_EMAIL, String(pin));
+        } catch (e) {
+            throw linkPinError(e);
+        }
+    }
+    function lockLinkEditing() {
+        return linkApp && linkApp.auth().currentUser ? linkApp.auth().signOut().catch(() => {}) : Promise.resolve();
+    }
+    async function saveProtectedLinks(cid, links) {
+        const app = linkEditorApp();
+        if (!app.auth().currentUser) throw fail('tacho/locked', 'Modifica bloccata: inserisci di nuovo il PIN.');
+        await withTimeout(app.database().ref(`link_portali/${cid || 'AZ-MAIN'}`).set(links), 10000);
+        await lockLinkEditing();
+    }
+    async function setLinkPin(currentPin, newPin) {
+        if (!isSuperAdmin()) throw fail('tacho/not-admin', 'Operazione riservata al Supervisore.');
+        if (!/^\d{6,12}$/.test(newPin)) throw fail('tacho/weak-pin', 'Il PIN deve avere da 6 a 12 cifre.');
+        const app = linkEditorApp();
+        if (currentPin) {
+            await unlockLinkEditing(currentPin);
+            await app.auth().currentUser.updatePassword(newPin);
+        } else {
+            try {
+                await app.auth().createUserWithEmailAndPassword(LINK_EDITOR_EMAIL, newPin);
+            } catch (e) {
+                if (e && e.code === 'auth/email-already-in-use') throw fail('tacho/pin-exists', 'Il PIN esiste gia\': inserisci il PIN attuale per cambiarlo.');
+                throw e;
+            }
+        }
+        await db.ref('utenti/' + app.auth().currentUser.uid).set({ companyId: 'GC-LINK', role: 'link_editor' });
+        await lockLinkEditing();
+    }
+
     window.TachoAuth = {
+        unlockLinkEditing, lockLinkEditing, saveProtectedLinks, setLinkPin,
         ready,
         onChange(cb) { listeners.push(cb); if (resolvedOnce) cb(currentUser, currentProfile); },
         get user() { return currentUser; },

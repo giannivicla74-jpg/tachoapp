@@ -12,7 +12,7 @@
         ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'admin' && (!data.exists() || (data.child('companyId').val() === root.child('utenti').child(auth.uid).child('companyId').val() && data.child('role').val() === 'driver')) && (!newData.exists() || (newData.child('companyId').val() === root.child('utenti').child(auth.uid).child('companyId').val() && newData.child('role').val() === 'driver'))) || (auth != null && auth.uid === $uid && !data.exists() && newData.child('role').val() === 'admin' && !root.child('aziende_registry').child(newData.child('companyId').val()).exists() && newData.parent().parent().child('aziende_registry').child(newData.child('companyId').val()).child('ownerUid').val() === auth.uid)",
         ".validate": "newData.hasChildren(['companyId', 'role'])",
         "role": {
-          ".validate": "newData.val() === 'driver' || newData.val() === 'admin' || newData.val() === 'superadmin'"
+          ".validate": "newData.val() === 'driver' || newData.val() === 'admin' || newData.val() === 'superadmin' || newData.val() === 'link_editor'"
         }
       }
     },
@@ -29,6 +29,22 @@
       "$cid": {
         ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
         ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')"
+      }
+    },
+    "link_portali": {
+      "$cid": {
+        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid)",
+        ".write": "auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'link_editor'",
+        ".validate": "newData.hasChildren(['unioncamere', 'taci'])",
+        "unioncamere": {
+          ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().length > 8 && newData.val().beginsWith('https://') && !newData.val().contains(' ')"
+        },
+        "taci": {
+          ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().length > 8 && newData.val().beginsWith('https://') && !newData.val().contains(' ')"
+        },
+        "$altro": {
+          ".validate": false
+        }
       }
     },
     "aziende_registry": {
