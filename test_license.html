@@ -1500,7 +1500,7 @@
                             </div>
                         </div>
                         <div id="driverSimBtnSubtitle" class="mt-1 text-xs text-slate-300 leading-snug">
-                            Tabella di marcia &amp; calcolo pause (45m).
+                            Orari di pausa, fine guida e ripartenza.
                         </div>
                     </div>
                 </div>
@@ -2094,7 +2094,7 @@
                                     <span>Come si Attiva l'Ascolto:</span>
                                 </div>
                                 <ul class="text-slate-300 space-y-1.5 pl-1">
-                                    <li>&bull; <strong>Briefing Generale del Turno:</strong> Clicca sul pulsante <em>"Ascolta Briefing Turno"</em> (🔊) sopra la tabella di marcia per ascoltare il riassunto vocale completo del viaggio (orario di partenza, inizio pausa 45m, termine del turno e riposo).</li>
+                                    <li>&bull; <strong>Briefing Generale del Turno:</strong> Clicca sul pulsante <em>"Ascolta il turno"</em> (🔊) sopra la tabella di marcia per ascoltare il riassunto vocale completo del viaggio (orario di partenza, inizio pausa 45m, termine del turno e riposo).</li>
                                     <li>&bull; <strong>Ascolto Tappa Singola:</strong> Clicca sull'icona altoparlante <em>"Ascolta"</em> presente su ciascuna riga della tabella di marcia per ascoltare solo i dettagli di quella fase specifica.</li>
                                     <li>&bull; <strong>Annunci Automatici in Tempo Reale:</strong> Imposta il pulsante su <em>"Avvisi Auto: ON"</em> (🔔). Durante la marcia, ogni volta che scatta una nuova fase (es. arrivo della pausa di 45 minuti o ripartenza), la voce interverrà in automatico avvisandoti a voce alta.</li>
                                 </ul>
@@ -3639,234 +3639,150 @@
 
     <!-- =================== MODALE SIMULATORE TEMPI DI GUIDA & REGOLAMENTO CE 561/2006 =================== -->
     <div id="drivingSimulatorModal" class="no-print fixed inset-0 bg-black/85 backdrop-blur-md z-[98] flex items-center justify-center p-3 sm:p-4 hidden">
-        <div class="bg-[#111C2E] border border-emerald-500/40 w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
-            
-            <!-- Header Modale -->
-            <div class="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center bg-[#15233A]">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center shadow-inner">
-                        <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="13" r="8" class="stroke-emerald-400/50" fill="rgba(16, 185, 129, 0.05)"></circle>
-                            <path d="M12 9v4l2.5 1.5" class="stroke-emerald-300" stroke-width="2.2"></path>
-                            <path d="M12 2v3" class="stroke-emerald-400"></path>
-                            <path d="M18.5 5.5l-1.5 1.5" class="stroke-emerald-400/60"></path>
-                            <path d="M5.5 5.5l1.5 1.5" class="stroke-emerald-400/60"></path>
-                            <circle cx="12" cy="13" r="1.5" fill="#34d399" class="stroke-none"></circle>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <h3 class="font-extrabold text-sm sm:text-base text-white tracking-tight">Assistente Tempi di Guida &amp; Riposo</h3>
-                            <span class="bg-emerald-500/20 text-emerald-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border border-emerald-500/30">Reg. CE 561/2006</span>
-                        </div>
-                        <p class="text-[10px] text-slate-400">Pianifica le pause, monitora il turno e previeni le sanzioni del tachigrafo</p>
-                    </div>
+        <div class="bg-[#111C2E] border border-slate-700/60 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[94vh]">
+
+            <div class="p-4 sm:p-5 border-b border-slate-800 flex justify-between items-center gap-3 bg-[#15233A]">
+                <div class="min-w-0">
+                    <h3 class="font-extrabold text-base text-white tracking-tight">Turno e guida</h3>
+                    <p class="text-[11px] text-slate-400">Quando fermarti, quando finire e quando ripartire</p>
                 </div>
-                <button type="button" onclick="closeDrivingSimulatorModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-xl font-bold">
-                    &times;
+                <button type="button" onclick="closeDrivingSimulatorModal()" aria-label="Chiudi" class="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition flex-shrink-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
 
-            <!-- Tab Switcher (Pianificatore vs Regolamento) -->
-            <div class="px-5 pt-3 pb-2 bg-[#0E1726] border-b border-slate-800 flex gap-2">
-                <button id="btnSimTabCalc" onclick="switchSimulatorTab('calc')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5">
-                    <span>⚡</span> <span>Pianificatore &amp; Monitoraggio</span>
-                </button>
-                <button id="btnSimTabGuide" onclick="switchSimulatorTab('guide')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5 text-center leading-tight">
-                    <span>📖</span> <span>Regolamento CE 561/2006 &amp; Guida Assistente Vocale</span>
-                </button>
+            <div class="px-4 sm:px-5 pt-3 pb-3 bg-[#0E1726] border-b border-slate-800 flex gap-2">
+                <button type="button" id="btnSimTabCalc" onclick="switchSimulatorTab('calc')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-[#3B5BDB] text-white shadow-md flex items-center justify-center">Il mio turno</button>
+                <button type="button" id="btnSimTabGuide" onclick="switchSimulatorTab('guide')" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center">Regole di guida</button>
             </div>
 
-            <div class="p-5 overflow-y-auto space-y-5 text-xs text-slate-200">
-                
-                <!-- VISTA 1: SIMULATORE INTERATTIVO -->
+            <div class="p-4 sm:p-5 overflow-y-auto space-y-4 text-xs text-slate-200">
+
                 <div id="simCalcView" class="space-y-4">
-                    
-                    <!-- Barra Controllo Stato Simulatore (Avvia / Ferma) -->
-                    <div id="simControlStateBar" class="p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-slate-900/90 border-slate-800">
-                        <div class="flex items-center space-x-3 min-w-0">
-                            <span id="simStateIcon" class="text-2xl">⚪</span>
-                            <div class="min-w-0">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-xs font-black text-white">Stato Monitoraggio Cruscotto:</span>
-                                    <span id="simStateBadge" class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">INATTIVO</span>
-                                </div>
-                                <p id="simStateDesc" class="text-[10px] text-slate-400 mt-0.5">Il cruscotto è neutro. Clicca su "Avvia Turno Live" per attivare il monitoraggio in tempo reale.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2 w-full sm:w-auto justify-end flex-wrap gap-y-2">
-                            <button type="button" id="btnStartSimulation" onclick="startDrivingSimulation()" class="flex-1 sm:flex-none px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center space-x-1.5 active:scale-95">
-                                <span>▶️</span> <span id="btnStartSimulationText">Avvia Turno Live</span>
-                            </button>
-                            <button type="button" id="btnSuspendSimulation" onclick="stopDrivingSimulation()" class="flex-1 sm:flex-none px-3 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 font-extrabold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95" title="Sospendi temporaneamente la visualizzazione sul cruscotto">
-                                <span>⏸️</span> <span>Sospendi</span>
-                            </button>
-                            <button type="button" id="btnStopSimulation" onclick="resetDrivingSimulationComplete()" class="flex-1 sm:flex-none px-3 py-2 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 font-extrabold text-xs rounded-xl transition flex items-center justify-center space-x-1.5 active:scale-95" title="Interrompi del tutto e azzera il turno">
-                                <span>🛑</span> <span>Interrompi del Tutto</span>
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- Parametri di Input -->
-                    <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-3">
-                        <h4 class="font-extrabold text-emerald-400 text-xs uppercase tracking-wider">1. Imposta i Parametri del Turno</h4>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <div class="flex justify-between items-center mb-1">
-                                    <label class="block text-[10px] uppercase font-bold text-slate-400">Ora Inizio Servizio / Guida *</label>
-                                    <button type="button" onclick="setSimTimeNow()" class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 hover:text-white border border-emerald-500/40 rounded-lg text-[10px] font-bold transition shadow-xs">
-                                        <svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="9"></circle>
-                                            <polyline points="12 7 12 12 15 15"></polyline>
-                                        </svg>
-                                        <span>Imposta Adesso</span>
-                                    </button>
-                                </div>
-                                <input type="time" id="simStartTime" value="06:00" oninput="calculateDrivingSimulation()" 
-                                    class="w-full px-3.5 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-white text-sm focus:border-emerald-400 cursor-pointer">
-                            </div>
+                    <!-- Stato del turno in corso: compare solo quando il turno e' avviato o sospeso -->
+                    <div id="simLiveRadarBanner" class="hidden"></div>
 
+                    <!-- Dati del turno -->
+                    <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-700/60 space-y-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Guida Giornaliera Prevista *</label>
-                                <select id="simDailyDrive" onchange="calculateDrivingSimulation()" 
-                                    class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-bold text-white text-xs focus:border-emerald-400">
-                                    <option value="9">9 Ore (Standard - 2 periodi da 4h 30m)</option>
-                                    <option value="10">10 Ore (Estesa - Deroga max 2 volte/settimana)</option>
+                                <div class="flex justify-between items-center mb-1.5 h-6">
+                                    <label for="simStartTime" class="text-[11px] font-bold text-slate-300">Inizio turno</label>
+                                    <button type="button" onclick="setSimTimeNow()" class="px-2 py-0.5 bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 rounded-lg text-[10px] font-bold transition">Adesso</button>
+                                </div>
+                                <input type="time" id="simStartTime" value="06:00" oninput="calculateDrivingSimulation()" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-mono font-bold text-white text-sm focus:border-emerald-400 cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex items-center mb-1.5 h-6">
+                                    <label for="simDailyDrive" class="text-[11px] font-bold text-slate-300">Ore di guida</label>
+                                </div>
+                                <select id="simDailyDrive" onchange="calculateDrivingSimulation()" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-bold text-white text-sm focus:border-emerald-400">
+                                    <option value="9">9 ore</option>
+                                    <option value="10">10 ore</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Modalità Pausa Obbligatoria (1° Periodo) *</label>
-                                <select id="simPauseType" onchange="calculateDrivingSimulation()" 
-                                    class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
-                                    <option value="45">Pausa Unica di 45 Minuti (Standard)</option>
-                                    <option value="15_30">Frazionata: 15 Minuti + 30 Minuti successivi</option>
-                                </select>
+                        <details class="border-t border-slate-800/80 pt-3">
+                            <summary class="cursor-pointer list-none flex items-center justify-between text-[11px] font-bold text-slate-300">
+                                <span>Altre opzioni: pausa, riposo, altro lavoro</span>
+                                <span class="text-slate-400" aria-hidden="true">▾</span>
+                            </summary>
+                            <div class="space-y-3 pt-3">
+                                <div>
+                                    <label for="simPauseType" class="block text-[11px] font-bold text-slate-300 mb-1.5">Pausa</label>
+                                    <select id="simPauseType" onchange="calculateDrivingSimulation()" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
+                                        <option value="45">45 minuti di fila</option>
+                                        <option value="15_30">Divisa: prima 15 minuti, poi 30 minuti</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="simRestType" class="block text-[11px] font-bold text-slate-300 mb-1.5">Riposo giornaliero</label>
+                                    <select id="simRestType" onchange="calculateDrivingSimulation()" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
+                                        <option value="11">11 ore</option>
+                                        <option value="9">9 ore (riposo ridotto)</option>
+                                        <option value="multipresenza">9 ore con doppio autista</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="simOtherWork" class="block text-[11px] font-bold text-slate-300 mb-1.5">Altro lavoro (carico, scarico)</label>
+                                    <select id="simOtherWork" onchange="calculateDrivingSimulation()" class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
+                                        <option value="0">Nessuno</option>
+                                        <option value="30">30 minuti</option>
+                                        <option value="60">1 ora</option>
+                                        <option value="120">2 ore</option>
+                                    </select>
+                                </div>
                             </div>
+                        </details>
+                    </div>
 
-                            <div>
-                                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Riposo Giornaliero Obbligatorio *</label>
-                                <select id="simRestType" onchange="calculateDrivingSimulation()" 
-                                    class="w-full px-3 py-2.5 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none font-bold text-white text-xs focus:border-emerald-400">
-                                    <option value="11">11 Ore Regolare (Standard)</option>
-                                    <option value="9">9 Ore Ridotto (Max 3 volte tra due riposi settimanali)</option>
-                                    <option value="multipresenza">Multipresenza (Doppio Conducente: 9h in 30h)</option>
-                                </select>
-                            </div>
+                    <!-- Risultato -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 text-center">
+                            <span class="block text-[10px] font-bold text-slate-400">Pausa entro</span>
+                            <span id="simResultFirstBreakTime" class="block text-xl font-black font-mono text-amber-300 mt-1 leading-none">--:--</span>
+                            <span id="simResultFirstBreakDesc" class="block text-[10px] text-slate-400 mt-1.5 leading-tight"></span>
                         </div>
-
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Altre Mansioni / Lavoro non alla guida (Carico, Scarico, Attesa)</label>
-                            <select id="simOtherWork" onchange="calculateDrivingSimulation()" 
-                                class="w-full px-3 py-2 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-white text-xs focus:border-emerald-400">
-                                <option value="0">0 Minuti (Solo guida e pause)</option>
-                                <option value="30">30 Minuti di altre mansioni</option>
-                                <option value="60">1 Ora di carico/scarico</option>
-                                <option value="120">2 Ore di carico/scarico</option>
-                            </select>
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 text-center">
+                            <span class="block text-[10px] font-bold text-slate-400">Fine guida</span>
+                            <span id="simResultEndTime" class="block text-xl font-black font-mono text-white mt-1 leading-none">--:--</span>
+                            <span id="simResultEndDesc" class="block text-[10px] text-slate-400 mt-1.5 leading-tight"></span>
+                        </div>
+                        <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 text-center">
+                            <span class="block text-[10px] font-bold text-slate-400">Riparti dalle</span>
+                            <span id="simResultNextStartTime" class="block text-xl font-black font-mono text-emerald-300 mt-1 leading-none">--:--</span>
+                            <span id="simResultNextStartDesc" class="block text-[10px] text-slate-400 mt-1.5 leading-tight"></span>
                         </div>
                     </div>
 
-                    <!-- Risultati della Simulazione -->
-                    <div class="space-y-3">
-                        <h4 class="font-extrabold text-amber-400 text-xs uppercase tracking-wider">2. Cronologia e Scadenze del Turno</h4>
+                    <!-- Avvisi: compare solo se c'e' qualcosa da segnalare -->
+                    <div id="simDiagnosticsBox" class="hidden"></div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            
-                            <!-- Card 1: Prima Pausa -->
-                            <div class="bg-[#15243E] border-l-4 border-amber-400 rounded-2xl p-3.5 shadow-md">
-                                <span class="text-[9px] uppercase font-bold text-slate-400 block">🛑 1ª Pausa Obbligatoria</span>
-                                <span class="text-base font-extrabold text-amber-300 font-mono block mt-1" id="simResultFirstBreakTime">--:--</span>
-                                <p class="text-[10px] text-slate-400 mt-1" id="simResultFirstBreakDesc">Dopo max 4h 30m di guida</p>
-                            </div>
-
-                            <!-- Card 2: Fine Turno Guida -->
-                            <div class="bg-[#15243E] border-l-4 border-indigo-400 rounded-2xl p-3.5 shadow-md">
-                                <span class="text-[9px] uppercase font-bold text-slate-400 block">🏁 Fine Guida &amp; Turno</span>
-                                <span class="text-base font-extrabold text-indigo-300 font-mono block mt-1" id="simResultEndTime">--:--</span>
-                                <p class="text-[10px] text-slate-400 mt-1" id="simResultEndDesc">Totale max consentito</p>
-                            </div>
-
-                            <!-- Card 3: Ripartenza -->
-                            <div class="bg-[#15243E] border-l-4 border-emerald-400 rounded-2xl p-3.5 shadow-md">
-                                <span class="text-[9px] uppercase font-bold text-slate-400 block">🛏️ Fine Riposo (Ripartenza)</span>
-                                <span class="text-base font-extrabold text-emerald-300 font-mono block mt-1" id="simResultNextStartTime">--:--</span>
-                                <p class="text-[10px] text-slate-400 mt-1" id="simResultNextStartDesc">Dopo riposo regolare</p>
-                            </div>
+                    <!-- Tappe -->
+                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60">
+                        <summary class="cursor-pointer list-none p-4 flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-white">Tappe del turno</span>
+                            <span class="text-slate-400" aria-hidden="true">▾</span>
+                        </summary>
+                        <div class="px-4 pb-4">
+                            <div id="simTimelineContainer" class="space-y-2.5 relative before:absolute before:left-3 before:top-3 before:bottom-3 before:w-px before:bg-slate-700/80"></div>
                         </div>
+                    </details>
 
-                        <!-- Card Diagnostica / Alert -->
-                        <div id="simDiagnosticsBox" class="rounded-2xl p-4 border text-xs leading-relaxed space-y-1.5 shadow-lg bg-emerald-950/40 border-emerald-500/40 text-emerald-200">
-                            <!-- Popolato dinamicamente da JS -->
-                        </div>
-
-                        <!-- ================= TABELLA DI MARCIA PASSO-PASSO ================= -->
-                        <div class="bg-[#0E182B] border border-slate-700/70 rounded-3xl p-4 sm:p-5 space-y-4 shadow-xl">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-lg">🗺️</span>
-                                    <h4 class="font-extrabold text-white text-xs sm:text-sm uppercase tracking-wider">Tabella di Marcia Passo-Passo</h4>
-                                </div>
-                                <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-lg border border-emerald-500/30">5 TAPPE GUIDATE</span>
-                            </div>
-
-                            <!-- Live Radar Banner (Dove si trova adesso l'autista) -->
-                            <div id="simLiveRadarBanner" class="p-3.5 rounded-2xl border flex items-center justify-between gap-3 shadow-md bg-emerald-950/80 border-emerald-500/50">
-                                <!-- Popolato dinamicamente da JS -->
-                            </div>
-
-                            <!-- Barra Assistente Vocale & Briefing Audio Co-Pilot -->
-                            <div class="p-3.5 bg-gradient-to-r from-indigo-950/80 via-[#15233A] to-emerald-950/70 rounded-2xl border border-indigo-500/40 flex flex-wrap items-center justify-between gap-2.5 shadow-lg">
-                                <div class="flex items-center space-x-2.5 min-w-0">
-                                    <div class="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center text-base shadow-inner flex-shrink-0">
-                                        🎙️
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="text-xs font-bold text-white flex items-center space-x-1.5">
-                                            <span>Co-Pilot Vocale di Bordo</span>
-                                            <span class="text-[9px] font-mono font-bold text-indigo-300 bg-indigo-500/20 px-1.5 py-0.5 rounded border border-indigo-500/30">AUDIO HD</span>
-                                        </div>
-                                        <p class="text-[10px] text-slate-300 truncate">Ascolta le tappe e il piano di viaggio con voce naturale italiana.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                                    <button type="button" id="btnToggleWakeLock" onclick="toggleScreenWakeLock()" class="px-2.5 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-400/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm" title="Mantieni lo schermo sempre acceso durante il turno (Modalità Cabina)">
-                                        <span id="wakeLockIcon">🔆</span>
-                                        <span id="wakeLockText">Schermo Cabina: ON</span>
-                                    </button>
-                                    <button type="button" id="btnToggleVoiceAnnounce" onclick="toggleVoiceAnnouncements()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1" title="Attiva/disattiva annunci vocali automatici al cambio fase">
-                                        <span id="voiceToggleIcon">🔕</span>
-                                        <span id="voiceToggleText">Avvisi Auto: OFF</span>
-                                    </button>
-                                    <button type="button" id="btnPlayFullBriefing" onclick="speakFullTripBriefing()" class="px-3 py-1.5 bg-gradient-to-r from-indigo-600 to-emerald-600 hover:from-indigo-500 hover:to-emerald-500 text-white text-xs font-black rounded-xl shadow-md transition flex items-center space-x-1.5 active:scale-95">
-                                        <span id="briefingPlayIcon">🔊</span>
-                                        <span id="briefingPlayText">Ascolta Briefing Turno</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <!-- Timeline Verticale delle 5 Tappe -->
-                            <div id="simTimelineContainer" class="space-y-3 relative before:absolute before:left-[1.35rem] before:top-4 before:bottom-4 before:w-0.5 before:bg-slate-700/80">
-                                <!-- Popolato dinamicamente da JS: Tappa 1, 2, 3, 4, 5 -->
-                            </div>
-
-                            <!-- Pulsante Condividi Turno su WhatsApp -->
-                            <button type="button" onclick="shareDrivingScheduleWhatsApp()" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-black py-3 px-4 rounded-2xl text-xs transition shadow-lg flex items-center justify-center space-x-2 active:scale-[0.98]">
-                                <span class="text-base">📲</span>
-                                <span>Invia Tabella di Marcia su WhatsApp al Responsabile</span>
+                    <!-- Voce e schermo -->
+                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60">
+                        <summary class="cursor-pointer list-none p-4 flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-white">Voce e schermo</span>
+                            <span class="text-slate-400" aria-hidden="true">▾</span>
+                        </summary>
+                        <div class="px-4 pb-4 flex flex-wrap items-center gap-2">
+                            <button type="button" id="btnPlayFullBriefing" onclick="speakFullTripBriefing()" class="px-3 py-1.5 bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 text-[10px] font-bold rounded-xl transition flex items-center space-x-1">
+                                <span id="briefingPlayIcon">🔊</span>
+                                <span id="briefingPlayText">Ascolta il turno</span>
+                            </button>
+                            <button type="button" id="btnToggleVoiceAnnounce" onclick="toggleVoiceAnnouncements()" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1">
+                                <span id="voiceToggleIcon">🔕</span>
+                                <span id="voiceToggleText">Avvisi vocali: no</span>
+                            </button>
+                            <button type="button" id="btnToggleWakeLock" onclick="toggleScreenWakeLock()" class="px-2.5 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-400/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm">
+                                <span id="wakeLockIcon">🔆</span>
+                                <span id="wakeLockText">Schermo acceso: sì</span>
                             </button>
                         </div>
-                    </div>
+                    </details>
+
+                    <button type="button" onclick="shareDrivingScheduleWhatsApp()" class="w-full bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs transition">Invia il turno al responsabile su WhatsApp</button>
+
+                    <p class="text-[10px] text-slate-400 leading-relaxed px-1">Pianificazione indicativa secondo il Reg. (CE) 561/2006, artt. 6, 7 e 8. Fanno fede le registrazioni del tachigrafo.</p>
                 </div>
 
                 <!-- VISTA 2: GUIDA NORMATIVA CE 561/2006 -->
                 <div id="simGuideView" class="hidden space-y-4">
                     
                     <div class="p-3.5 bg-indigo-950/40 border border-indigo-500/30 rounded-2xl text-[11px] text-indigo-200 leading-relaxed">
-                        📌 <strong>Sintesi Ufficiale Regolamento CE 561/2006 &amp; Guida Assistente Vocale:</strong> Disciplina i tempi di guida, interruzioni e periodi di riposo per i conducenti su strada e include le istruzioni complete per l'uso dell'Assistente Vocale Co-Pilot.
+                        Riepilogo del <strong>Reg. (CE) 561/2006</strong> su guida, pause e riposi.
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -3891,7 +3807,7 @@
                             </div>
                             <p class="text-[11px] text-slate-300 leading-relaxed">
                                 Standard: Massimo <strong>9 ore</strong> al giorno.<br/>
-                                ⚡ <strong>Estensione:</strong> Può essere estesa a <strong>10 ore</strong> per un massimo di <strong>2 volte</strong> a settimana (dal lunedì 00:00 alla domenica 24:00).
+                                ⚡ <strong>Estensione:</strong> Può essere estesa a <strong>10 ore</strong> per un massimo di <strong>2 volte</strong> a settimana (dal lunedì 00:00 alla domenica 24:00).<br/>Con 10 ore servono <strong>due pause</strong>, perché dopo ogni 4h 30m di guida ne occorre una.
                             </p>
                         </div>
 
@@ -3942,58 +3858,10 @@
                             </p>
                         </div>
 
-                        <!-- 7. Assistente Vocale Co-Pilot & Guida all'Ascolto -->
-                        <div class="col-span-1 sm:col-span-2 bg-[#121E36] rounded-2xl p-4 border border-pink-500/40 space-y-3 shadow-lg">
-                            <div class="flex items-center space-x-2 text-pink-400">
-                                <span class="text-xl">🎙️</span>
-                                <h4 class="font-extrabold text-white text-xs uppercase tracking-wide">7. Assistente Vocale Co-Pilot: Come Funziona l'Ascolto</h4>
-                            </div>
-                            <p class="text-[11px] text-slate-300 leading-relaxed">
-                                L'Assistente Vocale integrato ti guida passo-passo durante l'intero turno di lavoro per prevenire violazioni del Regolamento CE 561/2006 senza distogliere lo sguardo dalla strada:
-                            </p>
-                            
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[11px]">
-                                <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1">
-                                    <span class="font-bold text-emerald-400 flex items-center space-x-1.5">
-                                        <span>▶️</span> <span>Come si Attiva l'Ascolto:</span>
-                                    </span>
-                                    <ul class="text-slate-300 space-y-1 mt-1 pl-1">
-                                        <li>&bull; <strong>Ascolta Briefing Turno (🔊):</strong> Clicca sul pulsante sopra la tabella per ascoltare un riassunto vocale completo del tuo turno.</li>
-                                        <li>&bull; <strong>Ascolta Singola Tappa (🔊):</strong> Clicca sull'icona altoparlante accanto a ciascuna fase per ascoltare solo quell'orario.</li>
-                                        <li>&bull; <strong>Annunci Automatici Live (🔔):</strong> Clicca su <em>"Avvisi Auto"</em> per impostare <strong>ON</strong>. A ogni cambio fase (es. inizio pausa 45m obbligatoria, ripartenza, fine turno), la voce interviene da sola.</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-1">
-                                    <span class="font-bold text-amber-400 flex items-center space-x-1.5">
-                                        <span>⏹️</span> <span>Come si Disattiva o Ferma:</span>
-                                    </span>
-                                    <ul class="text-slate-300 space-y-1 mt-1 pl-1">
-                                        <li>&bull; <strong>Interrompi Voce (⏹️):</strong> Mentre la voce parla, il pulsante diventa rosso <em>"Interrompi Voce"</em>: toccalo per interrompere subito la riproduzione.</li>
-                                        <li>&bull; <strong>Disattivare Annunci Automatici (🔕):</strong> Clicca sul pulsante <em>"Avvisi Auto"</em> per passare su <strong>OFF</strong>.</li>
-                                        <li>&bull; <strong>Sospendi dal Cruscotto (⏸️):</strong> Clicca su <em>"Sospendi"</em> per nascondere temporaneamente la visualizzazione live dal cruscotto (riprendibile in qualsiasi momento con <em>"Riprendi Turno"</em>).</li>
-                                        <li>&bull; <strong>Interrompi del Tutto (🛑):</strong> Clicca sul tasto rosso <em>"Interrompi del Tutto"</em> per concludere, azzerare e cancellare definitivamente l'intero turno di guida.</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-[11px] pt-0.5">
-                                <div class="bg-pink-950/30 border border-pink-700/40 p-2.5 rounded-xl text-pink-200">
-                                    <span class="font-bold text-white flex items-center space-x-1 mb-0.5">
-                                        <span>👩</span> <span>Timbro Naturale Femminile:</span>
-                                    </span>
-                                    <p class="text-[10px] text-pink-200/90 leading-relaxed">
-                                        Il sistema seleziona in automatico la voce italiana femminile più calda e naturale del tuo dispositivo (Windows, Android o Apple), evitando le vecchie voci robotiche maschili.
-                                    </p>
-                                </div>
-                                <div class="bg-emerald-950/40 border border-emerald-600/50 p-2.5 rounded-xl text-slate-300">
-                                    <span class="font-bold text-emerald-300 flex items-center space-x-1 mb-0.5">
-                                        <span>📲</span> <span>Notifiche Push &amp; Vibrazione (anche a Schermo Bloccato):</span>
-                                    </span>
-                                    <p class="text-[10px] text-emerald-100/90 leading-relaxed">
-                                        A ogni cambio fase (es. arrivo pausa 45m o fine turno), il telefono vibra ed emette un segnale acustico mostrando in alto il banner: <strong>🛑 GC-TachoControl • Cambio Fase: Hai raggiunto le 4 ore e mezza di guida. Inizia la pausa obbligatoria di 45 minuti!</strong> Funziona anche con schermo spento in tasca o mentre usi Google Maps/Waze.
-                                    </p>
-                                </div>
-                            </div>
+                        <!-- 7. Avvisi vocali -->
+                        <div class="col-span-1 sm:col-span-2 bg-[#15243E] rounded-2xl p-4 border border-slate-800 space-y-2">
+                            <h4 class="font-bold text-white text-xs">Avvisi vocali e notifiche</h4>
+                            <p class="text-[11px] text-slate-300 leading-relaxed">In <strong>Il mio turno</strong>, alla voce <strong>Voce e schermo</strong>, puoi ascoltare il turno, attivare gli avvisi vocali a ogni cambio di fase e tenere lo schermo acceso. Se hai autorizzato le notifiche, il telefono ti avvisa anche a ogni cambio di fase.</p>
                         </div>
 
                     </div>
@@ -4002,21 +3870,10 @@
             </div>
 
             <!-- Footer Modale -->
-            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex flex-wrap justify-between items-center gap-2">
-                <div class="flex items-center space-x-2 flex-wrap gap-y-2">
-                    <button type="button" id="modalBtnSuspendSim" onclick="stopDrivingSimulation()" class="px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-300 border border-amber-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Sospendi temporaneamente il monitoraggio dal cruscotto">
-                        <span>⏸️</span> <span>Sospendi</span>
-                    </button>
-                    <button type="button" id="modalBtnResetSim" onclick="resetDrivingSimulationComplete()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/40 text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Interrompi del tutto e azzera il turno">
-                        <span>🛑</span> <span>Interrompi del Tutto</span>
-                    </button>
-                    <button type="button" id="modalBtnStartSim" onclick="startDrivingSimulation()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center space-x-1.5 active:scale-95" title="Avvia o riprendi il monitoraggio in tempo reale sul cruscotto">
-                        <span>▶️</span> <span id="modalBtnStartSimText">Attiva Turno</span>
-                    </button>
-                </div>
-                <button type="button" onclick="closeDrivingSimulatorModal()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition">
-                    Chiudi
-                </button>
+            <div class="p-4 border-t border-slate-800 bg-[#15233A] flex gap-2">
+                <button type="button" id="modalBtnResetSim" onclick="resetDrivingSimulationComplete()" class="hidden flex-1 bg-red-950/60 hover:bg-red-900 border border-red-800/80 text-red-200 font-bold py-3 px-3 rounded-xl text-xs transition">Termina turno</button>
+                <button type="button" id="modalBtnSuspendSim" onclick="stopDrivingSimulation()" class="hidden flex-1 bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-3 rounded-xl text-xs transition">Sospendi</button>
+                <button type="button" id="modalBtnStartSim" onclick="startDrivingSimulation()" class="flex-1 bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-black py-3 px-3 rounded-xl text-sm shadow-md transition"><span id="modalBtnStartSimText">Inizia turno</span></button>
             </div>
         </div>
     </div>
@@ -9804,15 +9661,6 @@
         function updateSimulationStateUI() {
             const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
             const hasSavedParams = !!localStorage.getItem('tacho_sim_params');
-            const stateBar = document.getElementById('simControlStateBar');
-            const stateIcon = document.getElementById('simStateIcon');
-            const stateBadge = document.getElementById('simStateBadge');
-            const stateDesc = document.getElementById('simStateDesc');
-            const btnStart = document.getElementById('btnStartSimulation');
-            const btnStartText = document.getElementById('btnStartSimulationText');
-            const btnSuspend = document.getElementById('btnSuspendSimulation');
-            const btnStop = document.getElementById('btnStopSimulation');
-
             const modalBtnSuspend = document.getElementById('modalBtnSuspendSim');
             const modalBtnReset = document.getElementById('modalBtnResetSim');
             const modalBtnStart = document.getElementById('modalBtnStartSim');
@@ -9831,75 +9679,13 @@
                 else driverGlow.classList.add('hidden');
             }
             if (driverTitle) {
-                driverTitle.innerText = isSimActive ? "Monitoraggio Guida Attivo" : "Pianifica Turno & Guida";
+                driverTitle.innerText = isSimActive ? "Turno in corso" : "Pianifica Turno & Guida";
             }
 
-            if (stateBar && stateBadge) {
-                if (isSimActive) {
-                    // STATO 1: ATTIVO LIVE SUL CRUSCOTTO
-                    stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-emerald-950/70 border-emerald-500/50";
-                    if (stateIcon) stateIcon.innerText = "🟢";
-                    stateBadge.className = "text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 shadow-sm animate-pulse";
-                    stateBadge.innerText = "ATTIVO IN TEMPO REALE";
-                    if (stateDesc) stateDesc.innerHTML = `<span class="text-emerald-300 font-semibold">Il monitoraggio è attivo:</span> il cruscotto mostra la fase corrente in diretta con countdown live.`;
-                    
-                    if (btnStart) {
-                        btnStart.classList.add('opacity-50', 'pointer-events-none');
-                        if (btnStartText) btnStartText.innerText = "Turno in Corso";
-                    }
-                    if (btnSuspend) btnSuspend.classList.remove('hidden', 'opacity-50', 'pointer-events-none');
-                    if (btnStop) btnStop.classList.remove('opacity-50', 'pointer-events-none');
-
-                    if (modalBtnSuspend) modalBtnSuspend.classList.remove('hidden');
-                    if (modalBtnReset) modalBtnReset.classList.remove('opacity-50', 'pointer-events-none');
-                    if (modalBtnStart) {
-                        modalBtnStart.classList.add('opacity-50', 'pointer-events-none');
-                        if (modalBtnStartText) modalBtnStartText.innerText = "Turno Attivo";
-                    }
-                } else if (hasSavedParams) {
-                    // STATO 2: SOSPESO DAL CRUSCOTTO (PARAMETRI IN MEMORIA)
-                    stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-amber-950/70 border-amber-500/50";
-                    if (stateIcon) stateIcon.innerText = "⏸️";
-                    stateBadge.className = "text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 shadow-sm";
-                    stateBadge.innerText = "SOSPESO DAL CRUSCOTTO";
-                    if (stateDesc) stateDesc.innerHTML = `<span class="text-amber-300 font-semibold">Turno momentaneamente sospeso:</span> clicca su <strong>"Riprendi Turno"</strong> per riattivarlo sul cruscotto oppure <strong>"Interrompi del Tutto"</strong> per cancellarlo.`;
-                    
-                    if (btnStart) {
-                        btnStart.classList.remove('opacity-50', 'pointer-events-none');
-                        if (btnStartText) btnStartText.innerText = "Riprendi Turno";
-                    }
-                    if (btnSuspend) btnSuspend.classList.add('hidden');
-                    if (btnStop) btnStop.classList.remove('opacity-50', 'pointer-events-none');
-
-                    if (modalBtnSuspend) modalBtnSuspend.classList.add('hidden');
-                    if (modalBtnReset) modalBtnReset.classList.remove('opacity-50', 'pointer-events-none');
-                    if (modalBtnStart) {
-                        modalBtnStart.classList.remove('opacity-50', 'pointer-events-none');
-                        if (modalBtnStartText) modalBtnStartText.innerText = "Riprendi Turno";
-                    }
-                } else {
-                    // STATO 3: INATTIVO / AZZERATO DEL TUTTO
-                    stateBar.className = "p-3.5 rounded-2xl border flex flex-wrap items-center justify-between gap-3 shadow-md bg-slate-900/90 border-slate-800";
-                    if (stateIcon) stateIcon.innerText = "⚪";
-                    stateBadge.className = "text-[9px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700";
-                    stateBadge.innerText = "INATTIVO / AZZERATO";
-                    if (stateDesc) stateDesc.innerText = "Il cruscotto è neutro. Clicca su 'Avvia Turno Live' per attivare il monitoraggio in tempo reale.";
-                    
-                    if (btnStart) {
-                        btnStart.classList.remove('opacity-50', 'pointer-events-none');
-                        if (btnStartText) btnStartText.innerText = "Avvia Turno Live";
-                    }
-                    if (btnSuspend) btnSuspend.classList.add('hidden');
-                    if (btnStop) btnStop.classList.add('opacity-50', 'pointer-events-none');
-
-                    if (modalBtnSuspend) modalBtnSuspend.classList.add('hidden');
-                    if (modalBtnReset) modalBtnReset.classList.add('opacity-50', 'pointer-events-none');
-                    if (modalBtnStart) {
-                        modalBtnStart.classList.remove('opacity-50', 'pointer-events-none');
-                        if (modalBtnStartText) modalBtnStartText.innerText = "Attiva Turno";
-                    }
-                }
-            }
+            if (modalBtnSuspend) modalBtnSuspend.classList.toggle('hidden', !isSimActive);
+            if (modalBtnReset) modalBtnReset.classList.toggle('hidden', !(isSimActive || hasSavedParams));
+            if (modalBtnStart) modalBtnStart.classList.toggle('hidden', isSimActive);
+            if (modalBtnStartText) modalBtnStartText.innerText = hasSavedParams ? "Riprendi turno" : "Inizia turno";
             updateWakeLockUI();
         }
 
@@ -9939,7 +9725,7 @@
             updateSimulationStateUI();
             updateVoiceAnnounceUI();
             updateWakeLockUI();
-            showToast("🟢 Monitoraggio Guida attivato sul cruscotto!", "success");
+            showToast("Turno avviato", "success");
         }
 
         let currentSpeakingUtterance = null;
@@ -10045,7 +9831,7 @@
             const icon = document.getElementById('briefingPlayIcon');
             const text = document.getElementById('briefingPlayText');
             if (icon) icon.innerText = "🔊";
-            if (text) text.innerText = "Ascolta Briefing Turno";
+            if (text) text.innerText = "Ascolta il turno";
             if (btn) btn.classList.remove('ring-4', 'ring-indigo-400/50', 'animate-pulse');
         }
 
@@ -10061,7 +9847,7 @@
                 ? lastSimulationData.firstBreak.split(' - ')[0] 
                 : lastSimulationData.firstBreak;
 
-            const text = `Ciao ${driverName}. Ecco il briefing per il tuo turno di lavoro conforme alla normativa C E 561. Partenza del servizio alle ore ${lastSimulationData.startTime}. Prima pausa obbligatoria di quarantacinque minuti alle ore ${firstBreakTime}. Conclusione della guida giornaliera di ${lastSimulationData.dailyDriveHours} ore alle ${lastSimulationData.endTime}. Ripartenza consentita dopo il riposo di ${lastSimulationData.restHours} ore alle ore ${lastSimulationData.nextStart}. Guida con prudenza e buon viaggio!`;
+            const text = `Ciao ${driverName}. Ecco il briefing per il tuo turno di lavoro conforme alla normativa C E 561. Partenza del servizio alle ore ${lastSimulationData.startTime}. Prima pausa obbligatoria di quarantacinque minuti alle ore ${firstBreakTime}. ${lastSimulationData.secondBreak ? `Seconda pausa di quarantacinque minuti alle ore ${lastSimulationData.secondBreak.split(' - ')[0]}. ` : ''}Conclusione della guida giornaliera di ${lastSimulationData.dailyDriveHours} ore alle ${lastSimulationData.endTime}. Ripartenza consentita dopo il riposo di ${lastSimulationData.restHours} ore alle ore ${lastSimulationData.nextStart}. Guida con prudenza e buon viaggio!`;
 
             const btn = document.getElementById('btnPlayFullBriefing');
             const icon = document.getElementById('briefingPlayIcon');
@@ -10133,6 +9919,14 @@
                     title = "🟢 GC-TachoControl • Ripresa Guida (2° Blocco)";
                     body = `Pausa di 45 minuti ultimata. Ripartenza ore ${lastSimulationData.resumeTime} fino alla conclusione del turno.`;
                     break;
+                case 6:
+                    title = "🛑 GC-TachoControl • Seconda pausa";
+                    body = `Hai raggiunto altre 4 ore e mezza di guida. Fai la seconda pausa di 45 minuti (ore ${lastSimulationData.secondBreak}).`;
+                    break;
+                case 7:
+                    title = "🟢 GC-TachoControl • Ultima ora di guida";
+                    body = `Pausa ultimata. Ripartenza ore ${lastSimulationData.finalDrive}: massimo 1 ora di guida.`;
+                    break;
                 case 4:
                     title = "🏁 GC-TachoControl • Termine Guida & Inizio Riposo";
                     body = `Guida giornaliera completata (${lastSimulationData.dailyDriveHours}h). Inizia adesso il riposo giornaliero di ${lastSimulationData.restHours} ore (ore ${lastSimulationData.endTime}).`;
@@ -10184,15 +9978,19 @@
 
             switch(stageId) {
                 case 1:
-                    return `Tappa uno: Inizio servizio e partenza alle ore ${lastSimulationData.startTime}. Inserisci la carta del conducente nel tachigrafo. Hai a disposizione fino a quattro ore e mezza di guida prima della prima sosta.`;
+                    return `Inizio servizio e partenza alle ore ${lastSimulationData.startTime}. Inserisci la carta del conducente nel tachigrafo. Hai a disposizione fino a quattro ore e mezza di guida prima della prima sosta.`;
                 case 2:
-                    return `Tappa due: Sosta obbligatoria alle ore ${firstBreakTime}. Fermati tassativamente per almeno quarantacinque minuti di riposo per evitare sanzioni.`;
+                    return `Sosta obbligatoria alle ore ${firstBreakTime}. Fermati tassativamente per almeno quarantacinque minuti di riposo per evitare sanzioni.`;
                 case 3:
-                    return `Tappa tre: Ripresa della guida alle ore ${lastSimulationData.resumeTime}. Inizia il secondo blocco di viaggio fino alla conclusione del turno.`;
+                    return `Ripresa della guida alle ore ${lastSimulationData.resumeTime}. Inizia il secondo blocco di viaggio fino alla conclusione del turno.`;
+                case 6:
+                    return `Seconda pausa obbligatoria alle ore ${lastSimulationData.secondBreak.split(' - ')[0]}. Fermati per almeno quarantacinque minuti.`;
+                case 7:
+                    return `Ultima ora di guida dalle ore ${lastSimulationData.finalDrive}. Massimo un'ora al volante.`;
                 case 4:
-                    return `Tappa quattro: Termine della guida alle ore ${lastSimulationData.endTime}, con ${lastSimulationData.dailyDriveHours} ore complessive al volante. Inizia adesso il riposo giornaliero di ${lastSimulationData.restHours} ore.`;
+                    return `Termine della guida alle ore ${lastSimulationData.endTime}, con ${lastSimulationData.dailyDriveHours} ore complessive al volante. Inizia adesso il riposo giornaliero di ${lastSimulationData.restHours} ore.`;
                 case 5:
-                    return `Tappa cinque: Riposo ultimato alle ore ${lastSimulationData.nextStart}. Sei autorizzato a ripartire per un nuovo turno di lavoro.`;
+                    return `Riposo ultimato alle ore ${lastSimulationData.nextStart}. Sei autorizzato a ripartire per un nuovo turno di lavoro.`;
                 default:
                     return "";
             }
@@ -10226,11 +10024,11 @@
             if (icon && text && btn) {
                 if (isEnabled) {
                     icon.innerText = "🔔";
-                    text.innerText = "Avvisi Auto: ON";
+                    text.innerText = "Avvisi vocali: sì";
                     btn.className = "px-2.5 py-1.5 bg-emerald-600/30 text-emerald-300 border border-emerald-500/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm";
                 } else {
                     icon.innerText = "🔕";
-                    text.innerText = "Avvisi Auto: OFF";
+                    text.innerText = "Avvisi vocali: no";
                     btn.className = "px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1";
                 }
             }
@@ -10305,12 +10103,12 @@
             if (btn && icon && text) {
                 if (isPrefEnabled) {
                     icon.innerText = "🔆";
-                    text.innerText = isSimActive ? "Schermo Cabina: ON" : "Schermo: ON (Al via)";
+                    text.innerText = "Schermo acceso: sì";
                     btn.className = "px-2.5 py-1.5 bg-amber-500/20 text-amber-300 border border-amber-400/50 text-[10px] font-bold rounded-xl transition flex items-center space-x-1 shadow-sm";
                     btn.title = "Schermo sempre acceso abilitato: il display del telefono non si spegnerà durante il turno";
                 } else {
                     icon.innerText = "🌙";
-                    text.innerText = "Schermo Cabina: OFF";
+                    text.innerText = "Schermo acceso: no";
                     btn.className = "px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold rounded-xl border border-slate-700 transition flex items-center space-x-1";
                     btn.title = "Schermo sempre acceso disattivato: il telefono andrà in standby normalmente";
                 }
@@ -10367,13 +10165,13 @@
             if (elBtnTitle) elBtnTitle.innerText = "Pianifica Turno & Guida";
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
-                elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
+                elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Orari di pausa, fine guida e ripartenza.</span>';
             }
-            showToast("⏸️ Monitoraggio sospeso dal cruscotto.", "info");
+            showToast("Turno sospeso", "info");
         }
 
         function resetDrivingSimulationComplete() {
-            if (!confirm("Vuoi interrompere del tutto il turno e azzerare tutti i dati del monitoraggio?")) {
+            if (!confirm("Vuoi terminare il turno e cancellarne i dati?")) {
                 return;
             }
             localStorage.setItem('tacho_sim_active', 'false');
@@ -10399,9 +10197,9 @@
             if (elBtnTitle) elBtnTitle.innerText = "Pianifica Turno & Guida";
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
-                elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
+                elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Orari di pausa, fine guida e ripartenza.</span>';
             }
-            showToast("🛑 Turno interrotto ed eliminato del tutto!", "warning");
+            showToast("Turno terminato", "info");
         }
 
         function openDrivingSimulatorModal() {
@@ -10426,12 +10224,12 @@
             const guideView = document.getElementById('simGuideView');
 
             if (tab === 'calc') {
-                calcBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5";
+                calcBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-[#3B5BDB] text-white shadow-md flex items-center justify-center";
                 guideBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5";
                 calcView.classList.remove('hidden');
                 guideView.classList.add('hidden');
             } else {
-                guideBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex items-center justify-center space-x-1.5";
+                guideBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-[#3B5BDB] text-white shadow-md flex items-center justify-center";
                 calcBtn.className = "flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all bg-slate-800/80 hover:bg-slate-700 text-slate-300 flex items-center justify-center space-x-1.5";
                 calcView.classList.add('hidden');
                 guideView.classList.remove('hidden');
@@ -10491,25 +10289,29 @@
             const otherWorkMin = parseInt(document.getElementById('simOtherWork')?.value || 0, 10);
             const restType = document.getElementById('simRestType')?.value || '11';
 
-            // 1° Periodo di guida: Max 4h 30m = 270 minuti
+            // Art. 7 Reg. 561/2006: dopo ogni 4h 30m di guida serve una pausa. Con 10 ore di guida le pause sono due.
+            const hasExtraDrive = dailyDriveHours === 10;
             const firstDriveMinutes = 270;
             const firstBreakMinutes = startMinutes + firstDriveMinutes + (otherWorkMin > 0 ? Math.floor(otherWorkMin / 2) : 0);
             const firstBreakFormatted = formatMinutesToTimeString(firstBreakMinutes);
 
-            // Pausa: 45 min
             const pauseDuration = 45;
             const resumeDriveMinutes = firstBreakMinutes + pauseDuration;
             const resumeDriveFormatted = formatMinutesToTimeString(resumeDriveMinutes);
 
-            // 2° Periodo di guida: 4h30m (standard) oppure 5h30m (se 10h tot)
-            const secondDriveMinutes = (dailyDriveHours === 10 ? 330 : 270);
-            const totalDriveMinutes = firstDriveMinutes + secondDriveMinutes;
+            const secondDriveMinutes = 270;
+            const extraDriveMinutes = hasExtraDrive ? 60 : 0;
+            const secondPauseDuration = hasExtraDrive ? 45 : 0;
+            const totalDriveMinutes = firstDriveMinutes + secondDriveMinutes + extraDriveMinutes;
 
-            // Fine Turno Guida
-            const endTurnMinutes = startMinutes + totalDriveMinutes + pauseDuration + otherWorkMin;
+            const secondBreakMinutes = resumeDriveMinutes + secondDriveMinutes;
+            const secondBreakFormatted = formatMinutesToTimeString(secondBreakMinutes);
+            const finalDriveMinutes = secondBreakMinutes + secondPauseDuration;
+            const finalDriveFormatted = formatMinutesToTimeString(finalDriveMinutes);
+
+            const endTurnMinutes = startMinutes + totalDriveMinutes + pauseDuration + secondPauseDuration + otherWorkMin;
             const endTurnFormatted = formatMinutesToTimeString(endTurnMinutes);
 
-            // Calcolo Riposo
             let restHours = 11;
             if (restType === '9') restHours = 9;
             if (restType === 'multipresenza') restHours = 9;
@@ -10517,7 +10319,10 @@
             const nextStartMinutes = endTurnMinutes + (restHours * 60);
             const nextStartFormatted = formatMinutesToTimeString(nextStartMinutes);
 
-            // Output nei 3 riquadri di riepilogo
+            const dayWord = (f) => f.daysOffset > 0 ? 'domani' : '';
+            const timeWithDay = (f) => `${f.timeStr}${f.daysOffset > 0 ? ' domani' : ''}`;
+            const descWithDay = (f, text) => dayWord(f) ? `${dayWord(f)}, ${text}` : text;
+
             const elFirstBreak = document.getElementById('simResultFirstBreakTime');
             const elFirstBreakDesc = document.getElementById('simResultFirstBreakDesc');
             const elEndTime = document.getElementById('simResultEndTime');
@@ -10527,52 +10332,47 @@
             const elDiag = document.getElementById('simDiagnosticsBox');
 
             if (elFirstBreak) {
-                elFirstBreak.innerText = `${firstBreakFormatted.timeStr}${firstBreakFormatted.daysOffset > 0 ? ' (+1g)' : ''}`;
-                elFirstBreakDesc.innerText = (pauseType === '15_30') 
-                    ? "Pausa frazionata: 15m prima + 30m entro le 4h30m" 
-                    : "Pausa obbligatoria di 45m continuativi";
+                elFirstBreak.innerText = firstBreakFormatted.timeStr;
+                elFirstBreakDesc.innerText = descWithDay(firstBreakFormatted, pauseType === '15_30' ? '15 + 30 minuti' : '45 minuti');
             }
-
             if (elEndTime) {
-                elEndTime.innerText = `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ` (+${endTurnFormatted.daysOffset}g)` : ''}`;
-                elEndDesc.innerText = `Guida tot: ${dailyDriveHours}h • Lavoro: ${otherWorkMin}m • Pausa: 45m`;
+                elEndTime.innerText = endTurnFormatted.timeStr;
+                elEndDesc.innerText = descWithDay(endTurnFormatted, `${dailyDriveHours} ore di guida`);
             }
-
             if (elNextStart) {
-                elNextStart.innerText = `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ` (+${nextStartFormatted.daysOffset}g)` : ''}`;
-                elNextStartDesc.innerText = `Dopo riposo obbligatorio di ${restHours} ore`;
+                elNextStart.innerText = nextStartFormatted.timeStr;
+                elNextStartDesc.innerText = descWithDay(nextStartFormatted, `dopo ${restHours} ore di riposo`);
             }
 
-            // Diagnostica e consigli normativi
+            // Il riposo va completato entro 24 ore dal precedente (30 ore con doppio autista): art. 8, par. 2 e 5
+            const shiftMinutes = endTurnMinutes - startMinutes;
+            const maxShiftMinutes = restType === 'multipresenza' ? 21 * 60 : (restHours === 9 ? 15 * 60 : 13 * 60);
+            const shiftTooLong = shiftMinutes > maxShiftMinutes;
+
             if (elDiag) {
-                let diagHtml = `
-                    <div class="flex items-center space-x-2 font-bold text-white text-xs mb-1">
-                        <span>🚦</span> <span>Pianificazione Conforme al Regolamento CE 561/2006</span>
-                    </div>
-                    <ul class="space-y-1 text-[11px] list-disc list-inside">
-                        <li><strong>1ª Pausa:</strong> Fermati tassativamente entro le <strong class="text-amber-300 font-mono">${firstBreakFormatted.timeStr}</strong> per almeno 45 minuti di riposo continuativo.</li>
-                        <li><strong>Termine Guida:</strong> Guida massima giornaliera consentita di <strong>${dailyDriveHours} ore</strong> raggiunta alle ore <strong class="text-indigo-300 font-mono">${endTurnFormatted.timeStr}</strong>.</li>
-                        <li><strong>Ripartenza:</strong> Effettua il riposo di <strong>${restHours} ore</strong>. Potrai ripartire legalmente dalle ore <strong class="text-emerald-300 font-mono">${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' di domani' : ''}</strong>.</li>
-                `;
-
-                if (dailyDriveHours === 10) {
-                    diagHtml += `<li class="text-yellow-300">⚡ <strong>Deroga 10 Ore:</strong> Consentita per un massimo di <strong>2 volte a settimana</strong>.</li>`;
+                const notes = [];
+                if (shiftTooLong) {
+                    notes.push(`<strong>Turno troppo lungo: ${formatDurationHM(shiftMinutes)}.</strong> Con questo riposo il turno non deve superare ${formatDurationHM(maxShiftMinutes)}, perché il riposo va completato entro ${restType === 'multipresenza' ? '30' : '24'} ore dalla fine del precedente.`);
                 }
-
+                if (hasExtraDrive) {
+                    notes.push(`<strong>10 ore di guida:</strong> massimo 2 volte a settimana. Serve una seconda pausa alle ${secondBreakFormatted.timeStr}.`);
+                }
                 if (restType === '9') {
-                    diagHtml += `<li class="text-amber-300">⚠️ <strong>Riposo Ridotto (9h):</strong> Consentito massimo <strong>3 volte</strong> tra due riposi settimanali (non richiede compensazione).</li>`;
+                    notes.push('<strong>Riposo ridotto:</strong> massimo 3 volte tra due riposi settimanali.');
                 }
-
                 if (restType === 'multipresenza') {
-                    diagHtml += `<li class="text-blue-300">👥 <strong>Doppio Autista:</strong> Entro 30 ore dall'inizio servizio, entrambi gli autisti devono completare almeno 9h di riposo continuativo.</li>`;
+                    notes.push('<strong>Doppio autista:</strong> ciascuno deve aver fatto almeno 9 ore di riposo entro 30 ore dalla fine del precedente.');
                 }
-
-                diagHtml += `</ul>`;
-                elDiag.innerHTML = diagHtml;
+                if (notes.length) {
+                    elDiag.className = `rounded-xl p-3 border text-xs leading-relaxed space-y-1.5 ${shiftTooLong ? 'bg-red-950/60 border-red-800/80 text-red-200' : 'bg-amber-950/30 border-amber-800/60 text-amber-100'}`;
+                    elDiag.innerHTML = notes.map((n) => `<p>${n}</p>`).join('');
+                } else {
+                    elDiag.className = 'hidden';
+                    elDiag.innerHTML = '';
+                }
             }
 
-            // =================== COSTRUZIONE TABELLA DI MARCIA PASSO-PASSO ===================
-            // Calcolo startEpoch reale per gestire con precisione orari e passaggi a cavallo della mezzanotte
+            // Orario reale di inizio, per gestire i turni a cavallo della mezzanotte
             let startEpoch = null;
             try {
                 const rawParams = localStorage.getItem('tacho_sim_params');
@@ -10594,188 +10394,116 @@
 
             const elapsedSeconds = Math.floor((now.getTime() - startEpoch) / 1000);
 
-            // Calcolo offset in secondi delle varie tappe dallo start (0 secondi)
             const firstBreakOffsetSec = firstDriveMinutes * 60 + (otherWorkMin > 0 ? Math.floor(otherWorkMin / 2) * 60 : 0);
             const resumeDriveOffsetSec = firstBreakOffsetSec + (pauseDuration * 60);
-            const endTurnOffsetSec = (totalDriveMinutes + pauseDuration + otherWorkMin) * 60;
+            const secondBreakOffsetSec = resumeDriveOffsetSec + (secondDriveMinutes * 60);
+            const finalDriveOffsetSec = secondBreakOffsetSec + (secondPauseDuration * 60);
+            const endTurnOffsetSec = (totalDriveMinutes + pauseDuration + secondPauseDuration + otherWorkMin) * 60;
             const nextStartOffsetSec = endTurnOffsetSec + (restHours * 3600);
 
-            // Definizione delle 5 Tappe
             const stages = [
-                {
-                    id: 1,
-                    title: "1. Inizio Servizio & Partenza Guida",
-                    timeStr: formatMinutesToTimeString(startMinutes).timeStr,
-                    duration: "4h 30m di guida ininterrotta",
-                    desc: "Inserisci la carta nel tachigrafo e avvia il 1° blocco di guida.",
-                    icon: "🟢",
-                    offsetSec: 0,
-                    endOffsetSec: firstBreakOffsetSec
-                },
-                {
-                    id: 2,
-                    title: "2. Sosta Obbligatoria (Pausa 45 Minuti)",
-                    timeStr: `${firstBreakFormatted.timeStr} ➔ ${resumeDriveFormatted.timeStr}`,
-                    duration: "45 minuti di sosta continuativa",
-                    desc: (pauseType === '15_30') ? "Fermati ora! Completa i 30m di sosta (dopo i 15m preliminari)." : "FERMATI ORA! Metti il selettore tachigrafo su Pausa/Riposo.",
-                    icon: "🛑",
-                    offsetSec: firstBreakOffsetSec,
-                    endOffsetSec: resumeDriveOffsetSec
-                },
-                {
-                    id: 3,
-                    title: "3. Ripresa Guida (2° Blocco)",
-                    timeStr: resumeDriveFormatted.timeStr,
-                    duration: (dailyDriveHours === 10) ? "5h 30m di guida restante" : "4h 30m di guida restante",
-                    desc: "Pausa ultimata. Puoi ripartire per completare la tratta giornaliera.",
-                    icon: "🟢",
-                    offsetSec: resumeDriveOffsetSec,
-                    endOffsetSec: endTurnOffsetSec
-                },
-                {
-                    id: 4,
-                    title: "4. Fine Guida & Riposo Giornaliero",
-                    timeStr: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
-                    duration: `Riposo obbligatorio di ${restHours} ore`,
-                    desc: "Arresto definitivo del veicolo. Inizia ed è in corso il periodo di riposo giornaliero.",
-                    icon: "🛏️",
-                    offsetSec: endTurnOffsetSec,
-                    endOffsetSec: nextStartOffsetSec
-                },
-                {
-                    id: 5,
-                    title: "5. Ripartenza Consentita (Nuovo Turno)",
-                    timeStr: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' (Giorno dopo)' : ''}`,
-                    duration: `Riposo (${restHours}h) completato`,
-                    desc: `Riposo giornaliero completato legalmente. Sei pronto per iniziare un nuovo turno!`,
-                    icon: "✨",
-                    offsetSec: nextStartOffsetSec,
-                    endOffsetSec: nextStartOffsetSec + 7200
-                }
+                { id: 1, title: "Inizio guida", timeStr: formatMinutesToTimeString(startMinutes).timeStr,
+                  desc: "Inserisci la carta e parti. Massimo 4h 30m di guida.",
+                  offsetSec: 0, endOffsetSec: firstBreakOffsetSec,
+                  now: "Guida", sub: `Pausa alle ${firstBreakFormatted.timeStr}`, countLabel: "Pausa tra" },
+                { id: 2, title: "Pausa", timeStr: `${firstBreakFormatted.timeStr} - ${resumeDriveFormatted.timeStr}`,
+                  desc: pauseType === '15_30' ? "Prima almeno 15 minuti durante la guida, qui almeno altri 30." : "Fermati almeno 45 minuti di fila. Selettore su pausa/riposo.",
+                  offsetSec: firstBreakOffsetSec, endOffsetSec: resumeDriveOffsetSec,
+                  now: "Pausa", sub: `Puoi ripartire alle ${resumeDriveFormatted.timeStr}`, countLabel: "Riparti tra" },
+                { id: 3, title: "Ripresa guida", timeStr: resumeDriveFormatted.timeStr,
+                  desc: hasExtraDrive ? "Massimo 4h 30m, poi seconda pausa." : "Massimo 4h 30m, fino a fine guida.",
+                  offsetSec: resumeDriveOffsetSec, endOffsetSec: hasExtraDrive ? secondBreakOffsetSec : endTurnOffsetSec,
+                  now: "Guida", sub: hasExtraDrive ? `Seconda pausa alle ${secondBreakFormatted.timeStr}` : `Fine guida alle ${endTurnFormatted.timeStr}`, countLabel: hasExtraDrive ? "Pausa tra" : "Fine guida tra" }
             ];
-
-            // Determinazione dello step ATTIVO
-            let activeStageId = 0;
-            let radarText = "";
-            let radarSubText = "";
-
-            if (elapsedSeconds < 0) {
-                activeStageId = 1;
-                const diffSec = Math.max(0, -elapsedSeconds);
-                radarText = `⏳ Turno in Programmazione (Inizio alle ore ${formatMinutesToTimeString(startMinutes).timeStr})`;
-                radarSubText = `La partenza è programmata tra <strong>${formatDurationHMS(diffSec)}</strong>.`;
-            } else if (elapsedSeconds >= 0 && elapsedSeconds < firstBreakOffsetSec) {
-                activeStageId = 1;
-                const diffSec = Math.max(0, firstBreakOffsetSec - elapsedSeconds);
-                radarText = `🟢 IN CORSO: 1° Periodo di Guida`;
-                radarSubText = `Ti mancano <strong class="text-amber-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> prima della sosta obbligatoria delle ore <strong>${firstBreakFormatted.timeStr}</strong>.`;
-            } else if (elapsedSeconds >= firstBreakOffsetSec && elapsedSeconds < resumeDriveOffsetSec) {
-                activeStageId = 2;
-                const diffSec = Math.max(0, resumeDriveOffsetSec - elapsedSeconds);
-                radarText = `🛑 IN CORSO: Pausa Obbligatoria (45 Minuti)`;
-                radarSubText = `Resta fermo in sosta. Potrai ripartire tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${resumeDriveFormatted.timeStr}</strong>).`;
-            } else if (elapsedSeconds >= resumeDriveOffsetSec && elapsedSeconds < endTurnOffsetSec) {
-                activeStageId = 3;
-                const diffSec = Math.max(0, endTurnOffsetSec - elapsedSeconds);
-                radarText = `🟢 IN CORSO: 2° Periodo di Guida`;
-                radarSubText = `Fine turno di guida tra <strong class="text-indigo-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (alle ore <strong>${endTurnFormatted.timeStr}</strong>).`;
-            } else if (elapsedSeconds >= endTurnOffsetSec && elapsedSeconds < nextStartOffsetSec) {
-                activeStageId = 4;
-                const diffSec = Math.max(0, nextStartOffsetSec - elapsedSeconds);
-                radarText = `🛏️ IN CORSO: Periodo di Riposo Giornaliero (${restHours}h)`;
-                radarSubText = `Riposo in corso. Ripartenza legale per nuovo turno tra <strong class="text-emerald-300 font-bold font-mono">${formatDurationHMS(diffSec)}</strong> (ore <strong>${nextStartFormatted.timeStr}</strong>).`;
-            } else {
-                activeStageId = 5;
-                radarText = `✨ Riposo Ultimato • Nuovo Turno Consentito`;
-                radarSubText = `Hai completato legalmente il riposo di <strong>${restHours} ore</strong>. Sei autorizzato a iniziare un nuovo turno!`;
+            if (hasExtraDrive) {
+                stages.push(
+                    { id: 6, title: "Seconda pausa", timeStr: `${secondBreakFormatted.timeStr} - ${finalDriveFormatted.timeStr}`,
+                      desc: "Fermati almeno 45 minuti di fila: serve per la decima ora di guida.",
+                      offsetSec: secondBreakOffsetSec, endOffsetSec: finalDriveOffsetSec,
+                      now: "Seconda pausa", sub: `Puoi ripartire alle ${finalDriveFormatted.timeStr}`, countLabel: "Riparti tra" },
+                    { id: 7, title: "Ultima ora di guida", timeStr: finalDriveFormatted.timeStr,
+                      desc: "Massimo 1 ora, fino a fine guida.",
+                      offsetSec: finalDriveOffsetSec, endOffsetSec: endTurnOffsetSec,
+                      now: "Ultima ora di guida", sub: `Fine guida alle ${endTurnFormatted.timeStr}`, countLabel: "Fine guida tra" }
+                );
             }
+            stages.push(
+                { id: 4, title: "Fine guida e riposo", timeStr: timeWithDay(endTurnFormatted),
+                  desc: `Riposo di almeno ${restHours} ore.`,
+                  offsetSec: endTurnOffsetSec, endOffsetSec: nextStartOffsetSec,
+                  now: "Riposo giornaliero", sub: `Puoi ripartire alle ${timeWithDay(nextStartFormatted)}`, countLabel: "Riparti tra" },
+                { id: 5, title: "Puoi ripartire", timeStr: timeWithDay(nextStartFormatted),
+                  desc: "Riposo completato: puoi iniziare un nuovo turno.",
+                  offsetSec: nextStartOffsetSec, endOffsetSec: nextStartOffsetSec + 7200,
+                  now: "Riposo completato", sub: "Puoi iniziare un nuovo turno", countLabel: "" }
+            );
 
-            // Popolamento del Live Radar Banner
+            // Tappa attiva: l'ultima iniziata (la prima, se il turno deve ancora iniziare)
+            let activeIndex = 0;
+            stages.forEach((st, i) => { if (elapsedSeconds >= st.offsetSec) activeIndex = i; });
+            const activeStage = stages[activeIndex];
+            const activeStageId = activeStage.id;
+
             const elRadar = document.getElementById('simLiveRadarBanner');
             if (elRadar) {
-                const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
-                const hasSavedParams = !!localStorage.getItem('tacho_sim_params');
-
-                let radarStatusTitle = radarText;
-                let radarStatusSub = radarSubText;
-                let dotClass = "bg-emerald-400 animate-ping";
-
-                if (!isSimActive) {
-                    if (hasSavedParams) {
-                        dotClass = "bg-amber-400";
-                        radarStatusTitle = "⏸️ Turno Sospeso dal Cruscotto";
-                        radarStatusSub = 'Monitoraggio live momentaneamente sospeso. Clicca su <strong>"Riprendi Turno"</strong> per riattivarlo sul cruscotto oppure <strong>"Interrompi del Tutto"</strong> per cancellarlo.';
-                    } else {
-                        dotClass = "bg-slate-500";
-                        radarStatusTitle = "⚪ Nessun Turno Attivo (Pianificatore Neutro)";
-                        radarStatusSub = 'Imposta l\'orario di partenza e clicca su <strong>"Avvia Turno Live"</strong> per attivare il monitoraggio in tempo reale.';
+                const radarActive = localStorage.getItem('tacho_sim_active') === 'true';
+                const radarSaved = !!localStorage.getItem('tacho_sim_params');
+                if (!radarActive && !radarSaved) {
+                    elRadar.className = 'hidden';
+                    elRadar.innerHTML = '';
+                } else {
+                    let label = 'Adesso';
+                    let title = activeStage.now;
+                    let sub = activeStage.sub;
+                    let countLabel = activeStage.countLabel;
+                    let countSec = Math.max(0, activeStage.endOffsetSec - elapsedSeconds);
+                    if (!radarActive) {
+                        label = 'Turno sospeso';
+                        title = 'Conteggio in pausa';
+                        sub = 'Premi Riprendi turno per continuare.';
+                        countLabel = '';
+                    } else if (elapsedSeconds < 0) {
+                        label = 'In programma';
+                        title = 'Turno non ancora iniziato';
+                        sub = `Inizio alle ${formatMinutesToTimeString(startMinutes).timeStr}`;
+                        countLabel = 'Inizia tra';
+                        countSec = -elapsedSeconds;
                     }
-                }
-
-                elRadar.innerHTML = `
-                    <div class="flex items-center space-x-3 min-w-0">
-                        <div class="w-3 h-3 rounded-full ${dotClass} flex-shrink-0"></div>
+                    elRadar.className = `rounded-2xl p-4 border flex items-center justify-between gap-3 ${radarActive ? 'bg-emerald-950/40 border-emerald-500/40' : 'bg-amber-950/30 border-amber-800/60'}`;
+                    elRadar.innerHTML = `
                         <div class="min-w-0">
-                            <h5 class="text-xs font-black text-white truncate">${radarStatusTitle}</h5>
-                            <p class="text-[11px] text-slate-300">${radarStatusSub}</p>
+                            <span class="block text-[10px] font-black uppercase tracking-wider ${radarActive ? 'text-emerald-300' : 'text-amber-300'}">${label}</span>
+                            <span class="block text-base font-extrabold text-white leading-snug">${title}</span>
+                            <span class="block text-[11px] text-slate-300 leading-snug">${sub}</span>
                         </div>
-                    </div>
-                    <span class="text-[10px] ${isSimActive ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'} font-bold font-mono px-2 py-1 rounded-lg border flex-shrink-0">
-                        ORE ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}
-                    </span>
-                `;
+                        ${countLabel ? `<div class="text-right flex-shrink-0"><span class="block text-[10px] font-bold text-slate-400">${countLabel}</span><span class="block font-mono font-black text-sm text-white whitespace-nowrap">${formatDurationHMS(countSec)}</span></div>` : ''}
+                    `;
+                }
             }
 
-            // Popolamento delle 5 Tappe nella Timeline Verticale
             const elTimeline = document.getElementById('simTimelineContainer');
             if (elTimeline) {
-                const isSimActive = localStorage.getItem('tacho_sim_active') === 'true';
-                let timelineHtml = "";
-                stages.forEach((st) => {
-                    const isCurrent = isSimActive && (st.id === activeStageId && currentMinutes >= startMinutes && currentMinutes <= nextStartMinutes);
-                    const isPassed = isSimActive && (currentMinutes > st.endMin && currentMinutes <= nextStartMinutes);
-
-                    let statusBadge = "";
-                    let cardBorder = "bg-[#15243E]/80 border-slate-800 text-slate-300";
-
-                    if (isCurrent) {
-                        cardBorder = "bg-emerald-950/90 border-2 border-emerald-400 shadow-xl ring-2 ring-emerald-500/30 text-white animate-pulse";
-                        statusBadge = `<span class="px-2 py-0.5 rounded-md text-[9px] font-black bg-emerald-500 text-slate-950 shadow-sm flex items-center space-x-1"><span>🟢</span><span>IN CORSO ADESSO</span></span>`;
-                    } else if (isPassed) {
-                        cardBorder = "bg-slate-900/60 border-slate-800/80 text-slate-400 opacity-75";
-                        statusBadge = `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-slate-800 text-emerald-400 border border-emerald-500/30">✔️ COMPLETATA</span>`;
-                    } else {
-                        statusBadge = `<span class="px-2 py-0.5 rounded-md text-[9px] font-bold bg-slate-800/80 text-slate-400">⏳ IN PROGRAMMA</span>`;
-                    }
-
-                    timelineHtml += `
+                const timelineActive = localStorage.getItem('tacho_sim_active') === 'true';
+                elTimeline.innerHTML = stages.map((st, i) => {
+                    const isCurrent = timelineActive && i === activeIndex;
+                    const isPassed = timelineActive && i < activeIndex;
+                    const dot = isCurrent ? 'bg-emerald-500 text-slate-950' : (isPassed ? 'bg-emerald-950 border border-emerald-600 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400');
+                    const card = isCurrent ? 'bg-emerald-950/40 border-emerald-500/50' : 'bg-[#0F1C32]/90 border-slate-700/60';
+                    return `
                         <div class="relative pl-8">
-                            <div class="absolute left-0 top-3 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isCurrent ? 'bg-emerald-500 text-slate-950 shadow-lg ring-4 ring-emerald-500/30' : (isPassed ? 'bg-emerald-950 border border-emerald-600 text-emerald-400' : 'bg-slate-800 border border-slate-700 text-slate-400')}">
-                                ${st.id}
-                            </div>
-                            <div class="p-3.5 rounded-2xl border transition-all ${cardBorder}">
-                                <div class="flex flex-wrap items-center justify-between gap-1 mb-1">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-sm">${st.icon}</span>
-                                        <h5 class="font-extrabold text-xs text-white">${st.title}</h5>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="font-mono font-bold text-xs text-amber-300">${st.timeStr}</span>
-                                        ${statusBadge}
-                                    </div>
+                            <div class="absolute left-0 top-2.5 w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${dot}">${isPassed ? '✓' : i + 1}</div>
+                            <div class="p-3 rounded-xl border ${card}">
+                                <div class="flex items-baseline justify-between gap-2">
+                                    <h5 class="font-extrabold text-xs text-white">${st.title}${isCurrent ? ' <span class="text-emerald-300 font-bold">· in corso</span>' : ''}</h5>
+                                    <span class="font-mono font-bold text-xs text-slate-200 whitespace-nowrap">${st.timeStr}</span>
                                 </div>
-                                <p class="text-[11px] text-slate-300 leading-snug">${st.desc}</p>
-                                <div class="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-800/80">
-                                    <span class="text-[10px] text-slate-400">⏱️ ${st.duration}</span>
-                                    <button type="button" onclick="speakStagePrompt(${st.id})" class="px-2.5 py-1 bg-indigo-600/20 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/30 rounded-lg text-[10px] font-bold flex items-center space-x-1 transition active:scale-95" title="Ascolta istruzione vocale per questa tappa">
-                                        <span>🔊</span> <span>Ascolta Tappa</span>
-                                    </button>
+                                <div class="flex items-end justify-between gap-2 mt-0.5">
+                                    <p class="text-[11px] text-slate-400 leading-snug">${st.desc}</p>
+                                    <button type="button" onclick="speakStagePrompt(${st.id})" aria-label="Ascolta questa tappa" title="Ascolta questa tappa" class="text-sm flex-shrink-0 leading-none">🔊</button>
                                 </div>
                             </div>
-                        </div>
-                    `;
-                });
-                elTimeline.innerHTML = timelineHtml;
+                        </div>`;
+                }).join('');
             }
 
             // Salvataggio dati per invio WhatsApp
@@ -10785,6 +10513,8 @@
                 resumeTime: resumeDriveFormatted.timeStr,
                 endTime: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
                 nextStart: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
+                secondBreak: hasExtraDrive ? `${secondBreakFormatted.timeStr} - ${finalDriveFormatted.timeStr}` : '',
+                finalDrive: hasExtraDrive ? finalDriveFormatted.timeStr : '',
                 dailyDriveHours,
                 restHours
             };
@@ -10830,13 +10560,13 @@
                 else driverGlow.classList.add('hidden');
             }
             if (elBtnTitle) {
-                elBtnTitle.innerText = isSimActive ? "Monitoraggio Guida Attivo" : "Pianifica Turno & Guida";
+                elBtnTitle.innerText = isSimActive ? "Turno in corso" : "Pianifica Turno & Guida";
             }
 
             const elBtnSubtitle = document.getElementById('driverSimBtnSubtitle');
             if (elBtnSubtitle) {
                 if (!isSimActive) {
-                    elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Tabella di marcia &amp; calcolo pause (45m).</span>';
+                    elBtnSubtitle.innerHTML = '<span class="text-xs text-slate-300">Orari di pausa, fine guida e ripartenza.</span>';
                 } else {
                     if (elapsedSeconds < 0) {
                         const diffSec = Math.max(0, -elapsedSeconds);
@@ -10847,9 +10577,15 @@
                     } else if (elapsedSeconds >= firstBreakOffsetSec && elapsedSeconds < resumeDriveOffsetSec) {
                         const diffSec = Math.max(0, resumeDriveOffsetSec - elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-emerald-950/80 border border-emerald-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-ping shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-emerald-200 uppercase tracking-wide truncate">In Pausa Obbligatoria (45m)</span></div><span class="text-[11px] font-bold text-emerald-300/90 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${resumeDriveFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-emerald-500/20"><span class="text-[11px] text-slate-300 font-medium">Ripartenza tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-emerald-500/40 border border-emerald-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
-                    } else if (elapsedSeconds >= resumeDriveOffsetSec && elapsedSeconds < endTurnOffsetSec) {
+                    } else if (hasExtraDrive && elapsedSeconds >= finalDriveOffsetSec && elapsedSeconds < endTurnOffsetSec) {
                         const diffSec = Math.max(0, endTurnOffsetSec - elapsedSeconds);
-                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-indigo-950/80 border border-indigo-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-indigo-200 uppercase tracking-wide truncate">2° Blocco Guida</span></div><span class="text-[11px] font-bold text-indigo-300/90 flex-shrink-0 whitespace-nowrap">Fine turno ore ${endTurnFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-indigo-500/20"><span class="text-[11px] text-slate-300 font-medium">Fine turno tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-indigo-500/40 border border-indigo-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
+                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-indigo-950/80 border border-indigo-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black text-indigo-200 uppercase tracking-wide truncate">Ultima ora di guida</span><span class="text-[11px] font-bold text-indigo-300/90 flex-shrink-0 whitespace-nowrap">Fine guida ore ${endTurnFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-indigo-500/20"><span class="text-[11px] text-slate-300 font-medium">Fine guida tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-indigo-500/40 border border-indigo-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
+                    } else if (hasExtraDrive && elapsedSeconds >= secondBreakOffsetSec && elapsedSeconds < finalDriveOffsetSec) {
+                        const diffSec = Math.max(0, finalDriveOffsetSec - elapsedSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-emerald-950/80 border border-emerald-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><span class="text-xs font-black text-emerald-200 uppercase tracking-wide truncate">Seconda pausa (45m)</span><span class="text-[11px] font-bold text-emerald-300/90 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${finalDriveFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-emerald-500/20"><span class="text-[11px] text-slate-300 font-medium">Ripartenza tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-emerald-500/40 border border-emerald-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
+                    } else if (elapsedSeconds >= resumeDriveOffsetSec && elapsedSeconds < endTurnOffsetSec) {
+                        const diffSec = Math.max(0, (hasExtraDrive ? secondBreakOffsetSec : endTurnOffsetSec) - elapsedSeconds);
+                        elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-indigo-950/80 border border-indigo-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-emerald-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.9)]"></span><span class="text-xs font-black text-indigo-200 uppercase tracking-wide truncate">2° Blocco Guida</span></div><span class="text-[11px] font-bold text-indigo-300/90 flex-shrink-0 whitespace-nowrap">${hasExtraDrive ? `Pausa ore ${secondBreakFormatted.timeStr}` : `Fine turno ore ${endTurnFormatted.timeStr}`}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-indigo-500/20"><span class="text-[11px] text-slate-300 font-medium">${hasExtraDrive ? 'Seconda pausa tra' : 'Fine turno tra'}</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-indigo-500/40 border border-indigo-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
                     } else if (elapsedSeconds >= endTurnOffsetSec && elapsedSeconds < nextStartOffsetSec) {
                         const diffSec = Math.max(0, nextStartOffsetSec - elapsedSeconds);
                         elBtnSubtitle.innerHTML = `<div class="mt-2 p-2.5 sm:p-3 rounded-2xl bg-blue-950/80 border border-blue-400/50 shadow-md space-y-1.5 text-left"><div class="flex items-center justify-between gap-2"><div class="flex items-center space-x-1.5 min-w-0"><span class="w-2.5 h-2.5 rounded-full bg-blue-400 flex-shrink-0 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.9)]"></span><span class="text-xs font-black text-blue-200 uppercase tracking-wide truncate">In Riposo (${restHours}h)</span></div><span class="text-[11px] font-bold text-blue-300/90 flex-shrink-0 whitespace-nowrap">Ripartenza ore ${nextStartFormatted.timeStr}</span></div><div class="flex items-center justify-between gap-2 pt-1.5 border-t border-blue-500/20"><span class="text-[11px] text-slate-300 font-medium">Fine riposo tra</span><span class="font-mono font-black text-xs sm:text-sm text-white bg-blue-500/40 border border-blue-300/60 px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap tabular-nums">${formatDurationHMS(diffSec)}</span></div></div>`;
@@ -10873,6 +10609,7 @@
                 `🟢 *1. Partenza / Inizio Servizio:* Ore ${lastSimulationData.startTime} (1° Blocco 4h 30m)\n` +
                 `🛑 *2. Pausa Obbligatoria (45m):* Ore ${lastSimulationData.firstBreak}\n` +
                 `🟢 *3. Ripresa Guida:* Ore ${lastSimulationData.resumeTime} (2° Blocco)\n` +
+                (lastSimulationData.secondBreak ? `🛑 *Seconda Pausa (45m):* Ore ${lastSimulationData.secondBreak}\n🟢 *Ultima Ora di Guida:* Ore ${lastSimulationData.finalDrive}\n` : '') +
                 `🏁 *4. Fine Guida Giornaliera:* Ore ${lastSimulationData.endTime} (${lastSimulationData.dailyDriveHours}h totali)\n` +
                 `🛏️ *5. Ripartenza Consentita:* Ore ${lastSimulationData.nextStart} (dopo ${lastSimulationData.restHours}h di riposo)\n\n` +
                 `✅ _Pianificazione conforme alle norme tachigrafiche vigenti (GC CodeLab)._`;
