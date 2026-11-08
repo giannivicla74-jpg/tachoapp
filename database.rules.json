@@ -78,8 +78,11 @@
     "aziende": {
       ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin')",
       "$cid": {
-        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid)",
+        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
         ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
+        "config": {
+          ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid)"
+        },
         "operai": {
           ".indexOn": [
             "pin",
@@ -87,6 +90,7 @@
             "cantiere"
           ],
           "$driverId": {
+            ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId)",
             ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId) && newData.exists()",
             "authUid": {
               ".validate": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid && root.child('utenti').child(auth.uid).child('role').val() === 'admin') || newData.val() === data.val()"
@@ -107,7 +111,7 @@
       }
     },
     "operai": {
-      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
       ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
       ".indexOn": [
         "pin",
@@ -115,6 +119,7 @@
         "cantiere"
       ],
       "$driverId": {
+        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId)",
         ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId) && newData.exists()",
         "authUid": {
           ".validate": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin') || newData.val() === data.val()"
@@ -122,7 +127,7 @@
       }
     },
     "veicoli": {
-      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
       ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
       ".indexOn": [
         "plate",
@@ -130,7 +135,7 @@
       ]
     },
     "live_positions": {
-      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN')",
+      ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
       ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('role').val() === 'admin')",
       "$driverId": {
         ".write": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'driver' && root.child('utenti').child(auth.uid).child('companyId').val() === 'AZ-MAIN' && root.child('utenti').child(auth.uid).child('driverId').val() === $driverId)"

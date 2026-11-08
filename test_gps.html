@@ -4010,6 +4010,17 @@
             // 2. SINCRONIZZAZIONE REALTIME CLOUD FIREBASE (solo dopo il login: senza accesso il database risponde "permesso negato")
             if (!TachoAuth.canAccess(activeCompanyId)) return;
 
+            // Autista: legge solo la propria scheda. Dal telefono spariscono i dati dei colleghi salvati dalle versioni precedenti.
+            const ownDriverId = (TachoAuth.profile && TachoAuth.profile.role === 'driver') ? TachoAuth.profile.driverId : null;
+            if (ownDriverId) {
+                driversMap = driversMap[ownDriverId] ? { [ownDriverId]: driversMap[ownDriverId] } : {};
+                vehiclesMap = {};
+                try {
+                    localStorage.setItem('cached_driversMap_' + activeCompanyId, JSON.stringify(driversMap));
+                    localStorage.removeItem('cached_vehiclesMap_' + activeCompanyId);
+                } catch(e) {}
+            }
+
             if (TachoAuth.isAdminOf(activeCompanyId)) {
                 const pinRef = db.ref('aziende_privato/' + activeCompanyId + '/pin_autisti');
                 const pinCb = pinRef.on('value', snapshot => {
@@ -4102,9 +4113,13 @@
             });
             activeListeners.push({ ref: configCardRef, callback: configCardCb });
 
-            const operaiRef = dbCompanyRef('operai');
+            const operaiRef = dbCompanyRef(ownDriverId ? 'operai/' + ownDriverId : 'operai');
             const operaiCb = operaiRef.on('value', snapshot => {
-                driversMap = snapshot.val() || {};
+                if (ownDriverId) {
+                    driversMap = snapshot.exists() ? { [ownDriverId]: snapshot.val() } : {};
+                } else {
+                    driversMap = snapshot.val() || {};
+                }
                 mergePrivateDriverPins();
                 try {
                     localStorage.setItem('cached_driversMap_' + activeCompanyId, JSON.stringify(driversMap));
@@ -4134,6 +4149,8 @@
                 if (isSuperAdmin) renderSuperAdminCompaniesList();
             });
             activeListeners.push({ ref: operaiRef, callback: operaiCb });
+
+            if (ownDriverId) return; // I mezzi servono solo al pannello admin
 
             const veicoliRef = dbCompanyRef('veicoli');
             const veicoliCb = veicoliRef.on('value', snapshot => {
