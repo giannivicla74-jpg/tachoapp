@@ -60,5 +60,49 @@
         if (loginRow) loginRow.appendChild(makeButton('themeToggleLogin', 'theme-toggle-header'));
         document.body.appendChild(makeButton('themeToggle', 'theme-toggle'));
         apply(savedTheme());
+        addPasswordEyes();
     });
+
+    // Occhio nei campi password e PIN: mostra cio' che si e' scritto e si richiude quando il campo sparisce dalla schermata.
+    function addPasswordEyes() {
+        const EYE = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>';
+        const EYE_OFF = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10.4 10.4 0 0112 5c6.4 0 10 7 10 7a17 17 0 01-3.2 4M6.5 6.6A16.6 16.6 0 002 12s3.6 7 10 7a10 10 0 005-1.4M9.9 9.9a3 3 0 004.2 4.2"/></svg>';
+        const style = document.createElement('style');
+        style.textContent = 'input::-ms-reveal,input::-ms-clear{display:none}';
+        document.head.appendChild(style);
+
+        document.querySelectorAll('input[type="password"]').forEach((input) => {
+            const small = input.classList.contains('text-xs');
+            const room = small ? '1.75rem' : '2.75rem';
+            input.style.paddingRight = room;
+            if (input.classList.contains('text-center')) input.style.paddingLeft = room;
+
+            const wrap = document.createElement('div');
+            wrap.className = 'relative w-full';
+            input.parentNode.insertBefore(wrap, input);
+            wrap.appendChild(input);
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'absolute inset-y-0 right-0 flex items-center text-slate-400 hover:text-white no-print ' + (small ? 'px-1.5' : 'px-3');
+            const show = (visible) => {
+                input.type = visible ? 'text' : 'password';
+                btn.innerHTML = visible ? EYE_OFF : EYE;
+                const label = visible ? 'Nascondi' : 'Mostra';
+                btn.title = label;
+                btn.setAttribute('aria-label', label);
+            };
+            // Il tocco sull'occhio non deve togliere il cursore dal campo
+            btn.addEventListener('mousedown', (e) => e.preventDefault());
+            btn.addEventListener('click', () => show(input.type === 'password'));
+            show(false);
+            wrap.appendChild(btn);
+
+            if ('IntersectionObserver' in window) {
+                new IntersectionObserver((entries) => {
+                    if (!entries[entries.length - 1].isIntersecting) show(false);
+                }).observe(input);
+            }
+        });
+    }
 })();

@@ -234,6 +234,30 @@
         .animate-driver-shield {
             animation: driverShieldFloat 3.2s ease-in-out infinite;
         }
+
+        /* Solo su PC: area conducenti e Turno e guida usano la larghezza disponibile. Il telefono non cambia. */
+        @media (min-width: 1024px) {
+            body:has(#driverSection:not(.hidden)) #mainContainer { max-width: 64rem; }
+            #driverPanel_carta:not(.hidden),
+            #driverPanel_ferie:not(.hidden),
+            #driverPanel_norme:not(.hidden) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+            #driverPanel_carta > *, #driverPanel_ferie > *, #driverPanel_norme > * { margin-top: 0 !important; }
+            #pushNotificationBanner, #pushNotificationActiveBanner, #driverExpiryAlertBox, #gpsControlCard { grid-column: 1 / -1; }
+            #driverPanel_norme > :nth-child(1), #driverPanel_norme > :nth-child(2) { grid-column: 1 / -1; }
+            #driverPanel_norme { grid-auto-flow: row dense; align-items: start; grid-template-rows: auto auto auto 1fr auto; }
+            #driverPanel_norme > :nth-child(4) { grid-column: 2; grid-row: span 2; }
+            #driverPanel_norme > :nth-child(3), #driverPanel_norme > :nth-child(5) { grid-column: 1; }
+
+            #drivingSimulatorModal > div { max-width: 60rem; }
+            #simCalcView:not(.hidden) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; grid-auto-flow: row dense; align-items: start; }
+            #simCalcView > * { margin-top: 0 !important; }
+            #simLiveRadarBanner, #simDiagnosticsBox, #simBoxNote { grid-column: 1 / -1; }
+            #simBoxSettings, #simBoxVoice, #simBoxSend { grid-column: 1; }
+            #simBoxTiles { grid-column: 2; align-self: stretch; }
+            #simBoxTiles > div { display: flex; flex-direction: column; justify-content: center; }
+            #simBoxTiles .text-xl { font-size: 1.875rem; }
+            #simBoxTappe { grid-column: 2; grid-row: span 3; }
+        }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col font-sans antialiased w-full max-w-full overflow-x-hidden">
@@ -1586,7 +1610,7 @@
 
                 <div>
                     <h4 class="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-1">Guide pratiche</h4>
-                    <div class="grid grid-cols-1 gap-3">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     <!-- 0. Cosa fare prima di partire -->
                     <button type="button" onclick="openGuidaCasiModal()" class="w-full bg-[#0F1C32]/90 hover:bg-[#0e2622] border border-emerald-500/40 hover:border-emerald-400/60 p-3.5 rounded-2xl shadow-lg flex items-center space-x-3 text-left transition-all duration-200 group active:scale-[0.98]">
                         <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-600/10 border border-emerald-500/30 text-emerald-300 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:scale-105 transition-transform">
@@ -3664,7 +3688,7 @@
                     <div id="simLiveRadarBanner" class="hidden"></div>
 
                     <!-- Dati del turno -->
-                    <div class="bg-[#15243E] rounded-2xl p-4 border border-slate-700/60 space-y-3">
+                    <div id="simBoxSettings" class="bg-[#15243E] rounded-2xl p-4 border border-slate-700/60 space-y-3">
                         <div class="grid grid-cols-2 gap-3">
                             <div>
                                 <div class="flex justify-between items-center mb-1.5 h-6">
@@ -3719,7 +3743,7 @@
                     </div>
 
                     <!-- Risultato -->
-                    <div class="grid grid-cols-3 gap-2">
+                    <div id="simBoxTiles" class="grid grid-cols-3 gap-2">
                         <div class="bg-[#15243E] border border-slate-700/60 rounded-xl p-3 text-center">
                             <span class="block text-[10px] font-bold text-slate-400">Pausa entro</span>
                             <span id="simResultFirstBreakTime" class="block text-xl font-black font-mono text-amber-300 mt-1 leading-none">--:--</span>
@@ -3741,7 +3765,7 @@
                     <div id="simDiagnosticsBox" class="hidden"></div>
 
                     <!-- Tappe -->
-                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60">
+                    <details id="simBoxTappe" class="bg-[#15243E] rounded-2xl border border-slate-700/60">
                         <summary class="cursor-pointer list-none p-4 flex items-center justify-between">
                             <span class="text-xs font-extrabold text-white">Tappe del turno</span>
                             <span class="text-slate-400" aria-hidden="true">▾</span>
@@ -3752,7 +3776,7 @@
                     </details>
 
                     <!-- Voce e schermo -->
-                    <details class="bg-[#15243E] rounded-2xl border border-slate-700/60">
+                    <details id="simBoxVoice" class="bg-[#15243E] rounded-2xl border border-slate-700/60">
                         <summary class="cursor-pointer list-none p-4 flex items-center justify-between">
                             <span class="text-xs font-extrabold text-white">Voce e schermo</span>
                             <span class="text-slate-400" aria-hidden="true">▾</span>
@@ -3773,9 +3797,9 @@
                         </div>
                     </details>
 
-                    <button type="button" onclick="shareDrivingScheduleWhatsApp()" class="w-full bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs transition">Invia il turno al responsabile su WhatsApp</button>
+                    <button type="button" id="simBoxSend" onclick="shareDrivingScheduleWhatsApp()" class="w-full bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs transition">Invia il turno al responsabile su WhatsApp</button>
 
-                    <p class="text-[10px] text-slate-400 leading-relaxed px-1">Pianificazione indicativa secondo il Reg. (CE) 561/2006, artt. 6, 7 e 8. Fanno fede le registrazioni del tachigrafo.</p>
+                    <p id="simBoxNote" class="text-[10px] text-slate-400 leading-relaxed px-1">Pianificazione indicativa secondo il Reg. (CE) 561/2006, artt. 6, 7 e 8. Fanno fede le registrazioni del tachigrafo.</p>
                 </div>
 
                 <!-- VISTA 2: GUIDA NORMATIVA CE 561/2006 -->
@@ -10204,6 +10228,8 @@
 
         function openDrivingSimulatorModal() {
             document.getElementById('drivingSimulatorModal').classList.remove('hidden');
+            const simTappe = document.getElementById('simBoxTappe');
+            if (simTappe && window.matchMedia('(min-width: 1024px)').matches) simTappe.open = true;
             switchSimulatorTab('calc');
             loadSavedSimulationParams();
             calculateDrivingSimulation();
@@ -10511,8 +10537,8 @@
                 startTime: formatMinutesToTimeString(startMinutes).timeStr,
                 firstBreak: `${firstBreakFormatted.timeStr} - ${resumeDriveFormatted.timeStr}`,
                 resumeTime: resumeDriveFormatted.timeStr,
-                endTime: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
-                nextStart: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' (+1g)' : ''}`,
+                endTime: `${endTurnFormatted.timeStr}${endTurnFormatted.daysOffset > 0 ? ' del giorno dopo' : ''}`,
+                nextStart: `${nextStartFormatted.timeStr}${nextStartFormatted.daysOffset > 0 ? ' del giorno dopo' : ''}`,
                 secondBreak: hasExtraDrive ? `${secondBreakFormatted.timeStr} - ${finalDriveFormatted.timeStr}` : '',
                 finalDrive: hasExtraDrive ? finalDriveFormatted.timeStr : '',
                 dailyDriveHours,
