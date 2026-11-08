@@ -480,10 +480,10 @@
     function lockLinkEditing() {
         return linkApp && linkApp.auth().currentUser ? linkApp.auth().signOut().catch(() => {}) : Promise.resolve();
     }
-    async function saveProtectedLinks(cid, links) {
+    async function saveProtectedLinks(links) {
         const app = linkEditorApp();
         if (!app.auth().currentUser) throw fail('tacho/locked', 'Modifica bloccata: inserisci di nuovo il PIN.');
-        await withTimeout(app.database().ref(`link_portali/${cid || 'AZ-MAIN'}`).set(links), 10000);
+        await withTimeout(app.database().ref('link_portali').set(links), 10000);
         await lockLinkEditing();
     }
     async function setLinkPin(currentPin, newPin) {

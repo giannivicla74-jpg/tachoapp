@@ -32,19 +32,17 @@
       }
     },
     "link_portali": {
-      "$cid": {
-        ".read": "(auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'superadmin') || (auth != null && root.child('utenti').child(auth.uid).child('companyId').val() === $cid)",
-        ".write": "auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'link_editor'",
-        ".validate": "newData.hasChildren(['unioncamere', 'taci'])",
-        "unioncamere": {
-          ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().length > 8 && newData.val().beginsWith('https://') && !newData.val().contains(' ')"
-        },
-        "taci": {
-          ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().length > 8 && newData.val().beginsWith('https://') && !newData.val().contains(' ')"
-        },
-        "$altro": {
-          ".validate": false
-        }
+      ".read": "auth != null && root.child('utenti').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('utenti').child(auth.uid).child('role').val() === 'link_editor'",
+      ".validate": "newData.hasChildren(['unioncamere', 'taci'])",
+      "unioncamere": {
+        ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().length > 8 && newData.val().beginsWith('https://') && !newData.val().contains(' ')"
+      },
+      "taci": {
+        ".validate": "newData.isString() && newData.val().length <= 300 && newData.val().length > 8 && newData.val().beginsWith('https://') && !newData.val().contains(' ')"
+      },
+      "$altro": {
+        ".validate": false
       }
     },
     "aziende_registry": {

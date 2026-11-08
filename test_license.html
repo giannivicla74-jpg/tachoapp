@@ -1062,7 +1062,7 @@
                     <div class="bg-[#15243E] rounded-2xl p-5 border border-slate-800/80 shadow-lg">
                         <div class="text-4xl font-black text-white leading-none">12 <span class="text-base font-bold text-slate-300">mesi</span></div>
                         <div class="text-sm font-bold text-white mt-2.5">Conservazione dei dati</div>
-                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">Periodo minimo di conservazione in azienda. Reg. (CE) 561/2006, art. 10.</p>
+                        <p class="text-xs text-slate-400 mt-1 leading-relaxed">Periodo minimo di conservazione in azienda. Reg. (CE) 561/2006, art. 10, par. 5.</p>
                     </div>
                 </div>
 
@@ -1075,8 +1075,9 @@
                         <strong>Art. 174, comma 14, Codice della Strada:</strong> sanzione all'impresa <strong>per ciascun dipendente</strong> a cui si riferisce la violazione.
                         Importo indicativo: <strong>da € 334 a € 1.334 per dipendente</strong> (valori 2019-2020). Gli importi vengono rivalutati periodicamente: verifica quello in vigore sul testo ufficiale.
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:32010R0581" target="_blank" rel="noopener noreferrer" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs text-center transition">Testo ufficiale Reg. (UE) 581/2010</a>
+                        <a href="https://eur-lex.europa.eu/legal-content/IT/TXT/?uri=CELEX:02006R0561-20241231" target="_blank" rel="noopener noreferrer" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs text-center transition">Testo ufficiale Reg. (CE) 561/2006</a>
                         <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1992-04-30;285~art174" target="_blank" rel="noopener noreferrer" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 px-4 rounded-xl text-xs text-center transition">Art. 174 Codice della Strada</a>
                     </div>
                     <button onclick="openCciaaModal()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 w-full font-bold py-3 px-4 rounded-xl text-xs transition">
@@ -1084,34 +1085,14 @@
                     </button>
                 </div>
 
-                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-4">
-                    <div class="flex items-center space-x-2">
-                        <svg class="w-4 h-4 text-slate-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
-                        <h3 class="font-bold text-sm text-white">Gestione e Aggiornamento Link Portali</h3>
+                <div class="bg-[#15243E] rounded-3xl shadow-xl p-6 border border-slate-800/80 space-y-3.5">
+                    <div>
+                        <h3 class="font-bold text-sm text-white">Portali Ufficiali</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed mt-1">I servizi delle Camere di Commercio per normativa, carte tachigrafiche e pratiche online.</p>
                     </div>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Questi link valgono per tutta l'azienda, amministratori e autisti. Per modificarli serve il PIN GC CodeLab.
-                    </p>
-
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale Unioncamere Metrologia</label>
-                            <input type="url" id="linkUnioncamereInput" disabled placeholder="https://www.metrologialegale.unioncamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 disabled:opacity-60 disabled:cursor-not-allowed">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Link Portale TACI InfoCamere</label>
-                            <input type="url" id="linkTaciInput" disabled placeholder="https://taci.infocamere.it/" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-2xl outline-none text-xs text-white placeholder-slate-500 disabled:opacity-60 disabled:cursor-not-allowed">
-                        </div>
-
-                        <div id="linkPinRow" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                            <input type="password" id="linkPinInput" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="PIN GC CodeLab" class="w-full px-4 py-3 bg-[#0F1C32] border border-slate-700/80 rounded-xl outline-none text-center font-bold tracking-widest text-sm text-white placeholder-slate-500">
-                            <button type="button" id="linkUnlockBtn" onclick="unlockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 rounded-xl text-xs transition">Sblocca modifica</button>
-                        </div>
-
-                        <div id="linkEditActions" class="hidden grid grid-cols-2 gap-2.5 pt-1">
-                            <button type="button" onclick="lockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 font-bold py-3 rounded-xl text-xs transition">Annulla</button>
-                            <button type="button" id="linkSaveBtn" onclick="saveCustomLinks()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-3 rounded-xl text-xs transition shadow-md">Aggiorna Link Ufficiali</button>
-                        </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <a data-portal-link="unioncamere" href="https://www.metrologialegale.unioncamere.it/" target="_blank" rel="noopener noreferrer" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-3.5 px-4 rounded-xl text-xs text-center transition shadow-md">Portale Unioncamere</a>
+                        <a data-portal-link="taci" href="https://taci.infocamere.it/" target="_blank" rel="noopener noreferrer" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white font-bold py-3.5 px-4 rounded-xl text-xs text-center transition shadow-md">Portale TACI InfoCamere</a>
                     </div>
                 </div>
 
@@ -2808,6 +2789,31 @@
 
                 <div class="bg-[#08101D] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
                     <div>
+                        <div class="text-xs font-bold text-white">Link portali ufficiali</div>
+                        <p class="text-[10px] text-slate-400 mt-0.5">Valgono per tutte le aziende. Per modificarli serve il PIN.</p>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                            <label for="linkUnioncamereInput" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Portale Unioncamere</label>
+                            <input type="url" id="linkUnioncamereInput" disabled placeholder="https://www.metrologialegale.unioncamere.it/" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                        </div>
+                        <div>
+                            <label for="linkTaciInput" class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Portale TACI InfoCamere</label>
+                            <input type="url" id="linkTaciInput" disabled placeholder="https://taci.infocamere.it/" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 outline-none focus:border-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed">
+                        </div>
+                    </div>
+                    <div id="linkPinRow" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <input type="password" id="linkPinInput" inputmode="numeric" autocomplete="new-password" maxlength="12" placeholder="PIN" class="w-full bg-[#0F172A] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white text-center placeholder-slate-500 outline-none focus:border-indigo-500">
+                        <button type="button" id="linkUnlockBtn" onclick="unlockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition">Sblocca modifica</button>
+                    </div>
+                    <div id="linkEditActions" class="hidden grid grid-cols-2 gap-2">
+                        <button type="button" onclick="lockLinkEditor()" class="bg-slate-800/70 hover:bg-slate-700/80 text-slate-200 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold transition">Annulla</button>
+                        <button type="button" id="linkSaveBtn" onclick="saveCustomLinks()" class="bg-[#3B5BDB] hover:bg-[#4C6EF5] text-white px-3 py-2 rounded-xl text-xs font-bold transition">Salva per tutte le aziende</button>
+                    </div>
+                </div>
+
+                <div class="bg-[#08101D] border border-slate-800 rounded-2xl p-3.5 space-y-2.5">
+                    <div>
                         <div class="text-xs font-bold text-white">PIN GC CodeLab per la modifica dei link portali</div>
                         <p class="text-[10px] text-slate-400 mt-0.5">Da 6 a 12 cifre. La prima volta lascia vuoto "PIN attuale".</p>
                     </div>
@@ -3899,7 +3905,7 @@
             });
             activeListeners.push({ ref: configLogoRef, callback: configLogoCb });
 
-            const portalLinksRef = db.ref('link_portali/' + activeCompanyId);
+            const portalLinksRef = db.ref('link_portali');
             const portalLinksCb = portalLinksRef.on('value', snapshot => applyCloudLinks(snapshot.val()), () => {});
             activeListeners.push({ ref: portalLinksRef, callback: portalLinksCb });
 
@@ -4805,6 +4811,7 @@
             if (btnUnion) btnUnion.href = customLinks.unioncamere;
             const btnTaci = document.getElementById('btnLinkTaci');
             if (btnTaci) btnTaci.href = customLinks.taci;
+            document.querySelectorAll('[data-portal-link]').forEach((a) => { a.href = customLinks[a.dataset.portalLink]; });
             if (linkEditUnlocked) return; // non sovrascrive quello che si sta digitando
             const inUnion = document.getElementById('linkUnioncamereInput');
             if (inUnion) inUnion.value = customLinks.unioncamere;
@@ -4816,7 +4823,7 @@
             return typeof url === 'string' && /^https:\/\/\S+$/.test(url);
         }
 
-        // Link portali salvati nel Cloud: valgono per tutta l'azienda
+        // Link portali salvati nel Cloud: un unico elenco per tutte le aziende
         function applyCloudLinks(saved) {
             customLinks = {
                 unioncamere: saved && isHttpsLink(saved.unioncamere) ? saved.unioncamere : DEFAULT_PORTAL_LINKS.unioncamere,
@@ -4879,10 +4886,10 @@
             const btn = document.getElementById('linkSaveBtn');
             btn.disabled = true;
             try {
-                await TachoAuth.saveProtectedLinks(activeCompanyId || 'AZ-MAIN', links);
+                await TachoAuth.saveProtectedLinks(links);
                 setLinkEditMode(false);
                 applyCloudLinks(links);
-                showToast("Link portali aggiornati per tutta l'azienda!", "success");
+                showToast("Link portali aggiornati per tutte le aziende!", "success");
             } catch (err) {
                 console.error('Salvataggio link non riuscito:', err);
                 showToast("Link non salvati: controlla la connessione e riprova.", "error");
@@ -6539,6 +6546,7 @@
         }
 
         function closeSuperAdminModal() {
+            lockLinkEditor();
             document.getElementById('superAdminModal').classList.add('hidden');
         }
 
