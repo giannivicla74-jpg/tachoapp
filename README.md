@@ -34,4 +34,4 @@
 ## 👨‍💻 Sviluppo & Contatti Commerciali
 * **Autore & Sviluppatore:** Giovanni Cavallo
 * **Brand:** GC CodeLab
-* **Email:** [info@gccodelab.com](mailto:info@gccodelab.com)
+* **Email:** [info@gccodelab.it](mailto:info@gccodelab.it)

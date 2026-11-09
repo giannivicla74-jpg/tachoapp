@@ -41,7 +41,10 @@ async function start() {
             process.exit(0);
         }
 
-        const today = new Date();
+        // Il controllo gira su un server con orario UTC e spesso parte in ritardo: conta sempre la data italiana,
+        // altrimenti a cavallo della mezzanotte UTC un giorno verrebbe saltato e il suo avviso andrebbe perso.
+        const todayItaly = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Rome' }).format(new Date());
+        const today = new Date(todayItaly);
         today.setHours(0, 0, 0, 0);
         let inviate = 0;
 
